@@ -8,10 +8,6 @@ module.exports = {
     extend: {
       colors: {
         primary: "#FF3D00"
-      },
-      borderRadius: {
-        xl: "16px",
-        "2xl": "24px"
       }
     },
   },

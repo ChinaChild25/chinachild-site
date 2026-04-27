@@ -3,9 +3,8 @@
 @tailwind utilities;
 
 html, body {
-  padding: 0;
   margin: 0;
+  padding: 0;
   background: #ffffff;
   color: #111;
-  font-family: ui-sans-serif, system-ui, -apple-system, Inter, Arial;
 }
