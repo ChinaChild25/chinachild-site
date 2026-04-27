@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { buttonStyles } from "@/components/ui/button";
-import { REGISTER_URL } from "@/lib/site-config";
+import { CONTACT_PHONE, CONTACT_PHONE_TEL, REGISTER_URL } from "@/lib/site-config";
 
 const navigation = [
   { label: "Курсы", href: "/kursy" },
@@ -39,14 +39,22 @@ export default function Header() {
           ))}
         </nav>
 
-        <Link
-          href={REGISTER_URL}
-          target="_blank"
-          rel="noreferrer"
-          className={buttonStyles({ size: "compact" })}
-        >
-          Записаться
-        </Link>
+        <div className="flex items-center gap-4">
+          <a
+            href={`tel:${CONTACT_PHONE_TEL}`}
+            className="hidden text-sm font-semibold text-[#1b1b1b] lg:block"
+          >
+            {CONTACT_PHONE}
+          </a>
+          <Link
+            href={REGISTER_URL}
+            target="_blank"
+            rel="noreferrer"
+            className={buttonStyles({ size: "compact" })}
+          >
+            Записаться
+          </Link>
+        </div>
       </div>
     </header>
   );

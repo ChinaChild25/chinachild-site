@@ -1,4 +1,14 @@
-import { absoluteUrl, CONTACT_EMAIL, SITE_NAME, SITE_URL } from "@/lib/site-config";
+import {
+  absoluteUrl,
+  BRAND_NAME,
+  CONTACT_EMAIL,
+  CONTACT_PHONE,
+  LICENSE_PROGRAM,
+  LICENSE_REGION,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_URL,
+} from "@/lib/site-config";
 import {
   courses,
   faqs,
@@ -23,9 +33,11 @@ export function createOrganizationSchema(): JsonLd {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: SITE_NAME,
+    alternateName: BRAND_NAME,
     url: SITE_URL,
     logo: absoluteUrl("/brand-mark.svg"),
     email: CONTACT_EMAIL,
+    telephone: CONTACT_PHONE,
     sameAs: [SITE_URL],
   };
 }
@@ -35,10 +47,20 @@ export function createEducationalOrganizationSchema(): JsonLd {
     "@context": "https://schema.org",
     "@type": "EducationalOrganization",
     name: SITE_NAME,
+    alternateName: BRAND_NAME,
     url: SITE_URL,
     logo: absoluteUrl("/brand-mark.svg"),
-    description: "Онлайн-школа китайского языка для детей и взрослых",
+    description: SITE_DESCRIPTION,
     email: CONTACT_EMAIL,
+    telephone: CONTACT_PHONE,
+    hasCredential: {
+      "@type": "EducationalOccupationalCredential",
+      name: `Образовательная лицензия — ${LICENSE_PROGRAM}`,
+      recognizedBy: {
+        "@type": "Organization",
+        name: LICENSE_REGION,
+      },
+    },
     aggregateRating: {
       "@type": "AggregateRating",
       ratingValue: String(siteFacts.aggregateRating),
@@ -47,6 +69,7 @@ export function createEducationalOrganizationSchema(): JsonLd {
     address: {
       "@type": "PostalAddress",
       addressCountry: "RU",
+      addressLocality: "Москва",
     },
   };
 }

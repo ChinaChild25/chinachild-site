@@ -2,19 +2,21 @@ import type { Metadata } from "next";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import PageHero from "@/components/layout/PageHero";
 import FAQSection from "@/components/sections/FAQSection";
+import { ChartUp, GlobeCharacter, SpeechBubbles } from "@/components/decor/Decor";
 import { buildMetadata } from "@/lib/metadata";
 import { REGISTER_URL } from "@/lib/site-config";
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
-    title: "Китайский для подростков онлайн | ChinaChild",
+    title: "Китайский для старшеклассников и абитуриентов | ChinaChild",
     description:
-      "Китайский для подростков 11-16 лет: школьная база, разговорная практика и подготовка к HSK в онлайн-школе ChinaChild.",
+      "Курс китайского языка для подростков 16–17 лет: подготовка к HSK 2–3, к олимпиадам и поступлению в вузы Китая. Лицензированная программа, мини-группы до 5 человек.",
     path: "/dlya-podrostkov",
     keywords: [
       "китайский для подростков",
-      "HSK для школьников",
-      "онлайн китайский для подростка",
+      "китайский для старшеклассников",
+      "HSK 2 для школьников",
+      "подготовка к HSK для подростков",
     ],
   });
 }
@@ -22,21 +24,24 @@ export async function generateMetadata(): Promise<Metadata> {
 const features = [
   {
     card: "card-violet-soft",
-    title: "Разговорные сценарии",
+    title: "Подготовка к HSK 2–3",
     body:
-      "Школа, поездки, общение с друзьями. Учим говорить, а не отвечать у доски.",
+      "Контрольные точки экзамена, тренировка типовых заданий и стратегия времени. Помогаем структурно идти к сертификату.",
+    icon: <ChartUp className="absolute -right-2 -bottom-4 h-32 w-36 opacity-95" />,
   },
   {
     card: "card-cream",
-    title: "Подготовка к HSK 1-3",
+    title: "Аутентичные тексты и аудио",
     body:
-      "Контрольные точки по экзамену, тренировка типовых заданий и стратегия времени.",
+      "Разбираем фрагменты китайских СМИ, видео и подкастов — навык, который реально нужен для поступления в Китай.",
+    icon: <GlobeCharacter className="absolute -right-2 -bottom-2 h-32 w-32 opacity-95" />,
   },
   {
     card: "card-lime-soft",
-    title: "Прозрачный прогресс",
+    title: "Разговорные клубы",
     body:
-      "Отчёты по словарю, темам и темпу повторения — у подростка и родителей одна картинка.",
+      "Регулярная живая практика в мини-группах — снимаем языковой барьер до того, как подросток окажется на собеседовании.",
+    icon: <SpeechBubbles className="absolute -right-2 -bottom-2 h-32 w-36 opacity-95" />,
   },
 ];
 
@@ -46,25 +51,26 @@ export default function TeensLandingPage() {
       <Breadcrumbs
         items={[
           { name: "Главная", path: "/" },
-          { name: "Для подростков", path: "/dlya-podrostkov" },
+          { name: "Старшеклассникам", path: "/dlya-podrostkov" },
         ]}
       />
       <PageHero
-        eyebrow="Подростки 11-16 лет"
-        title="Китайский для подростков: HSK, школа и уверенная речь"
-        description="Подростковый трек совмещает системную грамматику, живые темы для разговора и понятный план подготовки к HSK без сухой зубрёжки."
+        eyebrow="Старшеклассники 16–17"
+        title="Китайский для старшеклассников и абитуриентов"
+        description="Подготовка к HSK 2–3, олимпиадам и поступлению в вузы Китая. Лицензированная программа, мини-группы до 5 человек, преподаватели ЮФУ и ДГТУ."
         primaryCta={{ label: "Записаться на диагностику", href: REGISTER_URL, external: true }}
-        secondaryCta={{ label: "Смотреть курс", href: "/kursy" }}
+        secondaryCta={{ label: "Смотреть курсы", href: "/kursy" }}
       />
 
       <section className="page-shell section-space">
         <div className="grid gap-5 md:grid-cols-3">
           {features.map((item) => (
-            <article key={item.title} className={`card-block h-full ${item.card}`}>
-              <h2 className="text-xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
+            <article key={item.title} className={`card-block relative h-full overflow-hidden ${item.card}`}>
+              <h2 className="relative z-10 text-xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
                 {item.title}
               </h2>
-              <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">{item.body}</p>
+              <p className="relative z-10 mt-3 max-w-[88%] text-sm leading-7 text-[#4b4b4b]">{item.body}</p>
+              {item.icon}
             </article>
           ))}
         </div>
