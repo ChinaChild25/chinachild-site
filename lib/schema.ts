@@ -12,6 +12,7 @@ import {
 import {
   courses,
   faqs,
+  processSteps,
   reviews,
   siteFacts,
   teachers,
@@ -198,11 +199,89 @@ export function createBreadcrumbSchema(items: BreadcrumbItem[]): JsonLd {
   };
 }
 
+export function createWebsiteSchema(): JsonLd {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: SITE_NAME,
+    alternateName: BRAND_NAME,
+    url: SITE_URL,
+    inLanguage: "ru",
+    publisher: {
+      "@type": "EducationalOrganization",
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${SITE_URL}/blog?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
+  };
+}
+
+export function createHowToSchema(): JsonLd {
+  return {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: "Как начать учить китайский в ChinaChild",
+    description:
+      "Пошаговый маршрут от бесплатного теста на уровень HSK до регулярных занятий по лицензированной программе.",
+    totalTime: "PT24H",
+    estimatedCost: {
+      "@type": "MonetaryAmount",
+      currency: "RUB",
+      value: "4999",
+    },
+    step: processSteps.map((step, index) => ({
+      "@type": "HowToStep",
+      position: index + 1,
+      name: step.title,
+      text: step.description,
+      url: `${SITE_URL}/#kak-prokhodit`,
+    })),
+  };
+}
+
+export function createServiceSchema(): JsonLd {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    serviceType: "Онлайн-курсы китайского языка",
+    provider: {
+      "@type": "EducationalOrganization",
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+    areaServed: {
+      "@type": "Country",
+      name: "Russia",
+    },
+    audience: {
+      "@type": "Audience",
+      audienceType: "Подростки 12+ и взрослые",
+    },
+    offers: courses.map((course) => ({
+      "@type": "Offer",
+      name: course.title,
+      url: absoluteUrl(course.href),
+      priceCurrency: "RUB",
+      ...(course.priceValue ? { price: course.priceValue } : {}),
+      category: course.format,
+    })),
+  };
+}
+
 export function createHomepageSchemas(): JsonLd[] {
   return [
     createEducationalOrganizationSchema(),
     createAggregateRatingSchema(),
     createFaqSchema(faqs),
+    createHowToSchema(),
+    createServiceSchema(),
     ...courses.map((course) => createCourseSchema(course)),
   ];
 }

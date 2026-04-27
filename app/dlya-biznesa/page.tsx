@@ -2,19 +2,21 @@ import type { Metadata } from "next";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import PageHero from "@/components/layout/PageHero";
 import FAQSection from "@/components/sections/FAQSection";
+import { ChartUp, PercentMedal, SpeechBubbles } from "@/components/decor/Decor";
 import { buildMetadata } from "@/lib/metadata";
 import { REGISTER_URL } from "@/lib/site-config";
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
-    title: "Бизнес-китайский онлайн для команд | ChinaChild",
+    title: "Корпоративный китайский для команд | ChinaChild",
     description:
-      "Корпоративное обучение китайскому языку для закупок, продаж, логистики и менеджмента. Онлайн-интенсивы, разговорная практика и деловая переписка.",
+      "Корпоративное обучение китайскому языку: программа HSK 1–2, мини-группы для сотрудников, закрывающие документы и отчётность по прогрессу команды.",
     path: "/dlya-biznesa",
     keywords: [
-      "бизнес китайский онлайн",
       "корпоративный китайский",
       "китайский для бизнеса",
+      "обучение сотрудников китайскому",
+      "групповое обучение китайскому",
     ],
   });
 }
@@ -22,21 +24,24 @@ export async function generateMetadata(): Promise<Metadata> {
 const features = [
   {
     card: "card-cream",
-    title: "Деловая переписка",
+    title: "Программа HSK 1–2 для команды",
     body:
-      "Готовые шаблоны для рабочих сценариев: запросы поставщикам, согласование условий, follow-up после встреч.",
+      "Лицензированный курс с акцентом на разговор, переписку с китайскими партнёрами и работу с документами.",
+    icon: <SpeechBubbles className="absolute -right-2 -bottom-2 h-32 w-36 opacity-95" />,
   },
   {
     card: "card-sky",
-    title: "Созвоны и переговоры",
+    title: "Отчётность и прозрачный прогресс",
     body:
-      "Тренируем встречи, переговоры и презентацию продукта на живых кейсах из реальных команд.",
+      "Личный кабинет, посещаемость, тесты и видеозаписи — HR-руководитель видит динамику каждого сотрудника.",
+    icon: <ChartUp className="absolute -right-2 -bottom-2 h-32 w-36 opacity-95" />,
   },
   {
     card: "card-lime-soft",
-    title: "Программа под отрасль",
+    title: "Закрывающие документы",
     body:
-      "E-commerce, импорт, логистика и B2B: подбираем лексику и сценарии под специфику бизнеса.",
+      "Образовательная лицензия Москвы. Готовы оформить договор, акт и счёт под бухгалтерию заказчика.",
+    icon: <PercentMedal value="ЭДО" className="absolute -right-4 -bottom-4 h-32 w-28 opacity-95" />,
   },
 ];
 
@@ -46,13 +51,13 @@ export default function BusinessLandingPage() {
       <Breadcrumbs
         items={[
           { name: "Главная", path: "/" },
-          { name: "Бизнес", path: "/dlya-biznesa" },
+          { name: "Бизнесу", path: "/dlya-biznesa" },
         ]}
       />
       <PageHero
-        eyebrow="Корпоративный трек"
-        title="Бизнес-китайский для команд, которым нужен прикладной результат"
-        description="Помогаем закупкам, продажам, руководителям и аккаунт-командам быстрее входить в переписку, встречи и переговоры с партнёрами из Китая."
+        eyebrow="Корпоративные группы"
+        title="Корпоративный китайский для команд и сотрудников"
+        description="Лицензированная онлайн-программа HSK 1–2 для команд: мини-группы до 5 человек, отчётность по прогрессу и закрывающие документы для бухгалтерии."
         primaryCta={{ label: "Обсудить курс для команды", href: REGISTER_URL, external: true }}
         secondaryCta={{ label: "Преподаватели", href: "/prepodavateli" }}
       />
@@ -60,11 +65,12 @@ export default function BusinessLandingPage() {
       <section className="page-shell section-space">
         <div className="grid gap-5 md:grid-cols-3">
           {features.map((item) => (
-            <article key={item.title} className={`card-block h-full ${item.card}`}>
-              <h2 className="text-xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
+            <article key={item.title} className={`card-block relative h-full overflow-hidden ${item.card}`}>
+              <h2 className="relative z-10 text-xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
                 {item.title}
               </h2>
-              <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">{item.body}</p>
+              <p className="relative z-10 mt-3 max-w-[88%] text-sm leading-7 text-[#4b4b4b]">{item.body}</p>
+              {item.icon}
             </article>
           ))}
         </div>

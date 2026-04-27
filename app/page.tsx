@@ -6,26 +6,38 @@ import FAQSection from "@/components/sections/FAQSection";
 import HeroSection from "@/components/sections/HeroSection";
 import PricingSection from "@/components/sections/PricingSection";
 import ProcessSection from "@/components/sections/ProcessSection";
+import RelatedLinks from "@/components/sections/RelatedLinks";
 import ResultsSection from "@/components/sections/ResultsSection";
 import ReviewsSection from "@/components/sections/ReviewsSection";
 import TeachersSection from "@/components/sections/TeachersSection";
 import WhySection from "@/components/sections/WhySection";
+import JsonLd from "@/components/seo/JsonLd";
 import { getLatestPosts } from "@/lib/blog";
 import { buildMetadata } from "@/lib/metadata";
+import {
+  createEducationalOrganizationSchema,
+  createHomepageSchemas,
+  createWebsiteSchema,
+} from "@/lib/schema";
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
     title:
-      "ChinaChild — Онлайн-школа китайского языка | Курсы для детей и взрослых",
+      "ChinaChild — онлайн-школа китайского языка | Курсы HSK 1–6, обучение с нуля",
     description:
-      "Учите китайский онлайн с носителями и сертифицированными преподавателями. Курсы для детей с 5 лет, подростков и взрослых. Первый урок бесплатно. Запишитесь сегодня!",
+      "Онлайн-школа китайского языка ChinaChild. Лицензированная программа HSK 1–2: разговорный уровень за 6 месяцев. Мини-группы до 5 человек, налоговый вычет 13%, обучение для подростков 12+ и взрослых.",
     path: "/",
     keywords: [
       "китайский язык онлайн",
       "онлайн школа китайского языка",
       "обучение китайскому языку",
-      "курсы китайского для детей",
-      "курсы китайского для взрослых",
+      "курсы китайского языка",
+      "китайский с нуля",
+      "подготовка к HSK",
+      "HSK онлайн",
+      "разговорный китайский",
+      "репетитор китайского",
+      "выучить китайский",
     ],
   });
 }
@@ -35,6 +47,11 @@ export default async function HomePage() {
 
   return (
     <main>
+      {/* Богатая SEO-разметка для SERP */}
+      <JsonLd data={createEducationalOrganizationSchema()} id="home-org-schema" />
+      <JsonLd data={createWebsiteSchema()} id="home-website-schema" />
+      <JsonLd data={createHomepageSchemas()} id="home-cluster-schema" />
+
       <HeroSection />
       <AudienceSection />
       <WhySection />
@@ -44,6 +61,7 @@ export default async function HomePage() {
       <ReviewsSection />
       <ResultsSection />
       <PricingSection />
+      <RelatedLinks />
       <FAQSection />
       <BlogPreviewSection posts={latestPosts} />
     </main>

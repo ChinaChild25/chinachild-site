@@ -15,10 +15,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       images: [absoluteUrl("/hero-classroom.svg")],
     },
     {
+      url: absoluteUrl("/onlajn-kursy"),
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.95,
+    },
+    {
+      url: absoluteUrl("/hsk"),
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.95,
+    },
+    {
       url: absoluteUrl("/kursy"),
       lastModified: now,
       changeFrequency: "weekly",
       priority: 0.92,
+    },
+    {
+      url: absoluteUrl("/test-hsk"),
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: absoluteUrl("/dlya-vzroslyh"),
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.9,
     },
     {
       url: absoluteUrl("/dlya-detej"),
@@ -30,13 +54,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: absoluteUrl("/dlya-podrostkov"),
       lastModified: now,
       changeFrequency: "weekly",
-      priority: 0.87,
-    },
-    {
-      url: absoluteUrl("/dlya-vzroslyh"),
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.88,
+      priority: 0.86,
     },
     {
       url: absoluteUrl("/dlya-biznesa"),
@@ -68,7 +86,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     url: absoluteUrl(`/blog/${post.slug}`),
     lastModified: new Date(post.date),
     changeFrequency: "monthly",
-    priority: 0.68,
+    priority: 0.7,
   }));
 
   return [...staticRoutes, ...blogRoutes];

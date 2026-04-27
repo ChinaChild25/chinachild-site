@@ -380,12 +380,15 @@ export const faqs: FaqItem[] = [
 ];
 
 export const footerLinks = [
-  { title: "Курсы", href: "/kursy" },
-  { title: "Преподаватели", href: "/prepodavateli" },
-  { title: "Подросткам 12+", href: "/dlya-detej" },
+  { title: "Все курсы", href: "/kursy" },
+  { title: "Онлайн с нуля", href: "/onlajn-kursy" },
+  { title: "Подготовка к HSK", href: "/hsk" },
+  { title: "Тест на уровень", href: "/test-hsk" },
+  { title: "Школьникам 12+", href: "/dlya-detej" },
   { title: "Старшеклассникам", href: "/dlya-podrostkov" },
   { title: "Взрослым", href: "/dlya-vzroslyh" },
   { title: "Бизнесу", href: "/dlya-biznesa" },
+  { title: "Преподаватели", href: "/prepodavateli" },
   { title: "Блог", href: "/blog" },
   { title: "Политика конфиденциальности", href: "/privacy-policy" },
 ];

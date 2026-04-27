@@ -5,8 +5,9 @@ import { CONTACT_PHONE, CONTACT_PHONE_TEL, REGISTER_URL } from "@/lib/site-confi
 
 const navigation = [
   { label: "Курсы", href: "/kursy" },
+  { label: "HSK", href: "/hsk" },
+  { label: "Тест уровня", href: "/test-hsk" },
   { label: "Преподаватели", href: "/prepodavateli" },
-  { label: "Цены", href: "/#tseny" },
   { label: "Блог", href: "/blog" },
 ];
 

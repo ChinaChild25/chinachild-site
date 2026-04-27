@@ -1,0 +1,74 @@
+import Link from "next/link";
+import Reveal from "@/components/ui/Reveal";
+
+type LinkItem = { title: string; href: string; description: string; tone: string };
+
+const defaultItems: LinkItem[] = [
+  {
+    title: "Подготовка к HSK 1–6",
+    href: "/hsk",
+    description: "Все уровни международного экзамена в одном маршруте — от базы до продвинутого.",
+    tone: "card-violet-soft",
+  },
+  {
+    title: "Тест на уровень",
+    href: "/test-hsk",
+    description: "Бесплатное онлайн-тестирование за 10 минут. По итогу — рекомендация курса.",
+    tone: "card-cream",
+  },
+  {
+    title: "Онлайн-курсы с нуля",
+    href: "/onlajn-kursy",
+    description: "Программа для тех, кто никогда не учил китайский. С телефона или ноутбука.",
+    tone: "card-lime-soft",
+  },
+  {
+    title: "Школьникам 12+",
+    href: "/dlya-detej",
+    description: "Индивидуальный курс с преподавателем — скидка 10% при оплате за 2 месяца.",
+    tone: "card-sky",
+  },
+  {
+    title: "Взрослым с нуля",
+    href: "/dlya-vzroslyh",
+    description: "Лицензированный курс HSK 1–2 — разговорный уровень за 6 месяцев.",
+    tone: "card-peach-soft",
+  },
+  {
+    title: "Преподаватели школы",
+    href: "/prepodavateli",
+    description: "Команда из выпускников ЮФУ и ДГТУ с опытом 10+ лет, плюс носитель языка.",
+    tone: "card-cream-soft",
+  },
+];
+
+export default function RelatedLinks({ items = defaultItems }: { items?: LinkItem[] }) {
+  return (
+    <section className="page-shell section-space">
+      <div className="mx-auto max-w-3xl text-center">
+        <h2 className="section-title">Перейти к разделу</h2>
+        <p className="section-description">
+          Внутренняя навигация по основным посадочным страницам школы китайского языка ChinaChild.
+        </p>
+      </div>
+      <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        {items.map((item, idx) => (
+          <Reveal key={item.href} delay={idx * 0.04}>
+            <Link
+              href={item.href}
+              className={`card-block group flex h-full flex-col transition hover:-translate-y-1 ${item.tone}`}
+            >
+              <h3 className="text-xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
+                {item.title}
+              </h3>
+              <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">{item.description}</p>
+              <div className="mt-auto pt-6 text-sm font-semibold text-[#1b1b1b] underline-offset-4 group-hover:underline">
+                Открыть →
+              </div>
+            </Link>
+          </Reveal>
+        ))}
+      </div>
+    </section>
+  );
+}
