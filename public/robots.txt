@@ -1,9 +1,0 @@
-# *
-User-agent: *
-Allow: /
-
-# Host
-Host: https://chinachild.ru
-
-# Sitemaps
-Sitemap: https://chinachild.ru/sitemap.xml

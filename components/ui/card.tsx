@@ -10,8 +10,8 @@ export default function Card({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-[#eee] p-6 bg-white hover:shadow-md transition",
-        className
+        "surface-card h-full p-6 sm:p-7",
+        className,
       )}
     >
       {children}
