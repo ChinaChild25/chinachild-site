@@ -5,7 +5,7 @@ import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import JsonLd from "@/components/seo/JsonLd";
 import { buildMetadata } from "@/lib/metadata";
-import { createOrganizationSchema } from "@/lib/schema";
+import { createOrganizationSchema, createWebsiteSchema } from "@/lib/schema";
 
 const inter = localFont({
   src: "./fonts/Inter-Variable.ttf",
@@ -38,6 +38,7 @@ export default function RootLayout({
       <body>
         {/* Global organization schema helps search engines identify the brand. */}
         <JsonLd data={createOrganizationSchema()} id="organization-schema" />
+        <JsonLd data={createWebsiteSchema()} id="website-schema" />
         <div className="site-shell">
           <Header />
           {children}

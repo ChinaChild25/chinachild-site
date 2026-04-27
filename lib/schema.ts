@@ -30,6 +30,27 @@ export function createOrganizationSchema(): JsonLd {
   };
 }
 
+export function createWebsiteSchema(): JsonLd {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: SITE_NAME,
+    url: SITE_URL,
+    description: "Онлайн-школа китайского языка для детей, подростков и взрослых",
+    inLanguage: "ru-RU",
+    publisher: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${SITE_URL}/blog?query={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
+  };
+}
+
 export function createEducationalOrganizationSchema(): JsonLd {
   return {
     "@context": "https://schema.org",
