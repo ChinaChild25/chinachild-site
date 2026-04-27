@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Manrope } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
@@ -7,8 +7,8 @@ import JsonLd from "@/components/seo/JsonLd";
 import { buildMetadata } from "@/lib/metadata";
 import { createOrganizationSchema } from "@/lib/schema";
 
-const manrope = Manrope({
-  subsets: ["latin", "cyrillic"],
+const inter = localFont({
+  src: "./fonts/Inter-Variable.ttf",
   display: "swap",
   preload: true,
 });
@@ -34,7 +34,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru" className={manrope.className}>
+    <html lang="ru" className={inter.className}>
       <body>
         {/* Global organization schema helps search engines identify the brand. */}
         <JsonLd data={createOrganizationSchema()} id="organization-schema" />
