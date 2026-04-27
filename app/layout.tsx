@@ -1,6 +1,5 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
-import Header from "@/components/layout/Header";
 
 const inter = Inter({
   subsets: ["latin", "cyrillic"],
@@ -9,7 +8,8 @@ const inter = Inter({
 
 export const metadata = {
   title: "ChinaChild — китайский язык онлайн",
-  description: "Онлайн школа китайского языка для детей и взрослых",
+  description:
+    "Онлайн-школа китайского языка для детей и взрослых. Подготовка к HSK.",
 };
 
 export default function RootLayout({
@@ -19,8 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ru">
-      <body className={inter.className}>
-        <Header />
+      <body className={inter.className} style={{ background: "#fff", color: "#111" }}>
         {children}
       </body>
     </html>
