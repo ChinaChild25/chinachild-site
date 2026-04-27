@@ -1,4 +1,5 @@
 import "./globals.css";
+import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
 const inter = Inter({
@@ -6,10 +7,9 @@ const inter = Inter({
   display: "swap",
 });
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "ChinaChild — китайский язык онлайн",
-  description:
-    "Онлайн-школа китайского языка для детей и взрослых. Подготовка к HSK.",
+  description: "Онлайн школа китайского языка",
 };
 
 export default function RootLayout({
@@ -19,9 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ru">
-      <body className={inter.className} style={{ background: "#fff", color: "#111" }}>
-        {children}
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }
