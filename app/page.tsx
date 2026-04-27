@@ -1,45 +1,68 @@
-import HeroSection from "@/components/sections/HeroSection";
-
-export const metadata = {
-  title: "Китайский язык онлайн — ChinaChild | Курсы для детей и взрослых",
-  description:
-    "Учите китайский язык онлайн с нуля. Курсы для детей, подростков и взрослых. Подготовка к HSK. Первый урок бесплатно.",
-};
-
 export default function Home() {
   return (
-    <main>
-      <HeroSection />
+    <main style={{ fontFamily: "Arial", padding: "60px" }}>
+      <h1 style={{ fontSize: "48px", fontWeight: "700" }}>
+        Китайский язык онлайн — ChinaChild
+      </h1>
 
-      {/* SEO BLOCK: сегментация */}
-      <section style={{ padding: "60px 20px" }}>
-        <h2>Кому подходит обучение</h2>
+      <p style={{ fontSize: "18px", marginTop: "20px", color: "#555" }}>
+        Курсы китайского языка для детей, подростков и взрослых. 
+        Подготовка к HSK. Первый урок бесплатно.
+      </p>
 
-        <div style={{ display: "grid", gap: "16px", marginTop: "20px" }}>
-          <div>👶 Дети 5–10 лет — игровое обучение</div>
-          <div>🧑‍🎓 Подростки — HSK и школа</div>
-          <div>🧑 Взрослые — разговорный китайский</div>
-          <div>💼 Бизнес — деловой китайский</div>
-        </div>
-      </section>
+      <div style={{ marginTop: "30px" }}>
+        <a
+          href="https://app.chinachild.ru/register"
+          style={{
+            padding: "12px 18px",
+            background: "#FF3D00",
+            color: "#fff",
+            textDecoration: "none",
+            borderRadius: "10px",
+            marginRight: "10px",
+          }}
+        >
+          Записаться
+        </a>
 
-      {/* SEO BLOCK: преимущества */}
-      <section style={{ padding: "60px 20px", background: "#f7f7f8" }}>
-        <h2>Почему ChinaChild</h2>
+        <a
+          href="#courses"
+          style={{
+            padding: "12px 18px",
+            background: "#eee",
+            color: "#000",
+            textDecoration: "none",
+            borderRadius: "10px",
+          }}
+        >
+          Курсы
+        </a>
+      </div>
 
-        <ul style={{ marginTop: "20px" }}>
-          <li>Преподаватели HSK 5–6</li>
-          <li>Онлайн-уроки 1 на 1 и группы</li>
-          <li>Запись всех занятий</li>
-          <li>AI-платформа для практики</li>
+      <section style={{ marginTop: "60px" }}>
+        <h2>Для кого обучение</h2>
+        <ul>
+          <li>Дети 5–10 лет</li>
+          <li>Подростки (HSK подготовка)</li>
+          <li>Взрослые</li>
+          <li>Бизнес китайский</li>
         </ul>
       </section>
 
-      {/* SEO BLOCK: доверие */}
-      <section style={{ padding: "60px 20px" }}>
-        <h2>Результаты учеников</h2>
-        <p>1200+ учеников уже обучаются китайскому языку</p>
-        <p>Средний рейтинг: 4.9 / 5</p>
+      <section style={{ marginTop: "40px" }}>
+        <h2>Почему ChinaChild</h2>
+        <ul>
+          <li>Преподаватели HSK 5–6</li>
+          <li>Онлайн занятия 1 на 1 и группы</li>
+          <li>Запись всех уроков</li>
+          <li>AI практика языка</li>
+        </ul>
+      </section>
+
+      <section style={{ marginTop: "40px" }}>
+        <h2>Результаты</h2>
+        <p>1200+ учеников</p>
+        <p>4.9 / 5 рейтинг</p>
       </section>
     </main>
   );
