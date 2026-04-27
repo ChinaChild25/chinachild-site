@@ -9,11 +9,10 @@ export default function Breadcrumbs({
 }) {
   return (
     <>
-      {/* Visible breadcrumbs + schema help both users and crawlers understand hierarchy. */}
       <JsonLd data={createBreadcrumbSchema(items)} />
       <nav
         aria-label="Хлебные крошки"
-        className="page-shell pt-6 text-sm text-[#6B7280]"
+        className="page-shell pt-6 text-sm text-[#6b6b6b]"
       >
         <ol className="flex flex-wrap items-center gap-2">
           {items.map((item, index) => {
@@ -22,15 +21,15 @@ export default function Breadcrumbs({
             return (
               <li key={item.path} className="flex items-center gap-2">
                 {isLast ? (
-                  <span aria-current="page" className="font-medium text-[#1A1A2E]">
+                  <span aria-current="page" className="font-medium text-[#1b1b1b]">
                     {item.name}
                   </span>
                 ) : (
-                  <Link href={item.path} className="hover:text-[#1A1A2E]">
+                  <Link href={item.path} className="transition hover:text-[#1b1b1b]">
                     {item.name}
                   </Link>
                 )}
-                {!isLast ? <span>/</span> : null}
+                {!isLast ? <span className="text-[#9a9a9a]">/</span> : null}
               </li>
             );
           })}

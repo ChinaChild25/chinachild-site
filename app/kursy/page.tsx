@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
+import PageHero from "@/components/layout/PageHero";
 import CoursesSection from "@/components/sections/CoursesSection";
 import FAQSection from "@/components/sections/FAQSection";
 import PricingSection from "@/components/sections/PricingSection";
 import { buildMetadata } from "@/lib/metadata";
+import { REGISTER_URL } from "@/lib/site-config";
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
@@ -29,14 +31,13 @@ export default function CoursesPage() {
           { name: "Курсы", path: "/kursy" },
         ]}
       />
-      <section className="page-shell section-space pt-8">
-        <span className="section-label">Курсы</span>
-        <h1 className="section-title">Курсы китайского языка онлайн в ChinaChild</h1>
-        <p className="section-description">
-          Собрали все основные направления: дети, подростки, взрослые и бизнес.
-          Страница работает как SEO-хаб и как навигационный экран перед заявкой.
-        </p>
-      </section>
+      <PageHero
+        eyebrow="Курсы"
+        title="Курсы китайского языка онлайн в ChinaChild"
+        description="Все направления в одном месте: дети, подростки, взрослые и команды. Подбираем формат под уровень и темп — мини-группа, индивидуально или интенсив."
+        primaryCta={{ label: "Записаться", href: REGISTER_URL, external: true }}
+        secondaryCta={{ label: "Цены", href: "#tseny" }}
+      />
       <CoursesSection />
       <PricingSection />
       <FAQSection />

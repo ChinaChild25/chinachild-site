@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
-import { buttonStyles } from "@/components/ui/button";
+import PageHero from "@/components/layout/PageHero";
+import FAQSection from "@/components/sections/FAQSection";
 import { buildMetadata } from "@/lib/metadata";
 import { REGISTER_URL } from "@/lib/site-config";
 
@@ -19,6 +19,27 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
+const features = [
+  {
+    card: "card-sky",
+    title: "Путешествия и переезд",
+    body:
+      "Бытовая лексика, диалоги в кафе, такси, аэропорту, аренда жилья и работа с китайскими сервисами.",
+  },
+  {
+    card: "card-cream",
+    title: "Работа и партнёры",
+    body:
+      "Деловая переписка, созвоны и встречи с китайскими коллегами без зависимости от перевода.",
+  },
+  {
+    card: "card-lime-soft",
+    title: "HSK по необходимости",
+    body:
+      "Если нужен формальный результат — ведём по треку HSK 1-2 с тренировкой всех частей экзамена.",
+  },
+];
+
 export default function AdultsLandingPage() {
   return (
     <main>
@@ -28,43 +49,28 @@ export default function AdultsLandingPage() {
           { name: "Для взрослых", path: "/dlya-vzroslyh" },
         ]}
       />
-      <section className="page-shell section-space pt-8">
-        <span className="section-label">Взрослые</span>
-        <h1 className="section-title">Китайский для взрослых онлайн: с нуля до уверенного общения</h1>
-        <p className="section-description">
-          Удобный формат для занятых людей: персональный темп, записи уроков,
-          короткие домашние задания и разговорная практика, которая связана с
-          реальными ситуациями, а не только с учебником.
-        </p>
+      <PageHero
+        eyebrow="Взрослые"
+        title="Китайский для взрослых онлайн: с нуля до уверенного общения"
+        description="Удобный формат для занятых людей: персональный темп, записи уроков, короткие домашние задания и разговорная практика, связанная с реальными ситуациями."
+        primaryCta={{ label: "Начать бесплатно", href: REGISTER_URL, external: true }}
+        secondaryCta={{ label: "Посмотреть FAQ", href: "/#faq" }}
+      />
 
-        <div className="mt-10 grid gap-5 lg:grid-cols-3">
-          {[
-            "Путешествия, переезд, работа с китайскими коллегами и партнёрами",
-            "Фокус на частотной лексике и понятных жизненных сценариях",
-            "Маршрут на HSK 1-2, если нужен формальный результат и экзамен",
-          ].map((item) => (
-            <div key={item} className="surface-card rounded-[26px] p-6 text-sm leading-7 text-[#4B5563]">
-              {item}
-            </div>
+      <section className="page-shell section-space">
+        <div className="grid gap-5 md:grid-cols-3">
+          {features.map((item) => (
+            <article key={item.title} className={`card-block h-full ${item.card}`}>
+              <h2 className="text-xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
+                {item.title}
+              </h2>
+              <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">{item.body}</p>
+            </article>
           ))}
         </div>
-
-        <div className="mt-8 flex flex-wrap gap-4">
-          <Link
-            href={REGISTER_URL}
-            target="_blank"
-            rel="noreferrer"
-            className={buttonStyles({
-              className: "bg-[#FF3D00] text-white hover:bg-[#f03a00]",
-            })}
-          >
-            Начать бесплатно
-          </Link>
-          <Link href="/#faq" className={buttonStyles({ variant: "secondary" })}>
-            Посмотреть FAQ
-          </Link>
-        </div>
       </section>
+
+      <FAQSection />
     </main>
   );
 }

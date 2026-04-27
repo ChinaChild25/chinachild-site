@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
-import { buttonStyles } from "@/components/ui/button";
+import PageHero from "@/components/layout/PageHero";
+import FAQSection from "@/components/sections/FAQSection";
 import { buildMetadata } from "@/lib/metadata";
 import { REGISTER_URL } from "@/lib/site-config";
 
@@ -19,6 +19,27 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
+const features = [
+  {
+    card: "card-cream",
+    title: "Первые слова без перегруза",
+    body:
+      "Короткие блоки, игры, песни и визуальные карточки. Ребёнок не зазубривает, а учит язык в действии.",
+  },
+  {
+    card: "card-lime-soft",
+    title: "Пиньинь и базовые иероглифы",
+    body:
+      "Учим читать звуки и узнавать иероглифы по темам, чтобы переход к чтению был плавным и без страха.",
+  },
+  {
+    card: "card-sky",
+    title: "Поддержка родителей",
+    body:
+      "Преподаватель и куратор на связи: рассказывают про прогресс ребёнка, помогают с домашкой и мотивацией.",
+  },
+];
+
 export default function KidsLandingPage() {
   return (
     <main>
@@ -28,43 +49,28 @@ export default function KidsLandingPage() {
           { name: "Для детей", path: "/dlya-detej" },
         ]}
       />
-      <section className="page-shell section-space pt-8">
-        <span className="section-label">Дети 5-10 лет</span>
-        <h1 className="section-title">Китайский онлайн для детей с мягким стартом и живой речью</h1>
-        <p className="section-description">
-          Занятия строятся вокруг коротких блоков, игры, визуальной памяти и
-          безопасной разговорной практики. Ребёнок не пугается нового языка и
-          постепенно начинает говорить сам.
-        </p>
+      <PageHero
+        eyebrow="Дети 5-10 лет"
+        title="Китайский для детей онлайн — мягкий старт и живая речь"
+        description="Занятия строятся вокруг коротких блоков, игры, визуальной памяти и безопасной разговорной практики. Ребёнок не пугается нового языка и постепенно начинает говорить сам."
+        primaryCta={{ label: "Записать на пробный урок", href: REGISTER_URL, external: true }}
+        secondaryCta={{ label: "Все курсы", href: "/kursy" }}
+      />
 
-        <div className="mt-10 grid gap-5 lg:grid-cols-3">
-          {[
-            "Первые слова и фразы без перегруза теорией",
-            "Пиньинь, базовые иероглифы и аудирование на понятных темах",
-            "Поддержка родителей и короткие домашние задания",
-          ].map((item) => (
-            <div key={item} className="surface-card rounded-[26px] p-6 text-sm leading-7 text-[#4B5563]">
-              {item}
-            </div>
+      <section className="page-shell section-space">
+        <div className="grid gap-5 md:grid-cols-3">
+          {features.map((item) => (
+            <article key={item.title} className={`card-block h-full ${item.card}`}>
+              <h2 className="text-xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
+                {item.title}
+              </h2>
+              <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">{item.body}</p>
+            </article>
           ))}
         </div>
-
-        <div className="mt-8 flex flex-wrap gap-4">
-          <Link
-            href={REGISTER_URL}
-            target="_blank"
-            rel="noreferrer"
-            className={buttonStyles({
-              className: "bg-[#FF3D00] text-white hover:bg-[#f03a00]",
-            })}
-          >
-            Записать ребёнка на пробный урок
-          </Link>
-          <Link href="/kursy" className={buttonStyles({ variant: "secondary" })}>
-            Смотреть все курсы
-          </Link>
-        </div>
       </section>
+
+      <FAQSection />
     </main>
   );
 }

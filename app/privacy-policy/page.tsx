@@ -20,10 +20,12 @@ export default function PrivacyPolicyPage() {
           { name: "Политика конфиденциальности", path: "/privacy-policy" },
         ]}
       />
-      <section className="page-shell section-space pt-8">
-        <div className="max-w-3xl">
-          <span className="section-label">Legal</span>
-          <h1 className="section-title">Политика конфиденциальности</h1>
+      <section className="page-shell section-space pt-10">
+        <div className="mx-auto max-w-3xl">
+          <span className="tag-pill">Legal</span>
+          <h1 className="mt-6 text-[2rem] font-bold leading-[1.08] tracking-[-0.035em] text-[#1b1b1b] sm:text-[2.6rem]">
+            Политика конфиденциальности
+          </h1>
           <div className="prose-article mt-8">
             <p>
               Мы используем данные из форм только для связи по заявке,

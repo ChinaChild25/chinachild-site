@@ -8,12 +8,7 @@ export default function Card({
   className?: string;
 }) {
   return (
-    <div
-      className={cn(
-        "surface-card h-full p-6 sm:p-7",
-        className,
-      )}
-    >
+    <div className={cn("card-block card-cream-soft h-full", className)}>
       {children}
     </div>
   );

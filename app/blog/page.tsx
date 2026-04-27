@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
-import { buttonStyles } from "@/components/ui/button";
+import PageHero from "@/components/layout/PageHero";
 import { formatPostDate, getAllPosts } from "@/lib/blog";
 import { buildMetadata } from "@/lib/metadata";
 
@@ -20,6 +20,8 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
+const palette = ["card-cream-soft", "card-sky-soft", "card-lime-soft", "card-violet-soft", "card-peach-soft"];
+
 export default async function BlogPage() {
   const posts = await getAllPosts();
 
@@ -31,37 +33,31 @@ export default async function BlogPage() {
           { name: "Блог", path: "/blog" },
         ]}
       />
-      <section className="page-shell section-space pt-8">
-        <span className="section-label">Контент</span>
-        <h1 className="section-title">Блог ChinaChild</h1>
-        <p className="section-description">
-          Статьи под информационные запросы усиливают SEO-кластер школы и
-          помогают пользователям выбрать формат обучения осознанно.
-        </p>
+      <PageHero
+        variant="lime"
+        eyebrow="Блог"
+        title="Статьи о китайском языке"
+        description="Методика, разбор HSK, советы родителям и истории учеников — всё, что помогает учиться эффективнее."
+      />
 
-        <div className="mt-10 grid gap-5 lg:grid-cols-3">
-          {posts.map((post) => (
-            <article key={post.slug} className="surface-card rounded-[28px] p-6">
-              <div className="text-xs font-bold uppercase tracking-[0.08em] text-[#6B7280]">
-                {post.category}
-              </div>
-              <h2 className="mt-4 text-2xl font-extrabold tracking-[-0.04em] text-[#1A1A2E]">
-                <Link href={`/blog/${post.slug}`}>{post.title}</Link>
+      <section className="page-shell section-space">
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {posts.map((post, index) => (
+            <Link
+              key={post.slug}
+              href={`/blog/${post.slug}`}
+              className={`card-block group flex h-full flex-col transition hover:-translate-y-1 ${palette[index % palette.length]}`}
+            >
+              <span className="tag-pill self-start">{post.category}</span>
+              <h2 className="mt-6 text-xl font-bold leading-snug tracking-[-0.02em] text-[#1b1b1b]">
+                {post.title}
               </h2>
-              <p className="mt-4 text-sm leading-7 text-[#4B5563]">
-                {post.excerpt}
-              </p>
-              <div className="mt-6 flex items-center justify-between gap-4 text-sm text-[#6B7280]">
+              <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">{post.excerpt}</p>
+              <div className="mt-auto pt-6 flex items-center justify-between gap-4 text-xs text-[#6b6b6b]">
                 <span>{formatPostDate(post.date)}</span>
                 <span>{post.readingTime}</span>
               </div>
-              <Link
-                href={`/blog/${post.slug}`}
-                className={buttonStyles({ variant: "secondary", className: "mt-6" })}
-              >
-                Читать статью
-              </Link>
-            </article>
+            </Link>
           ))}
         </div>
       </section>

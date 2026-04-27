@@ -1,70 +1,77 @@
 import Link from "next/link";
-import Badge from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import Reveal from "@/components/ui/Reveal";
 import SectionShell from "@/components/ui/SectionShell";
 import { REGISTER_URL } from "@/lib/site-config";
 import { pricingTiers } from "@/lib/site-data";
 
+const palette = [
+  { card: "card-cream-soft", buttonVariant: "primary" as const },
+  { card: "card-violet", buttonVariant: "secondary" as const },
+  { card: "card-lime-soft", buttonVariant: "primary" as const },
+];
+
 export default function PricingSection() {
   return (
     <SectionShell
       id="tseny"
-      label="Цены"
-      title="Форматы обучения под ваш бюджет и темп"
-      description="Выделяем понятные тарифы и самый конверсионный сценарий для большинства семей и взрослых студентов — мини-группу."
+      title="Гибкие условия оплаты"
+      description="Можно оплатить целиком или помесячно. Подбираем тариф после диагностики, чтобы вы не платили за лишнее."
     >
-      <div className="grid gap-5 xl:grid-cols-3">
-        {pricingTiers.map((tier) => (
-          <Reveal key={tier.title}>
-            <article
-              className={`surface-card h-full rounded-[30px] p-7 ${
-                tier.featured ? "bg-[#1A1A2E] text-white" : ""
-              }`}
-            >
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <h3 className="text-2xl font-extrabold tracking-[-0.04em]">
-                    {tier.title}
-                  </h3>
-                  <p className={`mt-2 text-sm ${tier.featured ? "text-white/74" : "text-[#6B7280]"}`}>
-                    {tier.format}
-                  </p>
-                </div>
+      <div className="grid gap-5 md:grid-cols-3">
+        {pricingTiers.map((tier, index) => {
+          const style = palette[index] ?? palette[0];
+          const isViolet = style.card === "card-violet";
+          return (
+            <Reveal key={tier.title}>
+              <article className={`card-block flex h-full flex-col ${style.card}`}>
                 {tier.featured ? (
-                  <Badge className="bg-[#FFE03D] text-[#1A1A2E]">Популярный</Badge>
+                  <span className={`tag-pill self-start ${isViolet ? "tag-pill-ink" : ""}`}>
+                    Популярный
+                  </span>
                 ) : null}
-              </div>
 
-              <div className="mt-6 text-4xl font-extrabold tracking-[-0.05em]">
-                {tier.price}
-              </div>
-              <p className={`mt-4 text-sm leading-7 ${tier.featured ? "text-white/74" : "text-[#4B5563]"}`}>
-                {tier.description}
-              </p>
+                <h3 className={`mt-6 text-2xl font-bold tracking-[-0.03em] ${isViolet ? "text-white" : "text-[#1b1b1b]"}`}>
+                  {tier.title}
+                </h3>
+                <p className={`mt-2 text-sm ${isViolet ? "text-white/80" : "text-[#6b6b6b]"}`}>
+                  {tier.format}
+                </p>
 
-              <ul className={`mt-6 grid gap-3 text-sm ${tier.featured ? "text-white/84" : "text-[#1A1A2E]"}`}>
-                {tier.features.map((feature) => (
-                  <li key={feature}>• {feature}</li>
-                ))}
-              </ul>
+                <div className={`mt-6 text-4xl font-bold tracking-[-0.04em] ${isViolet ? "text-white" : "text-[#1b1b1b]"}`}>
+                  {tier.price}
+                </div>
 
-              <Link
-                href={REGISTER_URL}
-                target="_blank"
-                rel="noreferrer"
-                className={buttonStyles({
-                  variant: tier.featured ? "secondary" : "primary",
-                  className: tier.featured
-                    ? "mt-8 bg-white text-[#1A1A2E]"
-                    : "mt-8 bg-[#FF3D00] text-white hover:bg-[#f03a00]",
-                })}
-              >
-                Оставить заявку
-              </Link>
-            </article>
-          </Reveal>
-        ))}
+                <p className={`mt-4 text-sm leading-7 ${isViolet ? "text-white/85" : "text-[#4b4b4b]"}`}>
+                  {tier.description}
+                </p>
+
+                <ul className={`mt-6 grid gap-2 text-sm ${isViolet ? "text-white" : "text-[#1b1b1b]"}`}>
+                  {tier.features.map((feature) => (
+                    <li key={feature} className="flex gap-2">
+                      <span className={isViolet ? "text-white/55" : "text-[#1b1b1b]/40"}>—</span>
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-auto pt-8">
+                  <Link
+                    href={REGISTER_URL}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={buttonStyles({
+                      variant: style.buttonVariant,
+                      className: "w-full",
+                    })}
+                  >
+                    Оставить заявку
+                  </Link>
+                </div>
+              </article>
+            </Reveal>
+          );
+        })}
       </div>
     </SectionShell>
   );

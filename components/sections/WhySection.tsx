@@ -1,52 +1,39 @@
-import {
-  BrainCircuit,
-  ChartSpline,
-  ShieldCheck,
-  Users,
-  Video,
-  GraduationCap,
-} from "lucide-react";
 import Reveal from "@/components/ui/Reveal";
 import SectionShell from "@/components/ui/SectionShell";
 import { benefits } from "@/lib/site-data";
 
-const icons = [
-  GraduationCap,
-  BrainCircuit,
-  Video,
-  ChartSpline,
-  Users,
-  ShieldCheck,
-];
+const palette = [
+  "card-violet-soft",
+  "card-cream",
+  "card-lime-soft",
+  "card-sky",
+  "card-peach-soft",
+  "card-cream-soft",
+] as const;
 
 export default function WhySection() {
   return (
     <SectionShell
       id="preimushchestva"
-      label="Почему ChinaChild"
-      title="Преимущества, которые влияют и на результат, и на конверсию"
-      description="Не абстрактные обещания, а конкретные сильные стороны школы: преподаватели, платформа, формат и прозрачность прогресса."
+      title="Почему ChinaChild"
+      description="Сильные стороны, на которые опирается результат: преподаватели, платформа, формат и прозрачность прогресса."
     >
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-        {benefits.map((benefit, index) => {
-          const Icon = icons[index];
-
-          return (
-            <Reveal key={benefit.title}>
-              <article className="surface-card h-full rounded-[28px] p-6">
-                <div className="inline-flex rounded-2xl bg-[#1A1A2E] p-3 text-white">
-                  <Icon size={20} />
-                </div>
-                <h3 className="mt-5 text-xl font-extrabold tracking-[-0.03em]">
-                  {benefit.title}
-                </h3>
-                <p className="mt-3 text-sm leading-7 text-[#4B5563]">
-                  {benefit.description}
-                </p>
-              </article>
-            </Reveal>
-          );
-        })}
+        {benefits.map((benefit, index) => (
+          <Reveal key={benefit.title}>
+            <article className={`card-block h-full ${palette[index % palette.length]}`}>
+              <div className="text-sm font-semibold text-[#1b1b1b]/55">
+                0{index + 1}
+              </div>
+              <h3 className="mt-4 text-xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
+                {benefit.title}
+              </h3>
+              <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">
+                {benefit.description}
+              </p>
+            </article>
+          </Reveal>
+        ))}
       </div>
     </SectionShell>
   );

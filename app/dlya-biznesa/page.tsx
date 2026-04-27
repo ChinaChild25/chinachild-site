@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
-import { buttonStyles } from "@/components/ui/button";
+import PageHero from "@/components/layout/PageHero";
+import FAQSection from "@/components/sections/FAQSection";
 import { buildMetadata } from "@/lib/metadata";
 import { REGISTER_URL } from "@/lib/site-config";
 
@@ -19,6 +19,27 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
+const features = [
+  {
+    card: "card-cream",
+    title: "Деловая переписка",
+    body:
+      "Готовые шаблоны для рабочих сценариев: запросы поставщикам, согласование условий, follow-up после встреч.",
+  },
+  {
+    card: "card-sky",
+    title: "Созвоны и переговоры",
+    body:
+      "Тренируем встречи, переговоры и презентацию продукта на живых кейсах из реальных команд.",
+  },
+  {
+    card: "card-lime-soft",
+    title: "Программа под отрасль",
+    body:
+      "E-commerce, импорт, логистика и B2B: подбираем лексику и сценарии под специфику бизнеса.",
+  },
+];
+
 export default function BusinessLandingPage() {
   return (
     <main>
@@ -28,42 +49,28 @@ export default function BusinessLandingPage() {
           { name: "Бизнес", path: "/dlya-biznesa" },
         ]}
       />
-      <section className="page-shell section-space pt-8">
-        <span className="section-label">Корпоративный трек</span>
-        <h1 className="section-title">Бизнес-китайский для команд, которым нужен прикладной результат</h1>
-        <p className="section-description">
-          Помогаем закупкам, продажам, руководителям и аккаунт-командам быстрее
-          входить в переписку, встречи и переговоры с партнёрами из Китая.
-        </p>
+      <PageHero
+        eyebrow="Корпоративный трек"
+        title="Бизнес-китайский для команд, которым нужен прикладной результат"
+        description="Помогаем закупкам, продажам, руководителям и аккаунт-командам быстрее входить в переписку, встречи и переговоры с партнёрами из Китая."
+        primaryCta={{ label: "Обсудить курс для команды", href: REGISTER_URL, external: true }}
+        secondaryCta={{ label: "Преподаватели", href: "/prepodavateli" }}
+      />
 
-        <div className="mt-10 grid gap-5 md:grid-cols-3">
-          {[
-            "Деловая переписка и быстрые шаблоны для рутинных сценариев",
-            "Созвоны, встречи, поставщики и презентация продукта",
-            "Программа под отрасль: e-commerce, импорт, логистика, B2B",
-          ].map((item) => (
-            <div key={item} className="surface-card rounded-[26px] p-6 text-sm leading-7 text-[#4B5563]">
-              {item}
-            </div>
+      <section className="page-shell section-space">
+        <div className="grid gap-5 md:grid-cols-3">
+          {features.map((item) => (
+            <article key={item.title} className={`card-block h-full ${item.card}`}>
+              <h2 className="text-xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
+                {item.title}
+              </h2>
+              <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">{item.body}</p>
+            </article>
           ))}
         </div>
-
-        <div className="mt-8 flex flex-wrap gap-4">
-          <Link
-            href={REGISTER_URL}
-            target="_blank"
-            rel="noreferrer"
-            className={buttonStyles({
-              className: "bg-[#FF3D00] text-white hover:bg-[#f03a00]",
-            })}
-          >
-            Обсудить корпоративный курс
-          </Link>
-          <Link href="/prepodavateli" className={buttonStyles({ variant: "secondary" })}>
-            Посмотреть преподавателей
-          </Link>
-        </div>
       </section>
+
+      <FAQSection />
     </main>
   );
 }

@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
+import PageHero from "@/components/layout/PageHero";
 import TeachersSection from "@/components/sections/TeachersSection";
 import { buildMetadata } from "@/lib/metadata";
+import { REGISTER_URL } from "@/lib/site-config";
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
@@ -26,14 +28,13 @@ export default function TeachersPage() {
           { name: "Преподаватели", path: "/prepodavateli" },
         ]}
       />
-      <section className="page-shell section-space pt-8">
-        <span className="section-label">Команда</span>
-        <h1 className="section-title">Преподаватели ChinaChild</h1>
-        <p className="section-description">
-          Показываем специализацию, опыт и сильные стороны команды, чтобы у
-          пользователя был доверительный контур до заявки на пробный урок.
-        </p>
-      </section>
+      <PageHero
+        variant="cream"
+        eyebrow="Команда"
+        title="Преподаватели и носители ChinaChild"
+        description="Каждый преподаватель проходит три этапа отбора: уровень владения языком, методику и релевантный опыт. Подбираем преподавателя под возраст, темп и цель."
+        primaryCta={{ label: "Подобрать преподавателя", href: REGISTER_URL, external: true }}
+      />
       <TeachersSection />
     </main>
   );

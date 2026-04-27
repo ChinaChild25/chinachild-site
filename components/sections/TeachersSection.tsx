@@ -7,19 +7,25 @@ import SectionShell from "@/components/ui/SectionShell";
 import { createTeachersSchemas } from "@/lib/schema";
 import { teachers } from "@/lib/site-data";
 
+const palette = [
+  "card-cream-soft",
+  "card-sky-soft",
+  "card-lime-soft",
+  "card-peach-soft",
+] as const;
+
 export default function TeachersSection() {
   return (
     <SectionShell
       id="prepodavateli"
-      label="Команда"
-      title="Преподаватели, которые умеют объяснять и доводить до результата"
-      description="На лендинге показываем лица, специализацию и опыт, чтобы у школы была не обезличенная витрина, а доверительный экспертный контур."
+      title="Преподаватели и носители из 6 стран"
+      description="Каждый преподаватель проходит три этапа отбора: уровень владения языком, методику и релевантный опыт работы со студентами."
     >
       <JsonLd data={createTeachersSchemas()} />
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-        {teachers.map((teacher) => (
+        {teachers.map((teacher, index) => (
           <Reveal key={teacher.slug}>
-            <article className="surface-card h-full rounded-[28px] overflow-hidden">
+            <article className={`card-block h-full overflow-hidden p-0 ${palette[index % palette.length]}`}>
               <Image
                 src={teacher.image}
                 alt={`Преподаватель ChinaChild ${teacher.name}`}
@@ -27,15 +33,15 @@ export default function TeachersSection() {
                 height={520}
                 className="h-[260px] w-full object-cover"
               />
-              <div className="p-6">
-                <h3 className="text-xl font-extrabold tracking-[-0.03em] text-[#1A1A2E]">
+              <div className="p-7">
+                <h3 className="text-xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
                   {teacher.name}
                 </h3>
-                <p className="mt-2 text-sm font-semibold text-[#1A1A2E]">
+                <p className="mt-2 text-sm font-semibold text-[#1b1b1b]">
                   {teacher.specialization}
                 </p>
-                <p className="mt-3 text-sm text-[#4B5563]">{teacher.experience}</p>
-                <p className="mt-2 text-sm leading-7 text-[#4B5563]">
+                <p className="mt-2 text-sm text-[#6b6b6b]">{teacher.experience}</p>
+                <p className="mt-3 text-sm leading-6 text-[#4b4b4b]">
                   {teacher.credentials}
                 </p>
               </div>
@@ -43,7 +49,7 @@ export default function TeachersSection() {
           </Reveal>
         ))}
       </div>
-      <div className="mt-8">
+      <div className="mt-10 flex justify-center">
         <Link href="/prepodavateli" className={buttonStyles({ variant: "secondary" })}>
           Смотреть всю команду
         </Link>

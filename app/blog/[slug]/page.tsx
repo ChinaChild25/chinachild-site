@@ -82,18 +82,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           { name: post.title, path: `/blog/${post.slug}` },
         ]}
       />
-      <article className="page-shell section-space pt-8">
-        <div className="max-w-4xl">
-          <span className="section-label">{post.category}</span>
-          <h1 className="section-title">{post.title}</h1>
-          <p className="section-description">{post.description}</p>
-          <div className="mt-6 flex flex-wrap gap-4 text-sm text-[#6B7280]">
+      <article className="page-shell section-space pt-10">
+        <div className="mx-auto max-w-3xl">
+          <span className="tag-pill">{post.category}</span>
+          <h1 className="mt-6 text-[2rem] font-bold leading-[1.08] tracking-[-0.035em] text-[#1b1b1b] sm:text-[2.6rem]">
+            {post.title}
+          </h1>
+          <p className="mt-5 text-base leading-7 text-[#4b4b4b] sm:text-lg">
+            {post.description}
+          </p>
+          <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#6b6b6b]">
             <span>{formatPostDate(post.date)}</span>
             <span>{post.readingTime}</span>
           </div>
         </div>
 
-        <div className="prose-article mt-10 max-w-3xl">
+        <div className="prose-article mx-auto mt-12 max-w-3xl">
           {blocks.map((block, index) => renderBlock(block, index))}
         </div>
       </article>

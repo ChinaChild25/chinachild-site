@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import FloatingCta from "@/components/layout/FloatingCta";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import JsonLd from "@/components/seo/JsonLd";
@@ -42,6 +43,7 @@ export default function RootLayout({
           <Header />
           {children}
           <Footer />
+          <FloatingCta />
         </div>
       </body>
     </html>

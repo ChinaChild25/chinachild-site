@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
-import { buttonStyles } from "@/components/ui/button";
+import PageHero from "@/components/layout/PageHero";
+import FAQSection from "@/components/sections/FAQSection";
 import { buildMetadata } from "@/lib/metadata";
 import { REGISTER_URL } from "@/lib/site-config";
 
@@ -19,6 +19,27 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
+const features = [
+  {
+    card: "card-violet-soft",
+    title: "Разговорные сценарии",
+    body:
+      "Школа, поездки, общение с друзьями. Учим говорить, а не отвечать у доски.",
+  },
+  {
+    card: "card-cream",
+    title: "Подготовка к HSK 1-3",
+    body:
+      "Контрольные точки по экзамену, тренировка типовых заданий и стратегия времени.",
+  },
+  {
+    card: "card-lime-soft",
+    title: "Прозрачный прогресс",
+    body:
+      "Отчёты по словарю, темам и темпу повторения — у подростка и родителей одна картинка.",
+  },
+];
+
 export default function TeensLandingPage() {
   return (
     <main>
@@ -28,42 +49,28 @@ export default function TeensLandingPage() {
           { name: "Для подростков", path: "/dlya-podrostkov" },
         ]}
       />
-      <section className="page-shell section-space pt-8">
-        <span className="section-label">Подростки 11-16 лет</span>
-        <h1 className="section-title">Китайский для подростков: HSK, школа и уверенная речь</h1>
-        <p className="section-description">
-          Подростковый трек совмещает системную грамматику, живые темы для
-          разговора и понятный план подготовки к HSK без сухой зубрёжки.
-        </p>
+      <PageHero
+        eyebrow="Подростки 11-16 лет"
+        title="Китайский для подростков: HSK, школа и уверенная речь"
+        description="Подростковый трек совмещает системную грамматику, живые темы для разговора и понятный план подготовки к HSK без сухой зубрёжки."
+        primaryCta={{ label: "Записаться на диагностику", href: REGISTER_URL, external: true }}
+        secondaryCta={{ label: "Смотреть курс", href: "/kursy" }}
+      />
 
-        <div className="mt-10 grid gap-5 md:grid-cols-3">
-          {[
-            "Разговорные сценарии для школы, поездок и общения",
-            "Контрольные точки по HSK 1-3 и стратегия подготовки",
-            "Отчёты по прогрессу, словарю и темпам повторения",
-          ].map((item) => (
-            <div key={item} className="surface-card rounded-[26px] p-6 text-sm leading-7 text-[#4B5563]">
-              {item}
-            </div>
+      <section className="page-shell section-space">
+        <div className="grid gap-5 md:grid-cols-3">
+          {features.map((item) => (
+            <article key={item.title} className={`card-block h-full ${item.card}`}>
+              <h2 className="text-xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
+                {item.title}
+              </h2>
+              <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">{item.body}</p>
+            </article>
           ))}
         </div>
-
-        <div className="mt-8 flex flex-wrap gap-4">
-          <Link
-            href={REGISTER_URL}
-            target="_blank"
-            rel="noreferrer"
-            className={buttonStyles({
-              className: "bg-[#FF3D00] text-white hover:bg-[#f03a00]",
-            })}
-          >
-            Записаться на диагностику
-          </Link>
-          <Link href="/kursy" className={buttonStyles({ variant: "secondary" })}>
-            Смотреть курс
-          </Link>
-        </div>
       </section>
+
+      <FAQSection />
     </main>
   );
 }

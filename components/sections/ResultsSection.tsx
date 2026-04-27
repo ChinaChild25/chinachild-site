@@ -2,25 +2,26 @@ import Reveal from "@/components/ui/Reveal";
 import SectionShell from "@/components/ui/SectionShell";
 import { results } from "@/lib/site-data";
 
+const palette = ["card-violet-soft", "card-cream", "card-lime-soft"] as const;
+
 export default function ResultsSection() {
   return (
     <SectionShell
       id="rezultaty"
-      label="Результаты"
-      title="Показываем прогресс в цифрах, а не только в обещаниях"
-      description="Такие блоки помогают SEO-странице отвечать на конкретные интенты: за сколько времени, в каком формате и с каким измеримым результатом идёт обучение."
+      title="Прогресс в цифрах, а не только в обещаниях"
+      description="За сколько времени, в каком формате и с каким результатом идёт обучение в ChinaChild."
     >
-      <div className="stats-grid">
-        {results.map((item) => (
+      <div className="grid gap-5 md:grid-cols-3">
+        {results.map((item, index) => (
           <Reveal key={item.title}>
-            <article className="surface-card rounded-[28px] p-7">
-              <div className="text-4xl font-extrabold tracking-[-0.05em] text-[#1A1A2E]">
+            <article className={`card-block h-full ${palette[index % palette.length]}`}>
+              <div className="text-5xl font-bold tracking-[-0.04em] text-[#1b1b1b] sm:text-6xl">
                 {item.value}
               </div>
-              <h3 className="mt-4 text-xl font-extrabold tracking-[-0.03em] text-[#1A1A2E]">
+              <h3 className="mt-6 text-lg font-bold tracking-[-0.02em] text-[#1b1b1b]">
                 {item.title}
               </h3>
-              <p className="mt-3 text-sm leading-7 text-[#4B5563]">
+              <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">
                 {item.description}
               </p>
             </article>

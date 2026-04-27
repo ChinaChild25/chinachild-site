@@ -5,6 +5,8 @@ import SectionShell from "@/components/ui/SectionShell";
 import type { BlogPost } from "@/lib/blog";
 import { formatPostDate } from "@/lib/blog";
 
+const palette = ["card-cream-soft", "card-sky-soft", "card-lime-soft"] as const;
+
 export default function BlogPreviewSection({
   posts,
 }: {
@@ -13,30 +15,30 @@ export default function BlogPreviewSection({
   return (
     <SectionShell
       id="blog"
-      label="Блог"
-      title="Последние статьи ChinaChild"
-      description="Контентный блог усиливает кластер SEO-запросов вокруг обучения китайскому языку: дети, HSK, взрослые, бизнес и методика."
+      title="Последние статьи о китайском"
+      description="Методика, разбор HSK, советы родителям и истории учеников — всё, что помогает учиться эффективнее."
     >
-      <div className="grid gap-5 lg:grid-cols-3">
-        {posts.map((post) => (
+      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        {posts.map((post, index) => (
           <Reveal key={post.slug}>
-            <article className="surface-card h-full rounded-[28px] p-6">
-              <div className="text-xs font-bold uppercase tracking-[0.08em] text-[#6B7280]">
-                {post.category}
-              </div>
-              <h3 className="mt-4 text-2xl font-extrabold tracking-[-0.04em] text-[#1A1A2E]">
-                <Link href={`/blog/${post.slug}`}>{post.title}</Link>
+            <Link
+              href={`/blog/${post.slug}`}
+              className={`card-block group flex h-full flex-col transition hover:-translate-y-1 ${palette[index % palette.length]}`}
+            >
+              <span className="tag-pill self-start">{post.category}</span>
+              <h3 className="mt-6 text-xl font-bold leading-snug tracking-[-0.02em] text-[#1b1b1b]">
+                {post.title}
               </h3>
-              <p className="mt-4 text-sm leading-7 text-[#4B5563]">{post.excerpt}</p>
-              <div className="mt-6 flex items-center justify-between gap-4 text-sm text-[#6B7280]">
+              <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">{post.excerpt}</p>
+              <div className="mt-auto pt-6 flex items-center justify-between gap-4 text-xs text-[#6b6b6b]">
                 <span>{formatPostDate(post.date)}</span>
                 <span>{post.readingTime}</span>
               </div>
-            </article>
+            </Link>
           </Reveal>
         ))}
       </div>
-      <div className="mt-8">
+      <div className="mt-10 flex justify-center">
         <Link href="/blog" className={buttonStyles({ variant: "secondary" })}>
           Открыть блог
         </Link>
