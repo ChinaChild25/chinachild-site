@@ -171,7 +171,7 @@ export function createCourseNode(course: Course): JsonLd {
     offer.price = course.priceValue;
   }
 
-  return {
+  const node: JsonLd = {
     "@type": "Course",
     "@id": ID.course(course.slug),
     name: course.title,
@@ -179,6 +179,7 @@ export function createCourseNode(course: Course): JsonLd {
     url: absoluteUrl(course.href),
     provider: { "@id": ID.organization },
     educationalLevel: course.level,
+    inLanguage: "ru-RU",
     audience: {
       "@type": "Audience",
       audienceType: course.audience,
@@ -188,9 +189,31 @@ export function createCourseNode(course: Course): JsonLd {
       courseMode: "online",
       courseWorkload: course.duration,
       inLanguage: "ru-RU",
+      ...(course.timeRequiredIso ? { timeRequired: course.timeRequiredIso } : {}),
+      ...(course.instructorSlug
+        ? { instructor: { "@id": ID.teacher(course.instructorSlug) } }
+        : {}),
     },
     offers: offer,
   };
+
+  if (course.teaches && course.teaches.length > 0) {
+    node.teaches = course.teaches;
+  }
+  if (course.prerequisites) {
+    node.coursePrerequisites = course.prerequisites;
+  }
+  if (course.credentialAwarded) {
+    node.educationalCredentialAwarded = course.credentialAwarded;
+  }
+  if (course.timeRequiredIso) {
+    node.timeRequired = course.timeRequiredIso;
+  }
+  if (course.instructorSlug) {
+    node.instructor = { "@id": ID.teacher(course.instructorSlug) };
+  }
+
+  return node;
 }
 
 export function createServiceNode(): JsonLd {
@@ -338,7 +361,11 @@ export function createPageGraph(input: {
 }
 
 /**
- * Article @graph for blog posts: Article + BreadcrumbList + author Person.
+ * Article @graph for blog posts: Article + LearningResource + BreadcrumbList,
+ * all linked back to the site graph via @id.
+ *
+ * LearningResource is a schema.org subtype that signals "educational content"
+ * to Google — a separate ranking lane for educational publishers.
  */
 export function createArticleGraph(input: {
   url: string;
@@ -353,13 +380,14 @@ export function createArticleGraph(input: {
 }): JsonLd {
   const url = absoluteUrl(input.url);
   const articleId = `${url}#article`;
+  const learningId = `${url}#learning-resource`;
   const author = teachers.find((t) => t.slug === input.authorSlug) ?? teachers[0];
 
   return {
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "Article",
+        "@type": ["Article", "LearningResource"],
         "@id": articleId,
         url,
         headline: input.title,
@@ -372,6 +400,28 @@ export function createArticleGraph(input: {
         publisher: { "@id": ID.organization },
         isPartOf: { "@id": ID.website },
         mainEntityOfPage: { "@id": articleId },
+        learningResourceType: "Article",
+        educationalLevel: "Beginner to advanced",
+        teaches: input.keywords?.slice(0, 5),
+        audience: {
+          "@type": "EducationalAudience",
+          educationalRole: "student",
+        },
+        ...(input.keywords ? { keywords: input.keywords.join(", ") } : {}),
+      },
+      {
+        "@type": "LearningResource",
+        "@id": learningId,
+        name: input.title,
+        description: input.description,
+        url,
+        inLanguage: "ru-RU",
+        learningResourceType: "Reading",
+        educationalUse: "instruction",
+        about: { "@id": ID.organization },
+        creator: { "@id": ID.teacher(author.slug) },
+        publisher: { "@id": ID.organization },
+        isPartOf: { "@id": articleId },
         ...(input.keywords ? { keywords: input.keywords.join(", ") } : {}),
       },
       {

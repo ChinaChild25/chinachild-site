@@ -22,6 +22,16 @@ export type Course = {
   description: string;
   audience: string;
   outcome: string;
+  /** Skills/topics taught — surfaces in Google Course Carousel */
+  teaches?: string[];
+  /** Required prior knowledge */
+  prerequisites?: string;
+  /** Credential awarded after completion */
+  credentialAwarded?: string;
+  /** ISO 8601 duration (e.g. "PT80H" for 80 lessons of 1h) */
+  timeRequiredIso?: string;
+  /** Slug of the lead instructor (resolves to teacher Person via @id) */
+  instructorSlug?: string;
 };
 
 export type Teacher = {
@@ -150,6 +160,18 @@ export const courses: Course[] = [
       "Лицензированный курс китайского для подростков 12+ и взрослых. Разговорный уровень и сертификат HSK 2 за 6 месяцев.",
     audience: "Подростки 12+ и взрослые",
     outcome: "Разговорный уровень и сертификат HSK 2 за 6 месяцев.",
+    teaches: [
+      "Произношение и тоны путунхуа",
+      "Пиньинь и базовые иероглифы",
+      "Грамматика HSK 1–2",
+      "Аудирование и чтение коротких текстов",
+      "Разговорные сценарии бытового общения",
+    ],
+    prerequisites: "Не требуется. Курс рассчитан на старт с нуля.",
+    credentialAwarded:
+      "Документ о прохождении программы дополнительного профессионального образования. Подготовка к сертификату HSK 2.",
+    timeRequiredIso: "PT80H",
+    instructorSlug: "anastasia-ponomareva",
   },
   {
     slug: "hsk-preparation",
@@ -164,6 +186,19 @@ export const courses: Course[] = [
       "Лицензированная программа подготовки к международному экзамену HSK от уровня 1 до 6. Базовый курс HSK 1–2, далее на платформе.",
     audience: "Подростки 12+ и взрослые",
     outcome: "Сертификат HSK любого уровня от 1 до 6.",
+    teaches: [
+      "HSK 1: 150 слов, 174 иероглифа",
+      "HSK 2: разговорный уровень, 300 слов, 347 иероглифов",
+      "HSK 3: самостоятельный пользователь",
+      "HSK 4: уровень для университета (1200 слов)",
+      "HSK 5–6: продвинутый уровень для магистратуры",
+      "Стратегии аудирования, чтения и письма",
+    ],
+    prerequisites:
+      "Для HSK 1 — нет. Для HSK 2+ рекомендуется бесплатный тест на уровень.",
+    credentialAwarded: "Подготовка к официальному сертификату HSK любого уровня.",
+    timeRequiredIso: "PT240H",
+    instructorSlug: "anastasia-erina",
   },
   {
     slug: "chinese-for-kids",
@@ -178,6 +213,17 @@ export const courses: Course[] = [
       "Индивидуальный курс с преподавателем по программе HSK 1–2. Скидка 10% при оплате за 2 месяца — для школьников с 12 лет.",
     audience: "Школьники 12+",
     outcome: "Подросток получает персональный темп, разбор ошибок и сопровождение наставника.",
+    teaches: [
+      "Постановка тонов и произношения",
+      "Иероглифика и пиньинь",
+      "Базовая грамматика и диалоги",
+      "Подготовка к школьным олимпиадам",
+      "Подготовка к HSK 1–2",
+    ],
+    prerequisites: "Возраст от 12 лет. Предварительная подготовка не требуется.",
+    credentialAwarded: "Подготовка к сертификату HSK 1 и HSK 2.",
+    timeRequiredIso: "PT60H",
+    instructorSlug: "anastasia-ponomareva",
   },
   {
     slug: "business-chinese",
@@ -191,6 +237,18 @@ export const courses: Course[] = [
       "Корпоративное обучение по программе HSK 1–2: переписка с китайскими партнёрами, разговор и работа с документами.",
     audience: "Команды компаний",
     outcome: "Команда выходит на разговорный уровень и работает с китайскими партнёрами.",
+    teaches: [
+      "Деловая переписка с китайскими партнёрами",
+      "Простые переговоры и созвоны",
+      "Работа с инвойсами и спецификациями",
+      "Отраслевая лексика (e-commerce, импорт, логистика)",
+      "Базовая презентация продукта",
+    ],
+    prerequisites: "Не требуется. Группа стартует с нуля.",
+    credentialAwarded:
+      "Документ о прохождении программы ДПО + подготовка к HSK 2.",
+    timeRequiredIso: "PT80H",
+    instructorSlug: "zhao-li",
   },
 ];
 
