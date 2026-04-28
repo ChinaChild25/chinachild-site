@@ -310,26 +310,59 @@ select {
   min-height: 58px;
   border-radius: 18px;
   position: relative;
-  overflow: hidden;
 
-  background: rgba(255, 255, 255, 0.16);
+  background:
+    rgba(255,255,255,0.72);
 
-  border: 1px solid rgba(255, 255, 255, 0.28);
+  border: 1px solid rgba(255,255,255,0.55);
 
   backdrop-filter:
-    blur(24px)
+    blur(18px)
     saturate(180%)
-    brightness(1.03);
+    brightness(1.02);
 
   -webkit-backdrop-filter:
-    blur(24px)
+    blur(18px)
     saturate(180%)
-    brightness(1.03);
+    brightness(1.02);
 
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.72),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.16),
-    0 12px 28px rgba(0, 0, 0, 0.05);
+    inset 0 1px 0 rgba(255,255,255,.95),
+    inset 0 -1px 0 rgba(255,255,255,.35),
+    0 10px 30px rgba(0,0,0,.05);
+
+  overflow: hidden;
+}
+
+.site-header-pill::before {
+  content:"";
+  position:absolute;
+  inset:0;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(216,211,255,.18),
+      rgba(232,227,216,.12),
+      rgba(205,220,238,.18)
+    );
+
+  mix-blend-mode: color;
+  pointer-events:none;
+}
+
+.site-header-pill::after {
+  content:"";
+  position:absolute;
+  inset:0;
+
+  background:
+    radial-gradient(circle at top left,
+      rgba(255,255,255,.45),
+      transparent 40%);
+
+  opacity:.8;
+  pointer-events:none;
 }
 
 /* matte lighting */
@@ -433,16 +466,17 @@ select {
   gap: 12px;
 }
 
-.site-header-cta {
-  height: 46px;
-  padding: 0 24px;
-  border-radius: 10px;
-  border: 0;
-  background: #111111;
-  color: #ffffff;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.16s ease;
+.site-header-cta{
+  height:46px;
+  padding:0 24px;
+  border-radius:12px;
+  background:#0f0f0f;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  white-space:nowrap;
+  flex-shrink:0;
 }
 
 .site-header-cta:hover {
@@ -624,11 +658,13 @@ select {
     top: 10px;
   }
 
-  .site-header-inner {
-    gap: 14px;
-    padding: 8px 10px 8px 14px;
-    min-height: 54px;
-  }
+.site-header-inner{
+  min-height:58px;
+  display:flex;
+  align-items:center;
+  gap:22px;
+  padding:6px 10px 6px 18px;
+}
 
   .site-header-wordmark {
     font-size: 1.35rem;
