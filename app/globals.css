@@ -175,11 +175,10 @@ a:focus-visible {
 
 /* ==========================================================================
    BUTTONS — 1:1 Yandex
-   .button-start__style: padding 18px 32px, bg #1E1E1E, color #fff, radius 50px
-   .header-btn: padding 8px 12px, bg #262626, color #fff, radius 4px
+   По умолчанию все кнопки сайта = .header-btn стиль (квадратные, radius 6px)
+   .floating-cta-btn отдельно — с radius 50px (пилюля)
    ========================================================================== */
 
-/* Большие CTA кнопки (по странице) — стиль .button-start__style */
 .btn-pill,
 .btn-ink {
   display: inline-flex;
@@ -190,8 +189,8 @@ a:focus-visible {
   cursor: pointer;
   font-weight: 500;
   letter-spacing: -0.005em;
-  padding: 18px 32px;
-  border-radius: 50px;          /* Яндекс — пилюля */
+  padding: 14px 22px;
+  border-radius: 6px;            /* квадратные с лёгкими углами */
   font-size: 16px;
   line-height: 1;
   background: var(--ink);
@@ -205,18 +204,18 @@ a:focus-visible {
   background: #2c2c2c;
 }
 
-/* Если хочешь прямоугольную (как старый стиль) — добавь .btn-square */
-.btn-square {
-  border-radius: 6px;
+/* Если где-то нужен старый круглый стиль — поставь .btn-rounded */
+.btn-rounded {
+  border-radius: 50px;
 }
 
 .btn-pill-large {
-  padding: 22px 36px;
+  padding: 18px 28px;
   font-size: 17px;
 }
 
 .btn-pill-compact {
-  padding: 12px 20px;
+  padding: 10px 16px;
   font-size: 14px;
 }
 
@@ -439,24 +438,34 @@ a:focus-visible {
 
 /* ==========================================================================
    FLOATING CTA — нижняя кнопка "Оставить заявку"
-   Яндекс: position fixed, bottom 0, центр, кнопка-пилюля
+   Со стеклянной рамкой-плашкой вокруг (как у Яндекса)
    ========================================================================== */
 
 .floating-cta-shell {
   position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
   z-index: 900;
-  display: flex;
-  justify-content: center;
   pointer-events: none;
-  padding: 16px;
-  padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+}
+
+/* Стеклянная плашка вокруг кнопки */
+.floating-cta-shell::before {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 60px;
+  background-color: rgba(255, 255, 255, 0.6);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  z-index: -1;
 }
 
 .floating-cta-btn {
-  /* Полная копия .button-start__style */
+  position: relative;
   pointer-events: auto;
   padding: 18px 32px;
   background: #1E1E1E;
@@ -471,8 +480,9 @@ a:focus-visible {
   text-align: center;
   white-space: nowrap;
   outline: none;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
   transition: background-color .2s ease;
+  display: inline-block;
+  text-decoration: none;
 }
 
 .floating-cta-btn:hover {
@@ -480,9 +490,19 @@ a:focus-visible {
 }
 
 @media (max-width: 640px) {
+  .floating-cta-shell {
+    left: 16px;
+    right: 16px;
+    transform: none;
+    bottom: 16px;
+  }
+  .floating-cta-shell::before {
+    inset: -8px;
+  }
   .floating-cta-btn {
     width: 100%;
     min-width: 0;
+    display: block;
   }
 }
 
