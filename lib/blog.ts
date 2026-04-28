@@ -9,6 +9,8 @@ export type BlogPost = {
   category: string;
   readingTime: string;
   date: string;
+  dateModified: string;
+  authorSlug: string;
   keywords: string[];
   content: string;
 };
@@ -60,6 +62,7 @@ function frontmatterToObject(frontmatter: string): Record<string, string> {
 function buildBlogPost(slug: string, source: string): BlogPost {
   const { frontmatter, content } = parseFrontmatter(source);
   const fields = frontmatterToObject(frontmatter);
+  const date = fields.date ?? new Date().toISOString();
 
   return {
     slug,
@@ -68,7 +71,9 @@ function buildBlogPost(slug: string, source: string): BlogPost {
     excerpt: fields.excerpt ?? fields.description ?? "",
     category: fields.category ?? "Блог",
     readingTime: fields.readingTime ?? "6 минут",
-    date: fields.date ?? new Date().toISOString(),
+    date,
+    dateModified: fields.dateModified ?? date,
+    authorSlug: fields.author ?? "anastasia-ponomareva",
     keywords: (fields.keywords ?? "")
       .split(",")
       .map((keyword) => keyword.trim())

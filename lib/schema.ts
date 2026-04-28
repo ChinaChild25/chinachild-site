@@ -29,31 +29,50 @@ export type BreadcrumbItem = {
   path: string;
 };
 
-export function createOrganizationSchema(): JsonLd {
-  return {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: SITE_NAME,
-    alternateName: BRAND_NAME,
-    url: SITE_URL,
-    logo: absoluteUrl("/brand-mark.svg"),
-    email: CONTACT_EMAIL,
-    telephone: CONTACT_PHONE,
-    sameAs: [SITE_URL],
-  };
-}
+// ---------------------------------------------------------------------------
+// Stable @id anchors for the JSON-LD graph.
+// Every node referenced in another node must have a matching @id here.
+// ---------------------------------------------------------------------------
+const ID = {
+  organization: `${SITE_URL}#organization`,
+  website: `${SITE_URL}#website`,
+  logo: `${SITE_URL}#logo`,
+  publisher: `${SITE_URL}#publisher`,
+  rating: `${SITE_URL}#aggregate-rating`,
+  service: `${SITE_URL}#service`,
+  howTo: `${SITE_URL}#how-to`,
+  homepage: `${SITE_URL}/#webpage`,
+  teacher: (slug: string) => `${SITE_URL}/about#teacher-${slug}`,
+  course: (slug: string) => `${SITE_URL}/courses/${slug}#course`,
+};
 
-export function createEducationalOrganizationSchema(): JsonLd {
+// ---------------------------------------------------------------------------
+// Atomic schema nodes — used both inside the @graph and standalone if needed.
+// ---------------------------------------------------------------------------
+
+export function createOrganizationNode(): JsonLd {
   return {
-    "@context": "https://schema.org",
-    "@type": "EducationalOrganization",
+    "@type": ["Organization", "EducationalOrganization", "LocalBusiness"],
+    "@id": ID.organization,
     name: SITE_NAME,
     alternateName: BRAND_NAME,
     url: SITE_URL,
-    logo: absoluteUrl("/brand-mark.svg"),
     description: SITE_DESCRIPTION,
     email: CONTACT_EMAIL,
     telephone: CONTACT_PHONE,
+    image: { "@id": ID.logo },
+    logo: { "@id": ID.logo },
+    address: {
+      "@type": "PostalAddress",
+      addressCountry: "RU",
+      addressLocality: "Москва",
+    },
+    areaServed: {
+      "@type": "Country",
+      name: "Russia",
+    },
+    sameAs: [SITE_URL],
+    aggregateRating: { "@id": ID.rating },
     hasCredential: {
       "@type": "EducationalOccupationalCredential",
       name: `Образовательная лицензия — ${LICENSE_PROGRAM}`,
@@ -62,20 +81,85 @@ export function createEducationalOrganizationSchema(): JsonLd {
         name: LICENSE_REGION,
       },
     },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: String(siteFacts.aggregateRating),
-      reviewCount: String(siteFacts.reviewCount),
-    },
-    address: {
-      "@type": "PostalAddress",
-      addressCountry: "RU",
-      addressLocality: "Москва",
+  };
+}
+
+export function createWebsiteNode(): JsonLd {
+  return {
+    "@type": "WebSite",
+    "@id": ID.website,
+    name: SITE_NAME,
+    alternateName: BRAND_NAME,
+    url: SITE_URL,
+    inLanguage: "ru-RU",
+    publisher: { "@id": ID.organization },
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${SITE_URL}/blog?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
     },
   };
 }
 
-export function createCourseSchema(course: Course): JsonLd {
+export function createLogoNode(): JsonLd {
+  return {
+    "@type": "ImageObject",
+    "@id": ID.logo,
+    inLanguage: "ru-RU",
+    url: absoluteUrl("/brand-mark.svg"),
+    contentUrl: absoluteUrl("/brand-mark.svg"),
+    width: 512,
+    height: 512,
+    caption: SITE_NAME,
+  };
+}
+
+export function createAggregateRatingNode(): JsonLd {
+  return {
+    "@type": "AggregateRating",
+    "@id": ID.rating,
+    itemReviewed: { "@id": ID.organization },
+    ratingValue: String(siteFacts.aggregateRating),
+    reviewCount: String(siteFacts.reviewCount),
+    bestRating: "5",
+    worstRating: "1",
+  };
+}
+
+export function createReviewNode(review: Review): JsonLd {
+  return {
+    "@type": "Review",
+    reviewBody: review.body,
+    author: { "@type": "Person", name: review.author },
+    reviewRating: {
+      "@type": "Rating",
+      ratingValue: "5",
+      bestRating: "5",
+    },
+    itemReviewed: { "@id": ID.organization },
+  };
+}
+
+export function createTeacherNode(teacher: Teacher): JsonLd {
+  const node: JsonLd = {
+    "@type": "Person",
+    "@id": ID.teacher(teacher.slug),
+    name: teacher.name,
+    jobTitle: teacher.specialization,
+    description: teacher.credentials,
+    knowsAbout: ["китайский язык", "HSK", teacher.specialization],
+    worksFor: { "@id": ID.organization },
+  };
+  if (teacher.image) {
+    node.image = absoluteUrl(teacher.image);
+  }
+  return node;
+}
+
+export function createCourseNode(course: Course): JsonLd {
   const offer: JsonLd = {
     "@type": "Offer",
     url: absoluteUrl(course.href),
@@ -83,33 +167,78 @@ export function createCourseSchema(course: Course): JsonLd {
     category: course.format,
     availability: "https://schema.org/InStock",
   };
-
   if (course.priceValue) {
     offer.price = course.priceValue;
   }
 
   return {
-    "@context": "https://schema.org",
     "@type": "Course",
+    "@id": ID.course(course.slug),
     name: course.title,
     description: course.description,
-    provider: {
-      "@type": "EducationalOrganization",
-      name: SITE_NAME,
-      sameAs: SITE_URL,
-    },
+    url: absoluteUrl(course.href),
+    provider: { "@id": ID.organization },
     educationalLevel: course.level,
     audience: {
       "@type": "Audience",
       audienceType: course.audience,
     },
+    hasCourseInstance: {
+      "@type": "CourseInstance",
+      courseMode: "online",
+      courseWorkload: course.duration,
+      inLanguage: "ru-RU",
+    },
     offers: offer,
   };
 }
 
-export function createFaqSchema(items: FaqItem[]): JsonLd {
+export function createServiceNode(): JsonLd {
   return {
-    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": ID.service,
+    serviceType: "Онлайн-курсы китайского языка",
+    provider: { "@id": ID.organization },
+    areaServed: { "@type": "Country", name: "Russia" },
+    audience: {
+      "@type": "Audience",
+      audienceType: "Подростки 12+ и взрослые",
+    },
+    offers: courses.map((c) => ({
+      "@type": "Offer",
+      name: c.title,
+      url: absoluteUrl(c.href),
+      priceCurrency: "RUB",
+      ...(c.priceValue ? { price: c.priceValue } : {}),
+      category: c.format,
+    })),
+  };
+}
+
+export function createHowToNode(): JsonLd {
+  return {
+    "@type": "HowTo",
+    "@id": ID.howTo,
+    name: "Как начать учить китайский в ChinaChild",
+    description:
+      "Пошаговый маршрут: бесплатный тест на уровень HSK, пробное занятие, регистрация и регулярные занятия.",
+    totalTime: "PT4380H",
+    estimatedCost: {
+      "@type": "MonetaryAmount",
+      currency: "RUB",
+      value: "4999",
+    },
+    step: processSteps.map((step, index) => ({
+      "@type": "HowToStep",
+      position: index + 1,
+      name: step.title,
+      text: step.description,
+    })),
+  };
+}
+
+export function createFaqNode(items: FaqItem[]): JsonLd {
+  return {
     "@type": "FAQPage",
     mainEntity: items.map((item) => ({
       "@type": "Question",
@@ -122,76 +251,8 @@ export function createFaqSchema(items: FaqItem[]): JsonLd {
   };
 }
 
-export function createReviewSchema(review: Review): JsonLd {
+export function createBreadcrumbNode(items: BreadcrumbItem[]): JsonLd {
   return {
-    "@context": "https://schema.org",
-    "@type": "Review",
-    reviewBody: review.body,
-    author: {
-      "@type": "Person",
-      name: review.author,
-    },
-    reviewRating: {
-      "@type": "Rating",
-      ratingValue: "5",
-      bestRating: "5",
-    },
-    itemReviewed: {
-      "@type": "EducationalOrganization",
-      name: SITE_NAME,
-    },
-  };
-}
-
-export function createAggregateRatingSchema(): JsonLd {
-  return {
-    "@context": "https://schema.org",
-    "@type": "EducationalOrganization",
-    name: SITE_NAME,
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: String(siteFacts.aggregateRating),
-      reviewCount: String(siteFacts.reviewCount),
-    },
-    review: reviews.slice(0, 4).map((review) => ({
-      "@type": "Review",
-      reviewBody: review.body,
-      author: {
-        "@type": "Person",
-        name: review.author,
-      },
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: "5",
-        bestRating: "5",
-      },
-    })),
-  };
-}
-
-export function createPersonSchema(teacher: Teacher): JsonLd {
-  const base: JsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    name: teacher.name,
-    jobTitle: teacher.specialization,
-    worksFor: {
-      "@type": "EducationalOrganization",
-      name: SITE_NAME,
-      url: SITE_URL,
-    },
-    knowsAbout: ["китайский язык", "HSK", teacher.specialization],
-    description: teacher.credentials,
-  };
-  if (teacher.image) {
-    base.image = absoluteUrl(teacher.image);
-  }
-  return base;
-}
-
-export function createBreadcrumbSchema(items: BreadcrumbItem[]): JsonLd {
-  return {
-    "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: items.map((item, index) => ({
       "@type": "ListItem",
@@ -202,97 +263,170 @@ export function createBreadcrumbSchema(items: BreadcrumbItem[]): JsonLd {
   };
 }
 
-export function createWebsiteSchema(): JsonLd {
+// ---------------------------------------------------------------------------
+// @graph builders
+// ---------------------------------------------------------------------------
+
+/**
+ * Always-on site-wide @graph mounted in app/layout.tsx.
+ * Carries Organization, WebSite, Logo, AggregateRating, Service, HowTo,
+ * all teacher Person nodes and all Course nodes — connected via @id.
+ */
+export function createSiteGraph(): JsonLd {
   return {
     "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: SITE_NAME,
-    alternateName: BRAND_NAME,
-    url: SITE_URL,
-    inLanguage: "ru",
-    publisher: {
-      "@type": "EducationalOrganization",
-      name: SITE_NAME,
-      url: SITE_URL,
-    },
-    potentialAction: {
-      "@type": "SearchAction",
-      target: {
-        "@type": "EntryPoint",
-        urlTemplate: `${SITE_URL}/blog?q={search_term_string}`,
-      },
-      "query-input": "required name=search_term_string",
-    },
+    "@graph": [
+      createOrganizationNode(),
+      createWebsiteNode(),
+      createLogoNode(),
+      createAggregateRatingNode(),
+      createServiceNode(),
+      createHowToNode(),
+      ...teachers.map((t) => createTeacherNode(t)),
+      ...courses.map((c) => createCourseNode(c)),
+      ...reviews.map((r) => createReviewNode(r)),
+    ],
   };
 }
 
-export function createHowToSchema(): JsonLd {
-  return {
-    "@context": "https://schema.org",
-    "@type": "HowTo",
-    name: "Как начать учить китайский в ChinaChild",
-    description:
-      "Пошаговый маршрут от бесплатного теста на уровень HSK до регулярных занятий по лицензированной программе.",
-    totalTime: "PT24H",
-    estimatedCost: {
-      "@type": "MonetaryAmount",
-      currency: "RUB",
-      value: "4999",
-    },
-    step: processSteps.map((step, index) => ({
-      "@type": "HowToStep",
-      position: index + 1,
-      name: step.title,
-      text: step.description,
-      url: `${SITE_URL}/#kak-prokhodit`,
-    })),
-  };
-}
+/**
+ * Per-page @graph: WebPage + BreadcrumbList + optional FAQ, linked into the
+ * main Organization/WebSite via @id.
+ */
+export function createPageGraph(input: {
+  url: string;
+  name: string;
+  description: string;
+  breadcrumbs: BreadcrumbItem[];
+  faqs?: FaqItem[];
+  datePublished?: string;
+  dateModified?: string;
+}): JsonLd {
+  const url = absoluteUrl(input.url);
+  const pageId = `${url}#webpage`;
 
-export function createServiceSchema(): JsonLd {
-  return {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    serviceType: "Онлайн-курсы китайского языка",
-    provider: {
-      "@type": "EducationalOrganization",
-      name: SITE_NAME,
-      url: SITE_URL,
-    },
-    areaServed: {
-      "@type": "Country",
-      name: "Russia",
-    },
-    audience: {
-      "@type": "Audience",
-      audienceType: "Подростки 12+ и взрослые",
-    },
-    offers: courses.map((course) => ({
-      "@type": "Offer",
-      name: course.title,
-      url: absoluteUrl(course.href),
-      priceCurrency: "RUB",
-      ...(course.priceValue ? { price: course.priceValue } : {}),
-      category: course.format,
-    })),
+  const webPage: JsonLd = {
+    "@type": "WebPage",
+    "@id": pageId,
+    url,
+    name: input.name,
+    description: input.description,
+    inLanguage: "ru-RU",
+    isPartOf: { "@id": ID.website },
+    about: { "@id": ID.organization },
+    breadcrumb: { "@id": `${pageId}#breadcrumb` },
   };
-}
+  if (input.datePublished) webPage.datePublished = input.datePublished;
+  if (input.dateModified) webPage.dateModified = input.dateModified;
 
-export function createHomepageSchemas(): JsonLd[] {
-  return [
-    createEducationalOrganizationSchema(),
-    createAggregateRatingSchema(),
-    createFaqSchema(faqs),
-    createHowToSchema(),
-    createServiceSchema(),
-    ...courses.map((course) => createCourseSchema(course)),
+  const graph: JsonLd[] = [
+    webPage,
+    {
+      ...createBreadcrumbNode(input.breadcrumbs),
+      "@id": `${pageId}#breadcrumb`,
+    },
   ];
+
+  if (input.faqs && input.faqs.length > 0) {
+    graph.push({
+      ...createFaqNode(input.faqs),
+      "@id": `${pageId}#faq`,
+    });
+  }
+
+  return { "@context": "https://schema.org", "@graph": graph };
 }
 
+/**
+ * Article @graph for blog posts: Article + BreadcrumbList + author Person.
+ */
+export function createArticleGraph(input: {
+  url: string;
+  title: string;
+  description: string;
+  category: string;
+  datePublished: string;
+  dateModified: string;
+  authorSlug: string;
+  breadcrumbs: BreadcrumbItem[];
+  keywords?: string[];
+}): JsonLd {
+  const url = absoluteUrl(input.url);
+  const articleId = `${url}#article`;
+  const author = teachers.find((t) => t.slug === input.authorSlug) ?? teachers[0];
+
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Article",
+        "@id": articleId,
+        url,
+        headline: input.title,
+        description: input.description,
+        articleSection: input.category,
+        inLanguage: "ru-RU",
+        datePublished: input.datePublished,
+        dateModified: input.dateModified,
+        author: { "@id": ID.teacher(author.slug) },
+        publisher: { "@id": ID.organization },
+        isPartOf: { "@id": ID.website },
+        mainEntityOfPage: { "@id": articleId },
+        ...(input.keywords ? { keywords: input.keywords.join(", ") } : {}),
+      },
+      {
+        ...createBreadcrumbNode(input.breadcrumbs),
+        "@id": `${articleId}#breadcrumb`,
+      },
+    ],
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Backwards-compat shims (so existing pages keep working)
+// ---------------------------------------------------------------------------
+
+export function createOrganizationSchema(): JsonLd {
+  return { "@context": "https://schema.org", ...createOrganizationNode() };
+}
+export function createWebsiteSchema(): JsonLd {
+  return { "@context": "https://schema.org", ...createWebsiteNode() };
+}
+export function createEducationalOrganizationSchema(): JsonLd {
+  return createOrganizationSchema();
+}
+export function createCourseSchema(course: Course): JsonLd {
+  return { "@context": "https://schema.org", ...createCourseNode(course) };
+}
+export function createFaqSchema(items: FaqItem[]): JsonLd {
+  return { "@context": "https://schema.org", ...createFaqNode(items) };
+}
+export function createReviewSchema(review: Review): JsonLd {
+  return { "@context": "https://schema.org", ...createReviewNode(review) };
+}
+export function createAggregateRatingSchema(): JsonLd {
+  return { "@context": "https://schema.org", ...createAggregateRatingNode() };
+}
+export function createPersonSchema(teacher: Teacher): JsonLd {
+  return { "@context": "https://schema.org", ...createTeacherNode(teacher) };
+}
+export function createBreadcrumbSchema(items: BreadcrumbItem[]): JsonLd {
+  return { "@context": "https://schema.org", ...createBreadcrumbNode(items) };
+}
+export function createHowToSchema(): JsonLd {
+  return { "@context": "https://schema.org", ...createHowToNode() };
+}
+export function createServiceSchema(): JsonLd {
+  return { "@context": "https://schema.org", ...createServiceNode() };
+}
+export function createHomepageSchemas(): JsonLd[] {
+  // Keep returning empty array since the site-wide @graph in layout.tsx
+  // already covers Organization/WebSite/Course/Service/HowTo.
+  return [];
+}
 export function createTeachersSchemas(): JsonLd[] {
-  return teachers.map((teacher) => createPersonSchema(teacher));
+  return teachers.map((t) => createPersonSchema(t));
 }
-
 export function createReviewSchemas(): JsonLd[] {
-  return reviews.map((review) => createReviewSchema(review));
+  return reviews.map((r) => createReviewSchema(r));
 }

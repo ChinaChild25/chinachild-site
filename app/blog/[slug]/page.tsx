@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
+import JsonLd from "@/components/seo/JsonLd";
+import Avatar from "@/components/ui/Avatar";
 import {
   formatPostDate,
   getBlogPostBySlug,
@@ -9,6 +11,8 @@ import {
   type ArticleBlock,
 } from "@/lib/blog";
 import { buildMetadata } from "@/lib/metadata";
+import { createArticleGraph } from "@/lib/schema";
+import { teachers } from "@/lib/site-data";
 
 type BlogPostPageProps = {
   params: Promise<{ slug: string }>;
@@ -18,11 +22,9 @@ function renderBlock(block: ArticleBlock, index: number): React.ReactNode {
   if (block.type === "heading" && block.level === 2) {
     return <h2 key={`${block.text}-${index}`}>{block.text}</h2>;
   }
-
   if (block.type === "heading" && block.level === 3) {
     return <h3 key={`${block.text}-${index}`}>{block.text}</h3>;
   }
-
   if (block.type === "list") {
     return (
       <ul key={`list-${index}`}>
@@ -32,7 +34,6 @@ function renderBlock(block: ArticleBlock, index: number): React.ReactNode {
       </ul>
     );
   }
-
   return <p key={`${block.text}-${index}`}>{block.text}</p>;
 }
 
@@ -71,6 +72,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
+  const author = teachers.find((t) => t.slug === post.authorSlug) ?? teachers[0];
   const blocks = parseArticleBlocks(post.content);
 
   return (
@@ -82,8 +84,28 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           { name: post.title, path: `/blog/${post.slug}` },
         ]}
       />
+
+      <JsonLd
+        data={createArticleGraph({
+          url: `/blog/${post.slug}`,
+          title: post.title,
+          description: post.description,
+          category: post.category,
+          datePublished: post.date,
+          dateModified: post.dateModified,
+          authorSlug: post.authorSlug,
+          breadcrumbs: [
+            { name: "Главная", path: "/" },
+            { name: "Блог", path: "/blog" },
+            { name: post.title, path: `/blog/${post.slug}` },
+          ],
+          keywords: post.keywords,
+        })}
+        id={`article-${post.slug}-graph`}
+      />
+
       <article className="page-shell section-space pt-10">
-        <div className="mx-auto max-w-3xl">
+        <header className="mx-auto max-w-3xl">
           <span className="tag-pill">{post.category}</span>
           <h1 className="mt-6 text-[2rem] font-bold leading-[1.08] tracking-[-0.035em] text-[#1b1b1b] sm:text-[2.6rem]">
             {post.title}
@@ -91,11 +113,24 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <p className="mt-5 text-base leading-7 text-[#4b4b4b] sm:text-lg">
             {post.description}
           </p>
-          <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#6b6b6b]">
-            <span>{formatPostDate(post.date)}</span>
-            <span>{post.readingTime}</span>
+
+          <div className="mt-8 flex flex-wrap items-center gap-4 border-t border-[rgba(0,0,0,0.08)] pt-6">
+            <Avatar name={author.name} size={48} />
+            <div className="flex flex-col gap-0.5 text-sm">
+              <span className="font-semibold text-[#1b1b1b]">{author.name}</span>
+              <span className="text-[#6b6b6b]">{author.specialization}</span>
+            </div>
+            <div className="ml-auto flex flex-wrap gap-x-5 gap-y-1 text-xs text-[#6b6b6b]">
+              <time dateTime={post.date}>Опубликовано {formatPostDate(post.date)}</time>
+              {post.dateModified && post.dateModified !== post.date ? (
+                <time dateTime={post.dateModified}>
+                  Обновлено {formatPostDate(post.dateModified)}
+                </time>
+              ) : null}
+              <span>{post.readingTime}</span>
+            </div>
           </div>
-        </div>
+        </header>
 
         <div className="prose-article mx-auto mt-12 max-w-3xl">
           {blocks.map((block, index) => renderBlock(block, index))}

@@ -6,20 +6,31 @@ type MetadataInput = {
   description: string;
   path: string;
   keywords?: string[];
+  /** Override OG image manually (rare). Default: app/opengraph-image.tsx auto-binding. */
   imagePath?: string;
 };
-
-const DEFAULT_IMAGE_PATH = "/brand-mark.svg";
 
 export function buildMetadata({
   title,
   description,
   path,
   keywords = [],
-  imagePath = DEFAULT_IMAGE_PATH,
+  imagePath,
 }: MetadataInput): Metadata {
   const canonical = absoluteUrl(path);
-  const image = absoluteUrl(imagePath);
+
+  // Per-route opengraph-image.tsx files generate the OG/Twitter image automatically.
+  // Only fall back to manual image if explicitly provided.
+  const manualImages = imagePath
+    ? [
+        {
+          url: absoluteUrl(imagePath),
+          width: 1200,
+          height: 630,
+          alt: SITE_NAME,
+        },
+      ]
+    : undefined;
 
   return {
     metadataBase: new URL(SITE_URL),
@@ -33,8 +44,6 @@ export function buildMetadata({
       canonical,
       languages: {
         "ru-RU": canonical,
-        "ru-KZ": canonical,
-        "ru-BY": canonical,
         "x-default": canonical,
       },
     },
@@ -45,23 +54,28 @@ export function buildMetadata({
       siteName: SITE_NAME,
       title,
       description,
-      images: [
-        {
-          url: image,
-          width: 1200,
-          height: 630,
-          alt: "ChinaChild — онлайн-школа китайского языка",
-        },
-      ],
+      ...(manualImages ? { images: manualImages } : {}),
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [image],
+      ...(manualImages ? { images: manualImages.map((i) => i.url) } : {}),
     },
     other: {
       "format-detection": "telephone=no",
+    },
+    verification: {
+      google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+      yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION,
+      other: {
+        ...(process.env.NEXT_PUBLIC_BING_VERIFICATION
+          ? { "msvalidate.01": process.env.NEXT_PUBLIC_BING_VERIFICATION }
+          : {}),
+        ...(process.env.NEXT_PUBLIC_MAILRU_VERIFICATION
+          ? { "mailru-verification": process.env.NEXT_PUBLIC_MAILRU_VERIFICATION }
+          : {}),
+      },
     },
     robots: {
       index: true,
