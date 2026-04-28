@@ -331,7 +331,7 @@ select {
     inset 0 -1px 0 rgba(255,255,255,.35),
     0 10px 30px rgba(0,0,0,.05);
 
-  overflow: hidden;
+  overflow: visible;
 }
 
 .site-header-pill::before {
@@ -499,7 +499,7 @@ select {
 .floating-cta-glass {
   pointer-events: auto;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 
   padding: 12px;
   border-radius: 22px;
@@ -705,7 +705,7 @@ select {
   .site-header-pill,
   .floating-cta-glass {
     background: rgba(255, 255, 255, 0.94);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
+    bbackdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
   }
 }
