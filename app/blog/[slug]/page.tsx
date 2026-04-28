@@ -61,11 +61,20 @@ export async function generateMetadata({
     });
   }
 
+  const author = teachers.find((t) => t.slug === post.authorSlug) ?? teachers[0];
+
   return buildMetadata({
     title: `${post.title} | Блог ChinaChild`,
     description: post.description,
     path: `/blog/${post.slug}`,
     keywords: post.keywords,
+    article: {
+      publishedTime: post.date,
+      modifiedTime: post.dateModified,
+      authors: [author.name],
+      section: post.category,
+      tags: post.keywords,
+    },
   });
 }
 

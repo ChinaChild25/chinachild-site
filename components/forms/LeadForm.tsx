@@ -44,6 +44,60 @@ function readUtm(): Record<string, string> {
   return out;
 }
 
+type AnalyticsWindow = Window & {
+  ym?: (id: number, action: string, target?: string, params?: Record<string, unknown>) => void;
+  dataLayer?: Array<Record<string, unknown>>;
+  gtag?: (...args: unknown[]) => void;
+};
+
+/**
+ * Fire-and-forget conversion goal to every analytics surface that's loaded.
+ * Yandex.Metrika reachGoal "lead_submitted" + GA4 event + GTM dataLayer push.
+ * Counter ID read from the same env var as the Metrika component so it stays
+ * consistent.
+ */
+function trackLeadSubmitted(meta: { course?: string; source?: string }) {
+  if (typeof window === "undefined") return;
+  const win = window as AnalyticsWindow;
+  const counterIdRaw = process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID;
+  const counterId = counterIdRaw ? Number(counterIdRaw) : NaN;
+
+  try {
+    if (typeof win.ym === "function" && Number.isFinite(counterId)) {
+      win.ym(counterId, "reachGoal", "lead_submitted", {
+        course: meta.course,
+        source: meta.source,
+      });
+    }
+  } catch {
+    /* swallow analytics errors — never block UX */
+  }
+
+  try {
+    if (typeof win.gtag === "function") {
+      win.gtag("event", "generate_lead", {
+        event_category: "lead",
+        event_label: meta.source ?? "form",
+        course: meta.course,
+      });
+    }
+  } catch {
+    /* */
+  }
+
+  try {
+    if (Array.isArray(win.dataLayer)) {
+      win.dataLayer.push({
+        event: "lead_submitted",
+        course: meta.course,
+        source: meta.source,
+      });
+    }
+  } catch {
+    /* */
+  }
+}
+
 export default function LeadForm({ defaultCourse, source, compact }: LeadFormProps) {
   const nameId = useId();
   const phoneId = useId();
@@ -103,6 +157,7 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
         return;
       }
       setStatus("success");
+      trackLeadSubmitted({ course: payload.course, source: payload.source });
       event.currentTarget.reset();
     } catch (err) {
       setStatus("error");
@@ -132,13 +187,13 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
         <div className="flex flex-wrap gap-3 text-sm font-semibold">
           <a
             href={`tel:${CONTACT_PHONE_TEL}`}
-            className="rounded-full bg-[var(--ink)] px-5 py-2.5 text-white"
+            className="rounded-[14px] bg-[var(--ink)] px-5 py-3 text-white transition hover:bg-[#2a2a2a]"
           >
             Позвонить {CONTACT_PHONE}
           </a>
           <a
             href={`mailto:${CONTACT_EMAIL}`}
-            className="rounded-full border border-[rgba(0,0,0,0.12)] px-5 py-2.5"
+            className="rounded-[14px] border border-[rgba(0,0,0,0.12)] bg-white px-5 py-3 transition hover:bg-[#efefef]"
           >
             {CONTACT_EMAIL}
           </a>
@@ -151,7 +206,7 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
   const labelClass =
     "block text-xs font-semibold uppercase tracking-[0.08em] text-[#6b6b6b]";
   const inputClass =
-    "mt-1.5 w-full rounded-2xl border border-[rgba(0,0,0,0.12)] bg-white px-4 py-3 text-base text-[#1b1b1b] placeholder:text-[#9a9a9a] outline-none transition focus:border-[var(--ink)] focus:ring-2 focus:ring-[var(--ink)]/10";
+    "mt-1.5 w-full rounded-[14px] border border-[rgba(0,0,0,0.12)] bg-white px-4 py-3 text-base text-[#1b1b1b] placeholder:text-[#9a9a9a] outline-none transition focus:border-[var(--ink)] focus:ring-2 focus:ring-[var(--ink)]/10";
 
   return (
     <form
@@ -300,7 +355,7 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
       <button
         type="submit"
         disabled={status === "submitting"}
-        className="mt-1 inline-flex items-center justify-center rounded-full bg-[var(--ink)] px-6 py-3.5 text-base font-semibold text-white transition hover:bg-[#1f1f1f] disabled:cursor-not-allowed disabled:opacity-60"
+        className="mt-1 inline-flex h-[54px] items-center justify-center rounded-[18px] bg-[var(--ink)] px-7 text-base font-semibold text-white transition hover:bg-[#2a2a2a] active:bg-[#353535] disabled:cursor-not-allowed disabled:opacity-60"
       >
         {status === "submitting" ? "Отправляем…" : "Оставить заявку"}
       </button>

@@ -1,6 +1,7 @@
 import { getAllPosts } from "@/lib/blog";
 import { getAllGlossaryTerms } from "@/lib/glossary";
 import { absoluteUrl, INDEXNOW_KEY, SITE_URL } from "@/lib/site-config";
+import { teachers } from "@/lib/site-data";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -21,6 +22,7 @@ const STATIC_ROUTES = [
   "/cities/moscow",
   "/glossary",
   "/zayavka",
+  "/team",
 ];
 
 const HOST = new URL(SITE_URL).host;
@@ -82,7 +84,13 @@ export async function GET(request: Request) {
   const blogUrls = posts.map((post) => absoluteUrl(`/blog/${post.slug}`));
   const glossary = await getAllGlossaryTerms();
   const glossaryUrls = glossary.map((term) => absoluteUrl(`/glossary/${term.slug}`));
-  const urlList = [...STATIC_ROUTES.map(absoluteUrl), ...blogUrls, ...glossaryUrls];
+  const teamUrls = teachers.map((t) => absoluteUrl(`/team/${t.slug}`));
+  const urlList = [
+    ...STATIC_ROUTES.map(absoluteUrl),
+    ...blogUrls,
+    ...glossaryUrls,
+    ...teamUrls,
+  ];
 
   const results = await ping(urlList);
   return Response.json({ submitted: urlList.length, results });

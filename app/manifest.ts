@@ -18,5 +18,37 @@ export default function manifest(): MetadataRoute.Manifest {
       { src: "/icon.png", sizes: "192x192", type: "image/png", purpose: "any" },
       { src: "/apple-icon.png", sizes: "180x180", type: "image/png" },
     ],
+    // Quick-access shortcuts surface in long-press menus on Android, taskbar
+    // on Windows, and the dock on iOS once installed as PWA.
+    shortcuts: [
+      {
+        name: "Все курсы",
+        short_name: "Курсы",
+        description: "Каталог курсов китайского языка",
+        url: "/courses",
+        icons: [{ src: "/icon.png", sizes: "192x192" }],
+      },
+      {
+        name: "Подготовка к HSK",
+        short_name: "HSK",
+        description: "Целевая подготовка к экзамену HSK",
+        url: "/courses/hsk-preparation",
+        icons: [{ src: "/icon.png", sizes: "192x192" }],
+      },
+      {
+        name: "Оставить заявку",
+        short_name: "Заявка",
+        description: "Связаться с менеджером школы",
+        url: "/zayavka",
+        icons: [{ src: "/icon.png", sizes: "192x192" }],
+      },
+      {
+        name: "Блог",
+        short_name: "Блог",
+        description: "Статьи о китайском языке",
+        url: "/blog",
+        icons: [{ src: "/icon.png", sizes: "192x192" }],
+      },
+    ],
   };
 }

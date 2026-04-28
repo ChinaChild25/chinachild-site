@@ -1,6 +1,14 @@
 import type { Metadata } from "next";
 import { absoluteUrl, SITE_NAME, SITE_URL } from "@/lib/site-config";
 
+type ArticleMeta = {
+  publishedTime: string;
+  modifiedTime?: string;
+  authors?: string[];
+  section?: string;
+  tags?: string[];
+};
+
 type MetadataInput = {
   title: string;
   description: string;
@@ -8,6 +16,8 @@ type MetadataInput = {
   keywords?: string[];
   /** Override OG image manually (rare). Default: app/opengraph-image.tsx auto-binding. */
   imagePath?: string;
+  /** When set, OG type switches to "article" and emits article:* meta tags */
+  article?: ArticleMeta;
 };
 
 export function buildMetadata({
@@ -16,6 +26,7 @@ export function buildMetadata({
   path,
   keywords = [],
   imagePath,
+  article,
 }: MetadataInput): Metadata {
   const canonical = absoluteUrl(path);
 
@@ -47,15 +58,30 @@ export function buildMetadata({
         "x-default": canonical,
       },
     },
-    openGraph: {
-      type: "website",
-      locale: "ru_RU",
-      url: canonical,
-      siteName: SITE_NAME,
-      title,
-      description,
-      ...(manualImages ? { images: manualImages } : {}),
-    },
+    openGraph: article
+      ? {
+          type: "article",
+          locale: "ru_RU",
+          url: canonical,
+          siteName: SITE_NAME,
+          title,
+          description,
+          publishedTime: article.publishedTime,
+          modifiedTime: article.modifiedTime ?? article.publishedTime,
+          authors: article.authors,
+          section: article.section,
+          tags: article.tags,
+          ...(manualImages ? { images: manualImages } : {}),
+        }
+      : {
+          type: "website",
+          locale: "ru_RU",
+          url: canonical,
+          siteName: SITE_NAME,
+          title,
+          description,
+          ...(manualImages ? { images: manualImages } : {}),
+        },
     twitter: {
       card: "summary_large_image",
       title,

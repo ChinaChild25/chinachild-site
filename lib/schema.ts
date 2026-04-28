@@ -139,24 +139,47 @@ export function createTeacherNode(teacher: Teacher): JsonLd {
     "@type": "Person",
     "@id": ID.teacher(teacher.slug),
     name: teacher.name,
-    jobTitle: teacher.specialization,
-    description: teacher.credentials,
-    knowsAbout: ["китайский язык", "HSK", teacher.specialization],
+    jobTitle: teacher.jobTitle ?? teacher.specialization,
+    description: teacher.bio ?? teacher.credentials,
+    knowsAbout:
+      teacher.knowsAbout && teacher.knowsAbout.length > 0
+        ? teacher.knowsAbout
+        : ["китайский язык", "HSK", teacher.specialization],
     worksFor: { "@id": ID.organization },
+    url: `${SITE_URL}/team/${teacher.slug}`,
+    mainEntityOfPage: `${SITE_URL}/team/${teacher.slug}`,
   };
   if (teacher.image) {
     node.image = absoluteUrl(teacher.image);
+  }
+  if (teacher.alumniOf) {
+    node.alumniOf = {
+      "@type": "EducationalOrganization",
+      name: teacher.alumniOf,
+    };
+  }
+  if (teacher.sameAs && teacher.sameAs.length > 0) {
+    node.sameAs = teacher.sameAs;
   }
   return node;
 }
 
 export function createCourseNode(course: Course): JsonLd {
+  // Rolling enrollment: each cohort starts at the next month boundary,
+  // 3 months long. Yandex/Google reward Course nodes with concrete instances.
+  const now = new Date();
+  const startDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+  const endDate = new Date(now.getFullYear(), now.getMonth() + 4, 1);
+  const validUntil = new Date(now.getFullYear() + 1, now.getMonth(), 1);
+
   const offer: JsonLd = {
     "@type": "Offer",
     url: absoluteUrl(course.href),
     priceCurrency: "RUB",
     category: course.format,
     availability: "https://schema.org/InStock",
+    validFrom: now.toISOString().slice(0, 10),
+    priceValidUntil: validUntil.toISOString().slice(0, 10),
   };
   if (course.priceValue) {
     offer.price = course.priceValue;
@@ -180,6 +203,14 @@ export function createCourseNode(course: Course): JsonLd {
       courseMode: "online",
       courseWorkload: course.duration,
       inLanguage: "ru-RU",
+      startDate: startDate.toISOString().slice(0, 10),
+      endDate: endDate.toISOString().slice(0, 10),
+      eventStatus: "https://schema.org/EventScheduled",
+      eventAttendanceMode: "https://schema.org/OnlineEventAttendanceMode",
+      location: {
+        "@type": "VirtualLocation",
+        url: absoluteUrl(course.href),
+      },
       ...(course.timeRequiredIso ? { timeRequired: course.timeRequiredIso } : {}),
       ...(course.instructorSlug
         ? { instructor: { "@id": ID.teacher(course.instructorSlug) } }
@@ -226,6 +257,28 @@ export function createServiceNode(): JsonLd {
       ...(c.priceValue ? { price: c.priceValue } : {}),
       category: c.format,
     })),
+  };
+}
+
+export function createAggregateOfferNode(): JsonLd {
+  const prices = courses
+    .map((c) => (c.priceValue ? Number(c.priceValue) : NaN))
+    .filter((n) => Number.isFinite(n) && n > 0);
+  if (prices.length === 0) {
+    return {};
+  }
+  const lowPrice = Math.min(...prices);
+  const highPrice = Math.max(...prices);
+  return {
+    "@type": "AggregateOffer",
+    "@id": `${SITE_URL}#aggregate-offer`,
+    offerCount: courses.length,
+    priceCurrency: "RUB",
+    lowPrice: String(lowPrice),
+    highPrice: String(highPrice),
+    availability: "https://schema.org/InStock",
+    seller: { "@id": ID.organization },
+    itemOffered: courses.map((c) => ({ "@id": ID.course(c.slug) })),
   };
 }
 
@@ -295,21 +348,25 @@ export function createSiteGraph(): JsonLd {
     xpath: ["/html/head/title"],
   };
 
-  return {
-    "@context": "https://schema.org",
-    "@graph": [
-      createOrganizationNode(),
-      createWebsiteNode(),
-      createLogoNode(),
-      createAggregateRatingNode(),
-      createServiceNode(),
-      createHowToNode(),
-      speakable,
-      ...teachers.map((t) => createTeacherNode(t)),
-      ...courses.map((c) => createCourseNode(c)),
-      ...reviews.map((r) => createReviewNode(r)),
-    ],
-  };
+  const graph: JsonLd[] = [
+    createOrganizationNode(),
+    createWebsiteNode(),
+    createLogoNode(),
+    createAggregateRatingNode(),
+    createServiceNode(),
+    createHowToNode(),
+    speakable,
+    ...teachers.map((t) => createTeacherNode(t)),
+    ...courses.map((c) => createCourseNode(c)),
+    ...reviews.map((r) => createReviewNode(r)),
+  ];
+
+  const aggregateOffer = createAggregateOfferNode();
+  if (Object.keys(aggregateOffer).length > 0) {
+    graph.push(aggregateOffer);
+  }
+
+  return { "@context": "https://schema.org", "@graph": graph };
 }
 
 /**
