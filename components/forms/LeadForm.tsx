@@ -206,7 +206,7 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
   const labelClass =
     "block text-xs font-semibold uppercase tracking-[0.08em] text-[#6b6b6b]";
   const inputClass =
-    "mt-1.5 w-full rounded-[14px] border border-[rgba(0,0,0,0.12)] bg-white px-4 py-3 text-base text-[#1b1b1b] placeholder:text-[#9a9a9a] outline-none transition focus:border-[var(--ink)] focus:ring-2 focus:ring-[var(--ink)]/10";
+    "mt-1.5 w-full rounded-[12px] border border-[rgba(0,0,0,0.12)] bg-white px-4 py-3 text-base text-[#1b1b1b] placeholder:text-[#9a9a9a] outline-none transition focus:border-[var(--ink)] focus:ring-2 focus:ring-[var(--ink)]/10";
 
   return (
     <form

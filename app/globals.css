@@ -23,12 +23,17 @@
   --radius-card: 28px;
   --radius-card-lg: 32px;
 
-  /* Practicum-reference tokens — clear glass, NOT cream-tinted */
-  --header-glass-bg: rgba(255, 255, 255, 0.42);
-  --header-glass-border: rgba(255, 255, 255, 0.55);
-  --header-radius: 28px;
-  --header-btn-radius: 16px;
-  --cta-radius: 22px;
+  /* Practicum-reference tokens — matte frosted glass (NOT super-transparent),
+     proportional radii: heights ~4× larger than radius. */
+  --header-glass-bg: rgba(255, 255, 255, 0.78);
+  --header-glass-border: rgba(255, 255, 255, 0.65);
+  --header-radius: 20px;
+  --header-btn-radius: 12px;
+  --cta-radius: 18px;
+  --btn-radius-compact: 10px;
+  --btn-radius-default: 12px;
+  --btn-radius-large: 14px;
+  --chip-radius: 8px;
   --faq-card-bg: #f5f1e8;
   --faq-divider: rgba(0, 0, 0, 0.08);
 }
@@ -191,37 +196,38 @@ img {
 }
 
 /* Practicum-style rounded rectangles. Same shape language site-wide:
-   compact 12px → default 16px → large 18px → CTA 22px. NOT full pills. */
+   compact 10px → default 12px → large 14px → header CTA 12px → floating CTA 18px.
+   Roughly 4:1 height-to-radius ratio across the scale. NOT full pills. */
 .btn-pill {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 16px;
+  border-radius: var(--btn-radius-default);
   font-weight: 600;
   letter-spacing: -0.005em;
-  transition: transform 180ms ease, background 180ms ease, color 180ms ease;
+  transition: background 180ms ease, color 180ms ease;
   white-space: nowrap;
 }
 
 .btn-pill-default {
-  padding: 13px 22px;
+  padding: 0 22px;
   font-size: 0.95rem;
   height: 46px;
-  border-radius: 16px;
+  border-radius: var(--btn-radius-default);
 }
 
 .btn-pill-large {
-  padding: 16px 28px;
+  padding: 0 26px;
   font-size: 1rem;
   height: 54px;
-  border-radius: 18px;
+  border-radius: var(--btn-radius-large);
 }
 
 .btn-pill-compact {
-  padding: 9px 16px;
+  padding: 0 16px;
   font-size: 0.875rem;
   height: 38px;
-  border-radius: 12px;
+  border-radius: var(--btn-radius-compact);
 }
 
 .btn-ink {
@@ -263,12 +269,12 @@ img {
   background: rgba(0, 0, 0, 0.1);
 }
 
-/* Tag chips — small, slightly less radius than buttons */
+/* Tag chips — smallest in the scale */
 .tag-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  border-radius: 10px;
+  border-radius: var(--chip-radius);
   background: #ffffff;
   color: var(--foreground);
   padding: 7px 12px;
@@ -286,7 +292,7 @@ img {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  border-radius: 12px;
+  border-radius: 10px;
   background: rgba(255, 255, 255, 0.18);
   color: #ffffff;
   padding: 8px 14px;
@@ -362,14 +368,16 @@ img {
   width: min(1240px, 100%);
   margin: 0 auto;
   border-radius: var(--header-radius);
+  /* Matte frosted glass — high enough opacity that text is always readable
+     against any underlying section, but the heavy blur keeps the glassy feel. */
   background: var(--header-glass-bg);
   border: 1px solid var(--header-glass-border);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  backdrop-filter: blur(36px) saturate(180%);
+  -webkit-backdrop-filter: blur(36px) saturate(180%);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.6) inset,
-    0 8px 28px rgba(15, 23, 42, 0.06),
-    0 2px 8px rgba(15, 23, 42, 0.04);
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 6px 24px rgba(15, 23, 42, 0.07),
+    0 2px 6px rgba(15, 23, 42, 0.04);
 }
 
 .site-header-inner {
@@ -451,7 +459,8 @@ img {
   }
 }
 
-/* Header CTA — rounded rectangle (NOT a pill), bigger to match reference */
+/* Header CTA — rounded rectangle, ~44px tall, radius 12px (4:1 height-to-radius
+   matching the Practicum proportions) */
 .site-header-cta {
   display: inline-flex;
   align-items: center;
@@ -462,20 +471,23 @@ img {
   font-size: 0.95rem;
   font-weight: 600;
   letter-spacing: -0.005em;
-  padding: 14px 26px;
+  padding: 0 22px;
   white-space: nowrap;
   height: 44px;
-  transition: background 160ms ease, transform 160ms ease;
+  transition: background 160ms ease;
 }
 
 .site-header-cta:hover {
-  background: #1f1f1f;
-  transform: translateY(-1px);
+  background: #2a2a2a;
+}
+
+.site-header-cta:active {
+  background: #353535;
 }
 
 @media (prefers-reduced-transparency: reduce) {
   .site-header-pill {
-    background: rgba(255, 255, 255, 0.92);
+    background: rgba(255, 255, 255, 0.94);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
@@ -494,33 +506,36 @@ img {
   pointer-events: none;
 }
 
+/* Glass plate — same matte fill as the header to keep the language consistent */
 .floating-cta-glass {
   pointer-events: auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 10px;
-  border-radius: calc(var(--cta-radius) + 10px);
-  background: rgba(255, 255, 255, 0.42);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.55);
+  padding: 8px;
+  /* Outer plate radius = button radius + padding (keeps even gap) */
+  border-radius: calc(var(--cta-radius) + 8px);
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(36px) saturate(180%);
+  -webkit-backdrop-filter: blur(36px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.65);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.6) inset,
-    0 22px 56px rgba(15, 23, 42, 0.22),
-    0 6px 18px rgba(15, 23, 42, 0.14);
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 18px 48px rgba(15, 23, 42, 0.22),
+    0 4px 14px rgba(15, 23, 42, 0.14);
   transition: transform 220ms ease, box-shadow 220ms ease;
 }
 
 .floating-cta-glass:hover {
   transform: translateY(-2px);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.7) inset,
-    0 28px 64px rgba(15, 23, 42, 0.28),
-    0 8px 22px rgba(15, 23, 42, 0.18);
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 24px 56px rgba(15, 23, 42, 0.26),
+    0 6px 18px rgba(15, 23, 42, 0.16);
 }
 
-/* Rounded-rectangle button (NOT a full pill) — bigger, prominent */
+/* CTA button — bigger than typical nav buttons but radius proportional
+   (height ~3.5× radius). This is the brand emphasis button. */
 .floating-cta-btn {
   display: inline-flex;
   align-items: center;
@@ -529,9 +544,9 @@ img {
   background: var(--ink);
   color: #ffffff;
   font-weight: 600;
-  font-size: 1.05rem;
+  font-size: 1rem;
   letter-spacing: -0.005em;
-  padding: 18px 38px;
+  padding: 0 32px;
   height: 60px;
   white-space: nowrap;
   border: 0;
@@ -540,12 +555,16 @@ img {
 }
 
 .floating-cta-btn:hover {
-  background: #1f1f1f;
+  background: #2a2a2a;
+}
+
+.floating-cta-btn:active {
+  background: #353535;
 }
 
 @media (prefers-reduced-transparency: reduce) {
   .floating-cta-glass {
-    background: rgba(255, 255, 255, 0.92);
+    background: rgba(255, 255, 255, 0.94);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
