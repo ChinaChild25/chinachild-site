@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 /* ==========================================================================
-   Yandex Practicum — 1:1 Glass Header + Floating CTA
-   ВЕРСИЯ 2 — исправлено по скриншотам
+   Yandex Practicum — 1:1 EXACT COPY (verified via DevTools)
+   Версия 3 — финальная. Двухслойная архитектура хедера.
    ========================================================================== */
 
 :root {
@@ -13,18 +13,14 @@
   --muted-strong: #4e4e4e;
   --line: rgba(0, 0, 0, 0.08);
 
-  --ink: #1e1e1e;
+  --ink: #1e1e1e;          /* Яндекс: #1E1E1E */
+  --ink-btn: #262626;      /* Яндекс header-btn: #262626 */
 
   --violet: #d8d3ff;
   --cream: #e8e3d8;
   --lime: #dce9a7;
   --sky: #cddcee;
   --peach: #f7d7c6;
-
-  --radius-sm: 6px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 22px;
 
   --page-gutter: clamp(16px, 2.2vw, 36px);
 }
@@ -58,8 +54,8 @@ body {
     "Segoe UI",
     sans-serif;
 
-  padding-top: 56px; /* под фиксированную шапку */
-  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 100px); /* под нижнюю кнопку */
+  padding-top: 72px;  /* 8px top + 56px header + воздух */
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 110px);
 }
 
 img {
@@ -156,7 +152,7 @@ a:focus-visible {
 .card-block {
   position: relative;
   overflow: hidden;
-  border-radius: var(--radius-xl);
+  border-radius: 22px;
   padding: 28px;
 }
 
@@ -178,9 +174,12 @@ a:focus-visible {
 }
 
 /* ==========================================================================
-   BUTTONS — 1:1 Yandex .button-start__style
+   BUTTONS — 1:1 Yandex
+   .button-start__style: padding 18px 32px, bg #1E1E1E, color #fff, radius 50px
+   .header-btn: padding 8px 12px, bg #262626, color #fff, radius 4px
    ========================================================================== */
 
+/* Большие CTA кнопки (по странице) — стиль .button-start__style */
 .btn-pill,
 .btn-ink {
   display: inline-flex;
@@ -190,14 +189,15 @@ a:focus-visible {
   border: 0;
   cursor: pointer;
   font-weight: 500;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.005em;
   padding: 18px 32px;
-  border-radius: 6px;
-  font-size: 1rem;
+  border-radius: 50px;          /* Яндекс — пилюля */
+  font-size: 16px;
   line-height: 1;
   background: var(--ink);
   color: #ffffff;
   transition: background-color .2s ease;
+  outline: none;
 }
 
 .btn-pill:hover,
@@ -205,14 +205,19 @@ a:focus-visible {
   background: #2c2c2c;
 }
 
+/* Если хочешь прямоугольную (как старый стиль) — добавь .btn-square */
+.btn-square {
+  border-radius: 6px;
+}
+
 .btn-pill-large {
   padding: 22px 36px;
-  font-size: 1.05rem;
+  font-size: 17px;
 }
 
 .btn-pill-compact {
   padding: 12px 20px;
-  font-size: 0.9rem;
+  font-size: 14px;
 }
 
 .btn-white {
@@ -269,50 +274,61 @@ a:focus-visible {
 }
 
 /* ==========================================================================
-   HEADER — 1:1 Yandex .navbar-mobile
-   - position: fixed; top: 0; во ВСЮ ширину, БЕЗ отступов
-   - height: 56px
-   - background: rgba(255,255,255,0.8)
-   - backdrop-filter: blur(10px)
+   HEADER — ТОЧНАЯ КОПИЯ ЯНДЕКСА
+   Архитектура: ВНЕШНИЙ <header> прозрачный fixed,
+   ВНУТРЕННИЙ .site-header-wrapper несёт блюр + бордер + radius
    ========================================================================== */
 
 .site-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
   width: 100%;
-  height: 56px;
-  z-index: 500;
+  top: 8px;
+  position: fixed;
+  left: 0;
+  z-index: 1000;
 
-  background-color: rgba(255, 255, 255, 0.8);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
-
-  /* НЕТ overflow:hidden, НЕТ ::before/::after, НЕТ border, НЕТ shadow */
+  /* НИЧЕГО БОЛЬШЕ — только позиционирование. Никаких bg, blur, border. */
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
 }
 
-.site-header-inner {
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  height: 100%;
+.site-header-wrapper {
+  height: 56px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 22px;
+  width: 100%;
+  max-width: 1424px;
+  border-radius: 6px;
+  padding: 0 12px;
+  margin: 0 auto;
+  border: 1px solid #ffffff;
+  color: #1E1E1E;
+
+  /* ВОТ ТУТ ЖИВЁТ БЛЮР */
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.8);
+
+  box-sizing: border-box;
+}
+
+/* На широких экранах оставляем 8px поля по бокам — пилюля */
+@media (min-width: 1448px) {
+  .site-header-wrapper {
+    margin: 0 8px;
+    max-width: calc(100% - 16px);
+  }
 }
 
 .site-header-brand {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 10px;
+  color: #1E1E1E;
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: var(--ink);
   flex-shrink: 0;
 }
 
@@ -337,143 +353,133 @@ a:focus-visible {
   line-height: 1;
 }
 
-.site-header-nav {
-  margin: 0;
-  padding: 0;
-  list-style: none;
+.site-header-menu {
   display: none;
+  gap: 24px;
   align-items: center;
-  gap: 28px;
-  font-size: 0.92rem;
-  color: var(--ink);
+  margin-left: auto;
 }
 
 @media (min-width: 1024px) {
-  .site-header-nav {
+  .site-header-menu {
     display: flex;
   }
 }
 
+.site-header-nav {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 .site-header-link {
-  color: var(--ink);
-  transition: opacity 0.16s ease;
+  font-size: 16px;
+  line-height: 100%;
+  color: #1E1E1E;
+  text-decoration: none;
+  transition: opacity 200ms;
   cursor: pointer;
 }
 
 .site-header-link:hover {
-  opacity: 0.6;
+  opacity: .6;
 }
 
-.site-header-actions {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
-}
-
-/* CTA в шапке — компактная, как "Заказать звонок" у Яндекса */
+/* Кнопка в хедере — 1:1 .header-btn */
 .site-header-cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 36px;
-  padding: 0 16px;
-  border-radius: 6px;
-  background: var(--ink);
-  color: #fff;
-  font-weight: 500;
-  font-size: 0.88rem;
-  line-height: 1;
+  background: #262626;
+  color: #FFFFFF;
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 100%;
+  transition: background 200ms, color 200ms;
   white-space: nowrap;
   flex-shrink: 0;
-  border: 0;
-  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
   outline: none;
-  transition: background-color .2s ease;
 }
 
 .site-header-cta:hover {
-  background: #2c2c2c;
+  background: #323232;
+  color: #FFFFFF;
 }
 
-.site-header-cta:focus,
-.site-header-cta:focus-visible {
-  outline: none;
-  box-shadow: none;
+/* Бургер на мобиле */
+.site-header-burger {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 24px;
+  cursor: pointer;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  margin-left: auto;
+}
+
+.site-header-burger span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: #1E1E1E;
+  border-radius: 2px;
+}
+
+@media (min-width: 1024px) {
+  .site-header-burger {
+    display: none;
+  }
 }
 
 /* ==========================================================================
-   FLOATING CTA — нижняя кнопка "Оставить заявку" 1:1 Yandex
-   - УЗКАЯ, по центру
-   - Стекло обтекает кнопку плотно, не во всю ширину
+   FLOATING CTA — нижняя кнопка "Оставить заявку"
+   Яндекс: position fixed, bottom 0, центр, кнопка-пилюля
    ========================================================================== */
 
 .floating-cta-shell {
   position: fixed;
-  left: 50%;
-  bottom: 20px;
-  transform: translateX(-50%);
-  z-index: 400;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 900;
+  display: flex;
+  justify-content: center;
   pointer-events: none;
-  /* НЕТ width:100%, НЕТ left:0/right:0 */
-}
-
-.floating-cta-shell-inner {
-  pointer-events: auto;
-  display: inline-flex;
-  padding: 8px;
-  border-radius: 14px;
-  background-color: rgba(255, 255, 255, 0.7);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
 }
 
 .floating-cta-btn {
   /* Полная копия .button-start__style */
+  pointer-events: auto;
   padding: 18px 32px;
-  background-color: var(--ink);
-  color: #fff;
-  border-radius: 8px;
-  border: 0;
+  background: #1E1E1E;
+  color: #FFFFFF;
+  border-radius: 50px;
+  border: none;
   cursor: pointer;
+  font-size: 16px;
   font-weight: 500;
-  font-size: 1rem;
-  line-height: 1;
-  letter-spacing: -0.01em;
+  line-height: 100%;
+  min-width: 200px;
+  text-align: center;
   white-space: nowrap;
   outline: none;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
   transition: background-color .2s ease;
-
-  /* Узкая ширина — как у Яндекса */
-  min-width: 280px;
 }
 
 .floating-cta-btn:hover {
-  background-color: #2c2c2c;
+  background: #2c2c2c;
 }
 
-.floating-cta-btn:focus,
-.floating-cta-btn:focus-visible {
-  outline: none;
-  box-shadow: none;
-}
-
-/* На мобиле — на ширину экрана с отступами */
 @media (max-width: 640px) {
-  .floating-cta-shell {
-    left: 16px;
-    right: 16px;
-    bottom: 16px;
-    transform: none;
-  }
-
-  .floating-cta-shell-inner {
-    display: flex;
-    width: 100%;
-  }
-
   .floating-cta-btn {
     width: 100%;
     min-width: 0;
@@ -596,9 +602,8 @@ a:focus-visible {
   }
 
   .site-header-cta {
-    height: 34px;
-    padding: 0 14px;
-    font-size: 0.82rem;
+    padding: 6px 10px;
+    font-size: 14px;
   }
 
   .faq-card {
@@ -612,8 +617,7 @@ a:focus-visible {
    ========================================================================== */
 
 @media (prefers-reduced-transparency: reduce) {
-  .site-header,
-  .floating-cta-shell-inner {
+  .site-header-wrapper {
     background-color: rgba(255, 255, 255, 0.96);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
