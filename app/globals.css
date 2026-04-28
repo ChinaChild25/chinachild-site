@@ -54,7 +54,6 @@ body {
   background: var(--background);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  /* Pad bottom so the larger floating CTA never overlaps the page footer */
   padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 144px);
 }
 
@@ -202,9 +201,6 @@ img {
   color: #ffffff;
 }
 
-/* Practicum-style rounded rectangles. Same shape language site-wide:
-   compact 10px → default 12px → large 14px → header CTA 12px → floating CTA 18px.
-   Roughly 4:1 height-to-radius ratio across the scale. NOT full pills. */
 .btn-pill {
   display: inline-flex;
   align-items: center;
@@ -276,7 +272,6 @@ img {
   background: rgba(0, 0, 0, 0.1);
 }
 
-/* Tag chips — smallest in the scale */
 .tag-pill {
   display: inline-flex;
   align-items: center;
@@ -358,10 +353,6 @@ img {
   transform: translateY(0);
 }
 
-/* ---------------------------------------------------------------------------
-   Floating glass header — clear glass plate matching Practicum reference.
-   Rectangle-with-rounded-corners (NOT a pill), neutral white translucent fill.
-   --------------------------------------------------------------------------- */
 .site-header {
   position: sticky;
   top: 14px;
@@ -375,11 +366,14 @@ img {
   width: 100%;
   margin: 0 auto;
   border-radius: var(--header-radius);
-  background:
-    linear-gradient(180deg, var(--header-glass-bg-strong) 0%, var(--header-glass-bg) 100%);
+  background: linear-gradient(
+    180deg,
+    var(--header-glass-bg-strong) 0%,
+    var(--header-glass-bg) 100%
+  );
   border: 1px solid var(--header-glass-border);
   backdrop-filter: blur(20px) saturate(130%);
- -webkit-backdrop-filter: blur(20px) saturate(130%);
+  -webkit-backdrop-filter: blur(20px) saturate(130%);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.92) inset,
     0 18px 44px rgba(15, 23, 42, 0.08),
@@ -492,10 +486,6 @@ img {
   }
 }
 
-/* ---------------------------------------------------------------------------
-   Floating sticky lead CTA — large rounded-rectangle on glass plate.
-   Significantly bigger than typical pills, matching Practicum reference.
-   --------------------------------------------------------------------------- */
 .floating-cta-shell {
   position: fixed;
   bottom: 28px;
@@ -512,28 +502,28 @@ img {
   justify-content: center;
   padding: 12px;
   border-radius: 22px;
-  background:
-    linear-gradient(180deg, var(--header-glass-bg-strong) 0%, var(--header-glass-bg) 100%);
+  background: linear-gradient(
+    180deg,
+    var(--header-glass-bg-strong) 0%,
+    var(--header-glass-bg) 100%
+  );
   backdrop-filter: blur(20px) saturate(130%);
- -webkit-backdrop-filter: blur(20px) saturate(130%);
+  -webkit-backdrop-filter: blur(20px) saturate(130%);
   border: 1px solid var(--header-glass-border);
   box-shadow:
-    box-shadow:
-  0 1px 0 rgba(255, 255, 255, 1) inset,
-  0 -1px 0 rgba(255, 255, 255, 0.6) inset,  /* ← добавь снизу тоже */
-  0 18px 44px rgba(15, 23, 42, 0.08),
-  0 4px 12px rgba(15, 23, 42, 0.05);
-  
+    0 1px 0 rgba(255, 255, 255, 1) inset,
+    0 -1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 18px 44px rgba(15, 23, 42, 0.08),
+    0 4px 12px rgba(15, 23, 42, 0.05);
   transition: transform 220ms ease, box-shadow 220ms ease;
 }
 
 .floating-cta-glass:hover {
   box-shadow:
-  box-shadow:
-  0 1px 0 rgba(255, 255, 255, 1) inset,
-  0 -1px 0 rgba(255, 255, 255, 0.6) inset,  /* ← добавь снизу тоже */
-  0 18px 44px rgba(15, 23, 42, 0.08),
-  0 4px 12px rgba(15, 23, 42, 0.05);
+    0 1px 0 rgba(255, 255, 255, 1) inset,
+    0 -1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 18px 44px rgba(15, 23, 42, 0.08),
+    0 4px 12px rgba(15, 23, 42, 0.05);
 }
 
 .floating-cta-btn {
@@ -571,9 +561,6 @@ img {
   }
 }
 
-/* ---------------------------------------------------------------------------
-   FAQ — pixel-perfect cream card with +/× toggle, matching reference
-   --------------------------------------------------------------------------- */
 .faq-card {
   margin: 0 auto;
   max-width: 880px;
@@ -671,9 +658,6 @@ details[open] > .faq-summary .faq-toggle-cross {
   }
 }
 
-/* ---------------------------------------------------------------------------
-   Lead capture <dialog> — accessible native modal
-   --------------------------------------------------------------------------- */
 .lead-dialog {
   border: 0;
   padding: 0;
@@ -703,6 +687,7 @@ details[open] > .faq-summary .faq-toggle-cross {
     opacity: 0;
     transform: translateY(8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
