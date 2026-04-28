@@ -9,7 +9,7 @@ type MetadataInput = {
   imagePath?: string;
 };
 
-const DEFAULT_IMAGE_PATH = "/hero-classroom.svg";
+const DEFAULT_IMAGE_PATH = "/brand-mark.svg";
 
 export function buildMetadata({
   title,
@@ -25,6 +25,9 @@ export function buildMetadata({
     metadataBase: new URL(SITE_URL),
     title,
     description,
+    applicationName: SITE_NAME,
+    category: "education",
+    referrer: "origin-when-cross-origin",
     keywords,
     alternates: {
       canonical,
@@ -56,6 +59,9 @@ export function buildMetadata({
       title,
       description,
       images: [image],
+    },
+    other: {
+      "format-detection": "telephone=no",
     },
     robots: {
       index: true,

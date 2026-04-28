@@ -1,6 +1,5 @@
-import Image from "next/image";
 import JsonLd from "@/components/seo/JsonLd";
-import { Sparkle } from "@/components/decor/Decor";
+import Avatar from "@/components/ui/Avatar";
 import Reveal from "@/components/ui/Reveal";
 import SectionShell from "@/components/ui/SectionShell";
 import { createAggregateRatingSchema, createReviewSchemas } from "@/lib/schema";
@@ -11,14 +10,12 @@ export default function ReviewsSection() {
     <SectionShell
       id="otzyvy"
       title="Отзывы наших учеников"
-      description={`Средняя оценка ${siteFacts.aggregateRating} из 5 — на основе отзывов на странице школы и Тильда-форме обратной связи.`}
+      description={`Средняя оценка ${siteFacts.aggregateRating} из 5 — на основе отзывов на сайте chinachild.ru.`}
     >
       <JsonLd data={[createAggregateRatingSchema(), ...createReviewSchemas()]} />
       <div className="grid gap-5 lg:grid-cols-[0.4fr_1.6fr]">
         <Reveal>
-          <article className="card-block card-violet relative h-full overflow-hidden">
-            <Sparkle className="pointer-events-none absolute right-6 top-8 h-6 w-6 opacity-50" />
-            <Sparkle className="pointer-events-none absolute right-12 bottom-12 h-8 w-8 opacity-40" />
+          <article className="card-block card-violet h-full">
             <div className="text-sm font-semibold uppercase tracking-[0.08em] text-white/70">
               Средняя оценка
             </div>
@@ -26,10 +23,12 @@ export default function ReviewsSection() {
               {siteFacts.aggregateRating}
               <span className="text-3xl text-white/70"> / 5</span>
             </div>
-            <div className="mt-6 flex gap-1 text-xl text-[#FFE066]">★★★★★</div>
+            <div className="mt-6 flex gap-1 text-xl text-[#FFE066]" aria-hidden>
+              ★★★★★
+            </div>
             <p className="mt-6 text-sm leading-7 text-white/85">
-              Лицензированная программа, опытные преподаватели и удобный личный
-              кабинет — три причины, по которым ученики продолжают обучение.
+              Лицензированная программа, преподаватели ЮФУ и ДГТУ и удобный
+              личный кабинет — три причины, по которым ученики продолжают обучение.
             </p>
           </article>
         </Reveal>
@@ -39,13 +38,7 @@ export default function ReviewsSection() {
             <Reveal key={review.author}>
               <article className="card-block card-cream-soft h-full">
                 <div className="flex items-center gap-4">
-                  <Image
-                    src={review.image}
-                    alt={review.author}
-                    width={72}
-                    height={72}
-                    className="h-14 w-14 rounded-full object-cover"
-                  />
+                  <Avatar name={review.author} size={56} />
                   <div>
                     <h3 className="text-base font-bold tracking-[-0.02em] text-[#1b1b1b]">
                       {review.author}

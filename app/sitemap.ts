@@ -6,80 +6,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const posts = await getAllPosts();
   const now = new Date();
 
-  const staticRoutes: MetadataRoute.Sitemap = [
-    {
-      url: absoluteUrl("/"),
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 1,
-      images: [absoluteUrl("/hero-classroom.svg")],
-    },
-    {
-      url: absoluteUrl("/onlajn-kursy"),
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.95,
-    },
-    {
-      url: absoluteUrl("/hsk"),
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.95,
-    },
-    {
-      url: absoluteUrl("/kursy"),
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.92,
-    },
-    {
-      url: absoluteUrl("/test-hsk"),
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.9,
-    },
-    {
-      url: absoluteUrl("/dlya-vzroslyh"),
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
-      url: absoluteUrl("/dlya-detej"),
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.88,
-    },
-    {
-      url: absoluteUrl("/dlya-podrostkov"),
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.86,
-    },
-    {
-      url: absoluteUrl("/dlya-biznesa"),
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.82,
-    },
-    {
-      url: absoluteUrl("/prepodavateli"),
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.78,
-    },
-    {
-      url: absoluteUrl("/blog"),
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.75,
-    },
-    {
-      url: absoluteUrl("/privacy-policy"),
-      lastModified: now,
-      changeFrequency: "yearly",
-      priority: 0.28,
-    },
+  const routes: MetadataRoute.Sitemap = [
+    { url: absoluteUrl("/"), lastModified: now, changeFrequency: "weekly", priority: 1 },
+
+    // Money pages — high priority
+    { url: absoluteUrl("/courses"), lastModified: now, changeFrequency: "weekly", priority: 0.95 },
+    { url: absoluteUrl("/courses/online-chinese"), lastModified: now, changeFrequency: "weekly", priority: 0.93 },
+    { url: absoluteUrl("/courses/hsk-preparation"), lastModified: now, changeFrequency: "weekly", priority: 0.93 },
+    { url: absoluteUrl("/courses/chinese-for-adults"), lastModified: now, changeFrequency: "weekly", priority: 0.92 },
+    { url: absoluteUrl("/courses/chinese-for-kids"), lastModified: now, changeFrequency: "weekly", priority: 0.92 },
+    { url: absoluteUrl("/courses/business-chinese"), lastModified: now, changeFrequency: "weekly", priority: 0.88 },
+
+    // Trust pages — strong E-E-A-T
+    { url: absoluteUrl("/about"), lastModified: now, changeFrequency: "monthly", priority: 0.82 },
+    { url: absoluteUrl("/methodology"), lastModified: now, changeFrequency: "monthly", priority: 0.82 },
+    { url: absoluteUrl("/results"), lastModified: now, changeFrequency: "monthly", priority: 0.78 },
+    { url: absoluteUrl("/reviews"), lastModified: now, changeFrequency: "weekly", priority: 0.78 },
+
+    // Blog hub
+    { url: absoluteUrl("/blog"), lastModified: now, changeFrequency: "weekly", priority: 0.8 },
+
+    // Legal
+    { url: absoluteUrl("/privacy-policy"), lastModified: now, changeFrequency: "yearly", priority: 0.25 },
   ];
 
   const blogRoutes: MetadataRoute.Sitemap = posts.map((post) => ({
@@ -89,5 +37,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticRoutes, ...blogRoutes];
+  return [...routes, ...blogRoutes];
 }

@@ -6,38 +6,38 @@ type LinkItem = { title: string; href: string; description: string; tone: string
 const defaultItems: LinkItem[] = [
   {
     title: "Подготовка к HSK 1–6",
-    href: "/hsk",
+    href: "/courses/hsk-preparation",
     description: "Все уровни международного экзамена в одном маршруте — от базы до продвинутого.",
     tone: "card-violet-soft",
   },
   {
-    title: "Тест на уровень",
-    href: "/test-hsk",
-    description: "Бесплатное онлайн-тестирование за 10 минут. По итогу — рекомендация курса.",
+    title: "Онлайн-курсы китайского",
+    href: "/courses/online-chinese",
+    description: "Программа для тех, кто никогда не учил китайский. С телефона или ноутбука.",
     tone: "card-cream",
   },
   {
-    title: "Онлайн-курсы с нуля",
-    href: "/onlajn-kursy",
-    description: "Программа для тех, кто никогда не учил китайский. С телефона или ноутбука.",
-    tone: "card-lime-soft",
-  },
-  {
     title: "Школьникам 12+",
-    href: "/dlya-detej",
+    href: "/courses/chinese-for-kids",
     description: "Индивидуальный курс с преподавателем — скидка 10% при оплате за 2 месяца.",
     tone: "card-sky",
   },
   {
     title: "Взрослым с нуля",
-    href: "/dlya-vzroslyh",
+    href: "/courses/chinese-for-adults",
     description: "Лицензированный курс HSK 1–2 — разговорный уровень за 6 месяцев.",
     tone: "card-peach-soft",
   },
   {
-    title: "Преподаватели школы",
-    href: "/prepodavateli",
-    description: "Команда из выпускников ЮФУ и ДГТУ с опытом 10+ лет, плюс носитель языка.",
+    title: "Бизнес-китайский",
+    href: "/courses/business-chinese",
+    description: "Корпоративные мини-группы, отчётность для HR и закрывающие документы.",
+    tone: "card-lime-soft",
+  },
+  {
+    title: "О школе и лицензия",
+    href: "/about",
+    description: "Команда из выпускников ЮФУ и ДГТУ с опытом 10+ лет, лицензия Москвы.",
     tone: "card-cream-soft",
   },
 ];
@@ -52,8 +52,8 @@ export default function RelatedLinks({ items = defaultItems }: { items?: LinkIte
         </p>
       </div>
       <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-        {items.map((item, idx) => (
-          <Reveal key={item.href} delay={idx * 0.04}>
+        {items.map((item) => (
+          <Reveal key={item.href}>
             <Link
               href={item.href}
               className={`card-block group flex h-full flex-col transition hover:-translate-y-1 ${item.tone}`}

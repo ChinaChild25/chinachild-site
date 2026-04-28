@@ -170,11 +170,10 @@ export function createAggregateRatingSchema(): JsonLd {
 }
 
 export function createPersonSchema(teacher: Teacher): JsonLd {
-  return {
+  const base: JsonLd = {
     "@context": "https://schema.org",
     "@type": "Person",
     name: teacher.name,
-    image: absoluteUrl(teacher.image),
     jobTitle: teacher.specialization,
     worksFor: {
       "@type": "EducationalOrganization",
@@ -184,6 +183,10 @@ export function createPersonSchema(teacher: Teacher): JsonLd {
     knowsAbout: ["китайский язык", "HSK", teacher.specialization],
     description: teacher.credentials,
   };
+  if (teacher.image) {
+    base.image = absoluteUrl(teacher.image);
+  }
+  return base;
 }
 
 export function createBreadcrumbSchema(items: BreadcrumbItem[]): JsonLd {
