@@ -1,10 +1,11 @@
 import Link from "next/link";
 import JsonLd from "@/components/seo/JsonLd";
+import FAQSection from "@/components/sections/FAQSection";
 import PageHero from "@/components/layout/PageHero";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import { buttonStyles } from "@/components/ui/button";
 import { REGISTER_URL } from "@/lib/site-config";
-import { createCourseSchema, createFaqSchema, type JsonLd as JsonLdType } from "@/lib/schema";
+import { createCourseSchema, type JsonLd as JsonLdType } from "@/lib/schema";
 import type { Course, FaqItem } from "@/lib/site-data";
 
 type Bullet = { title: string; body: string; tone: "violet-soft" | "cream" | "lime-soft" | "sky" | "peach-soft" | "cream-soft" };
@@ -52,7 +53,6 @@ export default function CourseLanding({
         ]}
       />
       <JsonLd data={createCourseSchema(schemaCourse) as JsonLdType} id={`course-${schemaCourse.slug}-schema`} />
-      <JsonLd data={createFaqSchema(faqs)} id={`course-${schemaCourse.slug}-faq`} />
 
       <PageHero
         variant={pageHero.variant ?? "violet"}
@@ -63,7 +63,7 @@ export default function CourseLanding({
         secondaryCta={{ label: "Все курсы", href: "/courses" }}
       />
 
-      <section className="page-shell section-space">
+      <section className="page-shell-wide section-space">
         <div className="grid gap-5 md:grid-cols-3">
           {bullets.map((b) => (
             <article key={b.title} className={`card-block h-full ${toneClass[b.tone]}`}>
@@ -74,7 +74,7 @@ export default function CourseLanding({
         </div>
       </section>
 
-      <section className="page-shell section-space">
+      <section className="page-shell-wide section-space">
         <div className="card-block card-block-lg card-cream">
           <h2 className="text-3xl font-bold tracking-[-0.035em] text-[#1b1b1b] sm:text-4xl">
             {longCopy.heading}
@@ -87,30 +87,14 @@ export default function CourseLanding({
         </div>
       </section>
 
-      <section className="page-shell section-space">
-        <div className="mx-auto max-w-3xl">
-          <h2 className="section-title text-center">Вопросы и ответы</h2>
-          <div className="mt-12 divide-y divide-[rgba(0,0,0,0.08)] border-y border-[rgba(0,0,0,0.08)]">
-            {faqs.map((f) => (
-              <details key={f.question} className="group py-6">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-semibold text-[#1b1b1b] sm:text-lg">
-                  <span>{f.question}</span>
-                  <span
-                    aria-hidden
-                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[rgba(0,0,0,0.12)] text-xl font-light text-[#1b1b1b] transition group-open:rotate-45"
-                  >
-                    +
-                  </span>
-                </summary>
-                <p className="mt-4 text-sm leading-7 text-[#4b4b4b]">{f.answer}</p>
-              </details>
-            ))}
-          </div>
-        </div>
-      </section>
+      <FAQSection
+        title="Вопросы и ответы"
+        items={faqs}
+        schemaId={`course-${schemaCourse.slug}-faq`}
+      />
 
       {related && related.length > 0 ? (
-        <section className="page-shell section-space">
+        <section className="page-shell-wide section-space">
           <div className="card-block card-block-lg card-violet-soft">
             <h2 className="text-2xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
               Связанные страницы
@@ -130,7 +114,7 @@ export default function CourseLanding({
         </section>
       ) : null}
 
-      <section className="page-shell section-space">
+      <section className="page-shell-wide section-space">
         <div className="card-block card-block-lg card-violet">
           <h2 className="text-3xl font-bold tracking-[-0.035em] text-white sm:text-4xl">
             Готовы начать?

@@ -19,7 +19,7 @@ export default function SectionShell({
 }: SectionShellProps) {
   return (
     <section id={id} className={cn("section-space", className)}>
-      <div className="page-shell">
+      <div className="page-shell-wide">
         <div
           className={cn(
             align === "center" ? "section-head-center mx-auto max-w-3xl" : "max-w-3xl",

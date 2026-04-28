@@ -83,7 +83,7 @@ export default function ResultsPage() {
         secondaryCta={{ label: "Все курсы", href: "/courses" }}
       />
 
-      <section className="page-shell section-space">
+      <section className="page-shell-wide section-space">
         <div className="grid gap-5 md:grid-cols-3">
           {outcomes.map((o) => (
             <article key={o.title} className={`card-block h-full ${o.card}`}>
@@ -96,7 +96,7 @@ export default function ResultsPage() {
         </div>
       </section>
 
-      <section className="page-shell section-space">
+      <section className="page-shell-wide section-space">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="section-title">Кейсы учеников</h2>
           <p className="section-description">
@@ -117,7 +117,7 @@ export default function ResultsPage() {
         </div>
       </section>
 
-      <section className="page-shell section-space">
+      <section className="page-shell-wide section-space">
         <div className="card-block card-block-lg card-violet">
           <h2 className="text-3xl font-bold tracking-[-0.035em] text-white sm:text-4xl">
             Хотите такой же результат?

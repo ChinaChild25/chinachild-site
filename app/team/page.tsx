@@ -44,7 +44,7 @@ export default function TeamPage() {
         secondaryCta={{ label: "О школе", href: "/about" }}
       />
 
-      <section className="page-shell section-space">
+      <section className="page-shell-wide section-space">
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {teachers.map((teacher, idx) => (
             <Reveal key={teacher.slug}>

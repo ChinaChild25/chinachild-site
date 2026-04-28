@@ -154,7 +154,7 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
           ) : null}
         </div>
 
-        <aside className="page-shell mt-16">
+        <aside className="page-shell-wide mt-16">
           <div className="card-block card-cream">
             <h2 className="text-xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
               Записаться к {teacher.name.split(" ")[0]}

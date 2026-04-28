@@ -43,7 +43,7 @@ export default function ReviewsPage() {
         secondaryCta={{ label: "Записаться на пробное", href: REGISTER_URL }}
       />
 
-      <section className="page-shell section-space">
+      <section className="page-shell-wide section-space">
         <div className="grid gap-5 md:grid-cols-2">
           {reviews.map((review) => (
             <article key={review.author} className="card-block card-cream-soft h-full">
@@ -65,7 +65,7 @@ export default function ReviewsPage() {
         </div>
       </section>
 
-      <section className="page-shell section-space">
+      <section className="page-shell-wide section-space">
         <div className="card-block card-block-lg card-violet">
           <h2 className="text-3xl font-bold tracking-[-0.035em] text-white sm:text-4xl">
             Хотите свой результат?

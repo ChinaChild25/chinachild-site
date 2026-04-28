@@ -77,7 +77,7 @@ export default function MethodologyPage() {
         secondaryCta={{ label: "О школе", href: "/about" }}
       />
 
-      <section className="page-shell section-space">
+      <section className="page-shell-wide section-space">
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {stages.map((s, idx) => (
             <article key={s.title} className={`card-block h-full ${s.card}`}>
@@ -91,7 +91,7 @@ export default function MethodologyPage() {
         </div>
       </section>
 
-      <section className="page-shell section-space">
+      <section className="page-shell-wide section-space">
         <div className="card-block card-block-lg card-cream-soft">
           <h2 className="text-3xl font-bold tracking-[-0.035em] text-[#1b1b1b] sm:text-4xl">
             Принципы методики

@@ -40,7 +40,7 @@ export default async function BlogPage() {
         description="Методика, разбор HSK, советы родителям и истории учеников — всё, что помогает учиться эффективнее."
       />
 
-      <section className="page-shell section-space">
+      <section className="page-shell-wide section-space">
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {posts.map((post, index) => (
             <Link

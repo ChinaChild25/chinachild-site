@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { CONTACT_PHONE, CONTACT_PHONE_TEL } from "@/lib/site-config";
 
@@ -24,7 +25,13 @@ export default function Header() {
             aria-label="ChinaChild — на главную"
           >
             <span aria-hidden className="site-header-mark">
-              中
+              <Image
+                src="/brand/logo.svg"
+                alt=""
+                width={34}
+                height={34}
+                className="site-header-mark-image"
+              />
             </span>
             <span className="site-header-wordmark">ChinaChild</span>
           </Link>

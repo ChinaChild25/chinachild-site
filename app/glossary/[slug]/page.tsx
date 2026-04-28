@@ -119,7 +119,7 @@ export default async function GlossaryTermPage({ params }: GlossaryTermPageProps
         </div>
 
         {related.length > 0 ? (
-          <aside className="page-shell mt-16">
+          <aside className="page-shell-wide mt-16">
             <div className="card-block card-cream">
               <h2 className="text-xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
                 Связанные термины

@@ -82,7 +82,7 @@ export default function CoursesIndexPage() {
         secondaryCta={{ label: "О школе", href: "/about" }}
       />
 
-      <section className="page-shell section-space">
+      <section className="page-shell-wide section-space">
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {courses.map((c) => (
             <Link
@@ -103,7 +103,7 @@ export default function CoursesIndexPage() {
         </div>
       </section>
 
-      <section className="page-shell section-space">
+      <section className="page-shell-wide section-space">
         <div className="card-block card-block-lg card-cream">
           <h2 className="text-3xl font-bold tracking-[-0.035em] text-[#1b1b1b] sm:text-4xl">
             Какой курс китайского выбрать

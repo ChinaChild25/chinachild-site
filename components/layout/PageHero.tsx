@@ -30,7 +30,7 @@ export default function PageHero({
 }: PageHeroProps) {
   const onDark = isLight(variant);
   return (
-    <section className="page-shell pt-4 pb-10 sm:pt-6 lg:pb-14">
+    <section className="page-shell-wide pt-4 pb-10 sm:pt-6 lg:pb-14">
       <div className={cn("card-block card-block-lg", variantClasses[variant])}>
         <div className="max-w-3xl">
           {eyebrow ? (

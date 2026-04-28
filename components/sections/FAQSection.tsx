@@ -2,22 +2,42 @@ import JsonLd from "@/components/seo/JsonLd";
 import Reveal from "@/components/ui/Reveal";
 import SectionShell from "@/components/ui/SectionShell";
 import { createFaqSchema } from "@/lib/schema";
-import { faqs } from "@/lib/site-data";
+import { faqs, type FaqItem } from "@/lib/site-data";
 
-export default function FAQSection() {
+type FAQSectionProps = {
+  id?: string;
+  title?: string;
+  description?: string;
+  items?: FaqItem[];
+  schemaId?: string;
+};
+
+export default function FAQSection({
+  id = "faq",
+  title = "Отвечаем на вопросы",
+  description,
+  items = faqs,
+  schemaId = "faq-schema",
+}: FAQSectionProps) {
+  const resolvedDescription =
+    description ??
+    (items === faqs && title === "Отвечаем на вопросы"
+      ? "Если не нашли свой вопрос — напишите, и мы ответим лично в течение рабочего дня."
+      : undefined);
+
   return (
     <SectionShell
-      id="faq"
-      title="Отвечаем на вопросы"
-      description="Если не нашли свой вопрос — напишите, и мы ответим лично в течение рабочего дня."
+      id={id}
+      title={title}
+      description={resolvedDescription}
     >
-      <JsonLd data={createFaqSchema(faqs)} id="faq-schema" />
+      <JsonLd data={createFaqSchema(items)} id={schemaId} />
       <div
         className="faq-card"
         itemScope
         itemType="https://schema.org/FAQPage"
       >
-        {faqs.map((item) => (
+        {items.map((item) => (
           <Reveal key={item.question}>
             <details
               className="faq-row"

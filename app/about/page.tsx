@@ -47,7 +47,7 @@ export default function AboutPage() {
         secondaryCta={{ label: "Методика школы", href: "/methodology" }}
       />
 
-      <section className="page-shell section-space">
+      <section className="page-shell-wide section-space">
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           <div className="card-block card-violet-soft">
             <div className="text-4xl font-bold tracking-[-0.04em] text-[#1b1b1b]">10+</div>
@@ -76,7 +76,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="page-shell section-space">
+      <section className="page-shell-wide section-space">
         <div className="card-block card-block-lg card-cream">
           <h2 className="text-3xl font-bold tracking-[-0.035em] text-[#1b1b1b] sm:text-4xl">
             Как устроена школа
@@ -104,7 +104,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="page-shell section-space">
+      <section className="page-shell-wide section-space">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="section-title">Команда</h2>
           <p className="section-description">
@@ -132,7 +132,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="page-shell section-space">
+      <section className="page-shell-wide section-space">
         <div className="card-block card-block-lg card-violet-soft">
           <h2 className="text-3xl font-bold tracking-[-0.035em] text-[#1b1b1b] sm:text-4xl">
             Лицензия и документы
@@ -161,7 +161,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="page-shell section-space">
+      <section className="page-shell-wide section-space">
         <div className="card-block card-block-lg card-violet">
           <div className="grid gap-6 lg:grid-cols-2">
             <div>

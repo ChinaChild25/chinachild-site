@@ -52,7 +52,7 @@ export default async function GlossaryPage() {
         secondaryCta={{ label: "Все курсы", href: "/courses" }}
       />
 
-      <section className="page-shell section-space">
+      <section className="page-shell-wide section-space">
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {terms.map((term, idx) => (
             <Reveal key={term.slug}>

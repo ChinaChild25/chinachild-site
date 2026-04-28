@@ -44,7 +44,7 @@ const defaultItems: LinkItem[] = [
 
 export default function RelatedLinks({ items = defaultItems }: { items?: LinkItem[] }) {
   return (
-    <section className="page-shell section-space">
+    <section className="page-shell-wide section-space">
       <div className="mx-auto max-w-3xl text-center">
         <h2 className="section-title">Перейти к разделу</h2>
         <p className="section-description">

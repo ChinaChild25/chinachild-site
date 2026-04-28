@@ -13,7 +13,7 @@ const proofPoints = [
 
 export default function HeroSection() {
   return (
-    <section className="page-shell pt-10 pb-12 sm:pt-16 lg:pt-20 lg:pb-20">
+    <section className="page-shell-wide pt-10 pb-12 sm:pt-16 lg:pt-20 lg:pb-20">
       <JsonLd data={createEducationalOrganizationSchema()} id="home-edu-org-schema" />
 
       <div className="mx-auto max-w-4xl text-center">

@@ -26,7 +26,7 @@ export default function ZayavkaPage() {
         ]}
       />
 
-      <section className="page-shell section-space">
+      <section className="page-shell-wide section-space">
         <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="max-w-xl">
             <span className="tag-pill">Заявка</span>

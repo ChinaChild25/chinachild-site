@@ -13,7 +13,7 @@ import {
 export default function Footer() {
   return (
     <footer className="border-t border-[rgba(0,0,0,0.06)] bg-[#f6f5f2] py-16 text-[#1b1b1b]">
-      <div className="page-shell grid gap-10 md:grid-cols-[1.2fr_0.8fr]">
+      <div className="page-shell-wide grid gap-10 md:grid-cols-[1.2fr_0.8fr]">
         <div className="max-w-xl">
           <div className="text-2xl font-bold tracking-[-0.03em]">ChinaChild</div>
           <p className="mt-4 text-sm leading-7 text-[#6b6b6b]">
@@ -49,7 +49,7 @@ export default function Footer() {
           ))}
         </nav>
       </div>
-      <div className="page-shell mt-10 border-t border-[rgba(0,0,0,0.08)] pt-6 text-xs leading-6 text-[#9a9a9a]">
+      <div className="page-shell-wide mt-10 border-t border-[rgba(0,0,0,0.08)] pt-6 text-xs leading-6 text-[#9a9a9a]">
         © {new Date().getFullYear()} ChinaChild. Образовательная лицензия выдана{" "}
         {LICENSE_REGION} на программу {LICENSE_PROGRAM}. Налоговый вычет 13% — до 15 600 ₽ в год.
       </div>
