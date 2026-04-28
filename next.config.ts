@@ -1,13 +1,60 @@
 import type { NextConfig } from "next";
 
+const securityHeaders = [
+  // Strict transport — Vercel edge sets HSTS for apex anyway, but be explicit
+  {
+    key: "Strict-Transport-Security",
+    value: "max-age=63072000; includeSubDomains; preload",
+  },
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "X-Frame-Options", value: "SAMEORIGIN" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  {
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+  },
+  {
+    // Permissive CSP that allows Yandex.Metrika, our own assets, Google Fonts
+    // and inline scripts/styles required by Next.js. Tighten with nonces later.
+    key: "Content-Security-Policy",
+    value: [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://mc.yandex.ru https://mc.webvisor.org https://mc.webvisor.com https://yastatic.net https://*.vercel-insights.com https://va.vercel-scripts.com",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "font-src 'self' data: https://fonts.gstatic.com",
+      "img-src 'self' data: blob: https://mc.yandex.ru https://yandex.ru https://*.vercel.app",
+      "connect-src 'self' https://mc.yandex.ru https://*.yandex.ru https://*.vercel-insights.com https://vitals.vercel-insights.com",
+      "frame-src https://mc.yandex.ru",
+      "frame-ancestors 'self'",
+      "base-uri 'self'",
+      "form-action 'self'",
+      "upgrade-insecure-requests",
+    ].join("; "),
+  },
+];
+
+const sitemapHeaders = [
+  { key: "Content-Type", value: "application/xml; charset=utf-8" },
+  { key: "Cache-Control", value: "public, max-age=3600, must-revalidate" },
+];
+
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  trailingSlash: false,
+  compress: true,
   images: {
     formats: ["image/avif", "image/webp"],
   },
+  async headers() {
+    return [
+      { source: "/:path*", headers: securityHeaders },
+      { source: "/sitemap.xml", headers: sitemapHeaders },
+      { source: "/feed.xml", headers: sitemapHeaders },
+    ];
+  },
   async redirects() {
     return [
-      // Old Russian-slug routes → new English-slug structure (permanent 301)
+      // Old Russian-slug routes → new English-slug structure (permanent 308 ≡ 301)
       { source: "/kursy", destination: "/courses", permanent: true },
       { source: "/onlajn-kursy", destination: "/courses/online-chinese", permanent: true },
       { source: "/hsk", destination: "/courses/hsk-preparation", permanent: true },

@@ -1,10 +1,16 @@
 import { ImageResponse } from "next/og";
-import { getBlogPostBySlug } from "@/lib/blog";
+import { getBlogPostBySlug, getBlogPostSlugs } from "@/lib/blog";
 
 export const runtime = "nodejs";
+export const dynamic = "force-static";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export const alt = "Блог ChinaChild";
+
+export async function generateStaticParams() {
+  const slugs = await getBlogPostSlugs();
+  return slugs.map((slug) => ({ slug }));
+}
 
 type Params = { params: Promise<{ slug: string }> };
 

@@ -13,6 +13,11 @@ export const TAX_DEDUCTION_MAX = "до 15 600 ₽ в год";
 export const LICENSE_REGION = "Департамент образования и науки города Москвы";
 export const LICENSE_PROGRAM = "HSK 1-2";
 
+// IndexNow — both Yandex and Bing accept this protocol for instant indexing.
+// File at /{INDEXNOW_KEY}.txt must contain the same key. Override via env if needed.
+export const INDEXNOW_KEY =
+  process.env.INDEXNOW_KEY ?? "e7c1a4d8b9f3469c2a85e6f4d2b9a3c1";
+
 export function absoluteUrl(path: string): string {
   if (!path || path === "/") {
     return SITE_URL;
