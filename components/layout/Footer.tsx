@@ -37,7 +37,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2">
+        <nav aria-label="Подвал сайта" className="grid gap-3 sm:grid-cols-2">
           {footerLinks.map((link) => (
             <Link
               key={link.href}
@@ -47,7 +47,7 @@ export default function Footer() {
               {link.title}
             </Link>
           ))}
-        </div>
+        </nav>
       </div>
       <div className="page-shell mt-10 border-t border-[rgba(0,0,0,0.08)] pt-6 text-xs leading-6 text-[#9a9a9a]">
         © {new Date().getFullYear()} ChinaChild. Образовательная лицензия выдана{" "}

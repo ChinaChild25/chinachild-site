@@ -10,6 +10,7 @@ import {
   parseArticleBlocks,
   type ArticleBlock,
 } from "@/lib/blog";
+import { makeAutolinker } from "@/lib/blog-autolinker";
 import { buildMetadata } from "@/lib/metadata";
 import { createArticleGraph } from "@/lib/schema";
 import { teachers } from "@/lib/site-data";
@@ -18,7 +19,11 @@ type BlogPostPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-function renderBlock(block: ArticleBlock, index: number): React.ReactNode {
+function renderBlock(
+  block: ArticleBlock,
+  index: number,
+  autolink: (text: string) => React.ReactNode | string,
+): React.ReactNode {
   if (block.type === "heading" && block.level === 2) {
     return <h2 key={`${block.text}-${index}`}>{block.text}</h2>;
   }
@@ -29,12 +34,12 @@ function renderBlock(block: ArticleBlock, index: number): React.ReactNode {
     return (
       <ul key={`list-${index}`}>
         {block.items.map((item) => (
-          <li key={item}>{item}</li>
+          <li key={item}>{autolink(item)}</li>
         ))}
       </ul>
     );
   }
-  return <p key={`${block.text}-${index}`}>{block.text}</p>;
+  return <p key={`${block.text}-${index}`}>{autolink(block.text)}</p>;
 }
 
 export async function generateStaticParams(): Promise<Array<{ slug: string }>> {
@@ -74,6 +79,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   const author = teachers.find((t) => t.slug === post.authorSlug) ?? teachers[0];
   const blocks = parseArticleBlocks(post.content);
+  const autolink = makeAutolinker();
 
   return (
     <main>
@@ -133,7 +139,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </header>
 
         <div className="prose-article mx-auto mt-12 max-w-3xl">
-          {blocks.map((block, index) => renderBlock(block, index))}
+          {blocks.map((block, index) => renderBlock(block, index, autolink))}
         </div>
       </article>
     </main>

@@ -11,7 +11,6 @@ import {
 } from "@/lib/site-config";
 import {
   courses,
-  faqs,
   processSteps,
   reviews,
   siteFacts,
@@ -93,14 +92,6 @@ export function createWebsiteNode(): JsonLd {
     url: SITE_URL,
     inLanguage: "ru-RU",
     publisher: { "@id": ID.organization },
-    potentialAction: {
-      "@type": "SearchAction",
-      target: {
-        "@type": "EntryPoint",
-        urlTemplate: `${SITE_URL}/blog?q={search_term_string}`,
-      },
-      "query-input": "required name=search_term_string",
-    },
   };
 }
 
@@ -293,9 +284,17 @@ export function createBreadcrumbNode(items: BreadcrumbItem[]): JsonLd {
 /**
  * Always-on site-wide @graph mounted in app/layout.tsx.
  * Carries Organization, WebSite, Logo, AggregateRating, Service, HowTo,
- * all teacher Person nodes and all Course nodes — connected via @id.
+ * all teacher Person nodes, all Course nodes, all Reviews and a
+ * SpeakableSpecification for voice assistants — connected via @id.
  */
 export function createSiteGraph(): JsonLd {
+  const speakable: JsonLd = {
+    "@type": "SpeakableSpecification",
+    "@id": `${SITE_URL}#speakable`,
+    cssSelector: ["h1", "[data-speakable]", ".faq-question", ".faq-answer"],
+    xpath: ["/html/head/title"],
+  };
+
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -305,6 +304,7 @@ export function createSiteGraph(): JsonLd {
       createAggregateRatingNode(),
       createServiceNode(),
       createHowToNode(),
+      speakable,
       ...teachers.map((t) => createTeacherNode(t)),
       ...courses.map((c) => createCourseNode(c)),
       ...reviews.map((r) => createReviewNode(r)),
@@ -314,7 +314,8 @@ export function createSiteGraph(): JsonLd {
 
 /**
  * Per-page @graph: WebPage + BreadcrumbList + optional FAQ, linked into the
- * main Organization/WebSite via @id.
+ * main Organization/WebSite via @id. Also adds SpeakableSpecification on
+ * H1 and FAQ for voice assistants (Yandex Алиса, Google Assistant).
  */
 export function createPageGraph(input: {
   url: string;
@@ -324,6 +325,7 @@ export function createPageGraph(input: {
   faqs?: FaqItem[];
   datePublished?: string;
   dateModified?: string;
+  speakable?: boolean;
 }): JsonLd {
   const url = absoluteUrl(input.url);
   const pageId = `${url}#webpage`;
@@ -341,6 +343,12 @@ export function createPageGraph(input: {
   };
   if (input.datePublished) webPage.datePublished = input.datePublished;
   if (input.dateModified) webPage.dateModified = input.dateModified;
+  if (input.speakable) {
+    webPage.speakable = {
+      "@type": "SpeakableSpecification",
+      cssSelector: ["h1", "[data-speakable]", ".faq-question", ".faq-answer"],
+    };
+  }
 
   const graph: JsonLd[] = [
     webPage,

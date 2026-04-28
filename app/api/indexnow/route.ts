@@ -1,4 +1,5 @@
 import { getAllPosts } from "@/lib/blog";
+import { getAllGlossaryTerms } from "@/lib/glossary";
 import { absoluteUrl, INDEXNOW_KEY, SITE_URL } from "@/lib/site-config";
 
 export const runtime = "nodejs";
@@ -17,6 +18,8 @@ const STATIC_ROUTES = [
   "/courses/chinese-for-adults",
   "/courses/chinese-for-kids",
   "/courses/business-chinese",
+  "/cities/moscow",
+  "/glossary",
 ];
 
 const HOST = new URL(SITE_URL).host;
@@ -56,21 +59,29 @@ async function ping(urlList: string[]) {
 
 /**
  * GET /api/indexnow?secret=...
- * Submits all known URLs (static routes + blog posts) to IndexNow endpoints.
- * Protect with INDEXNOW_SECRET env var to prevent abuse.
+ * Submits all known URLs (static routes + blog posts + glossary) to IndexNow endpoints.
+ *
+ * Auth: accepts either ?secret=INDEXNOW_SECRET (manual trigger) or the
+ * Authorization: Bearer ${CRON_SECRET} header sent by Vercel Cron Jobs.
  */
 export async function GET(request: Request) {
-  const secret = process.env.INDEXNOW_SECRET;
-  if (secret) {
+  const indexnowSecret = process.env.INDEXNOW_SECRET;
+  const cronSecret = process.env.CRON_SECRET;
+  const authHeader = request.headers.get("authorization") ?? "";
+  const isCron = cronSecret ? authHeader === `Bearer ${cronSecret}` : false;
+
+  if (indexnowSecret && !isCron) {
     const provided = new URL(request.url).searchParams.get("secret");
-    if (provided !== secret) {
+    if (provided !== indexnowSecret) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
   }
 
   const posts = await getAllPosts();
   const blogUrls = posts.map((post) => absoluteUrl(`/blog/${post.slug}`));
-  const urlList = [...STATIC_ROUTES.map(absoluteUrl), ...blogUrls];
+  const glossary = await getAllGlossaryTerms();
+  const glossaryUrls = glossary.map((term) => absoluteUrl(`/glossary/${term.slug}`));
+  const urlList = [...STATIC_ROUTES.map(absoluteUrl), ...blogUrls, ...glossaryUrls];
 
   const results = await ping(urlList);
   return Response.json({ submitted: urlList.length, results });

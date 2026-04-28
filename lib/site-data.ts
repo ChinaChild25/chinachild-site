@@ -444,11 +444,13 @@ export const footerLinks = [
   { title: "Взрослым с нуля", href: "/courses/chinese-for-adults" },
   { title: "Бизнес-китайский", href: "/courses/business-chinese" },
   { title: "Онлайн-курсы", href: "/courses/online-chinese" },
+  { title: "Курсы в Москве", href: "/cities/moscow" },
   { title: "О школе", href: "/about" },
   { title: "Методика", href: "/methodology" },
   { title: "Результаты", href: "/results" },
   { title: "Отзывы", href: "/reviews" },
   { title: "Блог", href: "/blog" },
+  { title: "Глоссарий", href: "/glossary" },
   { title: "Политика конфиденциальности", href: "/privacy-policy" },
 ];
 
