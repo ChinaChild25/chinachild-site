@@ -26,12 +26,12 @@
 
   /* Practicum-reference tokens — dense matte glass with strong blur and
      enough white fill to keep text crisp over busy sections. */
-  --header-glass-bg: rgba(255, 255, 255, 0.74);
-  --header-glass-bg-strong: rgba(255, 255, 255, 0.82);
+  --header-glass-bg: rgba(255, 255, 255, 0.86);
+  --header-glass-bg-strong: rgba(255, 255, 255, 0.94);
   --header-glass-border: rgba(255, 255, 255, 0.92);
-  --header-radius: 22px;
+  --header-radius: 16px;
   --header-btn-radius: 10px;
-  --cta-radius: 18px;
+  --cta-radius: 13px;
   --btn-radius-compact: 10px;
   --btn-radius-default: 12px;
   --btn-radius-large: 14px;
@@ -378,8 +378,8 @@ img {
   background:
     linear-gradient(180deg, var(--header-glass-bg-strong) 0%, var(--header-glass-bg) 100%);
   border: 1px solid var(--header-glass-border);
-  backdrop-filter: blur(42px) saturate(165%);
-  -webkit-backdrop-filter: blur(42px) saturate(165%);
+  backdrop-filter: blur(20px) saturate(130%);
+ -webkit-backdrop-filter: blur(20px) saturate(130%);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.92) inset,
     0 18px 44px rgba(15, 23, 42, 0.08),
@@ -511,24 +511,29 @@ img {
   align-items: center;
   justify-content: center;
   padding: 12px;
-  border-radius: 30px;
+  border-radius: 22px;
   background:
     linear-gradient(180deg, var(--header-glass-bg-strong) 0%, var(--header-glass-bg) 100%);
-  backdrop-filter: blur(42px) saturate(165%);
-  -webkit-backdrop-filter: blur(42px) saturate(165%);
+  backdrop-filter: blur(20px) saturate(130%);
+ -webkit-backdrop-filter: blur(20px) saturate(130%);
   border: 1px solid var(--header-glass-border);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.92) inset,
-    0 18px 44px rgba(15, 23, 42, 0.12),
-    0 8px 20px rgba(15, 23, 42, 0.08);
+    box-shadow:
+  0 1px 0 rgba(255, 255, 255, 1) inset,
+  0 -1px 0 rgba(255, 255, 255, 0.6) inset,  /* ← добавь снизу тоже */
+  0 18px 44px rgba(15, 23, 42, 0.08),
+  0 4px 12px rgba(15, 23, 42, 0.05);
+  
   transition: transform 220ms ease, box-shadow 220ms ease;
 }
 
 .floating-cta-glass:hover {
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.96) inset,
-    0 22px 48px rgba(15, 23, 42, 0.13),
-    0 10px 22px rgba(15, 23, 42, 0.09);
+  box-shadow:
+  0 1px 0 rgba(255, 255, 255, 1) inset,
+  0 -1px 0 rgba(255, 255, 255, 0.6) inset,  /* ← добавь снизу тоже */
+  0 18px 44px rgba(15, 23, 42, 0.08),
+  0 4px 12px rgba(15, 23, 42, 0.05);
 }
 
 .floating-cta-btn {
