@@ -8,46 +8,65 @@ export default function FAQSection() {
   return (
     <SectionShell
       id="faq"
-      title="Ответы на частые вопросы"
+      title="Отвечаем на вопросы"
       description="Если не нашли свой вопрос — напишите, и мы ответим лично в течение рабочего дня."
     >
       <JsonLd data={createFaqSchema(faqs)} id="faq-schema" />
-      {/* Microdata FAQPage — duplicates JSON-LD for Yandex */}
       <div
-        className="mx-auto max-w-3xl divide-y divide-[rgba(0,0,0,0.08)] border-y border-[rgba(0,0,0,0.08)]"
+        className="faq-card"
         itemScope
         itemType="https://schema.org/FAQPage"
       >
         {faqs.map((item) => (
           <Reveal key={item.question}>
             <details
-              className="group py-6"
+              className="faq-row"
               itemScope
               itemProp="mainEntity"
               itemType="https://schema.org/Question"
             >
-              <summary
-                className="faq-question flex cursor-pointer list-none items-center justify-between gap-4 text-base font-semibold tracking-[-0.01em] text-[#1b1b1b] sm:text-lg"
-                data-speakable
-              >
-                <span itemProp="name">{item.question}</span>
-                <span
-                  aria-hidden
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[rgba(0,0,0,0.12)] text-xl font-light text-[#1b1b1b] transition group-open:rotate-45"
-                >
-                  +
+              <summary className="faq-summary" data-speakable>
+                <span className="faq-question" itemProp="name">
+                  {item.question}
+                </span>
+                <span aria-hidden className="faq-toggle">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    className="faq-toggle-plus"
+                    focusable="false"
+                  >
+                    <path
+                      d="M10 3.5 L10 16.5 M3.5 10 L16.5 10"
+                      stroke="currentColor"
+                      strokeWidth="1.4"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    className="faq-toggle-cross"
+                    focusable="false"
+                  >
+                    <path
+                      d="M5 5 L15 15 M15 5 L5 15"
+                      stroke="currentColor"
+                      strokeWidth="1.4"
+                      strokeLinecap="round"
+                    />
+                  </svg>
                 </span>
               </summary>
               <div
                 itemProp="acceptedAnswer"
                 itemScope
                 itemType="https://schema.org/Answer"
+                className="faq-answer-wrap"
               >
-                <p
-                  className="faq-answer mt-4 text-sm leading-7 text-[#4b4b4b]"
-                  itemProp="text"
-                  data-speakable
-                >
+                <p className="faq-answer" itemProp="text" data-speakable>
                   {item.answer}
                 </p>
               </div>

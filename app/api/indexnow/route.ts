@@ -20,6 +20,7 @@ const STATIC_ROUTES = [
   "/courses/business-chinese",
   "/cities/moscow",
   "/glossary",
+  "/zayavka",
 ];
 
 const HOST = new URL(SITE_URL).host;

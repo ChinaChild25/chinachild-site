@@ -22,6 +22,9 @@ export async function GET() {
     // City landings (geo-targeted)
     { loc: absoluteUrl("/cities/moscow"), lastmod: now, changefreq: "monthly", priority: 0.85 },
 
+    // Lead capture (high-intent landing for direct ads/cards)
+    { loc: absoluteUrl("/zayavka"), lastmod: now, changefreq: "monthly", priority: 0.86 },
+
     // Trust pages
     { loc: absoluteUrl("/about"), lastmod: now, changefreq: "monthly", priority: 0.82 },
     { loc: absoluteUrl("/methodology"), lastmod: now, changefreq: "monthly", priority: 0.82 },

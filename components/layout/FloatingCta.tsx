@@ -1,24 +1,23 @@
-import Link from "next/link";
-import { REGISTER_URL } from "@/lib/site-config";
+"use client";
+
+import LeadModal from "@/components/forms/LeadModal";
 
 /**
- * Floating CTA с двойным слоем как у Yandex Practicum:
- * — большой translucent glass-pill backdrop (frosted blur, видно контент сзади)
- * — поверх него чёрная pill-кнопка
+ * Sticky bottom-of-viewport CTA — black pill on a translucent glass-pill
+ * backdrop, matching the Practicum reference. Clicking the button opens
+ * the lead-capture dialog.
  */
 export default function FloatingCta() {
   return (
-    <div className="floating-cta-shell" aria-hidden={false}>
+    <div className="floating-cta-shell">
       <div className="floating-cta-glass">
-        <Link
-          href={REGISTER_URL}
-          target="_blank"
-          rel="noreferrer"
-          className="floating-cta-btn"
-          aria-label="Оставить заявку — открыть регистрацию"
+        <LeadModal
+          source="floating-cta"
+          triggerClassName="floating-cta-btn"
+          ariaLabel="Оставить заявку — открыть форму"
         >
           Оставить заявку
-        </Link>
+        </LeadModal>
       </div>
     </div>
   );
