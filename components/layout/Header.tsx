@@ -14,28 +14,28 @@ const navigation = [
 export default function Header() {
   return (
     <header className="site-header" role="banner">
-      <div className="site-header-pill">
+      <div className="site-header-wrapper">
+        <Link
+          href="/"
+          className="site-header-brand"
+          aria-label="ChinaChild — на главную"
+        >
+          <span aria-hidden className="site-header-mark">
+            <Image
+              src="/brand/logo.svg"
+              alt=""
+              width={28}
+              height={28}
+              className="site-header-mark-image"
+            />
+          </span>
+          <span className="site-header-wordmark">ChinaChild</span>
+        </Link>
+
         <nav
           aria-label="Основная навигация"
-          className="site-header-inner"
+          className="site-header-menu"
         >
-          <Link
-            href="/"
-            className="site-header-brand"
-            aria-label="ChinaChild — на главную"
-          >
-            <span aria-hidden className="site-header-mark">
-              <Image
-                src="/brand/logo.svg"
-                alt=""
-                width={34}
-                height={34}
-                className="site-header-mark-image"
-              />
-            </span>
-            <span className="site-header-wordmark">ChinaChild</span>
-          </Link>
-
           <ul className="site-header-nav">
             {navigation.map((item) => (
               <li key={item.href}>
@@ -44,21 +44,31 @@ export default function Header() {
                 </Link>
               </li>
             ))}
+            <li>
+              <a
+                href={`tel:${CONTACT_PHONE_TEL}`}
+                className="site-header-link"
+                aria-label={`Позвонить ${CONTACT_PHONE}`}
+              >
+                {CONTACT_PHONE}
+              </a>
+            </li>
           </ul>
 
-          <div className="site-header-actions">
-            <a
-              href={`tel:${CONTACT_PHONE_TEL}`}
-              className="site-header-phone"
-              aria-label={`Позвонить ${CONTACT_PHONE}`}
-            >
-              {CONTACT_PHONE}
-            </a>
-            <Link href="/courses" className="site-header-cta">
-              В каталог
-            </Link>
-          </div>
+          <Link href="/courses" className="site-header-cta">
+            В каталог
+          </Link>
         </nav>
+
+        <button
+          type="button"
+          aria-label="Открыть меню"
+          className="site-header-burger"
+        >
+          <span />
+          <span />
+          <span />
+        </button>
       </div>
     </header>
   );
