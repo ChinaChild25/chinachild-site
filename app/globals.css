@@ -553,6 +553,29 @@ a:focus-visible {
   line-height: 1.72;
 }
 
+
+.faq-summary .faq-icon-close,
+.faq-summary .faq-icon-plus {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  transition: opacity .2s ease, transform .2s ease;
+}
+
+/* По умолчанию — показываем плюс, прячем крестик */
+.faq-summary .faq-icon-close {
+  display: none;
+}
+
+/* Когда details открыт — наоборот */
+.faq-row[open] .faq-summary .faq-icon-plus {
+  display: none;
+}
+
+.faq-row[open] .faq-summary .faq-icon-close {
+  display: block;
+}
+
 /* ==========================================================================
    Modal
    ========================================================================== */
