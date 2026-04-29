@@ -49,36 +49,36 @@ export default function FAQSection({
                 <span className="faq-question" itemProp="name">
                   {item.question}
                 </span>
-                <span aria-hidden className="faq-toggle">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    className="faq-toggle-plus"
-                    focusable="false"
-                  >
-                    <path
-                      d="M10 3.5 L10 16.5 M3.5 10 L16.5 10"
-                      stroke="currentColor"
-                      strokeWidth="1.4"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    className="faq-toggle-cross"
-                    focusable="false"
-                  >
-                    <path
-                      d="M5 5 L15 15 M15 5 L5 15"
-                      stroke="currentColor"
-                      strokeWidth="1.4"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </span>
+                <svg
+                  aria-hidden
+                  className="faq-icon-plus"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  focusable="false"
+                >
+                  <path
+                    d="M10 3.5 L10 16.5 M3.5 10 L16.5 10"
+                    stroke="currentColor"
+                    strokeWidth="1.4"
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <svg
+                  aria-hidden
+                  className="faq-icon-close"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  focusable="false"
+                >
+                  <path
+                    d="M5 5 L15 15 M15 5 L5 15"
+                    stroke="currentColor"
+                    strokeWidth="1.4"
+                    strokeLinecap="round"
+                  />
+                </svg>
               </summary>
               <div
                 itemProp="acceptedAnswer"

@@ -22,6 +22,14 @@
   --sky: #cddcee;
   --peach: #f7d7c6;
 
+  /* Restored: lighter "soft" tone for each accent. Used widely across
+     ProcessSection, CoursesSection, AudienceSection, RelatedLinks, etc. */
+  --violet-soft: #ebe8ff;
+  --cream-soft: #f3efe6;
+  --lime-soft: #ecf3c7;
+  --sky-soft: #e1ebf6;
+  --peach-soft: #fbe4d6;
+
   --page-gutter: clamp(16px, 2.2vw, 36px);
 }
 
@@ -665,4 +673,106 @@ a:focus-visible {
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
+}
+
+/* ==========================================================================
+   RESTORED — colour tokens + section utilities
+   These were removed during the header rewrite; everything below complements
+   the rules above without redefining .site-header*, .floating-cta-* or .btn-*.
+   ========================================================================== */
+
+/* Soft card variants used by ProcessSection / CoursesSection / AudienceSection
+   / RelatedLinks / ReviewsSection / TeachersSection / BlogPreviewSection */
+.card-violet-soft { background: var(--violet-soft); color: var(--foreground); }
+.card-cream-soft  { background: var(--cream-soft);  color: var(--foreground); }
+.card-lime-soft   { background: var(--lime-soft);   color: var(--foreground); }
+.card-sky-soft    { background: var(--sky-soft);    color: var(--foreground); }
+.card-peach-soft  { background: var(--peach-soft);  color: var(--foreground); }
+
+/* Bigger hero card — used by PageHero, AboutPage, MethodologyPage, etc. */
+.card-block-lg {
+  border-radius: 28px;
+  padding: 36px;
+}
+
+@media (min-width: 768px) {
+  .card-block-lg {
+    padding: 56px;
+    border-radius: 32px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .card-block-lg {
+    padding: 72px;
+  }
+}
+
+/* Eyebrow — the small frosted/coloured pill above PageHero titles
+   ("Методика обучения", "О школе", "Глоссарий", "Команда" …). */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  /* Default: light frosted-glass on dark hero (e.g. card-violet) */
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  backdrop-filter: blur(12px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+/* Long-form article typography — used by /blog/[slug], /glossary/[slug],
+   /privacy-policy and any future MDX page using .prose-article. */
+.prose-article {
+  display: grid;
+  gap: 18px;
+  color: var(--foreground);
+}
+
+.prose-article h2,
+.prose-article h3 {
+  margin: 24px 0 0;
+  letter-spacing: -0.025em;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.prose-article h2 {
+  font-size: clamp(1.6rem, 1.3rem + 1vw, 2.1rem);
+}
+
+.prose-article h3 {
+  font-size: 1.2rem;
+}
+
+.prose-article p,
+.prose-article li {
+  color: var(--muted-strong);
+  line-height: 1.75;
+  font-size: 1rem;
+}
+
+.prose-article ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: 6px;
+}
+
+.prose-article a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: rgba(0, 0, 0, 0.18);
+  transition: text-decoration-color 160ms ease;
+}
+
+.prose-article a:hover {
+  text-decoration-color: rgba(0, 0, 0, 0.6);
 }
