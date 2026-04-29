@@ -3,7 +3,6 @@ import Link from "next/link";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import PageHero from "@/components/layout/PageHero";
 import { buildMetadata } from "@/lib/metadata";
-import { REGISTER_URL } from "@/lib/site-config";
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
@@ -78,7 +77,7 @@ export default function CoursesIndexPage() {
         eyebrow="Курсы школы"
         title="Все курсы китайского языка онлайн в ChinaChild"
         description="Подбираем формат под уровень, возраст и темп: мини-группа до 5 человек, индивидуальные занятия или корпоративное обучение. Программа лицензирована департаментом города Москвы."
-        primaryCta={{ label: "Записаться на пробное", href: REGISTER_URL, external: true }}
+        primaryCta={{ label: "Записаться на пробное", modal: true }}
         secondaryCta={{ label: "О школе", href: "/about" }}
       />
 

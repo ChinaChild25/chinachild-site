@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import PageHero from "@/components/layout/PageHero";
+import LeadModal from "@/components/forms/LeadModal";
 import Avatar from "@/components/ui/Avatar";
 import { buttonStyles } from "@/components/ui/button";
 import { buildMetadata } from "@/lib/metadata";
@@ -11,7 +12,6 @@ import {
   CONTACT_PHONE_TEL,
   LICENSE_PROGRAM,
   LICENSE_REGION,
-  REGISTER_URL,
 } from "@/lib/site-config";
 import { teachers } from "@/lib/site-data";
 
@@ -43,7 +43,7 @@ export default function AboutPage() {
         eyebrow="О школе"
         title="ChinaChild — лицензированная онлайн-школа китайского языка"
         description="Мы помогаем подросткам с 12 лет и взрослым выйти на разговорный уровень китайского за 6 месяцев. Программа лицензирована департаментом города Москвы, ученики могут вернуть налоговый вычет 13%."
-        primaryCta={{ label: "Записаться на пробное", href: REGISTER_URL, external: true }}
+        primaryCta={{ label: "Записаться на пробное", modal: true }}
         secondaryCta={{ label: "Методика школы", href: "/methodology" }}
       />
 
@@ -180,14 +180,12 @@ export default function AboutPage() {
               <a href={`mailto:${CONTACT_EMAIL}`} className="text-base text-white/80">
                 {CONTACT_EMAIL}
               </a>
-              <Link
-                href={REGISTER_URL}
-                target="_blank"
-                rel="noreferrer"
-                className={buttonStyles({ variant: "secondary", size: "large", className: "mt-4 w-fit" })}
+              <LeadModal
+                triggerClassName={buttonStyles({ variant: "secondary", size: "large", className: "mt-4 w-fit" })}
+                source="about-contact-card"
               >
                 Записаться на пробное
-              </Link>
+              </LeadModal>
             </div>
           </div>
         </div>

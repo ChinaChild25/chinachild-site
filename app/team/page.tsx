@@ -5,7 +5,6 @@ import PageHero from "@/components/layout/PageHero";
 import Avatar from "@/components/ui/Avatar";
 import Reveal from "@/components/ui/Reveal";
 import { buildMetadata } from "@/lib/metadata";
-import { REGISTER_URL } from "@/lib/site-config";
 import { teachers } from "@/lib/site-data";
 
 export const metadata: Metadata = buildMetadata({
@@ -36,11 +35,7 @@ export default function TeamPage() {
         eyebrow="Команда"
         title="Преподаватели ChinaChild"
         description="Авторы курсов, методисты и носители путунхуа. У каждого открытая страница с биографией и специализацией — это часть нашей политики прозрачности."
-        primaryCta={{
-          label: "Записаться на пробное",
-          href: REGISTER_URL,
-          external: true,
-        }}
+        primaryCta={{ label: "Записаться на пробное", modal: true }}
         secondaryCta={{ label: "О школе", href: "/about" }}
       />
 

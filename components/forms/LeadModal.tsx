@@ -8,7 +8,7 @@ type LeadModalProps = {
   children: React.ReactNode;
   /** Class applied to the trigger <button> itself */
   triggerClassName?: string;
-  /** Heading shown at the top of the dialog */
+  /** Heading shown at the top of the dialog. Pass "" to hide the heading. */
   title?: string;
   /** Subheading shown under the title */
   description?: string;
@@ -16,6 +16,8 @@ type LeadModalProps = {
   source?: string;
   /** Optional aria-label override for the trigger button */
   ariaLabel?: string;
+  /** Pre-select a course in the form (e.g. on a course landing page) */
+  defaultCourse?: string;
 };
 
 /**
@@ -26,10 +28,11 @@ type LeadModalProps = {
 export default function LeadModal({
   children,
   triggerClassName,
-  title = "Оставить заявку",
-  description = "Расскажите, что вас интересует — менеджер свяжется в течение рабочего дня и подберёт подходящий формат обучения.",
+  title = "",
+  description,
   source,
   ariaLabel,
+  defaultCourse,
 }: LeadModalProps) {
   const dialogRef = useRef<HTMLDialogElement | null>(null);
   const [open, setOpen] = useState(false);
@@ -85,7 +88,7 @@ export default function LeadModal({
       </button>
       <dialog
         ref={dialogRef}
-        aria-labelledby="lead-modal-title"
+        aria-label={title || "Оставить заявку"}
         className="lead-dialog"
       >
         <div className="lead-dialog-card">
@@ -96,31 +99,28 @@ export default function LeadModal({
             className="lead-dialog-close"
           >
             <svg
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
+              width="22"
+              height="22"
+              viewBox="0 0 22 22"
               aria-hidden
               focusable="false"
             >
               <path
-                d="M5 5 L15 15 M15 5 L5 15"
+                d="M5 5 L17 17 M17 5 L5 17"
                 stroke="currentColor"
-                strokeWidth="1.6"
+                strokeWidth="1.8"
                 strokeLinecap="round"
               />
             </svg>
           </button>
-          <header className="grid gap-3">
-            <h2
-              id="lead-modal-title"
-              className="text-2xl font-bold tracking-[-0.03em] text-[#1b1b1b] sm:text-3xl"
-            >
-              {title}
-            </h2>
-            <p className="text-sm leading-6 text-[#6b6b6b]">{description}</p>
-          </header>
-          <div className="mt-6">
-            <LeadForm compact source={source ?? "modal"} />
+          {title ? (
+            <h2 className="lead-dialog-title">{title}</h2>
+          ) : null}
+          {description ? (
+            <p className="lead-dialog-description">{description}</p>
+          ) : null}
+          <div className="lead-dialog-form">
+            <LeadForm compact source={source ?? "modal"} defaultCourse={defaultCourse} />
           </div>
         </div>
       </dialog>

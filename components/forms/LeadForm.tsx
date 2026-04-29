@@ -4,24 +4,21 @@ import { useEffect, useId, useState } from "react";
 import { CONTACT_EMAIL, CONTACT_PHONE, CONTACT_PHONE_TEL } from "@/lib/site-config";
 
 const COURSE_OPTIONS = [
+  { value: "", label: "—" },
   { value: "online-chinese", label: "Онлайн-курс с нуля (HSK 1–2)" },
   { value: "hsk-preparation", label: "Подготовка к HSK" },
   { value: "chinese-for-adults", label: "Китайский для взрослых" },
   { value: "chinese-for-kids", label: "Китайский для школьников 12+" },
   { value: "business-chinese", label: "Бизнес-китайский" },
-  { value: "consultation", label: "Просто хочу проконсультироваться" },
+  { value: "consultation", label: "Просто проконсультироваться" },
 ] as const;
 
 type Status = "idle" | "submitting" | "success" | "error";
-
 type FieldError = { field?: string; message: string };
 
 export type LeadFormProps = {
-  /** Default course selection — pre-fills the dropdown when the form opens from a course page */
-  defaultCourse?: (typeof COURSE_OPTIONS)[number]["value"];
-  /** Source label written into lead metadata so we can attribute leads to surfaces */
+  defaultCourse?: string;
   source?: string;
-  /** Compact mode for modals — slightly tighter spacing */
   compact?: boolean;
 };
 
@@ -50,12 +47,6 @@ type AnalyticsWindow = Window & {
   gtag?: (...args: unknown[]) => void;
 };
 
-/**
- * Fire-and-forget conversion goal to every analytics surface that's loaded.
- * Yandex.Metrika reachGoal "lead_submitted" + GA4 event + GTM dataLayer push.
- * Counter ID read from the same env var as the Metrika component so it stays
- * consistent.
- */
 function trackLeadSubmitted(meta: { course?: string; source?: string }) {
   if (typeof window === "undefined") return;
   const win = window as AnalyticsWindow;
@@ -70,9 +61,8 @@ function trackLeadSubmitted(meta: { course?: string; source?: string }) {
       });
     }
   } catch {
-    /* swallow analytics errors — never block UX */
+    /* */
   }
-
   try {
     if (typeof win.gtag === "function") {
       win.gtag("event", "generate_lead", {
@@ -84,7 +74,6 @@ function trackLeadSubmitted(meta: { course?: string; source?: string }) {
   } catch {
     /* */
   }
-
   try {
     if (Array.isArray(win.dataLayer)) {
       win.dataLayer.push({
@@ -101,10 +90,10 @@ function trackLeadSubmitted(meta: { course?: string; source?: string }) {
 export default function LeadForm({ defaultCourse, source, compact }: LeadFormProps) {
   const nameId = useId();
   const phoneId = useId();
-  const emailId = useId();
   const courseId = useId();
-  const commentId = useId();
+  const timeId = useId();
   const consentId = useId();
+  const marketingId = useId();
   const honeypotId = useId();
 
   const [status, setStatus] = useState<Status>("idle");
@@ -125,9 +114,15 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
     const payload = {
       name: String(formData.get("name") ?? ""),
       phone: String(formData.get("phone") ?? ""),
-      email: String(formData.get("email") ?? ""),
       course: String(formData.get("course") ?? ""),
-      comment: String(formData.get("comment") ?? ""),
+      comment: [
+        formData.get("callTime")
+          ? `Удобное время для звонка: ${formData.get("callTime")}`
+          : "",
+        formData.get("marketing") === "on" ? "Согласен на рассылку." : "",
+      ]
+        .filter(Boolean)
+        .join(" "),
       consent: formData.get("consent") === "on",
       company: String(formData.get("company") ?? ""), // honeypot
       source: source ?? pageHref,
@@ -143,11 +138,7 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      const data = (await res.json()) as {
-        ok: boolean;
-        error?: string;
-        field?: string;
-      };
+      const data = (await res.json()) as { ok: boolean; error?: string; field?: string };
       if (!res.ok || !data.ok) {
         setStatus("error");
         setError({
@@ -172,19 +163,12 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
 
   if (status === "success") {
     return (
-      <div
-        role="status"
-        aria-live="polite"
-        className="grid gap-4 rounded-3xl bg-[var(--lime-soft)] p-6 text-[#1b1b1b] sm:p-8"
-      >
-        <div className="text-2xl font-bold tracking-[-0.02em]">
-          Спасибо! Заявка принята.
-        </div>
-        <p className="text-sm leading-7 text-[#4b4b4b]">
+      <div role="status" aria-live="polite" className="lead-success">
+        <div className="lead-success-title">Спасибо! Заявка принята.</div>
+        <p className="lead-success-text">
           Менеджер свяжется с вами в течение рабочего дня по указанному телефону.
-          Если вопрос срочный — напишите или позвоните нам напрямую.
         </p>
-        <div className="flex flex-wrap gap-3 text-sm">
+        <div className="lead-success-actions">
           <a href={`tel:${CONTACT_PHONE_TEL}`} className="btn-pill btn-ink">
             Позвонить {CONTACT_PHONE}
           </a>
@@ -196,22 +180,18 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
     );
   }
 
-  const gap = compact ? "gap-3" : "gap-4";
-  const labelClass =
-    "block text-sm font-medium text-[#4e4e4e]";
-  const inputClass =
-    "mt-1.5 w-full rounded-[6px] border border-[rgba(0,0,0,0.12)] bg-white px-4 py-3 text-base text-[#1b1b1b] placeholder:text-[#9a9a9a] outline-none transition focus:border-[var(--ink)] focus:ring-2 focus:ring-[var(--ink)]/10";
+  const gap = compact ? "lead-form-compact" : "";
 
   return (
     <form
       onSubmit={handleSubmit}
       noValidate
-      className={`grid ${gap}`}
+      className={`lead-form ${gap}`}
       aria-busy={status === "submitting"}
     >
-      <div>
-        <label htmlFor={nameId} className={labelClass}>
-          Имя <span className="text-[#d83a3a]">*</span>
+      <div className="lead-field">
+        <label htmlFor={nameId} className="lead-label">
+          <span className="lead-required">*</span> Ваше имя
         </label>
         <input
           id={nameId}
@@ -221,78 +201,60 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
           minLength={2}
           maxLength={120}
           autoComplete="name"
-          placeholder="Как к вам обращаться"
-          className={inputClass}
+          className="lead-input"
           aria-invalid={error?.field === "name" || undefined}
         />
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <label htmlFor={phoneId} className={labelClass}>
-            Телефон <span className="text-[#d83a3a]">*</span>
-          </label>
-          <input
-            id={phoneId}
-            name="phone"
-            type="tel"
-            required
-            inputMode="tel"
-            autoComplete="tel"
-            placeholder="+7 999 000 00 00"
-            className={inputClass}
-            aria-invalid={error?.field === "phone" || undefined}
-          />
-        </div>
-        <div>
-          <label htmlFor={emailId} className={labelClass}>
-            Email
-          </label>
-          <input
-            id={emailId}
-            name="email"
-            type="email"
-            autoComplete="email"
-            placeholder="вы@почта.ru"
-            className={inputClass}
-            aria-invalid={error?.field === "email" || undefined}
-          />
-        </div>
+      <div className="lead-field">
+        <label htmlFor={phoneId} className="lead-label">
+          <span className="lead-required">*</span> Телефон
+        </label>
+        <input
+          id={phoneId}
+          name="phone"
+          type="tel"
+          required
+          inputMode="tel"
+          autoComplete="tel"
+          placeholder="+7 999 000 00 00"
+          className="lead-input"
+          aria-invalid={error?.field === "phone" || undefined}
+        />
       </div>
 
-      <div>
-        <label htmlFor={courseId} className={labelClass}>
-          Что интересует
+      <div className="lead-field">
+        <label htmlFor={courseId} className="lead-label">
+          Что вас интересует
         </label>
         <select
           id={courseId}
           name="course"
-          defaultValue={defaultCourse ?? "online-chinese"}
-          className={inputClass}
+          defaultValue={defaultCourse ?? ""}
+          className="lead-input lead-select"
         >
           {COURSE_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.label}>
+            <option key={opt.value} value={opt.value}>
               {opt.label}
             </option>
           ))}
         </select>
       </div>
 
-      <div>
-        <label htmlFor={commentId} className={labelClass}>
-          Комментарий
+      <div className="lead-field">
+        <label htmlFor={timeId} className="lead-label">
+          Удобное время для звонка (по будням с 09:00 до 19:00 МСК)
         </label>
-        <textarea
-          id={commentId}
-          name="comment"
-          rows={3}
-          maxLength={2000}
-          placeholder="Например, удобное время для звонка"
-          className={`${inputClass} resize-none`}
+        <input
+          id={timeId}
+          name="callTime"
+          type="text"
+          maxLength={120}
+          className="lead-input"
         />
       </div>
 
-      {/* Honeypot — visually hidden, off-screen, not focusable */}
+      {/* Honeypot */}
       <div
         aria-hidden="true"
         style={{
@@ -304,44 +266,46 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
         }}
       >
         <label htmlFor={honeypotId}>Компания (не заполнять)</label>
-        <input
-          id={honeypotId}
-          name="company"
-          type="text"
-          tabIndex={-1}
-          autoComplete="off"
-        />
+        <input id={honeypotId} name="company" type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
-      <label
-        htmlFor={consentId}
-        className="flex cursor-pointer items-start gap-3 text-xs leading-5 text-[#6b6b6b]"
-      >
+      <label htmlFor={marketingId} className="lead-checkbox">
+        <input
+          id={marketingId}
+          name="marketing"
+          type="checkbox"
+          defaultChecked
+          className="lead-checkbox-input"
+        />
+        <span>
+          Я согласен(а) получать рекламные и информационные сообщения от ChinaChild.
+        </span>
+      </label>
+
+      <label htmlFor={consentId} className="lead-checkbox">
+        <span className="lead-required" aria-hidden>
+          *
+        </span>
         <input
           id={consentId}
           name="consent"
           type="checkbox"
           required
           defaultChecked
-          className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-[var(--ink)]"
+          className="lead-checkbox-input"
         />
         <span>
-          Я согласен(а) с{" "}
-          <a
-            href="/privacy-policy"
-            className="font-semibold text-[#1b1b1b] underline-offset-2 hover:underline"
-          >
-            политикой конфиденциальности
-          </a>{" "}
-          и обработкой персональных данных.
+          Даю согласие на обработку моих персональных данных, указанных выше, в целях
+          получения обратной связи по заявке. Подробнее в{" "}
+          <a href="/privacy-policy" className="underline underline-offset-2">
+            политике конфиденциальности
+          </a>
+          .
         </span>
       </label>
 
       {error && status === "error" ? (
-        <div
-          role="alert"
-          className="rounded-2xl border border-[#f6c1c1] bg-[#fff4f4] px-4 py-3 text-sm text-[#9b1c1c]"
-        >
+        <div role="alert" className="lead-error">
           {error.message}
         </div>
       ) : null}
@@ -349,20 +313,10 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
       <button
         type="submit"
         disabled={status === "submitting"}
-        className="btn-pill btn-ink btn-pill-large btn-block mt-1 disabled:cursor-not-allowed disabled:opacity-60"
+        className="lead-submit"
       >
-        {status === "submitting" ? "Отправляем…" : "Оставить заявку"}
+        {status === "submitting" ? "Отправляем…" : "Отправить"}
       </button>
-
-      <p className="text-xs leading-5 text-[#9a9a9a]">
-        Менеджер свяжется в течение рабочего дня. Можно сразу позвонить:{" "}
-        <a
-          href={`tel:${CONTACT_PHONE_TEL}`}
-          className="font-semibold text-[#1b1b1b]"
-        >
-          {CONTACT_PHONE}
-        </a>
-      </p>
     </form>
   );
 }

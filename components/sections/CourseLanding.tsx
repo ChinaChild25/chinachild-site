@@ -1,10 +1,10 @@
 import Link from "next/link";
 import JsonLd from "@/components/seo/JsonLd";
+import LeadModal from "@/components/forms/LeadModal";
 import FAQSection from "@/components/sections/FAQSection";
 import PageHero from "@/components/layout/PageHero";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import { buttonStyles } from "@/components/ui/button";
-import { REGISTER_URL } from "@/lib/site-config";
 import { createCourseSchema, type JsonLd as JsonLdType } from "@/lib/schema";
 import type { Course, FaqItem } from "@/lib/site-data";
 
@@ -59,7 +59,7 @@ export default function CourseLanding({
         eyebrow={pageHero.eyebrow}
         title={pageHero.title}
         description={pageHero.description}
-        primaryCta={{ label: "Записаться на пробное", href: REGISTER_URL, external: true }}
+        primaryCta={{ label: "Записаться на пробное", modal: true }}
         secondaryCta={{ label: "Все курсы", href: "/courses" }}
       />
 
@@ -124,14 +124,13 @@ export default function CourseLanding({
             поставит цель и подберёт подходящий курс.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              href={REGISTER_URL}
-              target="_blank"
-              rel="noreferrer"
-              className={buttonStyles({ variant: "secondary", size: "large" })}
+            <LeadModal
+              triggerClassName={buttonStyles({ variant: "secondary", size: "large" })}
+              source={`course-landing-${schemaCourse.slug}`}
+              defaultCourse={schemaCourse.slug}
             >
               Записаться на пробное
-            </Link>
+            </LeadModal>
             <Link href="/courses" className={buttonStyles({ size: "large", className: "bg-white/15 text-white hover:bg-white/25" })}>
               Все курсы
             </Link>

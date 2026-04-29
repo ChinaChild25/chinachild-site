@@ -1,8 +1,8 @@
-import Link from "next/link";
+import LeadModal from "@/components/forms/LeadModal";
 import { buttonStyles } from "@/components/ui/button";
 import Reveal from "@/components/ui/Reveal";
 import SectionShell from "@/components/ui/SectionShell";
-import { PROMO_CODE, REGISTER_URL } from "@/lib/site-config";
+import { PROMO_CODE } from "@/lib/site-config";
 import { pricingTiers } from "@/lib/site-data";
 
 const palette = [
@@ -68,17 +68,15 @@ export default function PricingSection() {
                 </ul>
 
                 <div className="mt-auto pt-8">
-                  <Link
-                    href={REGISTER_URL}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={buttonStyles({
+                  <LeadModal
+                    triggerClassName={buttonStyles({
                       variant: style.buttonVariant,
                       className: "w-full",
                     })}
+                    source={`pricing-${tier.title}`}
                   >
                     Оставить заявку
-                  </Link>
+                  </LeadModal>
                 </div>
               </article>
             </Reveal>

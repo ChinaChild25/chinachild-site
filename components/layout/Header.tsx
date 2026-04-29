@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import LeadModal from "@/components/forms/LeadModal";
 import { CONTACT_PHONE, CONTACT_PHONE_TEL } from "@/lib/site-config";
 
 const navigation = [
@@ -55,9 +56,13 @@ export default function Header() {
             </li>
           </ul>
 
-          <Link href="/courses" className="site-header-cta">
-            В каталог
-          </Link>
+          <LeadModal
+            triggerClassName="site-header-cta"
+            source="header"
+            ariaLabel="Заказать звонок — открыть форму"
+          >
+            Заказать звонок
+          </LeadModal>
         </nav>
 
         <button

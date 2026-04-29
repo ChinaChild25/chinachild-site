@@ -4,7 +4,6 @@ import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import PageHero from "@/components/layout/PageHero";
 import { buttonStyles } from "@/components/ui/button";
 import { buildMetadata } from "@/lib/metadata";
-import { REGISTER_URL } from "@/lib/site-config";
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
@@ -73,7 +72,7 @@ export default function MethodologyPage() {
         eyebrow="Методика обучения"
         title="Как мы учим китайскому языку в ChinaChild"
         description="Программа выстроена по международной системе уровней HSK 1–2 и сочетает фонетику, лексику, грамматику, аудирование, чтение и говорение в единой логике. Материал подаётся последовательно — от пиньиня и базовых конструкций до простых диалогов и аутентичных текстов."
-        primaryCta={{ label: "Записаться на пробное", href: REGISTER_URL, external: true }}
+        primaryCta={{ label: "Записаться на пробное", modal: true }}
         secondaryCta={{ label: "О школе", href: "/about" }}
       />
 

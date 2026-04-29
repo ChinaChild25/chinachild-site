@@ -4,9 +4,9 @@ import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import JsonLd from "@/components/seo/JsonLd";
 import PageHero from "@/components/layout/PageHero";
 import Avatar from "@/components/ui/Avatar";
+import LeadModal from "@/components/forms/LeadModal";
 import { buttonStyles } from "@/components/ui/button";
 import { buildMetadata } from "@/lib/metadata";
-import { REGISTER_URL } from "@/lib/site-config";
 import { createAggregateRatingSchema, createReviewSchemas } from "@/lib/schema";
 import { reviews, siteFacts } from "@/lib/site-data";
 
@@ -40,7 +40,7 @@ export default function ReviewsPage() {
         title="Отзывы учеников ChinaChild"
         description="Что пишут наши ученики после прохождения курса. Все отзывы — из формы обратной связи на chinachild.ru."
         primaryCta={{ label: "Оставить отзыв", href: "https://chinachild.ru/reviews", external: true }}
-        secondaryCta={{ label: "Записаться на пробное", href: REGISTER_URL }}
+        secondaryCta={{ label: "Записаться на пробное", modal: true }}
       />
 
       <section className="page-shell-wide section-space">
@@ -75,14 +75,12 @@ export default function ReviewsPage() {
             поставит цель и подберёт подходящий курс ChinaChild.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              href={REGISTER_URL}
-              target="_blank"
-              rel="noreferrer"
-              className={buttonStyles({ variant: "secondary", size: "large" })}
+            <LeadModal
+              triggerClassName={buttonStyles({ variant: "secondary", size: "large" })}
+              source="reviews-cta"
             >
               Записаться
-            </Link>
+            </LeadModal>
             <Link href="/courses" className={buttonStyles({ size: "large", className: "bg-white/15 text-white hover:bg-white/25" })}>
               Все курсы
             </Link>

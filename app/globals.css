@@ -591,6 +591,10 @@ a:focus-visible {
    Modal
    ========================================================================== */
 
+/* ==========================================================================
+   LEAD MODAL — orange edition (1:1 reference design with brand colour)
+   ========================================================================== */
+
 .lead-dialog {
   border: 0;
   padding: 0;
@@ -601,9 +605,8 @@ a:focus-visible {
   max-height: 100vh;
   inset: 0;
   margin: 0;
-  /* Dialog renders inside .floating-cta-shell which sets pointer-events: none.
-     Re-enable pointer events here so inputs and buttons inside the modal
-     are actually clickable / typeable. */
+  /* Dialog renders inside .floating-cta-shell which has pointer-events: none.
+     Force pointer events back on for everything inside the modal. */
   pointer-events: auto;
 }
 
@@ -614,7 +617,7 @@ a:focus-visible {
 }
 
 .lead-dialog::backdrop {
-  background: rgba(15, 23, 42, 0.48);
+  background: rgba(15, 23, 42, 0.55);
   backdrop-filter: blur(6px);
 }
 
@@ -625,31 +628,272 @@ a:focus-visible {
 
 .lead-dialog-card {
   position: relative;
-  width: min(560px, calc(100% - 32px));
+  width: min(720px, calc(100% - 32px));
   max-height: calc(100vh - 32px);
   overflow-y: auto;
-  border-radius: 16px;
-  background: #ffffff;
-  padding: 34px 28px 28px;
+  border-radius: 24px;
+  /* Brand orange — vibrant, friendly, distinct from competitors */
+  background: #f5640a;
+  color: #ffffff;
+  padding: 56px 56px 40px;
   box-shadow:
-    0 24px 64px rgba(0, 0, 0, 0.18),
+    0 30px 80px rgba(0, 0, 0, 0.25),
     0 8px 18px rgba(0, 0, 0, 0.08);
+}
+
+@media (max-width: 640px) {
+  .lead-dialog-card {
+    padding: 56px 22px 28px;
+    border-radius: 20px;
+  }
 }
 
 .lead-dialog-close {
   position: absolute;
-  top: 14px;
-  right: 14px;
+  top: 18px;
+  right: 18px;
   width: 36px;
   height: 36px;
   border: 0;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  background: transparent;
+  color: #ffffff;
   cursor: pointer;
+  transition: background 160ms ease;
+  display: grid;
+  place-items: center;
 }
 
 .lead-dialog-close:hover {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.lead-dialog-title {
+  margin: 0 0 12px;
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.lead-dialog-description {
+  margin: 0 0 20px;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.lead-dialog-form {
+  margin-top: 4px;
+}
+
+/* ==========================================================================
+   LEAD FORM — fields, checkboxes, submit
+   ========================================================================== */
+
+.lead-form {
+  display: grid;
+  gap: 22px;
+  position: relative;
+}
+
+.lead-form-compact {
+  gap: 18px;
+}
+
+.lead-field {
+  display: grid;
+  gap: 10px;
+}
+
+.lead-label {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: #ffffff;
+}
+
+.lead-required {
+  color: #ff2d20;
+  margin-right: 2px;
+  font-weight: 700;
+}
+
+.lead-input {
+  width: 100%;
+  height: 48px;
+  border: 0;
+  border-radius: 6px;
+  padding: 0 16px;
+  font-size: 1rem;
+  /* Slightly darker shade of the modal background for the field surface */
+  background: #d65007;
+  color: #ffffff;
+  outline: none;
+  transition: background 160ms ease, box-shadow 160ms ease;
+}
+
+.lead-input::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.lead-input:focus {
+  background: #c44604;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.6);
+}
+
+.lead-input[aria-invalid="true"] {
+  box-shadow: 0 0 0 2px #ff2d20;
+}
+
+textarea.lead-input {
+  min-height: 96px;
+  padding: 12px 16px;
+  resize: vertical;
+}
+
+.lead-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='white'><path d='M5 7l5 6 5-6z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 18px 18px;
+  padding-right: 40px;
+}
+
+.lead-select option {
+  background: #ffffff;
+  color: #1b1b1b;
+  padding: 10px;
+}
+
+.lead-checkbox {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 12px;
+  align-items: start;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+}
+
+.lead-checkbox .lead-required {
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+  align-self: center;
+  text-align: center;
+  color: #ff2d20;
+}
+
+.lead-checkbox .lead-required + .lead-checkbox-input {
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+  visibility: hidden;
+}
+
+/* When a checkbox has the required asterisk before it, restore visibility
+   on the second occurrence using a different approach — keep the asterisk
+   visible AND the input next to it. We split into two columns: asterisk +
+   checkbox in column 1, label in column 2. */
+.lead-checkbox:has(> .lead-required) {
+  grid-template-columns: auto 22px 1fr;
+}
+
+.lead-checkbox:has(> .lead-required) .lead-required {
+  visibility: visible;
+}
+
+.lead-checkbox:has(> .lead-required) .lead-checkbox-input {
+  visibility: visible;
+  grid-column: 2 / 3;
+}
+
+.lead-checkbox-input {
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  border-radius: 4px;
+  accent-color: #ffffff;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.lead-checkbox a {
+  color: inherit;
+}
+
+.lead-error {
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 12px 16px;
+  font-size: 0.9rem;
+  color: #ffffff;
+}
+
+.lead-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 56px;
+  border: 0;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #1b1b1b;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 160ms ease;
+  margin-top: 8px;
+}
+
+.lead-submit:hover {
+  background: #f0f0f0;
+}
+
+.lead-submit:active {
+  background: #e6e6e6;
+}
+
+.lead-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Success state — a calmer panel inside the orange modal */
+.lead-success {
+  display: grid;
+  gap: 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.12);
+  padding: 24px;
+  color: #ffffff;
+}
+
+.lead-success-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.lead-success-text {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+}
+
+.lead-success-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.lead-success-actions .btn-pill {
+  font-size: 0.9rem;
 }
 
 /* ==========================================================================

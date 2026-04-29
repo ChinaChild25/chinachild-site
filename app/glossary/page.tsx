@@ -5,7 +5,6 @@ import PageHero from "@/components/layout/PageHero";
 import Reveal from "@/components/ui/Reveal";
 import { getAllGlossaryTerms } from "@/lib/glossary";
 import { buildMetadata } from "@/lib/metadata";
-import { REGISTER_URL } from "@/lib/site-config";
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
@@ -48,7 +47,7 @@ export default async function GlossaryPage() {
         eyebrow="Глоссарий"
         title="Термины и понятия китайского языка"
         description="Краткий справочник с определениями ключевых терминов: HSK, пиньинь, путунхуа, тоны и другое. Каждый термин ведёт на отдельную страницу с разбором."
-        primaryCta={{ label: "Записаться на пробное", href: REGISTER_URL, external: true }}
+        primaryCta={{ label: "Записаться на пробное", modal: true }}
         secondaryCta={{ label: "Все курсы", href: "/courses" }}
       />
 

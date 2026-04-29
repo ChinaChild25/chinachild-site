@@ -3,6 +3,7 @@ import Link from "next/link";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import JsonLd from "@/components/seo/JsonLd";
 import PageHero from "@/components/layout/PageHero";
+import LeadModal from "@/components/forms/LeadModal";
 import { buttonStyles } from "@/components/ui/button";
 import { buildMetadata } from "@/lib/metadata";
 import {
@@ -11,7 +12,6 @@ import {
   CONTACT_PHONE_TEL,
   LICENSE_PROGRAM,
   LICENSE_REGION,
-  REGISTER_URL,
   SITE_NAME,
   SITE_URL,
 } from "@/lib/site-config";
@@ -78,7 +78,7 @@ export default function MoscowLandingPage() {
         eyebrow="Москва"
         title="Курсы китайского языка в Москве онлайн"
         description="ChinaChild — онлайн-школа китайского языка с образовательной лицензией департамента Москвы. Мини-группы до 5 человек, индивидуальные занятия, программа HSK 1–2 за 6 месяцев. Налоговый вычет 13% — до 15 600 ₽ в год."
-        primaryCta={{ label: "Записаться на пробное", href: REGISTER_URL, external: true }}
+        primaryCta={{ label: "Записаться на пробное", modal: true }}
         secondaryCta={{ label: "Все курсы", href: "/courses" }}
       />
 
@@ -178,14 +178,12 @@ export default function MoscowLandingPage() {
               <a href={`mailto:${CONTACT_EMAIL}`} className="text-base text-white/80">
                 {CONTACT_EMAIL}
               </a>
-              <Link
-                href={REGISTER_URL}
-                target="_blank"
-                rel="noreferrer"
-                className={buttonStyles({ variant: "secondary", size: "large", className: "mt-4 w-fit" })}
+              <LeadModal
+                triggerClassName={buttonStyles({ variant: "secondary", size: "large", className: "mt-4 w-fit" })}
+                source="moscow-contact-card"
               >
                 Записаться на пробное
-              </Link>
+              </LeadModal>
             </div>
           </div>
         </div>

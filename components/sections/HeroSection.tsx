@@ -1,7 +1,7 @@
 import Link from "next/link";
+import LeadModal from "@/components/forms/LeadModal";
 import JsonLd from "@/components/seo/JsonLd";
 import { buttonStyles } from "@/components/ui/button";
-import { REGISTER_URL } from "@/lib/site-config";
 import { createEducationalOrganizationSchema } from "@/lib/schema";
 
 const proofPoints = [
@@ -28,14 +28,12 @@ export default function HeroSection() {
           Подходит подросткам с 12 лет и взрослым без подготовки.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Link
-            href={REGISTER_URL}
-            target="_blank"
-            rel="noreferrer"
-            className={buttonStyles({ size: "large" })}
+          <LeadModal
+            triggerClassName={buttonStyles({ size: "large" })}
+            source="hero"
           >
             Записаться на пробный урок
-          </Link>
+          </LeadModal>
           <Link href="/courses" className={buttonStyles({ variant: "secondary", size: "large" })}>
             Смотреть курсы
           </Link>

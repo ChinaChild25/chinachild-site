@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import PageHero from "@/components/layout/PageHero";
+import LeadModal from "@/components/forms/LeadModal";
 import { buttonStyles } from "@/components/ui/button";
 import { buildMetadata } from "@/lib/metadata";
-import { REGISTER_URL } from "@/lib/site-config";
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
@@ -79,7 +79,7 @@ export default function ResultsPage() {
         eyebrow="Результаты"
         title="Что получают ученики ChinaChild"
         description="Программа рассчитана на конкретный измеримый результат: разговорный уровень HSK 2 за 6 месяцев, сертификат HSK для резюме и понятный маршрут к HSK 4 для поступления в Китай."
-        primaryCta={{ label: "Записаться на пробное", href: REGISTER_URL, external: true }}
+        primaryCta={{ label: "Записаться на пробное", modal: true }}
         secondaryCta={{ label: "Все курсы", href: "/courses" }}
       />
 
@@ -127,14 +127,12 @@ export default function ResultsPage() {
             поставит цель и подберёт подходящий курс.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              href={REGISTER_URL}
-              target="_blank"
-              rel="noreferrer"
-              className={buttonStyles({ variant: "secondary", size: "large" })}
+            <LeadModal
+              triggerClassName={buttonStyles({ variant: "secondary", size: "large" })}
+              source="results-cta"
             >
               Записаться на пробное
-            </Link>
+            </LeadModal>
             <Link href="/reviews" className={buttonStyles({ size: "large", className: "bg-white/15 text-white hover:bg-white/25" })}>
               Отзывы учеников
             </Link>
