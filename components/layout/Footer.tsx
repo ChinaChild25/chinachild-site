@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { footerLinks } from "@/lib/site-data";
 import {
-  APP_URL,
   CONTACT_EMAIL,
   CONTACT_PHONE,
   CONTACT_PHONE_TEL,
@@ -30,9 +29,6 @@ export default function Footer() {
             </a>
             <a href={SITE_URL} className="text-[#6b6b6b] transition hover:text-[#1b1b1b]">
               chinachild.ru
-            </a>
-            <a href={APP_URL} className="text-[#6b6b6b] transition hover:text-[#1b1b1b]">
-              app.chinachild.ru
             </a>
           </div>
         </div>

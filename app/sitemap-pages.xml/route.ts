@@ -4,6 +4,8 @@ import { renderSitemap, type UrlEntry } from "@/lib/sitemap-helpers";
 import { absoluteUrl } from "@/lib/site-config";
 import { getAllGlossaryTerms } from "@/lib/glossary";
 import { teachers } from "@/lib/site-data";
+import { cities } from "@/lib/cities";
+import { hskLevels } from "@/lib/hsk-levels";
 
 export const dynamic = "force-static";
 
@@ -20,8 +22,7 @@ export async function GET() {
   const now = new Date().toISOString();
   const glossary = await getAllGlossaryTerms();
 
-  // Use real file mtime when available — gives Yandex/Google a credible
-  // lastmod signal instead of the same now-stamp on every page.
+  // Pull mtime for the most-edited templates so lastmod is credible.
   const [
     homeMtime,
     coursesIndexMtime,
@@ -30,7 +31,14 @@ export async function GET() {
     adultsMtime,
     kidsMtime,
     businessMtime,
-    moscowMtime,
+    citiesIndexMtime,
+    cityTemplateMtime,
+    hskTemplateMtime,
+    learnHubMtime,
+    priceMtime,
+    freeTrialMtime,
+    compareMtime,
+    licenseMtime,
     zayavkaMtime,
     aboutMtime,
     methodologyMtime,
@@ -47,7 +55,14 @@ export async function GET() {
     fileMtime("app/courses/chinese-for-adults/page.tsx", now),
     fileMtime("app/courses/chinese-for-kids/page.tsx", now),
     fileMtime("app/courses/business-chinese/page.tsx", now),
-    fileMtime("app/cities/moscow/page.tsx", now),
+    fileMtime("app/cities/page.tsx", now),
+    fileMtime("app/cities/[slug]/page.tsx", now),
+    fileMtime("app/hsk/[slug]/page.tsx", now),
+    fileMtime("app/learn/hsk/page.tsx", now),
+    fileMtime("app/price/page.tsx", now),
+    fileMtime("app/free-trial/page.tsx", now),
+    fileMtime("app/compare/mini-group-vs-individual/page.tsx", now),
+    fileMtime("app/license/page.tsx", now),
     fileMtime("app/zayavka/page.tsx", now),
     fileMtime("app/about/page.tsx", now),
     fileMtime("app/methodology/page.tsx", now),
@@ -61,7 +76,7 @@ export async function GET() {
   const entries: UrlEntry[] = [
     { loc: absoluteUrl("/"), lastmod: homeMtime, changefreq: "weekly", priority: 1 },
 
-    // Money pages — high priority
+    // Money pages — highest priority
     { loc: absoluteUrl("/courses"), lastmod: coursesIndexMtime, changefreq: "weekly", priority: 0.95 },
     { loc: absoluteUrl("/courses/online-chinese"), lastmod: onlineMtime, changefreq: "weekly", priority: 0.93 },
     { loc: absoluteUrl("/courses/hsk-preparation"), lastmod: hskMtime, changefreq: "weekly", priority: 0.93 },
@@ -69,25 +84,51 @@ export async function GET() {
     { loc: absoluteUrl("/courses/chinese-for-kids"), lastmod: kidsMtime, changefreq: "weekly", priority: 0.92 },
     { loc: absoluteUrl("/courses/business-chinese"), lastmod: businessMtime, changefreq: "weekly", priority: 0.88 },
 
-    // City landings (geo-targeted)
-    { loc: absoluteUrl("/cities/moscow"), lastmod: moscowMtime, changefreq: "monthly", priority: 0.85 },
-
-    // Lead capture (high-intent landing for direct ads/cards)
+    // Commercial conversion pages
+    { loc: absoluteUrl("/price"), lastmod: priceMtime, changefreq: "weekly", priority: 0.9 },
+    { loc: absoluteUrl("/free-trial"), lastmod: freeTrialMtime, changefreq: "monthly", priority: 0.88 },
     { loc: absoluteUrl("/zayavka"), lastmod: zayavkaMtime, changefreq: "monthly", priority: 0.86 },
 
-    // Trust pages
+    // HSK level cluster
+    { loc: absoluteUrl("/learn/hsk"), lastmod: learnHubMtime, changefreq: "weekly", priority: 0.92 },
+    ...hskLevels.map<UrlEntry>((l) => ({
+      loc: absoluteUrl(`/hsk/${l.slug}`),
+      lastmod: hskTemplateMtime,
+      changefreq: "monthly" as const,
+      priority: 0.85,
+    })),
+
+    // City landings (geo-targeted)
+    { loc: absoluteUrl("/cities"), lastmod: citiesIndexMtime, changefreq: "monthly", priority: 0.82 },
+    ...cities.map<UrlEntry>((c) => ({
+      loc: absoluteUrl(`/cities/${c.slug}`),
+      lastmod: cityTemplateMtime,
+      changefreq: "monthly" as const,
+      priority: c.licensedRegion ? 0.85 : 0.78,
+    })),
+
+    // Comparisons / decision pages
+    {
+      loc: absoluteUrl("/compare/mini-group-vs-individual"),
+      lastmod: compareMtime,
+      changefreq: "monthly",
+      priority: 0.7,
+    },
+
+    // Trust / E-E-A-T
     { loc: absoluteUrl("/about"), lastmod: aboutMtime, changefreq: "monthly", priority: 0.82 },
     { loc: absoluteUrl("/methodology"), lastmod: methodologyMtime, changefreq: "monthly", priority: 0.82 },
     { loc: absoluteUrl("/results"), lastmod: resultsMtime, changefreq: "monthly", priority: 0.78 },
     { loc: absoluteUrl("/reviews"), lastmod: reviewsMtime, changefreq: "weekly", priority: 0.78 },
+    { loc: absoluteUrl("/license"), lastmod: licenseMtime, changefreq: "yearly", priority: 0.7 },
 
-    // Team — E-E-A-T, author profiles
-    { loc: absoluteUrl("/team"), lastmod: teamIndexMtime, changefreq: "monthly", priority: 0.72 },
+    // Team — E-E-A-T author profiles
+    { loc: absoluteUrl("/team"), lastmod: teamIndexMtime, changefreq: "monthly", priority: 0.75 },
     ...teachers.map<UrlEntry>((t) => ({
       loc: absoluteUrl(`/team/${t.slug}`),
       lastmod: teamIndexMtime,
       changefreq: "monthly" as const,
-      priority: 0.6,
+      priority: 0.65,
     })),
 
     // Glossary — long-tail informational lane

@@ -19,6 +19,10 @@ type BlogPostPageProps = {
   params: Promise<{ slug: string }>;
 };
 
+// ISR: rebuild each post at most once per day even without a deploy, so
+// dateModified bumps and content edits surface within 24h.
+export const revalidate = 86400;
+
 function renderBlock(
   block: ArticleBlock,
   index: number,

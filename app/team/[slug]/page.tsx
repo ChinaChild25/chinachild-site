@@ -96,7 +96,7 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
       >
         <header className="mx-auto max-w-3xl">
           <div className="flex items-center gap-4">
-            <Avatar name={teacher.name} size={72} />
+            <Avatar name={teacher.name} size={120} src={teacher.image} />
             <div>
               <span className="tag-pill">Преподаватель</span>
             </div>

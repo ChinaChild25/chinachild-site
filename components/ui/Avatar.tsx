@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 const tones = [
@@ -27,14 +28,40 @@ export default function Avatar({
   name,
   className,
   size = 56,
+  src,
 }: {
   name: string;
   className?: string;
   size?: number;
+  /** Optional image URL (e.g. /team/<slug>.webp). When provided and the
+      file exists at deploy time, renders the photo instead of the
+      coloured initials placeholder. */
+  src?: string;
 }) {
   const tone = pickTone(name);
   const initials = getInitials(name);
   const fontSize = Math.round(size * 0.38);
+
+  if (src && src.length > 0) {
+    return (
+      <div
+        className={cn(
+          "inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full",
+          className,
+        )}
+        style={{ width: size, height: size, background: tone.bg }}
+      >
+        <Image
+          src={src}
+          alt={name}
+          width={size}
+          height={size}
+          className="h-full w-full object-cover"
+        />
+      </div>
+    );
+  }
+
   return (
     <div
       role="img"

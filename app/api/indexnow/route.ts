@@ -1,5 +1,7 @@
 import { getAllPosts } from "@/lib/blog";
+import { cities } from "@/lib/cities";
 import { getAllGlossaryTerms } from "@/lib/glossary";
+import { hskLevels } from "@/lib/hsk-levels";
 import { absoluteUrl, INDEXNOW_KEY, SITE_URL } from "@/lib/site-config";
 import { teachers } from "@/lib/site-data";
 
@@ -12,6 +14,7 @@ const STATIC_ROUTES = [
   "/methodology",
   "/results",
   "/reviews",
+  "/license",
   "/blog",
   "/courses",
   "/courses/online-chinese",
@@ -19,10 +22,14 @@ const STATIC_ROUTES = [
   "/courses/chinese-for-adults",
   "/courses/chinese-for-kids",
   "/courses/business-chinese",
-  "/cities/moscow",
+  "/cities",
   "/glossary",
   "/zayavka",
   "/team",
+  "/learn/hsk",
+  "/price",
+  "/free-trial",
+  "/compare/mini-group-vs-individual",
 ];
 
 const HOST = new URL(SITE_URL).host;
@@ -85,11 +92,15 @@ export async function GET(request: Request) {
   const glossary = await getAllGlossaryTerms();
   const glossaryUrls = glossary.map((term) => absoluteUrl(`/glossary/${term.slug}`));
   const teamUrls = teachers.map((t) => absoluteUrl(`/team/${t.slug}`));
+  const cityUrls = cities.map((c) => absoluteUrl(`/cities/${c.slug}`));
+  const hskUrls = hskLevels.map((l) => absoluteUrl(`/hsk/${l.slug}`));
   const urlList = [
     ...STATIC_ROUTES.map(absoluteUrl),
     ...blogUrls,
     ...glossaryUrls,
     ...teamUrls,
+    ...cityUrls,
+    ...hskUrls,
   ];
 
   const results = await ping(urlList);

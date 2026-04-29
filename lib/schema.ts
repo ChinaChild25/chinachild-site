@@ -5,6 +5,7 @@ import {
   CONTACT_PHONE,
   LICENSE_PROGRAM,
   LICENSE_REGION,
+  PROMO_VIDEO,
   SITE_DESCRIPTION,
   SITE_NAME,
   SITE_URL,
@@ -260,6 +261,31 @@ export function createServiceNode(): JsonLd {
   };
 }
 
+/**
+ * VideoObject — promo video for the school. Populates only when the
+ * PROMO_VIDEO config has at least contentUrl + thumbnailUrl set, so an
+ * empty config doesn't pollute the @graph with a broken node.
+ */
+export function createPromoVideoNode(): JsonLd | null {
+  if (!PROMO_VIDEO.contentUrl || !PROMO_VIDEO.thumbnailUrl) {
+    return null;
+  }
+  return {
+    "@type": "VideoObject",
+    "@id": `${SITE_URL}#promo-video`,
+    name: PROMO_VIDEO.name,
+    description: PROMO_VIDEO.description,
+    thumbnailUrl: PROMO_VIDEO.thumbnailUrl.startsWith("http")
+      ? PROMO_VIDEO.thumbnailUrl
+      : absoluteUrl(PROMO_VIDEO.thumbnailUrl),
+    contentUrl: PROMO_VIDEO.contentUrl,
+    uploadDate: PROMO_VIDEO.uploadDate || new Date().toISOString().slice(0, 10),
+    ...(PROMO_VIDEO.duration ? { duration: PROMO_VIDEO.duration } : {}),
+    publisher: { "@id": `${SITE_URL}#organization` },
+    inLanguage: "ru-RU",
+  };
+}
+
 export function createAggregateOfferNode(): JsonLd {
   const prices = courses
     .map((c) => (c.priceValue ? Number(c.priceValue) : NaN))
@@ -364,6 +390,11 @@ export function createSiteGraph(): JsonLd {
   const aggregateOffer = createAggregateOfferNode();
   if (Object.keys(aggregateOffer).length > 0) {
     graph.push(aggregateOffer);
+  }
+
+  const promoVideo = createPromoVideoNode();
+  if (promoVideo) {
+    graph.push(promoVideo);
   }
 
   return { "@context": "https://schema.org", "@graph": graph };

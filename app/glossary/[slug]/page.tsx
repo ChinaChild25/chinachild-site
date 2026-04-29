@@ -12,6 +12,9 @@ type GlossaryTermPageProps = {
   params: Promise<{ slug: string }>;
 };
 
+// ISR: refresh each term once per day so updatedAt bumps without a redeploy.
+export const revalidate = 86400;
+
 export async function generateStaticParams(): Promise<Array<{ slug: string }>> {
   const slugs = await getGlossarySlugs();
   return slugs.map((slug) => ({ slug }));
@@ -119,7 +122,7 @@ export default async function GlossaryTermPage({ params }: GlossaryTermPageProps
         </div>
 
         {related.length > 0 ? (
-          <aside className="page-shell-wide mt-16">
+          <aside className="mx-auto mt-16 max-w-3xl">
             <div className="card-block card-cream">
               <h2 className="text-xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
                 Связанные термины
@@ -139,6 +142,48 @@ export default async function GlossaryTermPage({ params }: GlossaryTermPageProps
             </div>
           </aside>
         ) : null}
+
+        {/* CTA block — every glossary term links back to the money pages.
+            Builds an internal cluster: term → course → enrollment. */}
+        <aside className="mx-auto mt-8 max-w-3xl">
+          <div className="card-block card-block-lg card-violet">
+            <h2 className="text-2xl font-bold tracking-[-0.03em] text-white">
+              Хотите освоить {term.term} на практике?
+            </h2>
+            <p className="mt-3 text-base leading-7 text-white/85">
+              Запишитесь на бесплатный пробный урок — преподаватель оценит ваш уровень
+              и подберёт подходящий курс.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link
+                href="/courses/online-chinese"
+                className="btn-pill btn-white"
+              >
+                Курс с нуля
+              </Link>
+              <Link
+                href="/courses/hsk-preparation"
+                className="btn-pill"
+                style={{
+                  background: "rgba(255,255,255,0.15)",
+                  color: "#ffffff",
+                }}
+              >
+                Подготовка к HSK
+              </Link>
+              <Link
+                href="/glossary"
+                className="btn-pill"
+                style={{
+                  background: "rgba(255,255,255,0.15)",
+                  color: "#ffffff",
+                }}
+              >
+                Все термины
+              </Link>
+            </div>
+          </div>
+        </aside>
       </article>
     </main>
   );

@@ -9,7 +9,7 @@ import JsonLd from "@/components/seo/JsonLd";
 import YandexMetrika from "@/components/seo/YandexMetrika";
 import { buildMetadata } from "@/lib/metadata";
 import { createSiteGraph } from "@/lib/schema";
-import { APP_URL, SITE_URL } from "@/lib/site-config";
+import { SITE_URL } from "@/lib/site-config";
 
 const inter = Inter({
   subsets: ["latin", "cyrillic"],
@@ -62,11 +62,9 @@ export default function RootLayout({
   return (
     <html lang="ru" className={inter.className}>
       <head>
-        {/* Preconnect / DNS-prefetch — kills first-byte latency for analytics + CTA */}
+        {/* Preconnect / DNS-prefetch — kills first-byte latency for analytics. */}
         <link rel="preconnect" href="https://mc.yandex.ru" crossOrigin="" />
         <link rel="dns-prefetch" href="https://mc.yandex.ru" />
-        <link rel="preconnect" href={APP_URL} />
-        <link rel="dns-prefetch" href={APP_URL} />
         {/* Atom feed for blog discovery */}
         <link
           rel="alternate"

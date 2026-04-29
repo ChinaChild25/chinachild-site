@@ -1,4 +1,4 @@
-import { absoluteUrl, CONTACT_EMAIL, REGISTER_URL, SITE_NAME, SITE_URL } from "@/lib/site-config";
+import { absoluteUrl, CONTACT_EMAIL, SITE_NAME, SITE_URL } from "@/lib/site-config";
 
 export type AudienceSegment = {
   title: string;
@@ -293,7 +293,16 @@ export const teachers: Teacher[] = [
     experience: "Преподаватель программы",
     credentials:
       "Учебник и рабочая тетрадь по китайскому языку — авторские материалы курса.",
+    // Положите файл /public/team/anastasia-ponomareva.webp (квадрат 800×800)
+    // и измените `image` ниже на "/team/anastasia-ponomareva.webp" — пока
+    // путь пустой, Avatar показывает заглушку с инициалами.
     image: "",
+    // TODO: подставьте реальные URL профилей преподавателя
+    sameAs: [
+      // "https://vk.com/...",
+      // "https://t.me/...",
+      // "https://www.linkedin.com/in/...",
+    ],
     jobTitle: "Методист и автор курса HSK 1–2",
     bio:
       "Анастасия — автор учебных материалов ChinaChild по программе HSK 1–2. Преподаёт китайский как иностранный с акцентом на разговорные сценарии, тоны путунхуа и базовый иероглифический минимум. Авторская методика построена на спирали повторений: каждый новый блок возвращается через 7, 30 и 90 дней, чтобы лексика уходила в долговременную память.",
@@ -313,7 +322,12 @@ export const teachers: Teacher[] = [
     experience: "Преподаватель школы",
     credentials:
       "Подготовка в ведущих вузах региона — ЮФУ и ДГТУ. Опыт групповых и индивидуальных занятий.",
+    // Положите /public/team/anastasia-erina.webp (800×800), обновите путь.
     image: "",
+    sameAs: [
+      // "https://vk.com/...",
+      // "https://t.me/...",
+    ],
     jobTitle: "Преподаватель китайского языка",
     alumniOf: "Южный федеральный университет (ЮФУ), Донской государственный технический университет (ДГТУ)",
     bio:
@@ -334,7 +348,12 @@ export const teachers: Teacher[] = [
     experience: "Преподаватель школы",
     credentials:
       "Носитель китайского языка. Помогает поставить произношение и снять языковой барьер.",
+    // Положите /public/team/zhao-li.webp (800×800), обновите путь.
     image: "",
+    sameAs: [
+      // "https://www.weibo.com/...",
+      // "https://vk.com/...",
+    ],
     jobTitle: "Преподаватель-носитель путунхуа",
     bio:
       "Чжао Ли — носитель путунхуа, ведёт практические занятия по разговорной речи и постановке тонов. Помогает ученикам школы снять страх говорить на китайском, отрабатывает реальные сценарии: знакомство, ресторан, дорога, работа. Работает в индивидуальном формате и в мини-группах со средним и продвинутым уровнем.",
@@ -485,17 +504,22 @@ export const faqs: FaqItem[] = [
 
 export const footerLinks = [
   { title: "Все курсы", href: "/courses" },
+  { title: "Хаб HSK", href: "/learn/hsk" },
   { title: "Подготовка к HSK", href: "/courses/hsk-preparation" },
   { title: "Школьникам 12+", href: "/courses/chinese-for-kids" },
   { title: "Взрослым с нуля", href: "/courses/chinese-for-adults" },
   { title: "Бизнес-китайский", href: "/courses/business-chinese" },
   { title: "Онлайн-курсы", href: "/courses/online-chinese" },
-  { title: "Курсы в Москве", href: "/cities/moscow" },
+  { title: "Цены", href: "/price" },
+  { title: "Бесплатный пробный", href: "/free-trial" },
+  { title: "Города", href: "/cities" },
+  { title: "Группа vs индивидуально", href: "/compare/mini-group-vs-individual" },
   { title: "О школе", href: "/about" },
   { title: "Команда", href: "/team" },
   { title: "Методика", href: "/methodology" },
   { title: "Результаты", href: "/results" },
   { title: "Отзывы", href: "/reviews" },
+  { title: "Лицензия", href: "/license" },
   { title: "Блог", href: "/blog" },
   { title: "Глоссарий", href: "/glossary" },
   { title: "Политика конфиденциальности", href: "/privacy-policy" },
@@ -506,7 +530,7 @@ export const siteFacts = {
   reviewCount: 4,
   contactEmail: CONTACT_EMAIL,
   logoUrl: absoluteUrl("/brand-mark.svg"),
-  registerUrl: REGISTER_URL,
+  freeTrialUrl: absoluteUrl("/zayavka"),
   siteUrl: SITE_URL,
   siteName: SITE_NAME,
 };

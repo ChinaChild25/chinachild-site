@@ -1,8 +1,24 @@
 export const SITE_NAME = "ChinaChild";
 export const BRAND_NAME = "HSK+";
 export const SITE_URL = "https://chinachild.ru";
-export const APP_URL = "https://app.chinachild.ru";
-export const REGISTER_URL = `${APP_URL}/register`;
+
+/** Когда вы зальёте промо-видео, заполните эти поля и в schema.ts
+ *  автоматически появится VideoObject node со ссылками на Метрику. */
+export const PROMO_VIDEO = {
+  /** YouTube URL (https://youtu.be/...) или vk.com/video/... либо абсолютный URL .mp4 */
+  contentUrl: "",
+  /** Превью к видео — положите в /public/video/promo-poster.jpg (1280×720) */
+  thumbnailUrl: "",
+  /** ISO 8601 длительность, e.g. "PT2M30S" для 2 мин 30 сек */
+  duration: "",
+  /** ISO дата публикации */
+  uploadDate: "",
+  /** Заголовок и описание попадут в Google Video Search */
+  name: "ChinaChild — онлайн-школа китайского языка",
+  description:
+    "Видеовизитка школы: как устроены занятия, кто преподаёт, как сдают HSK 1–2 после программы.",
+};
+
 export const SITE_DESCRIPTION =
   "Онлайн-школа китайского языка ChinaChild (HSK+). Лицензированная программа HSK 1-2 — мини-группы до 5 человек, индивидуальные занятия, доступ через личный кабинет.";
 export const CONTACT_EMAIL = "info@chinachild.ru";

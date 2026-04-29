@@ -20,29 +20,45 @@ type Term = {
 // Money pages get heaviest specificity; glossary entries pick up generic
 // term mentions so blog body builds an internal cluster.
 const TERMS: Term[] = [
+  // Money pages — most commercial intent first
   { match: /курсы китайского для детей/i, href: "/courses/chinese-for-kids" },
   { match: /курсы китайского для взрослых/i, href: "/courses/chinese-for-adults" },
   { match: /бизнес-китайский|корпоративный китайский/i, href: "/courses/business-chinese" },
   { match: /подготовк[аеи]\s+к\s+HSK|курс[ы]?\s+HSK/i, href: "/courses/hsk-preparation" },
   { match: /курс[ы]?\s+ChinaChild|курс[ы]?\s+с\s+нуля/i, href: "/courses/online-chinese" },
-  { match: /бесплатн(ое|ый)\s+(пробное|тест)/i, href: "/courses/online-chinese" },
+  { match: /бесплатн(ое|ый)\s+(пробное|тест)|пробн(ое|ый)\s+урок/i, href: "/free-trial" },
   { match: /(методик[аиу]|программ[аеу])\s+ChinaChild/i, href: "/methodology" },
-  { match: /преподавател[ия]\s+ЮФУ|преподавател[ия]\s+школы/i, href: "/about" },
+  { match: /преподавател[ия]\s+ЮФУ|преподавател[ия]\s+школы/i, href: "/team" },
   { match: /отзыв[ыи]\s+учеников/i, href: "/reviews" },
+  { match: /цен[аыу]|стоимост[ьи]|тариф/i, href: "/price" },
+  { match: /мини-групп[аеу]\s+vs|мини-групп[аеу]\s+или\s+индивидуально|групп[аеу]\s+или\s+индивидуально/i, href: "/compare/mini-group-vs-individual" },
+  // City pages
   { match: /курс[ы]?\s+(?:в\s+)?Москв[еы]/i, href: "/cities/moscow" },
-  // Single-term anchors (least specific — last)
-  { match: /\bHSK\s*1\b/i, href: "/courses/hsk-preparation" },
-  { match: /\bHSK\s*2\b/i, href: "/courses/hsk-preparation" },
-  { match: /\bHSK\s*3\b/i, href: "/courses/hsk-preparation" },
-  { match: /\bHSK\s*4\b/i, href: "/courses/hsk-preparation" },
+  { match: /Санкт-Петербург[а-я]*|СПб|Питер[а-я]*/i, href: "/cities/saint-petersburg" },
+  { match: /Казан[а-я]+/i, href: "/cities/kazan" },
+  { match: /Екатеринбург[а-я]*/i, href: "/cities/ekaterinburg" },
+  { match: /Новосибирск[а-я]*/i, href: "/cities/novosibirsk" },
+  { match: /Краснодар[а-я]*/i, href: "/cities/krasnodar" },
+  { match: /Ростов[а-я-]+/i, href: "/cities/rostov-on-don" },
+  { match: /Владивосток[а-я]*/i, href: "/cities/vladivostok" },
+  // HSK level pages — specific levels go to dedicated landings
+  { match: /\bHSK\s*1\b/i, href: "/hsk/hsk-1" },
+  { match: /\bHSK\s*2\b/i, href: "/hsk/hsk-2" },
+  { match: /\bHSK\s*3\b/i, href: "/hsk/hsk-3" },
+  { match: /\bHSK\s*4\b/i, href: "/hsk/hsk-4" },
+  { match: /\bHSK\s*5\b/i, href: "/hsk/hsk-5" },
+  { match: /\bHSK\s*6\b/i, href: "/hsk/hsk-6" },
   // Glossary anchors — informational lane
   { match: /\bпиньинь\b/i, href: "/glossary/pinyin" },
   { match: /\bпутунхуа\b/i, href: "/glossary/putonghua" },
-  // Plain HSK as a defined term — only after specific HSK course matches above
+  // Plain HSK as a defined term — only after specific HSK course/level matches above
   { match: /\bэкзамен[а-я]*\s+HSK\b/i, href: "/glossary/hsk" },
 ];
 
-const MAX_AUTO_LINKS_PER_ARTICLE = 6;
+// Cap raised from 6 → 12 — a 12-minute article reasonably supports
+// ~10 internal links without looking spammy. Industry guidance is roughly
+// 1 link per 200 words; 12 fits a 2400-word piece.
+const MAX_AUTO_LINKS_PER_ARTICLE = 12;
 
 type LinkerState = {
   used: Set<string>;
