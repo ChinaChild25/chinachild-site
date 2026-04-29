@@ -63,7 +63,9 @@ body {
     sans-serif;
 
   padding-top: 72px;  /* 8px top + 56px header + воздух */
-  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 110px);
+  /* No bottom padding — footer should sit flush with the viewport edge.
+     Floating CTA is fixed and overlays the bottom of the footer by design. */
+  padding-bottom: 0;
 }
 
 img {
@@ -458,12 +460,13 @@ a:focus-visible {
   pointer-events: none;
 }
 
-/* Стеклянная плашка вокруг кнопки */
+/* Стеклянная плашка вокруг кнопки. Inset управляет толщиной ободка вокруг
+   чёрной кнопки — больше отрицательное значение = шире стеклянный кант. */
 .floating-cta-shell::before {
   content: "";
   position: absolute;
-  inset: -8px;
-  border-radius: 16px;
+  inset: -14px;
+  border-radius: 20px;
   background-color: rgba(255, 255, 255, 0.6);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   backdrop-filter: blur(20px) saturate(180%);
@@ -598,6 +601,16 @@ a:focus-visible {
   max-height: 100vh;
   inset: 0;
   margin: 0;
+  /* Dialog renders inside .floating-cta-shell which sets pointer-events: none.
+     Re-enable pointer events here so inputs and buttons inside the modal
+     are actually clickable / typeable. */
+  pointer-events: auto;
+}
+
+.lead-dialog *,
+.lead-dialog *::before,
+.lead-dialog *::after {
+  pointer-events: auto;
 }
 
 .lead-dialog::backdrop {
@@ -611,6 +624,7 @@ a:focus-visible {
 }
 
 .lead-dialog-card {
+  position: relative;
   width: min(560px, calc(100% - 32px));
   max-height: calc(100vh - 32px);
   overflow-y: auto;
@@ -632,6 +646,10 @@ a:focus-visible {
   border-radius: 999px;
   background: rgba(0, 0, 0, 0.05);
   cursor: pointer;
+}
+
+.lead-dialog-close:hover {
+  background: rgba(0, 0, 0, 0.1);
 }
 
 /* ==========================================================================

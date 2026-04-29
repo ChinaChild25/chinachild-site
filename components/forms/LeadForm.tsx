@@ -184,17 +184,11 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
           Менеджер свяжется с вами в течение рабочего дня по указанному телефону.
           Если вопрос срочный — напишите или позвоните нам напрямую.
         </p>
-        <div className="flex flex-wrap gap-3 text-sm font-semibold">
-          <a
-            href={`tel:${CONTACT_PHONE_TEL}`}
-            className="rounded-[14px] bg-[var(--ink)] px-5 py-3 text-white transition hover:bg-[#2a2a2a]"
-          >
+        <div className="flex flex-wrap gap-3 text-sm">
+          <a href={`tel:${CONTACT_PHONE_TEL}`} className="btn-pill btn-ink">
             Позвонить {CONTACT_PHONE}
           </a>
-          <a
-            href={`mailto:${CONTACT_EMAIL}`}
-            className="rounded-[14px] border border-[rgba(0,0,0,0.12)] bg-white px-5 py-3 transition hover:bg-[#efefef]"
-          >
+          <a href={`mailto:${CONTACT_EMAIL}`} className="btn-pill btn-white">
             {CONTACT_EMAIL}
           </a>
         </div>
@@ -204,9 +198,9 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
 
   const gap = compact ? "gap-3" : "gap-4";
   const labelClass =
-    "block text-xs font-semibold uppercase tracking-[0.08em] text-[#6b6b6b]";
+    "block text-sm font-medium text-[#4e4e4e]";
   const inputClass =
-    "mt-1.5 w-full rounded-[12px] border border-[rgba(0,0,0,0.12)] bg-white px-4 py-3 text-base text-[#1b1b1b] placeholder:text-[#9a9a9a] outline-none transition focus:border-[var(--ink)] focus:ring-2 focus:ring-[var(--ink)]/10";
+    "mt-1.5 w-full rounded-[6px] border border-[rgba(0,0,0,0.12)] bg-white px-4 py-3 text-base text-[#1b1b1b] placeholder:text-[#9a9a9a] outline-none transition focus:border-[var(--ink)] focus:ring-2 focus:ring-[var(--ink)]/10";
 
   return (
     <form
@@ -355,7 +349,7 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
       <button
         type="submit"
         disabled={status === "submitting"}
-        className="mt-1 inline-flex h-[54px] items-center justify-center rounded-[18px] bg-[var(--ink)] px-7 text-base font-semibold text-white transition hover:bg-[#2a2a2a] active:bg-[#353535] disabled:cursor-not-allowed disabled:opacity-60"
+        className="btn-pill btn-ink btn-pill-large btn-block mt-1 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {status === "submitting" ? "Отправляем…" : "Оставить заявку"}
       </button>

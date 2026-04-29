@@ -164,16 +164,10 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
               позвоните нам — подберём ближайшее окно.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link
-                href="/zayavka"
-                className="inline-flex h-[46px] items-center rounded-[16px] bg-[var(--ink)] px-5 text-sm font-semibold text-white transition hover:bg-[#2a2a2a]"
-              >
+              <Link href="/zayavka" className="btn-pill btn-ink">
                 Оставить заявку
               </Link>
-              <Link
-                href="/courses"
-                className="inline-flex h-[46px] items-center rounded-[16px] border border-[rgba(0,0,0,0.12)] bg-white px-5 text-sm font-semibold text-[#1b1b1b] transition hover:bg-[#efefef]"
-              >
+              <Link href="/courses" className="btn-pill btn-white">
                 Все курсы
               </Link>
             </div>

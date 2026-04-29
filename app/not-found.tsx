@@ -24,22 +24,13 @@ export default function NotFound() {
           или в каталог курсов — мы расскажем, как начать учить китайский.
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-          <Link
-            href="/"
-            className="inline-flex h-[46px] items-center rounded-[16px] bg-[var(--ink)] px-6 text-sm font-semibold text-white transition hover:bg-[#2a2a2a]"
-          >
+          <Link href="/" className="btn-pill btn-ink">
             На главную
           </Link>
-          <Link
-            href="/courses"
-            className="inline-flex h-[46px] items-center rounded-[16px] border border-[rgba(0,0,0,0.12)] bg-white px-6 text-sm font-semibold text-[#1b1b1b] transition hover:bg-[#efefef]"
-          >
+          <Link href="/courses" className="btn-pill btn-white">
             Все курсы
           </Link>
-          <Link
-            href="/blog"
-            className="inline-flex h-[46px] items-center rounded-[16px] border border-[rgba(0,0,0,0.12)] bg-white px-6 text-sm font-semibold text-[#1b1b1b] transition hover:bg-[#efefef]"
-          >
+          <Link href="/blog" className="btn-pill btn-white">
             Блог
           </Link>
         </div>
