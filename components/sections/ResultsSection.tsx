@@ -15,13 +15,13 @@ export default function ResultsSection() {
         {results.map((item, index) => (
           <Reveal key={item.title}>
             <article className={`card-block h-full ${palette[index % palette.length]}`}>
-              <div className="text-5xl font-bold tracking-[-0.04em] text-[#1b1b1b] sm:text-6xl">
+              <div className="text-[3rem] font-medium tracking-[-0.02em] text-[#1e1e1e] leading-[1.05] sm:text-[3.5rem]">
                 {item.value}
               </div>
-              <h3 className="mt-6 text-lg font-bold tracking-[-0.02em] text-[#1b1b1b]">
+              <h3 className="mt-6 text-[1.125rem] font-medium tracking-[-0.01em] text-[#1e1e1e] leading-[1.2]">
                 {item.title}
               </h3>
-              <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">{item.description}</p>
+              <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">{item.description}</p>
             </article>
           </Reveal>
         ))}

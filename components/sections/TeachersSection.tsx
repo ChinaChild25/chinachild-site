@@ -29,16 +29,16 @@ export default function TeachersSection() {
               <div className="flex items-center gap-4">
                 <Avatar name={teacher.name} size={64} />
                 <div>
-                  <h3 className="text-xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
+                  <h3 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1e1e1e] leading-[1.2]">
                     {teacher.name}
                   </h3>
-                  <p className="mt-1 text-sm font-semibold text-[#1b1b1b]">
+                  <p className="mt-1 text-sm font-medium text-[#1e1e1e]">
                     {teacher.specialization}
                   </p>
                 </div>
               </div>
               <p className="mt-5 text-sm text-[#6b6b6b]">{teacher.experience}</p>
-              <p className="mt-2 text-sm leading-6 text-[#4b4b4b]">{teacher.credentials}</p>
+              <p className="mt-2 text-sm leading-[1.55] text-[#4b4b4b]">{teacher.credentials}</p>
             </article>
           </Reveal>
         ))}

@@ -11,23 +11,23 @@ import {
 
 export default function Footer() {
   return (
-    <footer className="border-t border-[rgba(0,0,0,0.06)] bg-[#f6f5f2] py-16 text-[#1b1b1b]">
+    <footer className="border-t border-[rgba(0,0,0,0.06)] bg-[#f3f0e8] py-16 text-[#1e1e1e]">
       <div className="page-shell-wide grid gap-10 md:grid-cols-[1.2fr_0.8fr]">
         <div className="max-w-xl">
-          <div className="text-2xl font-bold tracking-[-0.03em]">ChinaChild</div>
-          <p className="mt-4 text-sm leading-7 text-[#6b6b6b]">
+          <div className="text-[1.5rem] font-medium tracking-[-0.01em]">ChinaChild</div>
+          <p className="mt-4 text-sm leading-[1.55] text-[#6b6b6b]">
             Онлайн-школа китайского языка ChinaChild (HSK+). Лицензированная
             программа по достижению разговорного уровня уже через 6 месяцев
             обучения. Обучение для подростков с 12 лет и взрослых.
           </p>
-          <div className="mt-6 grid gap-2 text-sm text-[#1b1b1b]">
-            <a href={`tel:${CONTACT_PHONE_TEL}`} className="font-semibold transition hover:text-[#5c5cff]">
+          <div className="mt-6 grid gap-2 text-sm text-[#1e1e1e]">
+            <a href={`tel:${CONTACT_PHONE_TEL}`} className="font-medium transition hover:opacity-60">
               {CONTACT_PHONE}
             </a>
-            <a href={`mailto:${CONTACT_EMAIL}`} className="text-[#6b6b6b] transition hover:text-[#1b1b1b]">
+            <a href={`mailto:${CONTACT_EMAIL}`} className="text-[#6b6b6b] transition hover:text-[#1e1e1e]">
               {CONTACT_EMAIL}
             </a>
-            <a href={SITE_URL} className="text-[#6b6b6b] transition hover:text-[#1b1b1b]">
+            <a href={SITE_URL} className="text-[#6b6b6b] transition hover:text-[#1e1e1e]">
               chinachild.ru
             </a>
           </div>
@@ -38,14 +38,14 @@ export default function Footer() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm text-[#6b6b6b] transition hover:text-[#1b1b1b]"
+              className="text-sm text-[#6b6b6b] transition hover:text-[#1e1e1e]"
             >
               {link.title}
             </Link>
           ))}
         </nav>
       </div>
-      <div className="page-shell-wide mt-10 border-t border-[rgba(0,0,0,0.08)] pt-6 text-xs leading-6 text-[#9a9a9a]">
+      <div className="page-shell-wide mt-10 border-t border-[rgba(0,0,0,0.06)] pt-6 text-xs leading-[1.55] text-[#9a9a9a]">
         © {new Date().getFullYear()} ChinaChild. Образовательная лицензия выдана{" "}
         {LICENSE_REGION} на программу {LICENSE_PROGRAM}. Налоговый вычет 13% — до 15 600 ₽ в год.
       </div>

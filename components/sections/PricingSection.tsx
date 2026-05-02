@@ -32,8 +32,8 @@ export default function PricingSection() {
                 ) : null}
 
                 <h3
-                  className={`mt-6 text-2xl font-bold tracking-[-0.03em] ${
-                    isViolet ? "text-white" : "text-[#1b1b1b]"
+                  className={`mt-6 text-[1.5rem] font-medium tracking-[-0.01em] leading-[1.2] ${
+                    isViolet ? "text-white" : "text-[#1e1e1e]"
                   }`}
                 >
                   {tier.title}
@@ -43,25 +43,25 @@ export default function PricingSection() {
                 </p>
 
                 <div
-                  className={`mt-6 text-4xl font-bold tracking-[-0.04em] ${
-                    isViolet ? "text-white" : "text-[#1b1b1b]"
+                  className={`mt-6 text-[2.5rem] font-medium tracking-[-0.02em] leading-[1.05] ${
+                    isViolet ? "text-white" : "text-[#1e1e1e]"
                   }`}
                 >
                   {tier.price}
                 </div>
 
                 <p
-                  className={`mt-4 text-sm leading-7 ${
+                  className={`mt-4 text-sm leading-[1.55] ${
                     isViolet ? "text-white/85" : "text-[#4b4b4b]"
                   }`}
                 >
                   {tier.description}
                 </p>
 
-                <ul className={`mt-6 grid gap-2 text-sm ${isViolet ? "text-white" : "text-[#1b1b1b]"}`}>
+                <ul className={`mt-6 grid gap-2 text-sm ${isViolet ? "text-white" : "text-[#1e1e1e]"}`}>
                   {tier.features.map((feature) => (
                     <li key={feature} className="flex gap-2">
-                      <span className={isViolet ? "text-white/55" : "text-[#1b1b1b]/40"}>—</span>
+                      <span className={isViolet ? "text-white/55" : "text-[#1e1e1e]/40"}>—</span>
                       <span>{feature}</span>
                     </li>
                   ))}

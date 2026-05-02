@@ -58,11 +58,11 @@ export default function RelatedLinks({ items = defaultItems }: { items?: LinkIte
               href={item.href}
               className={`card-block group flex h-full flex-col transition hover:-translate-y-1 ${item.tone}`}
             >
-              <h3 className="text-xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
+              <h3 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1e1e1e] leading-[1.2]">
                 {item.title}
               </h3>
-              <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">{item.description}</p>
-              <div className="mt-auto pt-6 text-sm font-semibold text-[#1b1b1b] underline-offset-4 group-hover:underline">
+              <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">{item.description}</p>
+              <div className="mt-auto pt-6 text-sm font-medium text-[#1e1e1e] underline-offset-4 group-hover:underline">
                 Открыть →
               </div>
             </Link>

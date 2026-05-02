@@ -18,18 +18,18 @@ export default function HeroSection() {
 
       <div className="mx-auto max-w-4xl text-center">
         <span className="tag-pill">Лицензированная программа · Москва</span>
-        <h1 className="mt-6 text-[2.4rem] font-bold leading-[1.04] tracking-[-0.04em] text-[#1b1b1b] sm:text-[3.4rem] lg:text-[4rem]">
+        <h1 className="mt-6 text-[2.5rem] font-normal leading-[1.1] tracking-[-0.02em] text-[#1e1e1e] sm:text-[3.4rem] lg:text-[4.25rem] lg:leading-[1.08]">
           Курсы китайского языка онлайн —<br className="hidden sm:block" />
           разговорный уровень за 6 месяцев
         </h1>
-        <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-[#4b4b4b] sm:text-lg">
+        <p className="mx-auto mt-6 max-w-2xl text-base leading-[1.55] text-[#4b4b4b] sm:text-[1.125rem]">
           Онлайн-школа ChinaChild. Лицензированный курс HSK 1–2: фонетика,
           грамматика, лексика, аудирование, чтение и говорение в единой логике.
           Подходит подросткам с 12 лет и взрослым без подготовки.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <LeadModal
-            triggerClassName={buttonStyles({ size: "large" })}
+            triggerClassName="btn-shadow-yellow"
             source="hero"
           >
             Записаться на пробный урок
@@ -44,12 +44,12 @@ export default function HeroSection() {
         {proofPoints.map((p) => (
           <div
             key={p.value}
-            className="rounded-2xl border border-[rgba(0,0,0,0.08)] bg-white px-6 py-5"
+            className="rounded-[20px] border border-[rgba(0,0,0,0.06)] bg-white px-6 py-5"
           >
-            <dt className="text-2xl font-bold tracking-[-0.03em] text-[#1b1b1b] sm:text-3xl">
+            <dt className="text-[1.75rem] font-medium tracking-[-0.02em] text-[#1e1e1e] sm:text-[2rem]">
               {p.value}
             </dt>
-            <dd className="mt-2 text-sm leading-6 text-[#6b6b6b]">{p.label}</dd>
+            <dd className="mt-2 text-sm leading-[1.55] text-[#6b6b6b]">{p.label}</dd>
           </div>
         ))}
       </dl>

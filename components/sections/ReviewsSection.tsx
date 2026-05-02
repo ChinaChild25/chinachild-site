@@ -16,17 +16,17 @@ export default function ReviewsSection() {
       <div className="grid gap-5 lg:grid-cols-[0.4fr_1.6fr]">
         <Reveal>
           <article className="card-block card-violet h-full">
-            <div className="text-sm font-semibold uppercase tracking-[0.08em] text-white/70">
+            <div className="text-sm font-medium uppercase tracking-[0.08em] text-white/70">
               Средняя оценка
             </div>
-            <div className="mt-6 text-7xl font-bold tracking-[-0.05em] text-white">
+            <div className="mt-6 text-[4rem] font-medium tracking-[-0.02em] text-white leading-[1.05]">
               {siteFacts.aggregateRating}
-              <span className="text-3xl text-white/70"> / 5</span>
+              <span className="text-[1.75rem] text-white/70"> / 5</span>
             </div>
             <div className="mt-6 flex gap-1 text-xl text-[#FFE066]" aria-hidden>
               ★★★★★
             </div>
-            <p className="mt-6 text-sm leading-7 text-white/85">
+            <p className="mt-6 text-sm leading-[1.55] text-white/85">
               Лицензированная программа, преподаватели ЮФУ и ДГТУ и удобный
               личный кабинет — три причины, по которым ученики продолжают обучение.
             </p>
@@ -40,13 +40,13 @@ export default function ReviewsSection() {
                 <div className="flex items-center gap-4">
                   <Avatar name={review.author} size={56} />
                   <div>
-                    <h3 className="text-base font-bold tracking-[-0.02em] text-[#1b1b1b]">
+                    <h3 className="text-[1.25rem] font-normal tracking-[-0.01em] text-[#1e1e1e] leading-[1.2]">
                       {review.author}
                     </h3>
-                    <p className="mt-1 text-xs text-[#6b6b6b]">{review.result}</p>
+                    <p className="mt-1.5 text-base text-[#1e1e1e]/60">{review.result}</p>
                   </div>
                 </div>
-                <p className="mt-5 text-sm leading-7 text-[#4b4b4b]">«{review.body}»</p>
+                <p className="mt-5 text-sm leading-[1.55] text-[#4b4b4b]">«{review.body}»</p>
               </article>
             </Reveal>
           ))}

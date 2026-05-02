@@ -1,36 +1,109 @@
 @import "tailwindcss";
 
 /* ==========================================================================
-   Yandex Practicum — 1:1 EXACT COPY (verified via DevTools)
-   Версия 3 — финальная. Двухслойная архитектура хедера.
+   ChinaChild — design system aligned with Yandex Practicum blueprint.
+   Architecture, markup и SEO не меняются — только CSS tokens, размеры,
+   радиусы, тени, отступы и mobile-rhythm.
+   Шрифт оставлен Inter (по требованию), все остальные пропорции — LPC.
    ========================================================================== */
 
 :root {
-  --background: #f5f5f3;
+  /* Surfaces / page backgrounds — Yandex off-white кремовый */
+  --background: #f8f7f2;            /* Yandex off-white card */
+  --background-2: #f3f0e8;          /* Yandex off-white card-2 */
   --surface: #ffffff;
-  --foreground: #171717;
+  --foreground: #1e1e1e;
   --muted: #6d6d6d;
   --muted-strong: #4e4e4e;
-  --line: rgba(0, 0, 0, 0.08);
+  --line: rgba(0, 0, 0, 0.06);      /* Yandex border subtle */
 
-  --ink: #1e1e1e;          /* Яндекс: #1E1E1E */
-  --ink-btn: #262626;      /* Яндекс header-btn: #262626 */
+  /* Ink ladder — точные значения LPC */
+  --ink: #1e1e1e;
+  --ink-700: #2d2d2d;
+  --ink-800: #252525;                /* hover для action button */
+  --ink-btn: #262626;                /* header-btn база */
+  --ink-btn-hover: #323232;          /* header-btn hover */
 
+  /* Glass / frosted */
+  --glass-white-80: rgba(255, 255, 255, 0.8);
+  --glass-white-25: rgba(255, 255, 255, 0.25);
+  --glass-white-06: rgba(255, 255, 255, 0.06);
+  --glass-white-05: rgba(255, 255, 255, 0.05);
+
+  /* Pastel cards — точные HEX из blueprint */
   --violet: #d8d3ff;
-  --cream: #e8e3d8;
-  --lime: #dce9a7;
-  --sky: #cddcee;
-  --peach: #f7d7c6;
+  --cream:  #e8e3d8;
+  --lime:   #dce9a7;
+  --sky:    #cddcee;
+  --peach:  #f7d7c6;
+  --faq-bg: #ece8df;
 
-  /* Restored: lighter "soft" tone for each accent. Used widely across
-     ProcessSection, CoursesSection, AudienceSection, RelatedLinks, etc. */
-  --violet-soft: #ebe8ff;
-  --cream-soft: #f3efe6;
-  --lime-soft: #ecf3c7;
-  --sky-soft: #e1ebf6;
-  --peach-soft: #fbe4d6;
+  /* Soft tints были выцветшие — у Яндекса все карточки идут в одной
+     насыщенности из блюпринта, поэтому возвращаем полные значения.
+     Названия классов оставлены, чтобы не править tsx. */
+  --violet-soft: #d8d3ff;
+  --cream-soft:  #e8e3d8;
+  --lime-soft:   #dce9a7;
+  --sky-soft:    #cddcee;
+  --peach-soft:  #f7d7c6;
 
-  --page-gutter: clamp(16px, 2.2vw, 36px);
+  /* Yandex signature accents */
+  --yellow-base: #ffdf39;
+  --yellow-hover: #fee47c;
+  --yellow-shadow: #d5ab22;
+  --yellow-shadow-hover: #d0af57;
+  --green-chat: #07ab4b;
+
+  /* Greys */
+  --gray-base: #878787;
+  --gray-light: #d9d9d9;
+
+  /* Typography — Inter сохранён, но шкала и трекинг как у LPC */
+  --font-family-base:
+    Inter, ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", Arial,
+    "Segoe UI", sans-serif;
+
+  --fs-h1-desktop: clamp(2.75rem, 1.4rem + 3.6vw, 4.5rem);  /* 44px → 72px */
+  --fs-h1-mobile:  clamp(2rem,    1.6rem + 2vw,    2.5rem); /* 32px → 40px */
+  --fs-h2-desktop: 2rem;            /* 32px */
+  --fs-h2-mobile:  1.25rem;         /* 20px */
+  --fs-body:       1rem;            /* 16px */
+  --fs-body-large: 1.25rem;         /* 20px */
+  --lh-base: 1.2;                   /* 120% */
+  --lh-tight: 1;
+  --tracking-h2: -0.32px;
+  --tracking-h2-mobile: -0.2px;
+  --tracking-body: -0.01em;
+
+  /* Radii — Yandex шкала */
+  --radius-card: 20px;              /* крупные карточки */
+  --radius-card-md: 16px;            /* средние блоки */
+  --radius-media: 12px;              /* медиа / средние карточки */
+  --radius-input: 11px;
+  --radius-button: 6px;              /* основной для CTA */
+  --radius-header-btn: 4px;
+  --radius-tag: 10px;
+  --radius-glass-pill: 18px;         /* стеклянная плашка floating CTA */
+  --radius-pill: 200px;
+
+  /* Shadows */
+  --shadow-soft: 0 4px 20px 0 rgba(0, 0, 0, 0.10);
+  --shadow-glass: 0 0 20px 0 rgba(0, 0, 0, 0.06);
+  --shadow-btn-yellow: 0 2px 0 0 #d5ab22;
+  --shadow-btn-yellow-hover: 0 2px 0 0 #d0af57;
+
+  /* Containers */
+  --container-default: 940px;        /* LPC default .lc-section */
+  --container-wide: 1424px;          /* LPC header / wide blocks */
+  --section-pad-x: 20px;
+
+  /* Transitions */
+  --t-fast: 0.1s ease-out;
+  --t-base: 0.2s ease;
+  --t-color: 0.115s ease-out;
+  --t-fade: 0.3s ease;
+
+  --page-gutter: clamp(16px, 2.2vw, 32px);
 }
 
 /* ==========================================================================
@@ -53,19 +126,21 @@ body {
   color: var(--foreground);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  font-family:
-    Inter,
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
+  font-family: var(--font-family-base);
+  font-size: var(--fs-body);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-body);
 
   padding-top: 72px;  /* 8px top + 56px header + воздух */
-  /* No bottom padding — footer should sit flush with the viewport edge.
-     Floating CTA is fixed and overlays the bottom of the footer by design. */
   padding-bottom: 0;
+}
+
+/* На мобильном floating CTA становится полноширинным sticky-баром
+   высотой 56px — оставляем место под него, чтобы не прятать контент. */
+@media (max-width: 767px) {
+  body {
+    padding-bottom: 56px;
+  }
 }
 
 img {
@@ -98,7 +173,8 @@ a:focus-visible {
 }
 
 /* ==========================================================================
-   Layout
+   Layout — Yandex container ladder
+   default 940px, wide 1424px, fluid gutters
    ========================================================================== */
 
 .site-shell {
@@ -108,27 +184,35 @@ a:focus-visible {
 }
 
 .page-shell {
-  width: min(1240px, calc(100% - var(--page-gutter) * 2));
+  width: min(var(--container-default), calc(100% - var(--page-gutter) * 2));
   margin: 0 auto;
 }
 
 .page-shell-wide {
-  width: calc(100% - var(--page-gutter) * 2);
+  width: min(var(--container-wide), calc(100% - var(--page-gutter) * 2));
   margin: 0 auto;
 }
 
 .section-space {
-  padding: 72px 0;
+  padding: 56px 0;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
+  .section-space {
+    padding: 72px 0;
+  }
+}
+
+@media (min-width: 1280px) {
   .section-space {
     padding: 96px 0;
   }
 }
 
 /* ==========================================================================
-   Typography
+   Typography — LPC h2 / hero rhythm.
+   Здесь же снижаем агрессивность Tailwind utility-классов через
+   .card-block-*-fix фиксы, чтобы не плодить правки в tsx.
    ========================================================================== */
 
 .section-head-center {
@@ -137,18 +221,27 @@ a:focus-visible {
 
 .section-title {
   margin: 0;
-  font-size: clamp(2.4rem, 1.4rem + 3vw, 4.6rem);
-  line-height: 0.96;
-  letter-spacing: -0.05em;
-  font-weight: 700;
+  font-size: var(--fs-h2-mobile);
+  line-height: var(--lh-base);
+  letter-spacing: var(--tracking-h2-mobile);
+  font-weight: 400;
+  color: var(--ink);
+}
+
+@media (min-width: 768px) {
+  .section-title {
+    font-size: var(--fs-h2-desktop);
+    letter-spacing: var(--tracking-h2);
+  }
 }
 
 .section-description {
-  max-width: 760px;
-  margin: 20px auto 0;
-  font-size: 1.06rem;
-  line-height: 1.65;
+  max-width: 657px;            /* Yandex h2 max-width */
+  margin: 16px auto 0;
+  font-size: var(--fs-body);
+  line-height: 1.5;
   color: var(--muted);
+  letter-spacing: var(--tracking-body);
 }
 
 .muted-text {
@@ -156,13 +249,13 @@ a:focus-visible {
 }
 
 /* ==========================================================================
-   Cards
+   Cards — 20px radius для крупных, 16px для блогов/links, 12px для медиа
    ========================================================================== */
 
 .card-block {
   position: relative;
   overflow: hidden;
-  border-radius: 22px;
+  border-radius: var(--radius-card);
   padding: 28px;
 }
 
@@ -183,10 +276,38 @@ a:focus-visible {
   color: #ffffff;
 }
 
+/* Soft tints (используются широко в секциях) */
+.card-violet-soft { background: var(--violet-soft); color: var(--foreground); }
+.card-cream-soft  { background: var(--cream-soft);  color: var(--foreground); }
+.card-lime-soft   { background: var(--lime-soft);   color: var(--foreground); }
+.card-sky-soft    { background: var(--sky-soft);    color: var(--foreground); }
+.card-peach-soft  { background: var(--peach-soft);  color: var(--foreground); }
+
+/* Большая «hero»-карточка для PageHero / About / Methodology */
+.card-block-lg {
+  border-radius: 24px;
+  padding: 36px;
+}
+
+@media (min-width: 768px) {
+  .card-block-lg {
+    padding: 56px;
+    border-radius: 28px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .card-block-lg {
+    padding: 72px;
+    border-radius: 32px;
+  }
+}
+
 /* ==========================================================================
    BUTTONS — 1:1 Yandex
-   По умолчанию все кнопки сайта = .header-btn стиль (квадратные, radius 6px)
-   .floating-cta-btn отдельно — с radius 50px (пилюля)
+   .btn-pill / .btn-ink — основной CTA (тёмный, radius 6, 16px / weight 500)
+   .btn-rounded — пилюля
+   .btn-shadow-yellow — фирменная Yandex-жёлтая с подтенью
    ========================================================================== */
 
 .btn-pill,
@@ -198,30 +319,32 @@ a:focus-visible {
   border: 0;
   cursor: pointer;
   font-weight: 500;
-  letter-spacing: -0.005em;
+  letter-spacing: var(--tracking-body);
   padding: 14px 22px;
-  border-radius: 6px;            /* квадратные с лёгкими углами */
+  border-radius: var(--radius-button);
   font-size: 16px;
   line-height: 1;
   background: var(--ink);
   color: #ffffff;
-  transition: background-color .2s ease;
+  transition: background-color var(--t-base);
   outline: none;
+  text-decoration: none;
 }
 
 .btn-pill:hover,
 .btn-ink:hover {
-  background: #2c2c2c;
+  background: var(--ink-700);
 }
 
-/* Если где-то нужен старый круглый стиль — поставь .btn-rounded */
 .btn-rounded {
-  border-radius: 50px;
+  border-radius: var(--radius-pill);
 }
 
 .btn-pill-large {
-  padding: 18px 28px;
-  font-size: 17px;
+  padding: 18px 32px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
 }
 
 .btn-pill-compact {
@@ -249,6 +372,38 @@ a:focus-visible {
   width: 100%;
 }
 
+/* Yandex signature yellow — для акцентных CTA */
+.btn-shadow-yellow {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--ink);
+  background: var(--yellow-base);
+  border: 0;
+  border-radius: var(--radius-button);
+  box-shadow: var(--shadow-btn-yellow);
+  cursor: pointer;
+  transition: background-color var(--t-fast), color var(--t-fast),
+    box-shadow var(--t-fast);
+  text-decoration: none;
+}
+
+.btn-shadow-yellow:hover {
+  background: var(--yellow-hover);
+  color: var(--ink-800);
+  box-shadow: var(--shadow-btn-yellow-hover);
+}
+
+.btn-shadow-yellow:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 0 var(--yellow-shadow);
+}
+
 /* ==========================================================================
    Tags
    ========================================================================== */
@@ -258,11 +413,18 @@ a:focus-visible {
   align-items: center;
   gap: 6px;
   white-space: nowrap;
-  border-radius: 8px;
-  padding: 8px 12px;
+  border-radius: var(--radius-tag);
+  padding: 6px 10px;
   background: rgba(255, 255, 255, 0.88);
   font-size: 0.84rem;
   font-weight: 500;
+  color: var(--ink);
+  letter-spacing: var(--tracking-body);
+}
+
+.tag-pill-ink {
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
 }
 
 /* ==========================================================================
@@ -272,9 +434,7 @@ a:focus-visible {
 .reveal {
   opacity: 0;
   transform: translateY(18px);
-  transition:
-    opacity 0.6s ease,
-    transform 0.6s ease;
+  transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
 .reveal[data-visible="true"] {
@@ -283,9 +443,7 @@ a:focus-visible {
 }
 
 /* ==========================================================================
-   HEADER — ТОЧНАЯ КОПИЯ ЯНДЕКСА
-   Архитектура: ВНЕШНИЙ <header> прозрачный fixed,
-   ВНУТРЕННИЙ .site-header-wrapper несёт блюр + бордер + radius
+   HEADER — точная копия Яндекса (двухслойная архитектура)
    ========================================================================== */
 
 .site-header {
@@ -295,8 +453,6 @@ a:focus-visible {
   left: 0;
   z-index: 1000;
 
-  /* Outer gutter so the wrapper has breathing space on mobile, scaling
-     up to the same 8-12px pad on tablet/desktop until the wide breakpoint. */
   background: transparent;
   border: 0;
   padding: 0 12px;
@@ -315,17 +471,16 @@ a:focus-visible {
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  max-width: 1424px;
-  border-radius: 6px;
+  max-width: var(--container-wide);
+  border-radius: var(--radius-button);
   padding: 0 12px;
   margin: 0 auto;
   border: 1px solid #ffffff;
-  color: #1E1E1E;
+  color: var(--ink);
 
-  /* Frosted glass — blur lives here */
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: var(--glass-white-80);
 
   box-sizing: border-box;
 }
@@ -340,9 +495,9 @@ a:focus-visible {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #1E1E1E;
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  color: var(--ink);
+  font-weight: 500;
+  letter-spacing: var(--tracking-body);
   flex-shrink: 0;
 }
 
@@ -363,7 +518,7 @@ a:focus-visible {
 }
 
 .site-header-wordmark {
-  font-size: 1.05rem;
+  font-size: 1rem;
   line-height: 1;
 }
 
@@ -391,7 +546,7 @@ a:focus-visible {
 .site-header-link {
   font-size: 16px;
   line-height: 100%;
-  color: #1E1E1E;
+  color: var(--ink);
   text-decoration: none;
   transition: opacity 200ms;
   cursor: pointer;
@@ -401,12 +556,12 @@ a:focus-visible {
   opacity: .6;
 }
 
-/* Кнопка в хедере — 1:1 .header-btn */
+/* CTA в хедере — 1:1 .header-btn (radius 4px) */
 .site-header-cta {
-  background: #262626;
-  color: #FFFFFF;
+  background: var(--ink-btn);
+  color: #ffffff;
   padding: 8px 12px;
-  border-radius: 4px;
+  border-radius: var(--radius-header-btn);
   border: none;
   cursor: pointer;
   font-size: 16px;
@@ -420,11 +575,11 @@ a:focus-visible {
 }
 
 .site-header-cta:hover {
-  background: #323232;
-  color: #FFFFFF;
+  background: var(--ink-btn-hover);
+  color: #ffffff;
 }
 
-/* Бургер на мобиле */
+/* Бургер */
 .site-header-burger {
   display: flex;
   flex-direction: column;
@@ -444,7 +599,7 @@ a:focus-visible {
   display: block;
   width: 22px;
   height: 2px;
-  background: #1E1E1E;
+  background: var(--ink);
   border-radius: 2px;
   transition: transform 200ms ease, opacity 160ms ease;
   margin: 0 auto;
@@ -466,8 +621,6 @@ a:focus-visible {
   }
 }
 
-/* Mobile drawer — appears below the header pill, pinned full-viewport
-   so users can navigate without the burger getting in the way. */
 .mobile-drawer {
   position: fixed;
   inset: 0;
@@ -513,11 +666,11 @@ a:focus-visible {
 .mobile-drawer-link {
   display: block;
   padding: 14px 4px;
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 500;
-  letter-spacing: -0.02em;
-  color: #1e1e1e;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  letter-spacing: var(--tracking-body);
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
 }
 
 .mobile-drawer-link:active {
@@ -531,18 +684,18 @@ a:focus-visible {
   width: 100%;
   height: 56px;
   border: 0;
-  border-radius: 6px;
+  border-radius: var(--radius-button);
   background: var(--ink);
   color: #ffffff;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 500;
   cursor: pointer;
   margin-top: 12px;
   transition: background 160ms ease;
 }
 
 .mobile-drawer-cta:hover {
-  background: #2c2c2c;
+  background: var(--ink-700);
 }
 
 @media (min-width: 1024px) {
@@ -552,8 +705,8 @@ a:focus-visible {
 }
 
 /* ==========================================================================
-   FLOATING CTA — нижняя кнопка "Оставить заявку"
-   Со стеклянной рамкой-плашкой вокруг (как у Яндекса)
+   FLOATING CTA — 1:1 Яндекс
+   Стеклянная плашка radius 18px + чёрная кнопка radius 6px
    ========================================================================== */
 
 .floating-cta-shell {
@@ -565,28 +718,30 @@ a:focus-visible {
   pointer-events: none;
 }
 
-/* Стеклянная плашка вокруг кнопки. Inset управляет толщиной ободка вокруг
-   чёрной кнопки — больше отрицательное значение = шире стеклянный кант. */
 .floating-cta-shell::before {
   content: "";
   position: absolute;
-  inset: -14px;
-  border-radius: 20px;
-  background-color: rgba(255, 255, 255, 0.6);
+  inset: -12px;
+  border-radius: var(--radius-glass-pill);
+  background-color: var(--glass-white-05);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  border: 1px solid var(--glass-white-06);
+  box-shadow: var(--shadow-glass);
   z-index: -1;
+}
+
+.floating-cta-glass {
+  display: inline-flex;
 }
 
 .floating-cta-btn {
   position: relative;
   pointer-events: auto;
   padding: 18px 32px;
-  background: #1E1E1E;
-  color: #FFFFFF;
-  border-radius: 8px;
+  background: var(--ink);
+  color: #ffffff;
+  border-radius: var(--radius-button);
   border: none;
   cursor: pointer;
   font-size: 16px;
@@ -596,47 +751,58 @@ a:focus-visible {
   text-align: center;
   white-space: nowrap;
   outline: none;
-  transition: background-color .2s ease;
+  transition: background-color var(--t-base);
   display: inline-block;
   text-decoration: none;
 }
 
 .floating-cta-btn:hover {
-  background: #2c2c2c;
+  background: var(--ink-700);
 }
 
-@media (max-width: 640px) {
+@media (max-width: 767px) {
   .floating-cta-shell {
-    left: 16px;
-    right: 16px;
+    left: 0;
+    right: 0;
+    bottom: 0;
     transform: none;
-    bottom: 16px;
+    pointer-events: auto;
   }
   .floating-cta-shell::before {
-    inset: -8px;
+    inset: 0;
+    border-radius: 0;
+    border: 0;
+  }
+  .floating-cta-glass {
+    width: 100%;
   }
   .floating-cta-btn {
     width: 100%;
     min-width: 0;
-    display: block;
+    height: 56px;
+    border-radius: 0;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
 /* ==========================================================================
-   FAQ
+   FAQ — карточка ECE8DF, radius 20px
    ========================================================================== */
 
 .faq-card {
   max-width: 880px;
   margin: 0 auto;
   padding: 8px 28px;
-  border-radius: 28px;
-  background: #ece8df;
+  border-radius: var(--radius-card);
+  background: var(--faq-bg);
 }
 
 .faq-row {
   padding: 24px 0;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  border-top: 1px solid var(--line);
 }
 
 .faq-row:first-child {
@@ -650,8 +816,9 @@ a:focus-visible {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  font-size: 1rem;
+  font-size: 16px;
   font-weight: 500;
+  letter-spacing: var(--tracking-body);
 }
 
 .faq-summary::-webkit-details-marker {
@@ -666,9 +833,9 @@ a:focus-visible {
   margin: 0;
   max-width: 760px;
   color: var(--muted);
-  line-height: 1.72;
+  line-height: 1.6;
+  font-size: 16px;
 }
-
 
 .faq-summary .faq-icon-close,
 .faq-summary .faq-icon-plus {
@@ -678,12 +845,10 @@ a:focus-visible {
   transition: opacity .2s ease, transform .2s ease;
 }
 
-/* По умолчанию — показываем плюс, прячем крестик */
 .faq-summary .faq-icon-close {
   display: none;
 }
 
-/* Когда details открыт — наоборот */
 .faq-row[open] .faq-summary .faq-icon-plus {
   display: none;
 }
@@ -693,11 +858,8 @@ a:focus-visible {
 }
 
 /* ==========================================================================
-   Modal
-   ========================================================================== */
-
-/* ==========================================================================
-   LEAD MODAL — orange edition (1:1 reference design with brand colour)
+   LEAD MODAL — orange brand modal (без изменений по бренду; правлю радиусы и
+   спокойную типографику под Yandex-rhythm)
    ========================================================================== */
 
 .lead-dialog {
@@ -710,8 +872,6 @@ a:focus-visible {
   max-height: 100vh;
   inset: 0;
   margin: 0;
-  /* Dialog renders inside .floating-cta-shell which has pointer-events: none.
-     Force pointer events back on for everything inside the modal. */
   pointer-events: auto;
 }
 
@@ -737,7 +897,6 @@ a:focus-visible {
   max-height: calc(100vh - 32px);
   overflow-y: auto;
   border-radius: 24px;
-  /* Brand orange — vibrant, friendly, distinct from competitors */
   background: #f5640a;
   color: #ffffff;
   padding: 56px 56px 40px;
@@ -749,7 +908,7 @@ a:focus-visible {
 @media (max-width: 640px) {
   .lead-dialog-card {
     padding: 56px 22px 28px;
-    border-radius: 20px;
+    border-radius: var(--radius-card);
   }
 }
 
@@ -776,8 +935,8 @@ a:focus-visible {
 .lead-dialog-title {
   margin: 0 0 12px;
   font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-weight: 500;
+  letter-spacing: var(--tracking-body);
   line-height: 1.15;
 }
 
@@ -793,7 +952,7 @@ a:focus-visible {
 }
 
 /* ==========================================================================
-   LEAD FORM — fields, checkboxes, submit
+   LEAD FORM
    ========================================================================== */
 
 .lead-form {
@@ -828,10 +987,9 @@ a:focus-visible {
   width: 100%;
   height: 48px;
   border: 0;
-  border-radius: 6px;
+  border-radius: var(--radius-input);
   padding: 0 16px;
   font-size: 1rem;
-  /* Slightly darker shade of the modal background for the field surface */
   background: #d65007;
   color: #ffffff;
   outline: none;
@@ -898,10 +1056,6 @@ textarea.lead-input {
   visibility: hidden;
 }
 
-/* When a checkbox has the required asterisk before it, restore visibility
-   on the second occurrence using a different approach — keep the asterisk
-   visible AND the input next to it. We split into two columns: asterisk +
-   checkbox in column 1, label in column 2. */
 .lead-checkbox:has(> .lead-required) {
   grid-template-columns: auto 22px 1fr;
 }
@@ -945,11 +1099,11 @@ textarea.lead-input {
   width: 100%;
   height: 56px;
   border: 0;
-  border-radius: 6px;
+  border-radius: var(--radius-button);
   background: #ffffff;
   color: #1b1b1b;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   transition: background 160ms ease;
   margin-top: 8px;
@@ -968,7 +1122,6 @@ textarea.lead-input {
   cursor: not-allowed;
 }
 
-/* Success state — a calmer panel inside the orange modal */
 .lead-success {
   display: grid;
   gap: 14px;
@@ -980,8 +1133,8 @@ textarea.lead-input {
 
 .lead-success-title {
   font-size: 1.4rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-weight: 500;
+  letter-spacing: var(--tracking-body);
 }
 
 .lead-success-text {
@@ -1002,91 +1155,19 @@ textarea.lead-input {
 }
 
 /* ==========================================================================
-   Mobile
+   Eyebrow — мелкий «pill» над заголовком на тёмных hero-блоках.
+   Сохранён, тон/радиус подогнаны под Yandex tag system.
    ========================================================================== */
 
-@media (max-width: 768px) {
-  .section-space {
-    padding: 56px 0;
-  }
-
-  .card-block {
-    padding: 22px;
-    border-radius: 20px;
-  }
-
-  .site-header-wordmark {
-    font-size: 1rem;
-  }
-
-  .site-header-cta {
-    padding: 6px 10px;
-    font-size: 14px;
-  }
-
-  .faq-card {
-    padding: 6px 18px;
-    border-radius: 22px;
-  }
-}
-
-/* ==========================================================================
-   Reduced transparency fallback
-   ========================================================================== */
-
-@media (prefers-reduced-transparency: reduce) {
-  .site-header-wrapper {
-    background-color: rgba(255, 255, 255, 0.96);
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-  }
-}
-
-/* ==========================================================================
-   RESTORED — colour tokens + section utilities
-   These were removed during the header rewrite; everything below complements
-   the rules above without redefining .site-header*, .floating-cta-* or .btn-*.
-   ========================================================================== */
-
-/* Soft card variants used by ProcessSection / CoursesSection / AudienceSection
-   / RelatedLinks / ReviewsSection / TeachersSection / BlogPreviewSection */
-.card-violet-soft { background: var(--violet-soft); color: var(--foreground); }
-.card-cream-soft  { background: var(--cream-soft);  color: var(--foreground); }
-.card-lime-soft   { background: var(--lime-soft);   color: var(--foreground); }
-.card-sky-soft    { background: var(--sky-soft);    color: var(--foreground); }
-.card-peach-soft  { background: var(--peach-soft);  color: var(--foreground); }
-
-/* Bigger hero card — used by PageHero, AboutPage, MethodologyPage, etc. */
-.card-block-lg {
-  border-radius: 28px;
-  padding: 36px;
-}
-
-@media (min-width: 768px) {
-  .card-block-lg {
-    padding: 56px;
-    border-radius: 32px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .card-block-lg {
-    padding: 72px;
-  }
-}
-
-/* Eyebrow — the small frosted/coloured pill above PageHero titles
-   ("Методика обучения", "О школе", "Глоссарий", "Команда" …). */
 .eyebrow {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  border-radius: 8px;
-  padding: 8px 14px;
+  border-radius: var(--radius-tag);
+  padding: 6px 12px;
   font-size: 0.84rem;
-  font-weight: 600;
-  letter-spacing: -0.005em;
-  /* Default: light frosted-glass on dark hero (e.g. card-violet) */
+  font-weight: 500;
+  letter-spacing: var(--tracking-body);
   background: rgba(255, 255, 255, 0.18);
   color: #ffffff;
   -webkit-backdrop-filter: blur(12px) saturate(160%);
@@ -1094,34 +1175,37 @@ textarea.lead-input {
   border: 1px solid rgba(255, 255, 255, 0.22);
 }
 
-/* Long-form article typography — used by /blog/[slug], /glossary/[slug],
-   /privacy-policy and any future MDX page using .prose-article. */
+/* ==========================================================================
+   Article prose — статьи блога / глоссарий / privacy
+   ========================================================================== */
+
 .prose-article {
   display: grid;
   gap: 18px;
   color: var(--foreground);
+  letter-spacing: var(--tracking-body);
 }
 
 .prose-article h2,
 .prose-article h3 {
   margin: 24px 0 0;
-  letter-spacing: -0.025em;
-  font-weight: 700;
-  line-height: 1.15;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: var(--tracking-h2);
 }
 
 .prose-article h2 {
-  font-size: clamp(1.6rem, 1.3rem + 1vw, 2.1rem);
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
 }
 
 .prose-article h3 {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
 }
 
 .prose-article p,
 .prose-article li {
   color: var(--muted-strong);
-  line-height: 1.75;
+  line-height: 1.6;
   font-size: 1rem;
 }
 
@@ -1142,4 +1226,83 @@ textarea.lead-input {
 
 .prose-article a:hover {
   text-decoration-color: rgba(0, 0, 0, 0.6);
+}
+
+/* ==========================================================================
+   Yandex pulse overrides для секций.
+   Снижают агрессивность font-bold/letter-spacing tailwind utility-классов
+   изнутри карточек. Селекторы достаточно специфичны, чтобы перебить
+   Tailwind, но не ломают локальные переопределения.
+   ========================================================================== */
+
+.card-block h1,
+.card-block h2,
+.card-block h3,
+.card-block h4,
+.card-block h5,
+.card-block h6 {
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.section-space h2.section-title {
+  font-weight: 400;
+  letter-spacing: var(--tracking-h2-mobile);
+}
+
+@media (min-width: 768px) {
+  .section-space h2.section-title {
+    letter-spacing: var(--tracking-h2);
+  }
+}
+
+/* ==========================================================================
+   Mobile fine-tune — Yandex breakpoint 767px
+   ========================================================================== */
+
+@media (max-width: 767px) {
+  .card-block {
+    padding: 22px;
+    border-radius: var(--radius-card);
+  }
+
+  .site-header-wordmark {
+    font-size: 0.95rem;
+  }
+
+  .site-header-cta {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+
+  .faq-card {
+    padding: 6px 18px;
+    border-radius: var(--radius-card);
+  }
+
+  .faq-summary {
+    font-size: 15px;
+  }
+
+  .faq-answer {
+    font-size: 15px;
+  }
+
+  .section-description {
+    max-width: 335px;
+    font-size: 15px;
+  }
+}
+
+/* ==========================================================================
+   Reduced transparency fallback
+   ========================================================================== */
+
+@media (prefers-reduced-transparency: reduce) {
+  .site-header-wrapper {
+    background-color: rgba(255, 255, 255, 0.96);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
 }

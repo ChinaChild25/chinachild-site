@@ -15,11 +15,11 @@ export default function ProcessSection() {
         {processSteps.map((step, index) => (
           <Reveal key={step.title}>
             <article className={`card-block h-full ${stepStyles[index] ?? stepStyles[0]}`}>
-              <div className="text-sm font-semibold text-[#1b1b1b]/55">Шаг {index + 1}</div>
-              <h3 className="mt-4 text-xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
+              <div className="text-sm font-medium text-[#1e1e1e]/55">Шаг {index + 1}</div>
+              <h3 className="mt-4 text-[1.25rem] font-medium tracking-[-0.01em] text-[#1e1e1e] leading-[1.2]">
                 {step.title}
               </h3>
-              <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">{step.description}</p>
+              <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">{step.description}</p>
             </article>
           </Reveal>
         ))}

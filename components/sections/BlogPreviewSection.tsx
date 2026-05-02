@@ -26,10 +26,10 @@ export default function BlogPreviewSection({
               className={`card-block group flex h-full flex-col transition hover:-translate-y-1 ${palette[index % palette.length]}`}
             >
               <span className="tag-pill self-start">{post.category}</span>
-              <h3 className="mt-6 text-xl font-bold leading-snug tracking-[-0.02em] text-[#1b1b1b]">
+              <h3 className="mt-6 text-[1.25rem] font-medium leading-[1.2] tracking-[-0.01em] text-[#1e1e1e]">
                 {post.title}
               </h3>
-              <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">{post.excerpt}</p>
+              <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">{post.excerpt}</p>
               <div className="mt-auto pt-6 flex items-center justify-between gap-4 text-xs text-[#6b6b6b]">
                 <span>{formatPostDate(post.date)}</span>
                 <span>{post.readingTime}</span>

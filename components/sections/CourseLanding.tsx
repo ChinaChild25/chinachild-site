@@ -67,8 +67,8 @@ export default function CourseLanding({
         <div className="grid gap-5 md:grid-cols-3">
           {bullets.map((b) => (
             <article key={b.title} className={`card-block h-full ${toneClass[b.tone]}`}>
-              <h2 className="text-xl font-bold tracking-[-0.03em] text-[#1b1b1b]">{b.title}</h2>
-              <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">{b.body}</p>
+              <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1e1e1e] leading-[1.2]">{b.title}</h2>
+              <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">{b.body}</p>
             </article>
           ))}
         </div>
@@ -76,10 +76,10 @@ export default function CourseLanding({
 
       <section className="page-shell-wide section-space">
         <div className="card-block card-block-lg card-cream">
-          <h2 className="text-3xl font-bold tracking-[-0.035em] text-[#1b1b1b] sm:text-4xl">
+          <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] text-[#1e1e1e] leading-[1.15] sm:text-[2rem]">
             {longCopy.heading}
           </h2>
-          <div className="mt-6 grid gap-3 text-base leading-7 text-[#4b4b4b]">
+          <div className="mt-6 grid gap-3 text-base leading-[1.55] text-[#4b4b4b]">
             {longCopy.paragraphs.map((p, i) => (
               <p key={i}>{p}</p>
             ))}
@@ -96,7 +96,7 @@ export default function CourseLanding({
       {related && related.length > 0 ? (
         <section className="page-shell-wide section-space">
           <div className="card-block card-block-lg card-violet-soft">
-            <h2 className="text-2xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
+            <h2 className="text-[1.5rem] font-medium tracking-[-0.01em] text-[#1e1e1e] leading-[1.2]">
               Связанные страницы
             </h2>
             <div className="mt-6 flex flex-wrap gap-x-4 gap-y-2">
@@ -104,7 +104,7 @@ export default function CourseLanding({
                 <Link
                   key={r.href}
                   href={r.href}
-                  className="text-sm font-semibold text-[#1b1b1b] underline underline-offset-4"
+                  className="text-sm font-medium text-[#1e1e1e] underline underline-offset-4"
                 >
                   {r.title}
                 </Link>
@@ -116,10 +116,10 @@ export default function CourseLanding({
 
       <section className="page-shell-wide section-space">
         <div className="card-block card-block-lg card-violet">
-          <h2 className="text-3xl font-bold tracking-[-0.035em] text-white sm:text-4xl">
+          <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] text-white leading-[1.15] sm:text-[2rem]">
             Готовы начать?
           </h2>
-          <p className="mt-4 max-w-2xl text-base leading-7 text-white/85">
+          <p className="mt-4 max-w-2xl text-base leading-[1.55] text-white/85">
             Запишитесь на бесплатное пробное занятие. Преподаватель оценит ваш уровень,
             поставит цель и подберёт подходящий курс.
           </p>

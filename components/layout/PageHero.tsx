@@ -47,8 +47,8 @@ export default function PageHero({
           ) : null}
           <h1
             className={cn(
-              "mt-6 text-[2.2rem] font-bold leading-[1.04] tracking-[-0.04em] sm:text-[3rem] lg:text-[3.4rem]",
-              onDark ? "text-white" : "text-[#1b1b1b]",
+              "mt-6 text-[2.25rem] font-normal leading-[1.1] tracking-[-0.02em] sm:text-[3rem] lg:text-[3.5rem]",
+              onDark ? "text-white" : "text-[#1e1e1e]",
             )}
           >
             {title}
@@ -56,7 +56,7 @@ export default function PageHero({
           {description ? (
             <p
               className={cn(
-                "mt-6 max-w-2xl text-base leading-7 sm:text-lg",
+                "mt-6 max-w-2xl text-base leading-[1.55] sm:text-[1.125rem]",
                 onDark ? "text-white/85" : "text-[#4b4b4b]",
               )}
             >
