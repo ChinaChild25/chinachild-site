@@ -496,14 +496,14 @@ a:focus-visible {
   align-items: center;
   gap: 10px;
   color: var(--ink);
-  font-weight: 500;
-  letter-spacing: var(--tracking-body);
+  font-weight: 600;
+  letter-spacing: -0.015em;
   flex-shrink: 0;
 }
 
 .site-header-mark {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 8px;
   overflow: hidden;
   display: grid;
@@ -518,8 +518,9 @@ a:focus-visible {
 }
 
 .site-header-wordmark {
-  font-size: 1rem;
+  font-size: 1.125rem;
   line-height: 1;
+  font-weight: 600;
 }
 
 .site-header-menu {
@@ -1175,6 +1176,15 @@ textarea.lead-input {
   border: 1px solid rgba(255, 255, 255, 0.22);
 }
 
+/* Eyebrow на светлой пастельной карточке — тёмный текст, тёмная подложка. */
+.eyebrow.eyebrow-on-light {
+  background: rgba(30, 30, 30, 0.08);
+  color: var(--ink);
+  border: 1px solid rgba(30, 30, 30, 0.06);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
 /* ==========================================================================
    Article prose — статьи блога / глоссарий / privacy
    ========================================================================== */
@@ -1304,5 +1314,148 @@ textarea.lead-input {
     background-color: rgba(255, 255, 255, 0.96);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
+  }
+}
+
+/* ==========================================================================
+   DARK MODE — авто-следование системной теме (как у Yandex Practicum).
+   Только переопределение токенов и точечные классовые правки. Без JS,
+   без toggle, не влияет на SEO/CWV.
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #121212;
+    --background-2: #1a1a1a;
+    --surface: #1e1e1e;
+    --foreground: #ededed;
+    --muted: #9a9a9a;
+    --muted-strong: #b8b8b8;
+    --line: rgba(255, 255, 255, 0.08);
+
+    /* Ink на тёмной теме = светлый, чтобы var(--ink) рисовал текст. */
+    --ink: #ededed;
+    --ink-700: #f3f3f3;
+    --ink-800: #ffffff;
+    --ink-btn: #ededed;
+    --ink-btn-hover: #ffffff;
+
+    /* Glass — header тонируется чёрным. */
+    --glass-white-80: rgba(28, 28, 28, 0.78);
+    --glass-white-25: rgba(28, 28, 28, 0.4);
+    --glass-white-06: rgba(255, 255, 255, 0.08);
+    --glass-white-05: rgba(255, 255, 255, 0.04);
+
+    /* Пастели приглушаем — оставляем цвет-маркеры разделов. */
+    --violet: #2a2740;
+    --cream:  #2b2722;
+    --lime:   #2a2e1c;
+    --sky:    #1e2832;
+    --peach:  #2f231e;
+    --faq-bg: #232323;
+
+    --violet-soft: #2a2740;
+    --cream-soft:  #2b2722;
+    --lime-soft:   #2a2e1c;
+    --sky-soft:    #1e2832;
+    --peach-soft:  #2f231e;
+
+    --gray-base: #9a9a9a;
+    --gray-light: #3a3a3a;
+  }
+
+  body {
+    color-scheme: dark;
+  }
+
+  /* Header — инвертируем стекло. */
+  .site-header-wrapper {
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .site-header-cta {
+    background: #ededed;
+    color: #1e1e1e;
+  }
+  .site-header-cta:hover {
+    background: #ffffff;
+  }
+
+  /* Чёрные CTA на тёмной теме инвертируем в светлые. */
+  .btn-pill,
+  .btn-ink,
+  .floating-cta-btn,
+  .mobile-drawer-cta {
+    background: #ededed;
+    color: #1e1e1e;
+  }
+  .btn-pill:hover,
+  .btn-ink:hover,
+  .floating-cta-btn:hover,
+  .mobile-drawer-cta:hover {
+    background: #ffffff;
+  }
+
+  /* card-ink тоже инвертируется (тёмные «Готовы начать?» баннеры). */
+  .card-ink {
+    background: #1e1e1e;
+    color: var(--ink);
+  }
+
+  /* btn-white -> тёмный secondary на dark. */
+  .btn-white {
+    background: #2a2a2a;
+    color: var(--ink);
+  }
+  .btn-white:hover {
+    background: #353535;
+  }
+
+  /* Mobile drawer */
+  .mobile-drawer {
+    background: var(--background);
+  }
+  .mobile-drawer-link {
+    color: var(--ink);
+    border-bottom-color: var(--line);
+  }
+
+  /* Footer — следует фоновой переменной. */
+  footer {
+    background: var(--background-2);
+    color: var(--ink);
+  }
+
+  /* Eyebrow на светлых пастельных = тёмный текст;
+     на dark-теме пастели стали тёмными — текст должен быть светлым. */
+  .eyebrow.eyebrow-on-light {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--ink);
+    border-color: rgba(255, 255, 255, 0.06);
+  }
+
+  /* Перекрываем hardcoded Tailwind arbitrary text-color utilities,
+     которые рассыпаны по проекту — без этого тёмный текст остаётся
+     на тёмных карточках. Селекторы attribute-prefix ловят
+     `text-[#1e1e1e]`, `text-[#1e1e1e]/72` и т.п. */
+  [class*="text-[#1e1e1e]"],
+  [class*="text-[#1b1b1b]"] {
+    color: var(--ink) !important;
+  }
+  [class*="text-[#4b4b4b]"] {
+    color: var(--muted-strong) !important;
+  }
+  [class*="text-[#6b6b6b]"] {
+    color: var(--muted) !important;
+  }
+  [class*="text-[#9a9a9a]"],
+  [class*="text-[#7a7a7a]"] {
+    color: #8a8a8a !important;
+  }
+
+  /* Tag pill на dark — фон под пастель. */
+  .tag-pill {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--ink);
   }
 }

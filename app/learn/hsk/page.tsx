@@ -84,7 +84,7 @@ export default async function LearnHskHub() {
 
       <section className="page-shell-wide section-space">
         <div className="flex items-end justify-between gap-4">
-          <h2 className="text-3xl font-bold tracking-[-0.035em] text-[#1b1b1b] sm:text-4xl">
+          <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-[#1b1b1b] sm:text-4xl">
             6 уровней HSK
           </h2>
           <Link
@@ -105,10 +105,10 @@ export default async function LearnHskHub() {
                 <span className="tag-pill">HSK {level.level}</span>
                 <span className="text-xs text-[#6b6b6b]">{level.words} слов</span>
               </div>
-              <h3 className="mt-5 text-2xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
+              <h3 className="mt-5 text-[1.5rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#1b1b1b]">
                 {level.positioning.split(" — ")[0]}
               </h3>
-              <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">{level.outcome}</p>
+              <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">{level.outcome}</p>
               <div className="mt-auto pt-6 text-sm font-semibold text-[#1b1b1b] underline-offset-4 group-hover:underline">
                 Открыть HSK {level.level} →
               </div>
@@ -119,7 +119,7 @@ export default async function LearnHskHub() {
 
       {hskPosts.length > 0 ? (
         <section className="page-shell-wide section-space">
-          <h2 className="text-3xl font-bold tracking-[-0.035em] text-[#1b1b1b] sm:text-4xl">
+          <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-[#1b1b1b] sm:text-4xl">
             Статьи по HSK
           </h2>
           <ul className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -130,10 +130,10 @@ export default async function LearnHskHub() {
                   className="card-block card-cream-soft group flex h-full flex-col transition hover:-translate-y-1"
                 >
                   <span className="tag-pill self-start">{post.category}</span>
-                  <h3 className="mt-4 text-lg font-bold tracking-[-0.02em] text-[#1b1b1b]">
+                  <h3 className="mt-4 text-[1.125rem] font-medium tracking-[-0.005em] text-[#1e1e1e] leading-[1.2]">
                     {post.title}
                   </h3>
-                  <p className="mt-2 text-sm leading-6 text-[#4b4b4b]">{post.description}</p>
+                  <p className="mt-2 text-sm leading-[1.55] text-[#4b4b4b]">{post.description}</p>
                 </Link>
               </li>
             ))}
@@ -143,7 +143,7 @@ export default async function LearnHskHub() {
 
       {hskTerms.length > 0 ? (
         <section className="page-shell-wide section-space">
-          <h2 className="text-3xl font-bold tracking-[-0.035em] text-[#1b1b1b] sm:text-4xl">
+          <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-[#1b1b1b] sm:text-4xl">
             Термины
           </h2>
           <ul className="mt-6 flex flex-wrap gap-3">
@@ -159,8 +159,8 @@ export default async function LearnHskHub() {
       ) : null}
 
       <section className="page-shell-wide section-space">
-        <div className="card-block card-block-lg card-violet">
-          <h2 className="text-3xl font-bold tracking-[-0.035em] text-white sm:text-4xl">
+        <div className="card-block card-block-lg card-ink">
+          <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-white sm:text-4xl">
             Готовитесь к HSK?
           </h2>
           <p className="mt-4 max-w-2xl text-base leading-7 text-white/85">

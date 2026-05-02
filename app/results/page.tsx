@@ -87,10 +87,10 @@ export default function ResultsPage() {
         <div className="grid gap-5 md:grid-cols-3">
           {outcomes.map((o) => (
             <article key={o.title} className={`card-block h-full ${o.card}`}>
-              <h2 className="text-xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
+              <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#1b1b1b]">
                 {o.title}
               </h2>
-              <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">{o.body}</p>
+              <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">{o.body}</p>
             </article>
           ))}
         </div>
@@ -108,18 +108,18 @@ export default function ResultsPage() {
           {cases.map((c) => (
             <article key={c.name} className={`card-block h-full ${c.card}`}>
               <span className="tag-pill">{c.track}</span>
-              <h3 className="mt-6 text-xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
+              <h3 className="mt-6 text-[1.25rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#1b1b1b]">
                 {c.name}
               </h3>
-              <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">{c.body}</p>
+              <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">{c.body}</p>
             </article>
           ))}
         </div>
       </section>
 
       <section className="page-shell-wide section-space">
-        <div className="card-block card-block-lg card-violet">
-          <h2 className="text-3xl font-bold tracking-[-0.035em] text-white sm:text-4xl">
+        <div className="card-block card-block-lg card-ink">
+          <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-white sm:text-4xl">
             Хотите такой же результат?
           </h2>
           <p className="mt-4 max-w-2xl text-base leading-7 text-white/85">

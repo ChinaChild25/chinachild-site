@@ -105,10 +105,10 @@ export default function CompareFormatsPage() {
       <section className="page-shell-wide section-space">
         <div className="grid gap-6 lg:grid-cols-2">
           <div className="card-block card-block-lg card-violet-soft">
-            <h2 className="text-2xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
+            <h2 className="text-[1.5rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#1b1b1b]">
               Кому подходит мини-группа
             </h2>
-            <p className="mt-4 text-base leading-7 text-[#4b4b4b]">
+            <p className="mt-4 text-base leading-[1.55] text-[#4b4b4b]">
               Подросткам 12+, студентам и взрослым, которые хотят учиться размеренно,
               экономно и в живой атмосфере. Группа задаёт ритм, поддерживает мотивацию,
               даёт реальные диалоги и снижает страх ошибки.
@@ -121,10 +121,10 @@ export default function CompareFormatsPage() {
             </Link>
           </div>
           <div className="card-block card-block-lg card-lime-soft">
-            <h2 className="text-2xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
+            <h2 className="text-[1.5rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#1b1b1b]">
               Кому подходит индивидуально
             </h2>
-            <p className="mt-4 text-base leading-7 text-[#4b4b4b]">
+            <p className="mt-4 text-base leading-[1.55] text-[#4b4b4b]">
               Тем, кому нужен максимальный темп, гибкое расписание или специализированная
               цель — например, поступление в Китай, корпоративные переговоры, конкретный
               экзамен HSK с дедлайном.
@@ -140,8 +140,8 @@ export default function CompareFormatsPage() {
       </section>
 
       <section className="page-shell-wide section-space">
-        <div className="card-block card-block-lg card-violet">
-          <h2 className="text-3xl font-bold tracking-[-0.035em] text-white sm:text-4xl">
+        <div className="card-block card-block-lg card-ink">
+          <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-white sm:text-4xl">
             Не уверены — попробуйте бесплатно
           </h2>
           <p className="mt-4 max-w-2xl text-base leading-7 text-white/85">

@@ -50,26 +50,26 @@ export default function AboutPage() {
       <section className="page-shell-wide section-space">
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           <div className="card-block card-violet-soft">
-            <div className="text-4xl font-bold tracking-[-0.04em] text-[#1b1b1b]">10+</div>
-            <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">
+            <div className="text-[2.5rem] font-medium tracking-[-0.02em] text-[#1e1e1e] leading-[1.05]">10+</div>
+            <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">
               лет опыт у каждого преподавателя школы
             </p>
           </div>
           <div className="card-block card-cream">
-            <div className="text-4xl font-bold tracking-[-0.04em] text-[#1b1b1b]">HSK 1–2</div>
-            <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">
+            <div className="text-[2.5rem] font-medium tracking-[-0.02em] text-[#1e1e1e] leading-[1.05]">HSK 1–2</div>
+            <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">
               лицензированная программа для разговорного уровня
             </p>
           </div>
           <div className="card-block card-lime-soft">
-            <div className="text-4xl font-bold tracking-[-0.04em] text-[#1b1b1b]">до 5</div>
-            <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">
+            <div className="text-[2.5rem] font-medium tracking-[-0.02em] text-[#1e1e1e] leading-[1.05]">до 5</div>
+            <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">
               человек в мини-группе — у каждого хватает времени на речь
             </p>
           </div>
           <div className="card-block card-sky">
-            <div className="text-4xl font-bold tracking-[-0.04em] text-[#1b1b1b]">13%</div>
-            <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">
+            <div className="text-[2.5rem] font-medium tracking-[-0.02em] text-[#1e1e1e] leading-[1.05]">13%</div>
+            <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">
               налоговый вычет — школа лицензирована в Москве
             </p>
           </div>
@@ -78,10 +78,10 @@ export default function AboutPage() {
 
       <section className="page-shell-wide section-space">
         <div className="card-block card-block-lg card-cream">
-          <h2 className="text-3xl font-bold tracking-[-0.035em] text-[#1b1b1b] sm:text-4xl">
+          <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-[#1b1b1b] sm:text-4xl">
             Как устроена школа
           </h2>
-          <div className="mt-6 grid gap-3 text-base leading-7 text-[#4b4b4b]">
+          <div className="mt-6 grid gap-3 text-base leading-[1.55] text-[#4b4b4b]">
             <p>
               ChinaChild — онлайн-школа китайского языка для подростков с 12 лет и взрослых
               без подготовки. Мы работаем по программе HSK 1–2 и помогаем выйти на разговорный
@@ -118,7 +118,7 @@ export default function AboutPage() {
               <div className="flex items-center gap-4">
                 <Avatar name={t.name} size={64} />
                 <div>
-                  <h3 className="text-xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
+                  <h3 className="text-[1.25rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#1b1b1b]">
                     {t.name}
                   </h3>
                   <p className="mt-1 text-sm font-semibold text-[#1b1b1b]">
@@ -126,7 +126,7 @@ export default function AboutPage() {
                   </p>
                 </div>
               </div>
-              <p className="mt-5 text-sm leading-6 text-[#4b4b4b]">{t.credentials}</p>
+              <p className="mt-5 text-sm leading-[1.55] text-[#4b4b4b]">{t.credentials}</p>
             </article>
           ))}
         </div>
@@ -134,10 +134,10 @@ export default function AboutPage() {
 
       <section className="page-shell-wide section-space">
         <div className="card-block card-block-lg card-violet-soft">
-          <h2 className="text-3xl font-bold tracking-[-0.035em] text-[#1b1b1b] sm:text-4xl">
+          <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-[#1b1b1b] sm:text-4xl">
             Лицензия и документы
           </h2>
-          <div className="mt-6 grid gap-3 text-base leading-7 text-[#4b4b4b]">
+          <div className="mt-6 grid gap-3 text-base leading-[1.55] text-[#4b4b4b]">
             <p>
               Образовательная деятельность ChinaChild ведётся на основании образовательной
               лицензии, выданной {LICENSE_REGION}. Программа дополнительного профессионального
@@ -162,10 +162,10 @@ export default function AboutPage() {
       </section>
 
       <section className="page-shell-wide section-space">
-        <div className="card-block card-block-lg card-violet">
+        <div className="card-block card-block-lg card-ink">
           <div className="grid gap-6 lg:grid-cols-2">
             <div>
-              <h2 className="text-3xl font-bold tracking-[-0.035em] text-white sm:text-4xl">
+              <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-white sm:text-4xl">
                 Контакты школы
               </h2>
               <p className="mt-4 text-base leading-7 text-white/85">
@@ -174,7 +174,7 @@ export default function AboutPage() {
               </p>
             </div>
             <div className="grid gap-3 text-white">
-              <a href={`tel:${CONTACT_PHONE_TEL}`} className="text-2xl font-bold tracking-[-0.02em]">
+              <a href={`tel:${CONTACT_PHONE_TEL}`} className="text-[1.5rem] font-medium tracking-[-0.01em] leading-[1.2]">
                 {CONTACT_PHONE}
               </a>
               <a href={`mailto:${CONTACT_EMAIL}`} className="text-base text-white/80">

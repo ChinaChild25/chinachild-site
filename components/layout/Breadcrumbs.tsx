@@ -12,7 +12,7 @@ export default function Breadcrumbs({
       <JsonLd data={createBreadcrumbSchema(items)} />
       <nav
         aria-label="Хлебные крошки"
-        className="page-shell pt-6 text-sm text-[#6b6b6b]"
+        className="page-shell-wide pt-8 text-sm text-[#6b6b6b]"
       >
         <ol className="flex flex-wrap items-center gap-2">
           {items.map((item, index) => {
@@ -21,15 +21,15 @@ export default function Breadcrumbs({
             return (
               <li key={item.path} className="flex items-center gap-2">
                 {isLast ? (
-                  <span aria-current="page" className="font-medium text-[#1b1b1b]">
+                  <span aria-current="page" className="font-medium text-[#1e1e1e]">
                     {item.name}
                   </span>
                 ) : (
-                  <Link href={item.path} className="transition hover:text-[#1b1b1b]">
+                  <Link href={item.path} className="transition hover:text-[#1e1e1e]">
                     {item.name}
                   </Link>
                 )}
-                {!isLast ? <span className="text-[#9a9a9a]">/</span> : null}
+                {!isLast ? <span className="text-[#bdbdbd]">/</span> : null}
               </li>
             );
           })}

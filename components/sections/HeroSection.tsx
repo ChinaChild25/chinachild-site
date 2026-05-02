@@ -3,6 +3,7 @@ import LeadModal from "@/components/forms/LeadModal";
 import JsonLd from "@/components/seo/JsonLd";
 import { buttonStyles } from "@/components/ui/button";
 import { createEducationalOrganizationSchema } from "@/lib/schema";
+import { siteFacts } from "@/lib/site-data";
 
 const proofPoints = [
   { value: "HSK 1–6", label: "Все уровни международного экзамена" },
@@ -17,8 +18,30 @@ export default function HeroSection() {
       <JsonLd data={createEducationalOrganizationSchema()} id="home-edu-org-schema" />
 
       <div className="mx-auto max-w-4xl text-center">
-        <span className="tag-pill">Лицензированная программа · Москва</span>
-        <h1 className="mt-6 text-[2.5rem] font-normal leading-[1.1] tracking-[-0.02em] text-[#1e1e1e] sm:text-[3.4rem] lg:text-[4.25rem] lg:leading-[1.08]">
+        <Link
+          href="#otzyvy"
+          className="inline-flex items-center gap-2 rounded-full border border-[rgba(0,0,0,0.06)] bg-white/80 px-3.5 py-1.5 text-sm text-[#1e1e1e] transition hover:bg-white"
+          aria-label="Средняя оценка выпускников по отзывам"
+          itemScope
+          itemType="https://schema.org/AggregateRating"
+        >
+          <span aria-hidden className="text-[#FFB800] leading-none">★</span>
+          <span className="font-medium">
+            <span itemProp="ratingValue">{siteFacts.aggregateRating}</span> из <span itemProp="bestRating">5</span>
+          </span>
+          <span className="text-[#6b6b6b]">
+            · на основании отзывов выпускников
+          </span>
+          <meta itemProp="reviewCount" content={String(siteFacts.reviewCount)} />
+          <meta itemProp="worstRating" content="1" />
+          <span aria-hidden className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full border border-[rgba(0,0,0,0.18)] text-[10px] font-medium text-[#6b6b6b]">
+            i
+          </span>
+        </Link>
+        <div className="mt-3">
+          <span className="tag-pill">Лицензированная программа · Москва</span>
+        </div>
+        <h1 className="mt-6 text-[2.5rem] font-medium leading-[1.08] tracking-[-0.025em] text-[#1e1e1e] sm:text-[3.4rem] lg:text-[4.25rem] lg:leading-[1.06]">
           Курсы китайского языка онлайн —<br className="hidden sm:block" />
           разговорный уровень за 6 месяцев
         </h1>
@@ -29,7 +52,7 @@ export default function HeroSection() {
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <LeadModal
-            triggerClassName="btn-shadow-yellow"
+            triggerClassName={buttonStyles({ size: "large" })}
             source="hero"
           >
             Записаться на пробный урок
@@ -44,7 +67,7 @@ export default function HeroSection() {
         {proofPoints.map((p) => (
           <div
             key={p.value}
-            className="rounded-[20px] border border-[rgba(0,0,0,0.06)] bg-white px-6 py-5"
+            className="rounded-[20px] bg-white px-6 py-5"
           >
             <dt className="text-[1.75rem] font-medium tracking-[-0.02em] text-[#1e1e1e] sm:text-[2rem]">
               {p.value}

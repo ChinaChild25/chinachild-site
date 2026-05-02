@@ -115,7 +115,7 @@ export default function CourseLanding({
       ) : null}
 
       <section className="page-shell-wide section-space">
-        <div className="card-block card-block-lg card-violet">
+        <div className="card-block card-block-lg card-ink">
           <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] text-white leading-[1.15] sm:text-[2rem]">
             Готовы начать?
           </h2>

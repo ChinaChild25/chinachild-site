@@ -81,10 +81,10 @@ export default function MethodologyPage() {
           {stages.map((s, idx) => (
             <article key={s.title} className={`card-block h-full ${s.card}`}>
               <div className="text-sm font-semibold text-[#1b1b1b]/55">0{idx + 1}</div>
-              <h2 className="mt-4 text-xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
+              <h2 className="mt-4 text-[1.25rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#1b1b1b]">
                 {s.title}
               </h2>
-              <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">{s.body}</p>
+              <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">{s.body}</p>
             </article>
           ))}
         </div>
@@ -92,10 +92,10 @@ export default function MethodologyPage() {
 
       <section className="page-shell-wide section-space">
         <div className="card-block card-block-lg card-cream-soft">
-          <h2 className="text-3xl font-bold tracking-[-0.035em] text-[#1b1b1b] sm:text-4xl">
+          <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-[#1b1b1b] sm:text-4xl">
             Принципы методики
           </h2>
-          <div className="mt-6 grid gap-3 text-base leading-7 text-[#4b4b4b]">
+          <div className="mt-6 grid gap-3 text-base leading-[1.55] text-[#4b4b4b]">
             <p>
               Программа реализуется полностью в онлайн-формате с использованием интерактивных
               заданий, практических упражнений и регулярной языковой практики. Особый акцент

@@ -29,6 +29,31 @@ export const TAX_DEDUCTION_MAX = "до 15 600 ₽ в год";
 export const LICENSE_REGION = "Департамент образования и науки города Москвы";
 export const LICENSE_PROGRAM = "HSK 1-2";
 
+/** Полные реквизиты лицензии (выписка из реестра).
+ *  Используются на /license, в футере и в JSON-LD Organization. */
+export const LICENSE_DETAILS = {
+  registrationNumber: "Л035-01298-77/04021301",
+  outgoingNumber: "Исх/Л-10272/25",
+  issueDate: "2025-12-18",
+  issuer: "Департамент образования и науки города Москвы",
+  issuerAddress: "129090, Москва, Большая Спасская, д. 15, стр. 1",
+  issuerPhone: "+7 (499) 369-7332",
+  issuerFax: "+7 (495) 366-9761",
+  issuerOgrn: "1027700386625",
+  issuerInn: "7719028495",
+  issuerKpp: "770801001",
+  issuerOkpo: "02110342",
+} as const;
+
+/** Реквизиты лицензиата (ИП). Используются на /license и в Organization. */
+export const LICENSEE = {
+  legalName: "Индивидуальный предприниматель Толкачева Ирина Владимировна",
+  shortName: "ИП Толкачева И. В.",
+  fullName: "Толкачева Ирина Владимировна",
+  inn: "323101941586",
+  address: "108834, г. Москва, ул. Эдварда Грига, д. 18, к. 3, кв. 84",
+} as const;
+
 // IndexNow — both Yandex and Bing accept this protocol for instant indexing.
 // File at /{INDEXNOW_KEY}.txt must contain the same key. Override via env if needed.
 export const INDEXNOW_KEY =

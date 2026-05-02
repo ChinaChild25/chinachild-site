@@ -120,7 +120,7 @@ export default async function HskLevelPage({ params }: HskPageProps) {
             <div className="text-xs font-semibold uppercase tracking-[0.08em] text-[#6b6b6b]">
               Словарь
             </div>
-            <div className="mt-2 text-4xl font-bold tracking-[-0.04em] text-[#1b1b1b]">
+            <div className="mt-2 text-[2.5rem] font-medium tracking-[-0.02em] text-[#1e1e1e] leading-[1.05]">
               {level.words}
             </div>
             <p className="mt-2 text-sm text-[#4b4b4b]">слов</p>
@@ -129,7 +129,7 @@ export default async function HskLevelPage({ params }: HskPageProps) {
             <div className="text-xs font-semibold uppercase tracking-[0.08em] text-[#6b6b6b]">
               Время
             </div>
-            <div className="mt-2 text-3xl font-bold tracking-[-0.04em] text-[#1b1b1b]">
+            <div className="mt-2 text-[1.75rem] font-medium tracking-[-0.02em] text-[#1e1e1e] leading-[1.1]">
               {level.hours}
             </div>
             <p className="mt-2 text-sm text-[#4b4b4b]">подготовки</p>
@@ -138,7 +138,7 @@ export default async function HskLevelPage({ params }: HskPageProps) {
             <div className="text-xs font-semibold uppercase tracking-[0.08em] text-[#6b6b6b]">
               Уровень
             </div>
-            <div className="mt-2 text-3xl font-bold tracking-[-0.04em] text-[#1b1b1b]">
+            <div className="mt-2 text-[1.75rem] font-medium tracking-[-0.02em] text-[#1e1e1e] leading-[1.1]">
               {level.level === 1
                 ? "Базовый"
                 : level.level === 2
@@ -158,23 +158,23 @@ export default async function HskLevelPage({ params }: HskPageProps) {
       <section className="page-shell-wide section-space">
         <div className="grid gap-6 lg:grid-cols-2">
           <div className="card-block card-block-lg card-cream-soft">
-            <h2 className="text-2xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
+            <h2 className="text-[1.5rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#1b1b1b]">
               Что вы сможете после подготовки
             </h2>
-            <p className="mt-4 text-base leading-7 text-[#4b4b4b]">{level.outcome}</p>
+            <p className="mt-4 text-base leading-[1.55] text-[#4b4b4b]">{level.outcome}</p>
           </div>
           <div className="card-block card-block-lg card-sky-soft">
-            <h2 className="text-2xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
+            <h2 className="text-[1.5rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#1b1b1b]">
               Кому подходит
             </h2>
-            <p className="mt-4 text-base leading-7 text-[#4b4b4b]">{level.audience}</p>
+            <p className="mt-4 text-base leading-[1.55] text-[#4b4b4b]">{level.audience}</p>
           </div>
         </div>
       </section>
 
       <section className="page-shell-wide section-space">
-        <div className="card-block card-block-lg card-violet">
-          <h2 className="text-3xl font-bold tracking-[-0.035em] text-white sm:text-4xl">
+        <div className="card-block card-block-lg card-ink">
+          <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-white sm:text-4xl">
             Зачем нужен HSK {level.level}
           </h2>
           <p className="mt-4 max-w-2xl text-base leading-7 text-white/85">{level.goal}</p>
@@ -201,7 +201,7 @@ export default async function HskLevelPage({ params }: HskPageProps) {
 
       {/* Cross-link other levels */}
       <section className="page-shell-wide section-space">
-        <h2 className="text-2xl font-bold tracking-[-0.035em] text-[#1b1b1b]">
+        <h2 className="text-[1.5rem] font-medium tracking-[-0.01em] text-[#1e1e1e] leading-[1.2]">
           Другие уровни HSK
         </h2>
         <ul className="mt-6 flex flex-wrap gap-3">

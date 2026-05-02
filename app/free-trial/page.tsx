@@ -47,7 +47,7 @@ export default function FreeTrialPage() {
             <div className="mt-10 grid gap-3 text-sm">
               <a
                 href={`tel:${CONTACT_PHONE_TEL}`}
-                className="text-2xl font-bold tracking-[-0.02em] text-[#1b1b1b]"
+                className="text-[1.5rem] font-medium tracking-[-0.01em] text-[#1e1e1e] leading-[1.2]"
               >
                 {CONTACT_PHONE}
               </a>

@@ -100,7 +100,7 @@ export default async function GlossaryTermPage({ params }: GlossaryTermPageProps
           >
             {term.term}
           </h1>
-          <p className="mt-5 text-lg leading-7 text-[#4b4b4b]" itemProp="description">
+          <p className="mt-5 text-lg leading-[1.55] text-[#4b4b4b]" itemProp="description">
             {term.shortDefinition}
           </p>
           <p className="mt-6 text-xs text-[#9a9a9a]">
@@ -124,7 +124,7 @@ export default async function GlossaryTermPage({ params }: GlossaryTermPageProps
         {related.length > 0 ? (
           <aside className="mx-auto mt-16 max-w-3xl">
             <div className="card-block card-cream">
-              <h2 className="text-xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
+              <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#1b1b1b]">
                 Связанные термины
               </h2>
               <ul className="mt-4 flex flex-wrap gap-3">
@@ -146,8 +146,8 @@ export default async function GlossaryTermPage({ params }: GlossaryTermPageProps
         {/* CTA block — every glossary term links back to the money pages.
             Builds an internal cluster: term → course → enrollment. */}
         <aside className="mx-auto mt-8 max-w-3xl">
-          <div className="card-block card-block-lg card-violet">
-            <h2 className="text-2xl font-bold tracking-[-0.03em] text-white">
+          <div className="card-block card-block-lg card-ink">
+            <h2 className="text-[1.5rem] font-medium tracking-[-0.01em] leading-[1.2] text-white">
               Хотите освоить {term.term} на практике?
             </h2>
             <p className="mt-3 text-base leading-7 text-white/85">

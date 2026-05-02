@@ -50,7 +50,7 @@ export default function ReviewsPage() {
               <div className="flex items-center gap-4">
                 <Avatar name={review.author} size={64} />
                 <div>
-                  <h2 className="text-lg font-bold tracking-[-0.02em] text-[#1b1b1b]">
+                  <h2 className="text-[1.125rem] font-medium tracking-[-0.005em] text-[#1e1e1e] leading-[1.2]">
                     {review.author}
                   </h2>
                   <p className="mt-1 text-sm text-[#6b6b6b]">{review.result}</p>
@@ -59,15 +59,15 @@ export default function ReviewsPage() {
               <div className="mt-4 text-base text-[#FFB400]" aria-hidden>
                 ★★★★★
               </div>
-              <p className="mt-4 text-base leading-7 text-[#4b4b4b]">«{review.body}»</p>
+              <p className="mt-4 text-base leading-[1.55] text-[#4b4b4b]">«{review.body}»</p>
             </article>
           ))}
         </div>
       </section>
 
       <section className="page-shell-wide section-space">
-        <div className="card-block card-block-lg card-violet">
-          <h2 className="text-3xl font-bold tracking-[-0.035em] text-white sm:text-4xl">
+        <div className="card-block card-block-lg card-ink">
+          <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-white sm:text-4xl">
             Хотите свой результат?
           </h2>
           <p className="mt-4 max-w-2xl text-base leading-7 text-white/85">

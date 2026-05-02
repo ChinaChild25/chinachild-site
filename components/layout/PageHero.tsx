@@ -27,8 +27,6 @@ const variantClasses = {
   sky: "card-sky",
 } as const;
 
-const isLight = (variant: PageHeroProps["variant"]) => variant === "violet";
-
 export default function PageHero({
   eyebrow,
   title,
@@ -37,29 +35,20 @@ export default function PageHero({
   secondaryCta,
   variant = "violet",
 }: PageHeroProps) {
-  const onDark = isLight(variant);
+  // Все четыре пастели — светлые, поэтому текст всегда тёмный.
+  // Это исправляет проблему белого h1 на лавандовом #D8D3FF, где он не читался.
   return (
-    <section className="page-shell-wide pt-4 pb-10 sm:pt-6 lg:pb-14">
+    <section className="page-shell-wide pt-6 pb-12 sm:pt-10 lg:pb-16">
       <div className={cn("card-block card-block-lg", variantClasses[variant])}>
         <div className="max-w-3xl">
           {eyebrow ? (
-            <span className={cn("eyebrow", !onDark && "bg-black/8 text-[#1b1b1b]")}>{eyebrow}</span>
+            <span className="eyebrow eyebrow-on-light">{eyebrow}</span>
           ) : null}
-          <h1
-            className={cn(
-              "mt-6 text-[2.25rem] font-normal leading-[1.1] tracking-[-0.02em] sm:text-[3rem] lg:text-[3.5rem]",
-              onDark ? "text-white" : "text-[#1e1e1e]",
-            )}
-          >
+          <h1 className="mt-6 text-[2.25rem] font-medium leading-[1.08] tracking-[-0.025em] text-[#1e1e1e] sm:text-[3rem] lg:text-[3.5rem]">
             {title}
           </h1>
           {description ? (
-            <p
-              className={cn(
-                "mt-6 max-w-2xl text-base leading-[1.55] sm:text-[1.125rem]",
-                onDark ? "text-white/85" : "text-[#4b4b4b]",
-              )}
-            >
+            <p className="mt-6 max-w-2xl text-base leading-[1.55] text-[#1e1e1e]/72 sm:text-[1.125rem]">
               {description}
             </p>
           ) : null}

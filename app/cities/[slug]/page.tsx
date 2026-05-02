@@ -128,29 +128,29 @@ export default async function CityLandingPage({ params }: CityPageProps) {
       <section className="page-shell-wide section-space">
         <div className="grid gap-5 md:grid-cols-3">
           <article className="card-block card-violet-soft">
-            <h2 className="text-xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
+            <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#1b1b1b]">
               {city.licensedRegion ? "Лицензия Москвы" : "Лицензированная программа"}
             </h2>
-            <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">
+            <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">
               {city.licensedRegion
                 ? `Образовательная лицензия выдана ${LICENSE_REGION}. Документ о прохождении программы дополнительного профессионального образования можно использовать для возврата налогового вычета 13%.`
                 : `Программа лицензирована ${LICENSE_REGION}. Получаете документ о прохождении программы дополнительного профессионального образования по итогам курса.`}
             </p>
           </article>
           <article className="card-block card-cream">
-            <h2 className="text-xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
+            <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#1b1b1b]">
               Удобное расписание
             </h2>
-            <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">
+            <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">
               Расписание занятий подстраиваем под ваш часовой пояс — {city.timezone}.
               Можно подобрать удобное окно — утром до работы, вечером или в выходные.
             </p>
           </article>
           <article className="card-block card-lime-soft">
-            <h2 className="text-xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
+            <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#1b1b1b]">
               Сдача HSK {city.inCity}
             </h2>
-            <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">
+            <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">
               Готовим к официальному экзамену HSK, который сдают в {city.hskCenter}.
               Помогаем выбрать ближайшую дату и зарегистрироваться через chinesetest.cn.
             </p>
@@ -160,10 +160,10 @@ export default async function CityLandingPage({ params }: CityPageProps) {
 
       <section className="page-shell-wide section-space">
         <div className="card-block card-block-lg card-cream">
-          <h2 className="text-3xl font-bold tracking-[-0.035em] text-[#1b1b1b] sm:text-4xl">
+          <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-[#1b1b1b] sm:text-4xl">
             Почему {city.name} выбирает ChinaChild
           </h2>
-          <div className="mt-6 grid gap-3 text-base leading-7 text-[#4b4b4b]">
+          <div className="mt-6 grid gap-3 text-base leading-[1.55] text-[#4b4b4b]">
             <p>
               ChinaChild работает онлайн, поэтому курс доступен из любой точки {city.ofCity}{" "}
               и пригородов — {city.suburbs}. Это удобно тем, кто живёт далеко от центра города:
@@ -200,10 +200,10 @@ export default async function CityLandingPage({ params }: CityPageProps) {
       </section>
 
       <section className="page-shell-wide section-space">
-        <div className="card-block card-block-lg card-violet">
+        <div className="card-block card-block-lg card-ink">
           <div className="grid gap-6 lg:grid-cols-2">
             <div>
-              <h2 className="text-3xl font-bold tracking-[-0.035em] text-white sm:text-4xl">
+              <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-white sm:text-4xl">
                 Контакты для жителей {city.ofCity}
               </h2>
               <p className="mt-4 text-base leading-7 text-white/85">
@@ -214,7 +214,7 @@ export default async function CityLandingPage({ params }: CityPageProps) {
             <div className="grid gap-3 text-white">
               <a
                 href={`tel:${CONTACT_PHONE_TEL}`}
-                className="text-2xl font-bold tracking-[-0.02em]"
+                className="text-[1.5rem] font-medium tracking-[-0.01em] leading-[1.2]"
               >
                 {CONTACT_PHONE}
               </a>
@@ -238,7 +238,7 @@ export default async function CityLandingPage({ params }: CityPageProps) {
 
       {/* Cross-link to other cities for topical authority */}
       <section className="page-shell-wide section-space">
-        <h2 className="text-2xl font-bold tracking-[-0.035em] text-[#1b1b1b]">
+        <h2 className="text-[1.5rem] font-medium tracking-[-0.01em] text-[#1e1e1e] leading-[1.2]">
           Другие города
         </h2>
         <ul className="mt-6 flex flex-wrap gap-3">

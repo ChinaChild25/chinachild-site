@@ -53,14 +53,14 @@ export default function CitiesIndexPage() {
                 className={`card-block group flex h-full flex-col transition hover:-translate-y-1 ${palette[idx % palette.length]}`}
               >
                 <div className="flex items-start justify-between">
-                  <h2 className="text-2xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
+                  <h2 className="text-[1.5rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#1b1b1b]">
                     {city.name}
                   </h2>
                   {city.licensedRegion ? (
                     <span className="tag-pill tag-pill-ink">Лицензия</span>
                   ) : null}
                 </div>
-                <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">
+                <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">
                   {city.timezone}. Сдача HSK — {city.hskCenter}.
                 </p>
                 <div className="mt-auto pt-6 text-sm font-semibold text-[#1b1b1b] underline-offset-4 group-hover:underline">

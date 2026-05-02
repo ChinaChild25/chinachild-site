@@ -156,10 +156,10 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
 
         <aside className="page-shell-wide mt-16">
           <div className="card-block card-cream">
-            <h2 className="text-xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
+            <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#1b1b1b]">
               Записаться к {teacher.name.split(" ")[0]}
             </h2>
-            <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">
+            <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">
               Расписание и набор групп уточняет менеджер. Оставьте заявку или
               позвоните нам — подберём ближайшее окно.
             </p>

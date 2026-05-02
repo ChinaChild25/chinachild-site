@@ -90,10 +90,10 @@ export default function CoursesIndexPage() {
               className={`card-block group flex h-full flex-col transition hover:-translate-y-1 ${c.tone}`}
             >
               <span className="tag-pill self-start">{c.badge}</span>
-              <h2 className="mt-6 text-2xl font-bold tracking-[-0.03em] text-[#1b1b1b]">
+              <h2 className="mt-6 text-[1.5rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#1b1b1b]">
                 {c.title}
               </h2>
-              <p className="mt-3 text-sm leading-7 text-[#4b4b4b]">{c.description}</p>
+              <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">{c.description}</p>
               <div className="mt-auto pt-6 text-sm font-semibold text-[#1b1b1b] underline-offset-4 group-hover:underline">
                 Подробнее →
               </div>
@@ -104,10 +104,10 @@ export default function CoursesIndexPage() {
 
       <section className="page-shell-wide section-space">
         <div className="card-block card-block-lg card-cream">
-          <h2 className="text-3xl font-bold tracking-[-0.035em] text-[#1b1b1b] sm:text-4xl">
+          <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-[#1b1b1b] sm:text-4xl">
             Какой курс китайского выбрать
           </h2>
-          <div className="mt-6 grid gap-3 text-base leading-7 text-[#4b4b4b]">
+          <div className="mt-6 grid gap-3 text-base leading-[1.55] text-[#4b4b4b]">
             <p>
               Программы школы ChinaChild построены на единой методике, лицензированной
               департаментом города Москвы. Если вы взрослый и никогда не учили китайский —

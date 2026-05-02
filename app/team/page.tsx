@@ -50,7 +50,7 @@ export default function TeamPage() {
                 <div className="flex items-center gap-4">
                   <Avatar name={teacher.name} size={56} src={teacher.image} />
                   <div>
-                    <div className="text-lg font-bold tracking-[-0.02em] text-[#1b1b1b]">
+                    <div className="text-[1.125rem] font-medium tracking-[-0.005em] text-[#1e1e1e] leading-[1.2]">
                       {teacher.name}
                     </div>
                     <div className="text-xs text-[#6b6b6b]">

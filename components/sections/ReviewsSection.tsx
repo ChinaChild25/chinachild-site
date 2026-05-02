@@ -16,17 +16,17 @@ export default function ReviewsSection() {
       <div className="grid gap-5 lg:grid-cols-[0.4fr_1.6fr]">
         <Reveal>
           <article className="card-block card-violet h-full">
-            <div className="text-sm font-medium uppercase tracking-[0.08em] text-white/70">
+            <div className="text-sm font-medium uppercase tracking-[0.08em] text-[#1e1e1e]/65">
               Средняя оценка
             </div>
-            <div className="mt-6 text-[4rem] font-medium tracking-[-0.02em] text-white leading-[1.05]">
+            <div className="mt-6 text-[4rem] font-medium tracking-[-0.02em] text-[#1e1e1e] leading-[1.05]">
               {siteFacts.aggregateRating}
-              <span className="text-[1.75rem] text-white/70"> / 5</span>
+              <span className="text-[1.75rem] text-[#1e1e1e]/55"> / 5</span>
             </div>
-            <div className="mt-6 flex gap-1 text-xl text-[#FFE066]" aria-hidden>
+            <div className="mt-6 flex gap-1 text-xl text-[#E8A300]" aria-hidden>
               ★★★★★
             </div>
-            <p className="mt-6 text-sm leading-[1.55] text-white/85">
+            <p className="mt-6 text-sm leading-[1.55] text-[#1e1e1e]/72">
               Лицензированная программа, преподаватели ЮФУ и ДГТУ и удобный
               личный кабинет — три причины, по которым ученики продолжают обучение.
             </p>
