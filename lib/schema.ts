@@ -189,7 +189,20 @@ export function createTeacherNode(teacher: Teacher): JsonLd {
     mainEntityOfPage: `${SITE_URL}/team/${teacher.slug}`,
   };
   if (teacher.image) {
-    node.image = absoluteUrl(teacher.image);
+    // Полный ImageObject вместо плоского URL — даёт E-E-A-T-сигнал и
+    // соответствие Google's Person rich-result requirements.
+    node.image = {
+      "@type": "ImageObject",
+      "@id": `${SITE_URL}/team/${teacher.slug}#photo`,
+      url: absoluteUrl(teacher.image),
+      contentUrl: absoluteUrl(teacher.image),
+      width: 1254,
+      height: 1254,
+      caption: teacher.imageAlt ?? `${teacher.name} — преподаватель китайского языка, ChinaChild`,
+      inLanguage: "ru-RU",
+      creditText: "ChinaChild",
+      copyrightNotice: `© ${new Date().getFullYear()} ChinaChild`,
+    };
   }
   if (teacher.alumniOf) {
     node.alumniOf = {

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import JsonLd from "@/components/seo/JsonLd";
 import LeadModal from "@/components/forms/LeadModal";
@@ -41,6 +42,32 @@ const licenseGraph = {
       identifier: LICENSE_DETAILS.registrationNumber,
       dateCreated: LICENSE_DETAILS.issueDate,
       url: absoluteUrl("/license"),
+      // Сканы документа — визуальное подтверждение для E-E-A-T
+      // (Google и Yandex поднимают авторитет, когда credential виден).
+      image: [
+        {
+          "@type": "ImageObject",
+          "@id": `${SITE_URL}/license#scan-main`,
+          url: absoluteUrl("/license/license-scan.webp"),
+          contentUrl: absoluteUrl("/license/license-scan.webp"),
+          width: 800,
+          height: 1132,
+          caption: `Скан образовательной лицензии № ${LICENSE_DETAILS.registrationNumber}, выданной ${LICENSE_REGION}`,
+          inLanguage: "ru-RU",
+          creditText: SITE_NAME,
+        },
+        {
+          "@type": "ImageObject",
+          "@id": `${SITE_URL}/license#scan-app`,
+          url: absoluteUrl("/license/license-app-1.webp"),
+          contentUrl: absoluteUrl("/license/license-app-1.webp"),
+          width: 800,
+          height: 1132,
+          caption: `Приложение к образовательной лицензии № ${LICENSE_DETAILS.registrationNumber} с печатью ${LICENSE_REGION}`,
+          inLanguage: "ru-RU",
+          creditText: SITE_NAME,
+        },
+      ],
       recognizedBy: {
         "@type": "GovernmentOrganization",
         name: LICENSE_REGION,
@@ -111,35 +138,36 @@ export default function LicensePage() {
             </ul>
           </div>
 
-          {/* Image placeholder — replace /public/license/license-scan.webp
-              with the real licence scan (1200×800, центрировать документ).
-              Если файл не положен, рендерится цветная заглушка. */}
-          <div className="card-block bg-white flex items-center justify-center min-h-[400px] relative overflow-hidden">
-            <div className="text-center px-6">
-              <div className="text-xs font-medium uppercase tracking-[0.16em] text-[#9a9a9a]">
-                Скан лицензии
-              </div>
-              <div className="mt-3 text-sm text-[#6b6b6b] max-w-xs mx-auto leading-[1.55]">
-                Положите файл{" "}
-                <code className="rounded bg-[rgba(0,0,0,0.05)] px-1.5 py-0.5 text-xs">
-                  /public/license/license-scan.webp
-                </code>{" "}
-                и раскомментируйте <code>{"<Image />"}</code> в{" "}
-                <code className="rounded bg-[rgba(0,0,0,0.05)] px-1.5 py-0.5 text-xs">
-                  app/license/page.tsx
-                </code>
-              </div>
-            </div>
-            {/*
+          <div className="grid gap-3 sm:grid-cols-2">
+            <figure className="card-block bg-white p-3 sm:p-4">
               <Image
                 src="/license/license-scan.webp"
-                alt="Скан образовательной лицензии ChinaChild, выданной Департаментом образования и науки города Москвы"
-                width={1200}
-                height={800}
-                className="object-contain w-full h-full"
+                alt={`Скан образовательной лицензии № ${LICENSE_DETAILS.registrationNumber}, выданной ${LICENSE_REGION} от 18.12.2025 — основная страница`}
+                title="Образовательная лицензия ChinaChild — основная страница"
+                width={800}
+                height={1132}
+                sizes="(min-width: 1024px) 360px, (min-width: 768px) 50vw, 100vw"
+                className="h-auto w-full rounded-[12px] object-contain"
                 priority
               />
-            */}
+              <figcaption className="mt-3 text-xs text-[#6b6b6b] leading-[1.5]">
+                Уведомление о предоставлении лицензии № {LICENSE_DETAILS.outgoingNumber}
+              </figcaption>
+            </figure>
+            <figure className="card-block bg-white p-3 sm:p-4">
+              <Image
+                src="/license/license-app-1.webp"
+                alt={`Приложение к образовательной лицензии № ${LICENSE_DETAILS.registrationNumber} с печатью ${LICENSE_REGION}`}
+                title="Образовательная лицензия ChinaChild — приложение с печатью"
+                width={800}
+                height={1132}
+                sizes="(min-width: 1024px) 360px, (min-width: 768px) 50vw, 100vw"
+                className="h-auto w-full rounded-[12px] object-contain"
+              />
+              <figcaption className="mt-3 text-xs text-[#6b6b6b] leading-[1.5]">
+                Приложение с печатью лицензирующего органа
+              </figcaption>
+            </figure>
           </div>
         </div>
       </section>

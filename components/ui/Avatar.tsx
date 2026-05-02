@@ -63,6 +63,10 @@ export default function Avatar({
           alt={altText}
           width={size}
           height={size}
+          // sizes явно указан, чтобы next/image сгенерировал responsive
+          // набор: 1× для отображаемого размера + 2× для retina/HiDPI.
+          // Без sizes Next.js серверит один resolution.
+          sizes={`${size * 2}px`}
           className="h-full w-full object-cover"
         />
       </div>

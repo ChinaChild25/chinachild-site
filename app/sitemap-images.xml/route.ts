@@ -1,6 +1,7 @@
 import { getAllPosts } from "@/lib/blog";
 import { renderSitemap, type UrlEntry } from "@/lib/sitemap-helpers";
 import { absoluteUrl } from "@/lib/site-config";
+import { teachers } from "@/lib/site-data";
 
 export const dynamic = "force-static";
 
@@ -47,6 +48,42 @@ export async function GET() {
         },
       ],
     })),
+    // Реальные фото преподавателей — отдельный канал в Yandex.Картинки /
+    // Google Images. Подпись и caption строятся из imageAlt / specialization.
+    ...teachers
+      .filter((t): t is typeof t & { image: string } => Boolean(t.image))
+      .map((t): UrlEntry => ({
+        loc: absoluteUrl(`/team/${t.slug}`),
+        lastmod: now,
+        images: [
+          {
+            loc: absoluteUrl(t.image),
+            title: t.imageAlt ?? `${t.name} — преподаватель китайского языка, ChinaChild`,
+            caption: t.specialization,
+          },
+        ],
+      })),
+    // Сканы образовательной лицензии — отдельный канал в Yandex.Картинки
+    // и Google Images. На образовательной лицензии Google «вешает»
+    // E-E-A-T-сигналы для всей подсайта.
+    {
+      loc: absoluteUrl("/license"),
+      lastmod: now,
+      images: [
+        {
+          loc: absoluteUrl("/license/license-scan.webp"),
+          title: "Образовательная лицензия ChinaChild — основная страница",
+          caption:
+            "Уведомление о предоставлении лицензии на образовательную деятельность, выданное Департаментом образования и науки города Москвы",
+        },
+        {
+          loc: absoluteUrl("/license/license-app-1.webp"),
+          title: "Приложение к образовательной лицензии ChinaChild",
+          caption:
+            "Приложение к лицензии с печатью Департамента образования и науки города Москвы",
+        },
+      ],
+    },
   ];
 
   return new Response(renderSitemap(entries, true), {
