@@ -31,13 +31,13 @@ export default function FreeTrialPage() {
         <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="max-w-xl">
             <span className="tag-pill">Бесплатное занятие</span>
-            <h1 className="mt-6 text-[2.4rem] font-bold leading-[1.04] tracking-[-0.04em] text-[#1b1b1b] sm:text-[3rem]">
+            <h1 className="mt-6 text-[2.25rem] font-medium leading-[1.08] tracking-[-0.025em] text-[#1a1a1a] sm:text-[3rem]">
               Бесплатный пробный урок китайского
             </h1>
-            <p className="mt-5 text-base leading-7 text-[#4b4b4b]">
+            <p className="mt-5 text-base leading-[1.55] text-[#4b4b4b]">
               За 60 минут с преподавателем-методистом вы:
             </p>
-            <ul className="mt-4 grid gap-2 text-base leading-7 text-[#4b4b4b]">
+            <ul className="mt-4 grid gap-2 text-base leading-[1.55] text-[#4b4b4b]">
               <li>— узнаете свой уровень по шкале HSK 1–6;</li>
               <li>— получите рекомендации по программе и темпу;</li>
               <li>— обсудите цели — туризм, работа, поступление в вуз КНР;</li>
@@ -47,24 +47,24 @@ export default function FreeTrialPage() {
             <div className="mt-10 grid gap-3 text-sm">
               <a
                 href={`tel:${CONTACT_PHONE_TEL}`}
-                className="text-[1.5rem] font-medium tracking-[-0.01em] text-[#1e1e1e] leading-[1.2]"
+                className="text-[1.5rem] font-medium tracking-[-0.01em] text-[#1a1a1a] leading-[1.2]"
               >
                 {CONTACT_PHONE}
               </a>
               <a
                 href={`mailto:${CONTACT_EMAIL}`}
-                className="text-base text-[#6b6b6b] hover:text-[#1b1b1b]"
+                className="text-base text-[#6b6b6b] hover:text-[#1a1a1a]"
               >
                 {CONTACT_EMAIL}
               </a>
-              <p className="mt-4 text-xs leading-5 text-[#9a9a9a]">
+              <p className="mt-4 text-xs leading-[1.55] text-[#9a9a9a]">
                 Без обязательств: после пробного занятия вы решаете, продолжать или нет.
                 Никаких автосписаний и подписок.
               </p>
             </div>
           </div>
 
-          <div className="card-block bg-white border border-[rgba(0,0,0,0.08)]">
+          <div className="card-block lead-form-wrap">
             <LeadForm source="free-trial-page" />
           </div>
         </div>

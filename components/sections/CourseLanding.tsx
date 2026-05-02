@@ -67,7 +67,7 @@ export default function CourseLanding({
         <div className="grid gap-5 md:grid-cols-3">
           {bullets.map((b) => (
             <article key={b.title} className={`card-block h-full ${toneClass[b.tone]}`}>
-              <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1e1e1e] leading-[1.2]">{b.title}</h2>
+              <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1a1a1a] leading-[1.2]">{b.title}</h2>
               <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">{b.body}</p>
             </article>
           ))}
@@ -76,7 +76,7 @@ export default function CourseLanding({
 
       <section className="page-shell-wide section-space">
         <div className="card-block card-block-lg card-cream">
-          <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] text-[#1e1e1e] leading-[1.15] sm:text-[2rem]">
+          <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] text-[#1a1a1a] leading-[1.15] sm:text-[2rem]">
             {longCopy.heading}
           </h2>
           <div className="mt-6 grid gap-3 text-base leading-[1.55] text-[#4b4b4b]">
@@ -93,33 +93,12 @@ export default function CourseLanding({
         schemaId={`course-${schemaCourse.slug}-faq`}
       />
 
-      {related && related.length > 0 ? (
-        <section className="page-shell-wide section-space">
-          <div className="card-block card-block-lg card-violet-soft">
-            <h2 className="text-[1.5rem] font-medium tracking-[-0.01em] text-[#1e1e1e] leading-[1.2]">
-              Связанные страницы
-            </h2>
-            <div className="mt-6 flex flex-wrap gap-x-4 gap-y-2">
-              {related.map((r) => (
-                <Link
-                  key={r.href}
-                  href={r.href}
-                  className="text-sm font-medium text-[#1e1e1e] underline underline-offset-4"
-                >
-                  {r.title}
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      ) : null}
-
       <section className="page-shell-wide section-space">
         <div className="card-block card-block-lg card-ink">
           <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] text-white leading-[1.15] sm:text-[2rem]">
             Готовы начать?
           </h2>
-          <p className="mt-4 max-w-2xl text-base leading-[1.55] text-white/85">
+          <p className="mt-4 max-w-2xl text-base leading-[1.55] text-white/80">
             Запишитесь на бесплатное пробное занятие. Преподаватель оценит ваш уровень,
             поставит цель и подберёт подходящий курс.
           </p>
@@ -135,6 +114,25 @@ export default function CourseLanding({
               Все курсы
             </Link>
           </div>
+
+          {related && related.length > 0 ? (
+            <div className="mt-12 border-t border-white/10 pt-8">
+              <div className="text-xs uppercase tracking-[0.08em] text-white/55">
+                Также может пригодиться
+              </div>
+              <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2.5">
+                {related.map((r) => (
+                  <Link
+                    key={r.href}
+                    href={r.href}
+                    className="text-sm text-white/80 underline-offset-4 transition hover:text-white hover:underline"
+                  >
+                    {r.title}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ) : null}
         </div>
       </section>
     </main>

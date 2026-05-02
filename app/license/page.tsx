@@ -89,22 +89,22 @@ export default function LicensePage() {
       <section className="page-shell-wide section-space">
         <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="card-block card-block-lg card-cream-soft">
-            <h2 className="text-[1.5rem] font-medium tracking-[-0.01em] text-[#1e1e1e] leading-[1.2]">
+            <h2 className="text-[1.5rem] font-medium tracking-[-0.01em] text-[#1a1a1a] leading-[1.2]">
               Что даёт лицензия
             </h2>
             <ul className="mt-6 grid gap-4 text-base leading-[1.6] text-[#4b4b4b]">
               <li>
-                <strong className="text-[#1e1e1e]">Документ об обучении.</strong> По итогам
+                <strong className="text-[#1a1a1a]">Документ об обучении.</strong> По итогам
                 курса выдаём документ о прохождении программы дополнительного
                 профессионального образования.
               </li>
               <li>
-                <strong className="text-[#1e1e1e]">Налоговый вычет 13%.</strong> Возвращаете
+                <strong className="text-[#1a1a1a]">Налоговый вычет 13%.</strong> Возвращаете
                 до 15 600 ₽ в год через личный кабинет ФНС или работодателя — социальный
                 налоговый вычет за обучение, ст. 219 НК РФ.
               </li>
               <li>
-                <strong className="text-[#1e1e1e]">Государственный надзор.</strong>{" "}
+                <strong className="text-[#1a1a1a]">Государственный надзор.</strong>{" "}
                 {LICENSE_REGION} периодически проверяет качество программы — это гарантия
                 для ученика и родителя.
               </li>
@@ -146,62 +146,62 @@ export default function LicensePage() {
 
       <section className="page-shell-wide section-space">
         <div className="card-block card-block-lg card-cream">
-          <h2 className="text-[1.5rem] font-medium tracking-[-0.01em] text-[#1e1e1e] leading-[1.2] sm:text-[1.75rem]">
+          <h2 className="text-[1.5rem] font-medium tracking-[-0.01em] text-[#1a1a1a] leading-[1.2] sm:text-[1.75rem]">
             Реквизиты лицензии
           </h2>
-          <p className="mt-4 text-sm leading-[1.6] text-[#1e1e1e]/70">
+          <p className="mt-4 text-sm leading-[1.6] text-[#1a1a1a]/70">
             Запись о предоставлении лицензии внесена в реестр лицензий на осуществление
             образовательной деятельности.
           </p>
-          <dl className="mt-8 grid gap-x-8 gap-y-5 sm:grid-cols-2 text-sm leading-[1.55] text-[#1e1e1e]">
+          <dl className="mt-8 grid gap-x-8 gap-y-5 sm:grid-cols-2 text-sm leading-[1.55] text-[#1a1a1a]">
             <div>
-              <dt className="text-xs uppercase tracking-[0.08em] text-[#1e1e1e]/55">
+              <dt className="text-xs uppercase tracking-[0.08em] text-[#1a1a1a]/55">
                 Регистрационный номер
               </dt>
               <dd className="mt-1.5 font-medium">{LICENSE_DETAILS.registrationNumber}</dd>
             </div>
             <div>
-              <dt className="text-xs uppercase tracking-[0.08em] text-[#1e1e1e]/55">
+              <dt className="text-xs uppercase tracking-[0.08em] text-[#1a1a1a]/55">
                 Дата выдачи
               </dt>
               <dd className="mt-1.5 font-medium">18 декабря 2025 г.</dd>
             </div>
             <div>
-              <dt className="text-xs uppercase tracking-[0.08em] text-[#1e1e1e]/55">
+              <dt className="text-xs uppercase tracking-[0.08em] text-[#1a1a1a]/55">
                 Уведомление № исх.
               </dt>
               <dd className="mt-1.5 font-medium">{LICENSE_DETAILS.outgoingNumber}</dd>
             </div>
             <div>
-              <dt className="text-xs uppercase tracking-[0.08em] text-[#1e1e1e]/55">
+              <dt className="text-xs uppercase tracking-[0.08em] text-[#1a1a1a]/55">
                 Программа
               </dt>
               <dd className="mt-1.5 font-medium">{LICENSE_PROGRAM}</dd>
             </div>
             <div className="sm:col-span-2">
-              <dt className="text-xs uppercase tracking-[0.08em] text-[#1e1e1e]/55">
+              <dt className="text-xs uppercase tracking-[0.08em] text-[#1a1a1a]/55">
                 Лицензирующий орган
               </dt>
               <dd className="mt-1.5">
                 <div className="font-medium">{LICENSE_DETAILS.issuer}</div>
-                <div className="mt-1 text-[#1e1e1e]/70">{LICENSE_DETAILS.issuerAddress}</div>
-                <div className="mt-1 text-[#1e1e1e]/70">
+                <div className="mt-1 text-[#1a1a1a]/70">{LICENSE_DETAILS.issuerAddress}</div>
+                <div className="mt-1 text-[#1a1a1a]/70">
                   Тел.: {LICENSE_DETAILS.issuerPhone} · Факс: {LICENSE_DETAILS.issuerFax}
                 </div>
-                <div className="mt-1 text-[#1e1e1e]/70">
+                <div className="mt-1 text-[#1a1a1a]/70">
                   ОГРН {LICENSE_DETAILS.issuerOgrn} · ИНН {LICENSE_DETAILS.issuerInn} ·
                   КПП {LICENSE_DETAILS.issuerKpp} · ОКПО {LICENSE_DETAILS.issuerOkpo}
                 </div>
               </dd>
             </div>
             <div className="sm:col-span-2">
-              <dt className="text-xs uppercase tracking-[0.08em] text-[#1e1e1e]/55">
+              <dt className="text-xs uppercase tracking-[0.08em] text-[#1a1a1a]/55">
                 Лицензиат
               </dt>
               <dd className="mt-1.5">
                 <div className="font-medium">{LICENSEE.legalName}</div>
-                <div className="mt-1 text-[#1e1e1e]/70">ИНН {LICENSEE.inn}</div>
-                <div className="mt-1 text-[#1e1e1e]/70">{LICENSEE.address}</div>
+                <div className="mt-1 text-[#1a1a1a]/70">ИНН {LICENSEE.inn}</div>
+                <div className="mt-1 text-[#1a1a1a]/70">{LICENSEE.address}</div>
               </dd>
             </div>
           </dl>
@@ -210,20 +210,20 @@ export default function LicensePage() {
 
       <section className="page-shell-wide section-space">
         <div className="card-block card-block-lg card-violet">
-          <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] text-[#1e1e1e] leading-[1.15] sm:text-[2rem]">
+          <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] text-[#1a1a1a] leading-[1.15] sm:text-[2rem]">
             Как получить налоговый вычет 13%
           </h2>
-          <ol className="mt-6 grid gap-4 text-base leading-[1.6] text-[#1e1e1e]/85">
+          <ol className="mt-6 grid gap-4 text-base leading-[1.6] text-[#1a1a1a]/85">
             <li>
-              <strong className="text-[#1e1e1e]">1. Сохраните договор и квитанции об оплате.</strong>{" "}
+              <strong className="text-[#1a1a1a]">1. Сохраните договор и квитанции об оплате.</strong>{" "}
               По запросу пришлём электронные копии — на email, указанный в заявке.
             </li>
             <li>
-              <strong className="text-[#1e1e1e]">2. Подайте декларацию 3-НДФЛ в ФНС.</strong>{" "}
+              <strong className="text-[#1a1a1a]">2. Подайте декларацию 3-НДФЛ в ФНС.</strong>{" "}
               Через личный кабинет налогоплательщика на nalog.gov.ru или у работодателя.
             </li>
             <li>
-              <strong className="text-[#1e1e1e]">3. Получите возврат.</strong>{" "}
+              <strong className="text-[#1a1a1a]">3. Получите возврат.</strong>{" "}
               13% от стоимости обучения, до 15 600 ₽ в год — поступают на ваш счёт.
             </li>
           </ol>

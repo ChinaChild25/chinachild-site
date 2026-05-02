@@ -120,7 +120,7 @@ export default async function HskLevelPage({ params }: HskPageProps) {
             <div className="text-xs font-semibold uppercase tracking-[0.08em] text-[#6b6b6b]">
               Словарь
             </div>
-            <div className="mt-2 text-[2.5rem] font-medium tracking-[-0.02em] text-[#1e1e1e] leading-[1.05]">
+            <div className="mt-2 text-[2.5rem] font-medium tracking-[-0.02em] text-[#1a1a1a] leading-[1.05]">
               {level.words}
             </div>
             <p className="mt-2 text-sm text-[#4b4b4b]">слов</p>
@@ -129,7 +129,7 @@ export default async function HskLevelPage({ params }: HskPageProps) {
             <div className="text-xs font-semibold uppercase tracking-[0.08em] text-[#6b6b6b]">
               Время
             </div>
-            <div className="mt-2 text-[1.75rem] font-medium tracking-[-0.02em] text-[#1e1e1e] leading-[1.1]">
+            <div className="mt-2 text-[1.75rem] font-medium tracking-[-0.02em] text-[#1a1a1a] leading-[1.1]">
               {level.hours}
             </div>
             <p className="mt-2 text-sm text-[#4b4b4b]">подготовки</p>
@@ -138,7 +138,7 @@ export default async function HskLevelPage({ params }: HskPageProps) {
             <div className="text-xs font-semibold uppercase tracking-[0.08em] text-[#6b6b6b]">
               Уровень
             </div>
-            <div className="mt-2 text-[1.75rem] font-medium tracking-[-0.02em] text-[#1e1e1e] leading-[1.1]">
+            <div className="mt-2 text-[1.75rem] font-medium tracking-[-0.02em] text-[#1a1a1a] leading-[1.1]">
               {level.level === 1
                 ? "Базовый"
                 : level.level === 2
@@ -201,7 +201,7 @@ export default async function HskLevelPage({ params }: HskPageProps) {
 
       {/* Cross-link other levels */}
       <section className="page-shell-wide section-space">
-        <h2 className="text-[1.5rem] font-medium tracking-[-0.01em] text-[#1e1e1e] leading-[1.2]">
+        <h2 className="text-[1.5rem] font-medium tracking-[-0.01em] text-[#1a1a1a] leading-[1.2]">
           Другие уровни HSK
         </h2>
         <ul className="mt-6 flex flex-wrap gap-3">

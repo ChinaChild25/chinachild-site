@@ -21,11 +21,11 @@ export default function Breadcrumbs({
             return (
               <li key={item.path} className="flex items-center gap-2">
                 {isLast ? (
-                  <span aria-current="page" className="font-medium text-[#1e1e1e]">
+                  <span aria-current="page" className="font-medium text-[#1a1a1a]">
                     {item.name}
                   </span>
                 ) : (
-                  <Link href={item.path} className="transition hover:text-[#1e1e1e]">
+                  <Link href={item.path} className="transition hover:text-[#1a1a1a]">
                     {item.name}
                   </Link>
                 )}

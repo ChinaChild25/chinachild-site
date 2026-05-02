@@ -22,10 +22,10 @@ export default function WhySection() {
         {benefits.map((benefit, index) => (
           <Reveal key={benefit.title}>
             <article className={`card-block h-full ${palette[index % palette.length]}`}>
-              <div className="text-sm font-medium text-[#1e1e1e]/55">
+              <div className="text-sm font-medium text-[#1a1a1a]/55">
                 0{index + 1}
               </div>
-              <h3 className="mt-4 text-[1.25rem] font-medium tracking-[-0.01em] text-[#1e1e1e] leading-[1.2]">
+              <h3 className="mt-4 text-[1.25rem] font-medium tracking-[-0.01em] text-[#1a1a1a] leading-[1.2]">
                 {benefit.title}
               </h3>
               <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">

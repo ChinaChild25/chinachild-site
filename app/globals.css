@@ -12,13 +12,13 @@
   --background: #f8f7f2;            /* Yandex off-white card */
   --background-2: #f3f0e8;          /* Yandex off-white card-2 */
   --surface: #ffffff;
-  --foreground: #1e1e1e;
+  --foreground: #1a1a1a;
   --muted: #6d6d6d;
   --muted-strong: #4e4e4e;
   --line: rgba(0, 0, 0, 0.06);      /* Yandex border subtle */
 
   /* Ink ladder — точные значения LPC */
-  --ink: #1e1e1e;
+  --ink: #1a1a1a;
   --ink-700: #2d2d2d;
   --ink-800: #252525;                /* hover для action button */
   --ink-btn: #262626;                /* header-btn база */
@@ -952,8 +952,19 @@ a:focus-visible {
   margin-top: 4px;
 }
 
+/* Standalone-форма (на /zayavka, /free-trial) — белый карточный wrap. */
+.lead-form-wrap {
+  background: #ffffff;
+  border: 1px solid var(--line);
+}
+
 /* ==========================================================================
    LEAD FORM
+   --------------------------------------------------------------------------
+   Дефолт = «нейтральная» форма для standalone-страниц (/zayavka, /free-trial,
+   и т.д.) с белым фоном инпутов, тёмным текстом, аккуратной серой границей.
+   Внутри `.lead-dialog-card` (оранжевый модал) переопределяем на
+   orange-on-orange — стиль брендового модала остаётся.
    ========================================================================== */
 
 .lead-form {
@@ -968,18 +979,18 @@ a:focus-visible {
 
 .lead-field {
   display: grid;
-  gap: 10px;
+  gap: 8px;
 }
 
 .lead-label {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 500;
   line-height: 1.3;
-  color: #ffffff;
+  color: var(--ink);
 }
 
 .lead-required {
-  color: #ff2d20;
+  color: #e23b30;
   margin-right: 2px;
   font-weight: 700;
 }
@@ -987,39 +998,41 @@ a:focus-visible {
 .lead-input {
   width: 100%;
   height: 48px;
-  border: 0;
+  border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: var(--radius-input);
-  padding: 0 16px;
+  padding: 0 14px;
   font-size: 1rem;
-  background: #d65007;
-  color: #ffffff;
+  background: #ffffff;
+  color: var(--ink);
   outline: none;
-  transition: background 160ms ease, box-shadow 160ms ease;
+  transition: border-color 160ms ease, box-shadow 160ms ease,
+    background 160ms ease;
 }
 
 .lead-input::placeholder {
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(30, 30, 30, 0.4);
 }
 
 .lead-input:focus {
-  background: #c44604;
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.6);
+  border-color: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06);
 }
 
 .lead-input[aria-invalid="true"] {
-  box-shadow: 0 0 0 2px #ff2d20;
+  border-color: #e23b30;
+  box-shadow: 0 0 0 3px rgba(226, 59, 48, 0.18);
 }
 
 textarea.lead-input {
   min-height: 96px;
-  padding: 12px 16px;
+  padding: 12px 14px;
   resize: vertical;
 }
 
 .lead-select {
   appearance: none;
   -webkit-appearance: none;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='white'><path d='M5 7l5 6 5-6z'/></svg>");
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%231a1a1a'><path d='M5 7l5 6 5-6z'/></svg>");
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 18px 18px;
@@ -1028,7 +1041,7 @@ textarea.lead-input {
 
 .lead-select option {
   background: #ffffff;
-  color: #1b1b1b;
+  color: var(--ink);
   padding: 10px;
 }
 
@@ -1037,9 +1050,9 @@ textarea.lead-input {
   grid-template-columns: 22px 1fr;
   gap: 12px;
   align-items: start;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(30, 30, 30, 0.78);
   cursor: pointer;
 }
 
@@ -1048,7 +1061,7 @@ textarea.lead-input {
   grid-row: 1 / 2;
   align-self: center;
   text-align: center;
-  color: #ff2d20;
+  color: #e23b30;
 }
 
 .lead-checkbox .lead-required + .lead-checkbox-input {
@@ -1071,26 +1084,28 @@ textarea.lead-input {
 }
 
 .lead-checkbox-input {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   margin: 0;
   border-radius: 4px;
-  accent-color: #ffffff;
+  accent-color: var(--ink);
   cursor: pointer;
   flex-shrink: 0;
 }
 
 .lead-checkbox a {
   color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .lead-error {
   border-radius: 8px;
-  background: rgba(0, 0, 0, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  padding: 12px 16px;
+  background: rgba(226, 59, 48, 0.08);
+  border: 1px solid rgba(226, 59, 48, 0.4);
+  padding: 12px 14px;
   font-size: 0.9rem;
-  color: #ffffff;
+  color: #b32a20;
 }
 
 .lead-submit {
@@ -1098,24 +1113,25 @@ textarea.lead-input {
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 56px;
+  height: 52px;
   border: 0;
   border-radius: var(--radius-button);
-  background: #ffffff;
-  color: #1b1b1b;
+  background: var(--ink);
+  color: #ffffff;
   font-size: 1rem;
   font-weight: 500;
+  letter-spacing: -0.005em;
   cursor: pointer;
   transition: background 160ms ease;
   margin-top: 8px;
 }
 
 .lead-submit:hover {
-  background: #f0f0f0;
+  background: var(--ink-700);
 }
 
 .lead-submit:active {
-  background: #e6e6e6;
+  background: var(--ink-800);
 }
 
 .lead-submit:disabled {
@@ -1127,21 +1143,21 @@ textarea.lead-input {
   display: grid;
   gap: 14px;
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.04);
   padding: 24px;
-  color: #ffffff;
+  color: var(--ink);
 }
 
 .lead-success-title {
-  font-size: 1.4rem;
+  font-size: 1.25rem;
   font-weight: 500;
   letter-spacing: var(--tracking-body);
 }
 
 .lead-success-text {
   font-size: 0.95rem;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.55;
+  color: var(--muted);
   margin: 0;
 }
 
@@ -1153,6 +1169,75 @@ textarea.lead-input {
 
 .lead-success-actions .btn-pill {
   font-size: 0.9rem;
+}
+
+/* ----------------------------------------------------------------------
+   Orange-modal scoped overrides — стиль формы внутри LeadModal
+   (брендовая оранжевая карточка). Перекрывает нейтральные дефолты.
+   ---------------------------------------------------------------------- */
+
+.lead-dialog-card .lead-label {
+  color: #ffffff;
+}
+
+.lead-dialog-card .lead-input {
+  border: 0;
+  background: #d65007;
+  color: #ffffff;
+}
+.lead-dialog-card .lead-input::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+}
+.lead-dialog-card .lead-input:focus {
+  background: #c44604;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.6);
+  border: 0;
+}
+.lead-dialog-card .lead-input[aria-invalid="true"] {
+  box-shadow: 0 0 0 2px #ff2d20;
+  border: 0;
+}
+
+.lead-dialog-card .lead-select {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='white'><path d='M5 7l5 6 5-6z'/></svg>");
+}
+
+.lead-dialog-card .lead-checkbox {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.lead-dialog-card .lead-checkbox-input {
+  accent-color: #ffffff;
+}
+
+.lead-dialog-card .lead-error {
+  background: rgba(0, 0, 0, 0.18);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #ffffff;
+}
+
+.lead-dialog-card .lead-submit {
+  background: #ffffff;
+  color: var(--ink);
+}
+.lead-dialog-card .lead-submit:hover {
+  background: #f0f0f0;
+}
+.lead-dialog-card .lead-submit:active {
+  background: #e6e6e6;
+}
+
+.lead-dialog-card .lead-success {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.lead-dialog-card .lead-success-title {
+  color: #ffffff;
+}
+
+.lead-dialog-card .lead-success-text {
+  color: rgba(255, 255, 255, 0.9);
 }
 
 /* ==========================================================================
@@ -1327,7 +1412,7 @@ textarea.lead-input {
   :root {
     --background: #121212;
     --background-2: #1a1a1a;
-    --surface: #1e1e1e;
+    --surface: #1a1a1a;
     --foreground: #ededed;
     --muted: #9a9a9a;
     --muted-strong: #b8b8b8;
@@ -1375,7 +1460,7 @@ textarea.lead-input {
 
   .site-header-cta {
     background: #ededed;
-    color: #1e1e1e;
+    color: #1a1a1a;
   }
   .site-header-cta:hover {
     background: #ffffff;
@@ -1387,7 +1472,7 @@ textarea.lead-input {
   .floating-cta-btn,
   .mobile-drawer-cta {
     background: #ededed;
-    color: #1e1e1e;
+    color: #1a1a1a;
   }
   .btn-pill:hover,
   .btn-ink:hover,
@@ -1398,7 +1483,7 @@ textarea.lead-input {
 
   /* card-ink тоже инвертируется (тёмные «Готовы начать?» баннеры). */
   .card-ink {
-    background: #1e1e1e;
+    background: #1a1a1a;
     color: var(--ink);
   }
 
@@ -1437,8 +1522,8 @@ textarea.lead-input {
   /* Перекрываем hardcoded Tailwind arbitrary text-color utilities,
      которые рассыпаны по проекту — без этого тёмный текст остаётся
      на тёмных карточках. Селекторы attribute-prefix ловят
-     `text-[#1e1e1e]`, `text-[#1e1e1e]/72` и т.п. */
-  [class*="text-[#1e1e1e]"],
+     `text-[#1a1a1a]`, `text-[#1a1a1a]/72` и т.п. */
+  [class*="text-[#1a1a1a]"],
   [class*="text-[#1b1b1b]"] {
     color: var(--ink) !important;
   }
@@ -1457,5 +1542,51 @@ textarea.lead-input {
   .tag-pill {
     background: rgba(255, 255, 255, 0.08);
     color: var(--ink);
+  }
+
+  /* Все сплошные `bg-white` контейнеры (proof-карточки в Hero, license
+     placeholder, badge, search input и т.д.) на тёмной теме переходят
+     в --surface. Транслюсцентные `bg-white/15`, `bg-white/06` и пр.
+     ловятся через [class*="bg-white/"] — для них оставляем поведение
+     overlay (полупрозрачный белый поверх тёмного — это OK). */
+  .bg-white:not([class*="bg-white/"]) {
+    background-color: var(--surface) !important;
+    color: var(--ink);
+  }
+
+  /* Standalone form wrapper и lead-input — на dark получают тёмный фон. */
+  .lead-form-wrap {
+    background: var(--surface);
+    border-color: var(--line);
+  }
+
+  .lead-input:not(.lead-dialog-card .lead-input) {
+    background: #2a2a2a;
+    color: var(--ink);
+    border-color: var(--line);
+  }
+  .lead-input:not(.lead-dialog-card .lead-input)::placeholder {
+    color: rgba(237, 237, 237, 0.4);
+  }
+  .lead-input:not(.lead-dialog-card .lead-input):focus {
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
+  }
+
+  .lead-select:not(.lead-dialog-card .lead-select) {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23ededed'><path d='M5 7l5 6 5-6z'/></svg>");
+  }
+
+  .lead-select:not(.lead-dialog-card .lead-select) option {
+    background: #2a2a2a;
+    color: var(--ink);
+  }
+
+  .lead-submit:not(.lead-dialog-card .lead-submit) {
+    background: #ededed;
+    color: #1a1a1a;
+  }
+  .lead-submit:not(.lead-dialog-card .lead-submit):hover {
+    background: #ffffff;
   }
 }

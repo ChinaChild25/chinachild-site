@@ -47,9 +47,9 @@ export default function CoursesSection() {
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <span className="tag-pill">{course.level}</span>
                 <div className="text-right">
-                  <div className="text-xs font-medium text-[#1e1e1e]/55">от</div>
+                  <div className="text-xs font-medium text-[#1a1a1a]/55">от</div>
                   <div
-                    className="text-[1.125rem] font-medium tracking-[-0.01em] text-[#1e1e1e]"
+                    className="text-[1.125rem] font-medium tracking-[-0.01em] text-[#1a1a1a]"
                     itemProp="offers"
                     itemScope
                     itemType="https://schema.org/Offer"
@@ -65,7 +65,7 @@ export default function CoursesSection() {
               </div>
 
               <h3
-                className="mt-6 text-[1.5rem] font-medium tracking-[-0.01em] text-[#1e1e1e] leading-[1.2]"
+                className="mt-6 text-[1.5rem] font-medium tracking-[-0.01em] text-[#1a1a1a] leading-[1.2]"
                 itemProp="name"
               >
                 {course.title}
@@ -80,7 +80,7 @@ export default function CoursesSection() {
                 <span className="tag-pill">{course.duration}</span>
               </div>
 
-              <p className="mt-5 text-sm font-medium text-[#1e1e1e]">
+              <p className="mt-5 text-sm font-medium text-[#1a1a1a]">
                 {course.outcome}
               </p>
 

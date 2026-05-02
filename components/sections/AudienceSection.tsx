@@ -25,24 +25,24 @@ export default function AudienceSection() {
               className={`card-block group flex h-full flex-col transition hover:-translate-y-1 ${accentStyles[segment.accent]}`}
             >
               <span className="tag-pill self-start">{segment.badge}</span>
-              <h3 className="mt-6 text-[1.5rem] font-medium tracking-[-0.01em] text-[#1e1e1e] leading-[1.2]">
+              <h3 className="mt-6 text-[1.5rem] font-medium tracking-[-0.01em] text-[#1a1a1a] leading-[1.2]">
                 {segment.title}
               </h3>
-              <p className="mt-3 text-sm font-medium text-[#1e1e1e]">
+              <p className="mt-3 text-sm font-medium text-[#1a1a1a]">
                 {segment.audience}
               </p>
               <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">
                 {segment.description}
               </p>
-              <ul className="mt-6 grid gap-2 text-sm text-[#1e1e1e]">
+              <ul className="mt-6 grid gap-2 text-sm text-[#1a1a1a]">
                 {segment.outcomes.map((outcome) => (
                   <li key={outcome} className="flex gap-2">
-                    <span className="text-[#1e1e1e]/40">—</span>
+                    <span className="text-[#1a1a1a]/40">—</span>
                     <span>{outcome}</span>
                   </li>
                 ))}
               </ul>
-              <div className="mt-auto pt-6 text-sm font-medium text-[#1e1e1e] underline-offset-4 group-hover:underline">
+              <div className="mt-auto pt-6 text-sm font-medium text-[#1a1a1a] underline-offset-4 group-hover:underline">
                 Подробнее →
               </div>
             </Link>

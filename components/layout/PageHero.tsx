@@ -44,11 +44,11 @@ export default function PageHero({
           {eyebrow ? (
             <span className="eyebrow eyebrow-on-light">{eyebrow}</span>
           ) : null}
-          <h1 className="mt-6 text-[2.25rem] font-medium leading-[1.08] tracking-[-0.025em] text-[#1e1e1e] sm:text-[3rem] lg:text-[3.5rem]">
+          <h1 className="mt-6 text-[2.25rem] font-medium leading-[1.08] tracking-[-0.025em] text-[#1a1a1a] sm:text-[3rem] lg:text-[3.5rem]">
             {title}
           </h1>
           {description ? (
-            <p className="mt-6 max-w-2xl text-base leading-[1.55] text-[#1e1e1e]/72 sm:text-[1.125rem]">
+            <p className="mt-6 max-w-2xl text-base leading-[1.55] text-[#1a1a1a]/72 sm:text-[1.125rem]">
               {description}
             </p>
           ) : null}

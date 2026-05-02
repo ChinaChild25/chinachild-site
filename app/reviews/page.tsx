@@ -50,7 +50,7 @@ export default function ReviewsPage() {
               <div className="flex items-center gap-4">
                 <Avatar name={review.author} size={64} />
                 <div>
-                  <h2 className="text-[1.125rem] font-medium tracking-[-0.005em] text-[#1e1e1e] leading-[1.2]">
+                  <h2 className="text-[1.125rem] font-medium tracking-[-0.005em] text-[#1a1a1a] leading-[1.2]">
                     {review.author}
                   </h2>
                   <p className="mt-1 text-sm text-[#6b6b6b]">{review.result}</p>

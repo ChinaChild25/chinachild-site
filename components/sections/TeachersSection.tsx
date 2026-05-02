@@ -29,10 +29,10 @@ export default function TeachersSection() {
               <div className="flex items-center gap-4">
                 <Avatar name={teacher.name} size={64} />
                 <div>
-                  <h3 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1e1e1e] leading-[1.2]">
+                  <h3 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1a1a1a] leading-[1.2]">
                     {teacher.name}
                   </h3>
-                  <p className="mt-1 text-sm font-medium text-[#1e1e1e]">
+                  <p className="mt-1 text-sm font-medium text-[#1a1a1a]">
                     {teacher.specialization}
                   </p>
                 </div>

@@ -68,7 +68,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         <div className="card-block card-block-lg card-cream-soft">
           <div className="max-w-3xl">
             <span className="eyebrow eyebrow-on-light">Поиск</span>
-            <h1 className="mt-6 text-[2.25rem] font-medium leading-[1.08] tracking-[-0.025em] text-[#1e1e1e] sm:text-[3rem]">
+            <h1 className="mt-6 text-[2.25rem] font-medium leading-[1.08] tracking-[-0.025em] text-[#1a1a1a] sm:text-[3rem]">
               {hasQuery ? `Результаты по запросу «${q.trim()}»` : "Поиск по сайту"}
             </h1>
             {hasQuery ? (
@@ -98,12 +98,12 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 type="search"
                 defaultValue={q}
                 placeholder="HSK, пиньинь, китайский с нуля…"
-                className="h-12 w-full rounded-[8px] border border-[rgba(0,0,0,0.08)] bg-white px-4 text-base text-[#1e1e1e] outline-none transition focus:border-[rgba(0,0,0,0.3)]"
+                className="h-12 w-full rounded-[8px] border border-[rgba(0,0,0,0.08)] bg-white px-4 text-base text-[#1a1a1a] outline-none transition focus:border-[rgba(0,0,0,0.3)]"
                 autoComplete="off"
               />
               <button
                 type="submit"
-                className="h-12 rounded-[8px] bg-[#1e1e1e] px-6 text-base font-medium text-white transition hover:bg-[#2c2c2c]"
+                className="h-12 rounded-[8px] bg-[#1a1a1a] px-6 text-base font-medium text-white transition hover:bg-[#2c2c2c]"
               >
                 Найти
               </button>
@@ -116,7 +116,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         <section className="page-shell-wide pb-16">
           {total === 0 ? (
             <div className="card-block card-cream-soft text-center">
-              <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1e1e1e]">
+              <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1a1a1a]">
                 Ничего не нашли
               </h2>
               <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">
@@ -129,7 +129,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             <div className="grid gap-10">
               {matchedPosts.length > 0 ? (
                 <div>
-                  <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1e1e1e]">
+                  <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1a1a1a]">
                     Статьи блога
                     <span className="ml-2 text-sm font-normal text-[#6b6b6b]">
                       ({matchedPosts.length})
@@ -143,7 +143,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                           className="card-block card-cream-soft block transition hover:-translate-y-0.5"
                         >
                           <span className="tag-pill self-start">{p.category}</span>
-                          <h3 className="mt-4 text-[1.125rem] font-medium tracking-[-0.005em] text-[#1e1e1e]">
+                          <h3 className="mt-4 text-[1.125rem] font-medium tracking-[-0.005em] text-[#1a1a1a]">
                             {p.title}
                           </h3>
                           <p className="mt-2 text-sm leading-[1.55] text-[#4b4b4b]">
@@ -158,7 +158,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
               {matchedTerms.length > 0 ? (
                 <div>
-                  <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1e1e1e]">
+                  <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1a1a1a]">
                     Термины глоссария
                     <span className="ml-2 text-sm font-normal text-[#6b6b6b]">
                       ({matchedTerms.length})
@@ -171,7 +171,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                           href={`/glossary/${t.slug}`}
                           className="card-block card-violet-soft block transition hover:-translate-y-0.5"
                         >
-                          <h3 className="text-[1.125rem] font-medium tracking-[-0.005em] text-[#1e1e1e]">
+                          <h3 className="text-[1.125rem] font-medium tracking-[-0.005em] text-[#1a1a1a]">
                             {t.term}
                           </h3>
                           <p className="mt-2 text-sm leading-[1.55] text-[#4b4b4b]">
