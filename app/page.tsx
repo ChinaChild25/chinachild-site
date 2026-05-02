@@ -4,6 +4,7 @@ import BlogPreviewSection from "@/components/sections/BlogPreviewSection";
 import CoursesSection from "@/components/sections/CoursesSection";
 import FAQSection from "@/components/sections/FAQSection";
 import HeroSection from "@/components/sections/HeroSection";
+import PlatformShowcase from "@/components/sections/PlatformShowcase";
 import PricingSection from "@/components/sections/PricingSection";
 import ProcessSection from "@/components/sections/ProcessSection";
 import RelatedLinks from "@/components/sections/RelatedLinks";
@@ -57,6 +58,7 @@ export default async function HomePage() {
       <WhySection />
       <CoursesSection />
       <ProcessSection />
+      <PlatformShowcase />
       <TeachersSection />
       <ReviewsSection />
       <ResultsSection />

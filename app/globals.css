@@ -103,7 +103,9 @@
   --t-color: 0.115s ease-out;
   --t-fade: 0.3s ease;
 
-  --page-gutter: clamp(16px, 2.2vw, 32px);
+  /* Yandex-style: на мобилке — минимальный отступ от края экрана,
+     шейпы тянутся почти на полную ширину. На десктопе — комфортный 32px. */
+  --page-gutter: clamp(10px, 2.2vw, 32px);
 }
 
 /* ==========================================================================
@@ -135,11 +137,11 @@ body {
   padding-bottom: 0;
 }
 
-/* На мобильном floating CTA становится полноширинным sticky-баром
-   высотой 56px — оставляем место под него, чтобы не прятать контент. */
+/* На мобильном floating CTA = sticky-плашка ~50px + 8px от низа + 6px halo.
+   Резервируем 76px чтобы CTA не закрывал последний блок контента. */
 @media (max-width: 767px) {
   body {
-    padding-bottom: 56px;
+    padding-bottom: 76px;
   }
 }
 
@@ -719,16 +721,18 @@ a:focus-visible {
   pointer-events: none;
 }
 
+/* Стеклянная плашка-ободок вокруг CTA — Yandex-стиль:
+   видимый белый frosted-halo с blur+saturate, тонкая белая граница. */
 .floating-cta-shell::before {
   content: "";
   position: absolute;
-  inset: -12px;
-  border-radius: var(--radius-glass-pill);
-  background-color: var(--glass-white-05);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid var(--glass-white-06);
-  box-shadow: var(--shadow-glass);
+  inset: -10px;
+  border-radius: 16px;
+  background-color: rgba(255, 255, 255, 0.55);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  backdrop-filter: blur(18px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
   z-index: -1;
 }
 
@@ -739,16 +743,16 @@ a:focus-visible {
 .floating-cta-btn {
   position: relative;
   pointer-events: auto;
-  padding: 18px 32px;
+  padding: 14px 24px;
   background: var(--ink);
   color: #ffffff;
   border-radius: var(--radius-button);
   border: none;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
   line-height: 100%;
-  min-width: 200px;
+  min-width: 180px;
   text-align: center;
   white-space: nowrap;
   outline: none;
@@ -762,17 +766,18 @@ a:focus-visible {
 }
 
 @media (max-width: 767px) {
+  /* На мобилке — полноширинный sticky-бар.
+     Стеклянная плашка остаётся как тонкий ободок сверху. */
   .floating-cta-shell {
-    left: 0;
-    right: 0;
-    bottom: 0;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
     transform: none;
     pointer-events: auto;
   }
   .floating-cta-shell::before {
-    inset: 0;
-    border-radius: 0;
-    border: 0;
+    inset: -6px;
+    border-radius: 14px;
   }
   .floating-cta-glass {
     width: 100%;
@@ -780,12 +785,13 @@ a:focus-visible {
   .floating-cta-btn {
     width: 100%;
     min-width: 0;
-    height: 56px;
-    border-radius: 0;
-    padding: 16px;
+    height: 50px;
+    border-radius: var(--radius-button);
+    padding: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 15px;
   }
 }
 
@@ -952,10 +958,18 @@ a:focus-visible {
   margin-top: 4px;
 }
 
-/* Standalone-форма (на /zayavka, /free-trial) — белый карточный wrap. */
+/* Standalone-форма (на /zayavka, /free-trial) — белый карточный wrap.
+   На мобилке поджимаем padding card-block, чтобы поля шли на всю ширину
+   карточки и не выглядели зажатыми. */
 .lead-form-wrap {
   background: #ffffff;
   border: 1px solid var(--line);
+}
+
+@media (max-width: 767px) {
+  .lead-form-wrap {
+    padding: 18px;
+  }
 }
 
 /* ==========================================================================
