@@ -29,18 +29,24 @@ export default function Avatar({
   className,
   size = 56,
   src,
+  alt,
+  title,
 }: {
   name: string;
   className?: string;
   size?: number;
-  /** Optional image URL (e.g. /team/<slug>.webp). When provided and the
-      file exists at deploy time, renders the photo instead of the
-      coloured initials placeholder. */
+  /** Optional image URL (e.g. /team/<slug>.webp). When provided, renders
+      the photo via next/image; otherwise falls back to coloured initials. */
   src?: string;
+  /** SEO/E-E-A-T alt text. Defaults to `name` if not provided. */
+  alt?: string;
+  /** Tooltip on hover. */
+  title?: string;
 }) {
   const tone = pickTone(name);
   const initials = getInitials(name);
   const fontSize = Math.round(size * 0.38);
+  const altText = alt ?? name;
 
   if (src && src.length > 0) {
     return (
@@ -50,10 +56,11 @@ export default function Avatar({
           className,
         )}
         style={{ width: size, height: size, background: tone.bg }}
+        title={title}
       >
         <Image
           src={src}
-          alt={name}
+          alt={altText}
           width={size}
           height={size}
           className="h-full w-full object-cover"
@@ -65,7 +72,8 @@ export default function Avatar({
   return (
     <div
       role="img"
-      aria-label={name}
+      aria-label={altText}
+      title={title}
       className={cn(
         "inline-flex shrink-0 items-center justify-center rounded-full font-semibold tracking-tight",
         className,

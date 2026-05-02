@@ -27,7 +27,13 @@ export default function TeachersSection() {
           <Reveal key={teacher.slug}>
             <article className={`card-block h-full ${palette[index % palette.length]}`}>
               <div className="flex items-center gap-4">
-                <Avatar name={teacher.name} size={64} />
+                <Avatar
+                  name={teacher.name}
+                  size={64}
+                  src={teacher.image}
+                  alt={teacher.imageAlt}
+                  title={teacher.imageTitle}
+                />
                 <div>
                   <h3 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1a1a1a] leading-[1.2]">
                     {teacher.name}

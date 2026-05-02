@@ -134,7 +134,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-4 border-t border-[rgba(0,0,0,0.06)] pt-6">
-            <Avatar name={author.name} size={48} />
+            <Avatar
+              name={author.name}
+              size={48}
+              src={author.image}
+              alt={author.imageAlt}
+              title={author.imageTitle}
+            />
             <div className="flex flex-col gap-0.5 text-sm">
               <span className="font-medium text-[#1a1a1a]">{author.name}</span>
               <span className="text-[#6b6b6b]">{author.specialization}</span>

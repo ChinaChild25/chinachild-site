@@ -48,7 +48,13 @@ export default function TeamPage() {
                 className={`card-block group flex h-full flex-col transition hover:-translate-y-1 ${palette[idx % palette.length]}`}
               >
                 <div className="flex items-center gap-4">
-                  <Avatar name={teacher.name} size={56} src={teacher.image} />
+                  <Avatar
+                    name={teacher.name}
+                    size={56}
+                    src={teacher.image}
+                    alt={teacher.imageAlt}
+                    title={teacher.imageTitle}
+                  />
                   <div>
                     <div className="text-[1.125rem] font-medium tracking-[-0.005em] text-[#1a1a1a] leading-[1.2]">
                       {teacher.name}

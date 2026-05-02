@@ -116,12 +116,18 @@ export default function AboutPage() {
           {teachers.map((t) => (
             <article key={t.slug} className="card-block card-cream-soft h-full">
               <div className="flex items-center gap-4">
-                <Avatar name={t.name} size={64} />
+                <Avatar
+                  name={t.name}
+                  size={64}
+                  src={t.image}
+                  alt={t.imageAlt}
+                  title={t.imageTitle}
+                />
                 <div>
-                  <h3 className="text-[1.25rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#1b1b1b]">
+                  <h3 className="text-[1.25rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#1a1a1a]">
                     {t.name}
                   </h3>
-                  <p className="mt-1 text-sm font-semibold text-[#1b1b1b]">
+                  <p className="mt-1 text-sm font-medium text-[#1a1a1a]">
                     {t.specialization}
                   </p>
                 </div>
