@@ -56,7 +56,7 @@ export default function TeamPage() {
                     title={teacher.imageTitle}
                   />
                   <div>
-                    <div className="text-[1.125rem] font-medium tracking-[-0.005em] text-[#1a1a1a] leading-[1.2]">
+                    <div className="text-[1.125rem] font-medium tracking-[-0.005em] text-[#262626] leading-[1.2]">
                       {teacher.name}
                     </div>
                     <div className="text-xs text-[#6b6b6b]">

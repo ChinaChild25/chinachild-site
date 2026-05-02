@@ -37,6 +37,9 @@ export type Course = {
 export type Teacher = {
   slug: string;
   name: string;
+  /** Имя в дательном падеже («Записаться к …»). Без этого поля
+   *  теряются окончания: «к Милена» вместо «к Милене». */
+  firstNameDative: string;
   specialization: string;
   experience: string;
   credentials: string;
@@ -296,6 +299,7 @@ export const teachers: Teacher[] = [
   {
     slug: "anastasia-ponomareva",
     name: "Анастасия Пономарёва",
+    firstNameDative: "Анастасии",
     specialization: "Китайский и английский язык, HSK 1–2",
     experience: "Преподаватель школы, опыт более 7 лет",
     credentials:
@@ -323,6 +327,7 @@ export const teachers: Teacher[] = [
   {
     slug: "anastasia-erina",
     name: "Анастасия Ерина",
+    firstNameDative: "Анастасии",
     specialization: "Бизнес-китайский, HSK 1–4",
     experience: "Преподаватель школы, опыт более 5 лет",
     credentials:
@@ -349,6 +354,7 @@ export const teachers: Teacher[] = [
   {
     slug: "zhao-li",
     name: "Чжао Ли",
+    firstNameDative: "Чжао Ли",
     specialization: "Носитель языка, разговорная практика",
     experience: "Преподаватель школы, сертификат HSK 6",
     credentials:
@@ -374,6 +380,7 @@ export const teachers: Teacher[] = [
   {
     slug: "milena-karlova",
     name: "Милена Карлова",
+    firstNameDative: "Милене",
     specialization: "Культурология и востоковедение, HSK 1–4",
     experience: "Преподаватель школы, опыт более 13 лет",
     credentials:

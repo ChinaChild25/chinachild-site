@@ -35,10 +35,10 @@ export default function TeachersSection() {
                   title={teacher.imageTitle}
                 />
                 <div>
-                  <h3 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1a1a1a] leading-[1.2]">
+                  <h3 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#262626] leading-[1.2]">
                     {teacher.name}
                   </h3>
-                  <p className="mt-1 text-sm font-medium text-[#1a1a1a]">
+                  <p className="mt-1 text-sm font-medium text-[#262626]">
                     {teacher.specialization}
                   </p>
                 </div>

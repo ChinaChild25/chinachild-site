@@ -13,7 +13,7 @@ import {
 
 export default function Footer() {
   return (
-    <footer className="border-t border-[rgba(0,0,0,0.06)] bg-[#f3f0e8] py-16 text-[#1a1a1a]">
+    <footer className="border-t border-[rgba(0,0,0,0.06)] bg-[#f3f0e8] py-16 text-[#262626]">
       <div className="page-shell-wide grid gap-12 md:grid-cols-[1.2fr_0.8fr]">
         <div className="max-w-xl">
           <div className="text-[1.5rem] font-medium tracking-[-0.01em]">ChinaChild</div>
@@ -22,14 +22,14 @@ export default function Footer() {
             программа по достижению разговорного уровня уже через 6 месяцев
             обучения. Обучение для подростков с 12 лет и взрослых.
           </p>
-          <div className="mt-6 grid gap-2 text-sm text-[#1a1a1a]">
+          <div className="mt-6 grid gap-2 text-sm text-[#262626]">
             <a href={`tel:${CONTACT_PHONE_TEL}`} className="font-medium transition hover:opacity-60">
               {CONTACT_PHONE}
             </a>
-            <a href={`mailto:${CONTACT_EMAIL}`} className="text-[#6b6b6b] transition hover:text-[#1a1a1a]">
+            <a href={`mailto:${CONTACT_EMAIL}`} className="text-[#6b6b6b] transition hover:text-[#262626]">
               {CONTACT_EMAIL}
             </a>
-            <a href={SITE_URL} className="text-[#6b6b6b] transition hover:text-[#1a1a1a]">
+            <a href={SITE_URL} className="text-[#6b6b6b] transition hover:text-[#262626]">
               chinachild.ru
             </a>
           </div>
@@ -40,7 +40,7 @@ export default function Footer() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm text-[#6b6b6b] transition hover:text-[#1a1a1a]"
+              className="text-sm text-[#6b6b6b] transition hover:text-[#262626]"
             >
               {link.title}
             </Link>
@@ -56,7 +56,7 @@ export default function Footer() {
           Образовательная лицензия № {LICENSE_DETAILS.registrationNumber} от 18.12.2025,
           выдана {LICENSE_REGION}. Программа «{LICENSE_PROGRAM}». Налоговый вычет 13% —
           до 15 600 ₽ в год.{" "}
-          <Link href="/license" className="underline underline-offset-4 hover:text-[#1a1a1a]">
+          <Link href="/license" className="underline underline-offset-4 hover:text-[#262626]">
             Подробнее о лицензии
           </Link>
         </div>

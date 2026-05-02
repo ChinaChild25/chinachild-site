@@ -67,7 +67,7 @@ export default function CourseLanding({
         <div className="grid gap-5 md:grid-cols-3">
           {bullets.map((b) => (
             <article key={b.title} className={`card-block h-full ${toneClass[b.tone]}`}>
-              <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1a1a1a] leading-[1.2]">{b.title}</h2>
+              <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#262626] leading-[1.2]">{b.title}</h2>
               <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">{b.body}</p>
             </article>
           ))}
@@ -76,7 +76,7 @@ export default function CourseLanding({
 
       <section className="page-shell-wide section-space">
         <div className="card-block card-block-lg card-cream">
-          <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] text-[#1a1a1a] leading-[1.15] sm:text-[2rem]">
+          <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] text-[#262626] leading-[1.15] sm:text-[2rem]">
             {longCopy.heading}
           </h2>
           <div className="mt-6 grid gap-3 text-base leading-[1.55] text-[#4b4b4b]">

@@ -50,25 +50,25 @@ export default function AboutPage() {
       <section className="page-shell-wide section-space">
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           <div className="card-block card-violet-soft">
-            <div className="text-[2.5rem] font-medium tracking-[-0.02em] text-[#1a1a1a] leading-[1.05]">10+</div>
+            <div className="text-[2.5rem] font-medium tracking-[-0.02em] text-[#262626] leading-[1.05]">10+</div>
             <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">
               лет опыт у каждого преподавателя школы
             </p>
           </div>
           <div className="card-block card-cream">
-            <div className="text-[2.5rem] font-medium tracking-[-0.02em] text-[#1a1a1a] leading-[1.05]">HSK 1–2</div>
+            <div className="text-[2.5rem] font-medium tracking-[-0.02em] text-[#262626] leading-[1.05]">HSK 1–2</div>
             <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">
               лицензированная программа для разговорного уровня
             </p>
           </div>
           <div className="card-block card-lime-soft">
-            <div className="text-[2.5rem] font-medium tracking-[-0.02em] text-[#1a1a1a] leading-[1.05]">до 5</div>
+            <div className="text-[2.5rem] font-medium tracking-[-0.02em] text-[#262626] leading-[1.05]">до 5</div>
             <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">
               человек в мини-группе — у каждого хватает времени на речь
             </p>
           </div>
           <div className="card-block card-sky">
-            <div className="text-[2.5rem] font-medium tracking-[-0.02em] text-[#1a1a1a] leading-[1.05]">13%</div>
+            <div className="text-[2.5rem] font-medium tracking-[-0.02em] text-[#262626] leading-[1.05]">13%</div>
             <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">
               налоговый вычет — школа лицензирована в Москве
             </p>
@@ -124,10 +124,10 @@ export default function AboutPage() {
                   title={t.imageTitle}
                 />
                 <div>
-                  <h3 className="text-[1.25rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#1a1a1a]">
+                  <h3 className="text-[1.25rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#262626]">
                     {t.name}
                   </h3>
-                  <p className="mt-1 text-sm font-medium text-[#1a1a1a]">
+                  <p className="mt-1 text-sm font-medium text-[#262626]">
                     {t.specialization}
                   </p>
                 </div>

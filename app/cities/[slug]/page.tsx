@@ -238,7 +238,7 @@ export default async function CityLandingPage({ params }: CityPageProps) {
 
       {/* Cross-link to other cities for topical authority */}
       <section className="page-shell-wide section-space">
-        <h2 className="text-[1.5rem] font-medium tracking-[-0.01em] text-[#1a1a1a] leading-[1.2]">
+        <h2 className="text-[1.5rem] font-medium tracking-[-0.01em] text-[#262626] leading-[1.2]">
           Другие города
         </h2>
         <ul className="mt-6 flex flex-wrap gap-3">

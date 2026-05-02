@@ -108,7 +108,7 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
             </div>
           </div>
           <h1
-            className="mt-6 text-[2.25rem] font-medium leading-[1.08] tracking-[-0.025em] text-[#1a1a1a] sm:text-[3rem]"
+            className="mt-6 text-[2.25rem] font-medium leading-[1.08] tracking-[-0.025em] text-[#262626] sm:text-[3rem]"
             itemProp="name"
           >
             {teacher.name}
@@ -160,20 +160,20 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
           ) : null}
         </div>
 
-        <aside className="page-shell-wide mt-16">
-          <div className="card-block card-cream">
-            <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#1b1b1b]">
-              Записаться к {teacher.name.split(" ")[0]}
+        <aside className="page-shell-wide mt-20 sm:mt-24">
+          <div className="card-block card-block-lg card-cream">
+            <h2 className="text-[1.5rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#262626] sm:text-[1.75rem]">
+              Записаться к {teacher.firstNameDative}
             </h2>
-            <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">
+            <p className="mt-4 max-w-2xl text-base leading-[1.6] text-[#4b4b4b] sm:text-[1.0625rem]">
               Расписание и набор групп уточняет менеджер. Оставьте заявку или
               позвоните нам — подберём ближайшее окно.
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link href="/zayavka" className="btn-pill btn-ink">
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link href="/zayavka" className="btn-pill btn-ink btn-pill-large">
                 Оставить заявку
               </Link>
-              <Link href="/courses" className="btn-pill btn-white">
+              <Link href="/courses" className="btn-pill btn-white btn-pill-large">
                 Все курсы
               </Link>
             </div>

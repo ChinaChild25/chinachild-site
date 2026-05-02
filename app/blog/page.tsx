@@ -49,7 +49,7 @@ export default async function BlogPage() {
               className={`card-block group flex h-full flex-col transition hover:-translate-y-1 ${palette[index % palette.length]}`}
             >
               <span className="tag-pill self-start">{post.category}</span>
-              <h2 className="mt-6 text-[1.25rem] font-medium leading-[1.2] tracking-[-0.01em] text-[#1a1a1a]">
+              <h2 className="mt-6 text-[1.25rem] font-medium leading-[1.2] tracking-[-0.01em] text-[#262626]">
                 {post.title}
               </h2>
               <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">{post.excerpt}</p>

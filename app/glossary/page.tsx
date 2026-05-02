@@ -81,13 +81,13 @@ export default async function GlossaryPage() {
                 href={`/glossary/${term.slug}`}
                 className={`card-block group flex h-full flex-col transition hover:-translate-y-1 ${palette[idx % palette.length]}`}
               >
-                <h2 className="text-[1.5rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#1a1a1a]">
+                <h2 className="text-[1.5rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#262626]">
                   {term.term}
                 </h2>
                 <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">
                   {term.shortDefinition}
                 </p>
-                <div className="mt-auto pt-6 text-sm font-medium text-[#1a1a1a] underline-offset-4 group-hover:underline">
+                <div className="mt-auto pt-6 text-sm font-medium text-[#262626] underline-offset-4 group-hover:underline">
                   Открыть →
                 </div>
               </Link>

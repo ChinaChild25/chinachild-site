@@ -31,7 +31,7 @@ export default function FreeTrialPage() {
         <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="max-w-xl">
             <span className="tag-pill">Бесплатное занятие</span>
-            <h1 className="mt-6 text-[2.25rem] font-medium leading-[1.08] tracking-[-0.025em] text-[#1a1a1a] sm:text-[3rem]">
+            <h1 className="mt-6 text-[2.25rem] font-medium leading-[1.08] tracking-[-0.025em] text-[#262626] sm:text-[3rem]">
               Бесплатный пробный урок китайского
             </h1>
             <p className="mt-5 text-base leading-[1.55] text-[#4b4b4b]">
@@ -47,13 +47,13 @@ export default function FreeTrialPage() {
             <div className="mt-10 grid gap-3 text-sm">
               <a
                 href={`tel:${CONTACT_PHONE_TEL}`}
-                className="text-[1.5rem] font-medium tracking-[-0.01em] text-[#1a1a1a] leading-[1.2]"
+                className="text-[1.5rem] font-medium tracking-[-0.01em] text-[#262626] leading-[1.2]"
               >
                 {CONTACT_PHONE}
               </a>
               <a
                 href={`mailto:${CONTACT_EMAIL}`}
-                className="text-base text-[#6b6b6b] hover:text-[#1a1a1a]"
+                className="text-base text-[#6b6b6b] hover:text-[#262626]"
               >
                 {CONTACT_EMAIL}
               </a>

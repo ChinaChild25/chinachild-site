@@ -130,7 +130,7 @@ export default async function LearnHskHub() {
                   className="card-block card-cream-soft group flex h-full flex-col transition hover:-translate-y-1"
                 >
                   <span className="tag-pill self-start">{post.category}</span>
-                  <h3 className="mt-4 text-[1.125rem] font-medium tracking-[-0.005em] text-[#1a1a1a] leading-[1.2]">
+                  <h3 className="mt-4 text-[1.125rem] font-medium tracking-[-0.005em] text-[#262626] leading-[1.2]">
                     {post.title}
                   </h3>
                   <p className="mt-2 text-sm leading-[1.55] text-[#4b4b4b]">{post.description}</p>

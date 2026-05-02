@@ -20,7 +20,7 @@ export default function HeroSection() {
       <div className="mx-auto max-w-4xl text-center">
         <Link
           href="#otzyvy"
-          className="inline-flex items-center gap-2 text-sm text-[#1a1a1a] transition hover:opacity-70"
+          className="inline-flex items-center gap-2 text-sm text-[#262626] transition hover:opacity-70"
           aria-label="Средняя оценка выпускников по отзывам"
           itemScope
           itemType="https://schema.org/AggregateRating"
@@ -41,7 +41,7 @@ export default function HeroSection() {
         <div className="mt-3">
           <span className="tag-pill">Лицензированная программа · Москва</span>
         </div>
-        <h1 className="mt-6 text-[2.5rem] font-medium leading-[1.08] tracking-[-0.025em] text-[#1a1a1a] sm:text-[3.4rem] lg:text-[4.25rem] lg:leading-[1.06]">
+        <h1 className="mt-6 text-[2.5rem] font-medium leading-[1.08] tracking-[-0.025em] text-[#262626] sm:text-[3.4rem] lg:text-[4.25rem] lg:leading-[1.06]">
           Курсы китайского языка онлайн —<br className="hidden sm:block" />
           разговорный уровень за 6 месяцев
         </h1>
@@ -69,7 +69,7 @@ export default function HeroSection() {
             key={p.value}
             className="rounded-[20px] bg-white px-6 py-5"
           >
-            <dt className="text-[1.75rem] font-medium tracking-[-0.02em] text-[#1a1a1a] sm:text-[2rem]">
+            <dt className="text-[1.75rem] font-medium tracking-[-0.02em] text-[#262626] sm:text-[2rem]">
               {p.value}
             </dt>
             <dd className="mt-2 text-sm leading-[1.55] text-[#6b6b6b]">{p.label}</dd>

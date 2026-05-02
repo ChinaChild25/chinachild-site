@@ -28,12 +28,12 @@ export default function PricingSection() {
                   <span className="tag-pill self-start">Популярный</span>
                 ) : null}
 
-                <h3 className="mt-6 text-[1.5rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#1a1a1a]">
+                <h3 className="mt-6 text-[1.5rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#262626]">
                   {tier.title}
                 </h3>
                 <p className="mt-2 text-sm text-[#6b6b6b]">{tier.format}</p>
 
-                <div className="mt-6 text-[2.5rem] font-medium tracking-[-0.02em] leading-[1.05] text-[#1a1a1a]">
+                <div className="mt-6 text-[2.5rem] font-medium tracking-[-0.02em] leading-[1.05] text-[#262626]">
                   {tier.price}
                 </div>
 
@@ -41,10 +41,10 @@ export default function PricingSection() {
                   {tier.description}
                 </p>
 
-                <ul className="mt-6 grid gap-2 text-sm text-[#1a1a1a]">
+                <ul className="mt-6 grid gap-2 text-sm text-[#262626]">
                   {tier.features.map((feature) => (
                     <li key={feature} className="flex gap-2">
-                      <span className="text-[#1a1a1a]/40">—</span>
+                      <span className="text-[#262626]/40">—</span>
                       <span>{feature}</span>
                     </li>
                   ))}

@@ -126,7 +126,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       <article className="page-shell section-space pt-10">
         <header className="mx-auto max-w-3xl">
           <span className="tag-pill">{post.category}</span>
-          <h1 className="mt-6 text-[2rem] font-medium leading-[1.1] tracking-[-0.025em] text-[#1a1a1a] sm:text-[2.6rem]">
+          <h1 className="mt-6 text-[2rem] font-medium leading-[1.1] tracking-[-0.025em] text-[#262626] sm:text-[2.6rem]">
             {post.title}
           </h1>
           <p className="mt-5 text-base leading-[1.55] text-[#4b4b4b] sm:text-[1.125rem]">
@@ -142,7 +142,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               title={author.imageTitle}
             />
             <div className="flex flex-col gap-0.5 text-sm">
-              <span className="font-medium text-[#1a1a1a]">{author.name}</span>
+              <span className="font-medium text-[#262626]">{author.name}</span>
               <span className="text-[#6b6b6b]">{author.specialization}</span>
             </div>
             <div className="ml-auto flex flex-wrap gap-x-5 gap-y-1 text-xs text-[#6b6b6b]">

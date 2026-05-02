@@ -157,9 +157,9 @@ export default function PlatformShowcase() {
         </div>
 
         {/* Правая белая карточка с media — только на десктопе.
-            Высота тянется к высоте левой dark-карточки (grid stretch),
-            media центрируется внутри. */}
-        <div className="hidden lg:flex card-block bg-white items-center justify-center !p-5">
+            Толстый чёрный бордер 1:1 с Yandex.Практикум, высота тянется
+            к высоте левой dark-карточки (grid stretch). */}
+        <div className="hidden lg:flex card-block bg-white items-center justify-center border-[20px] border-[#262626] rounded-xl !p-6">
           <FeatureMedia
             media={active.media}
             alt={active.mediaAlt ?? active.title}

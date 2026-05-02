@@ -15,8 +15,8 @@ export default function ProcessSection() {
         {processSteps.map((step, index) => (
           <Reveal key={step.title}>
             <article className={`card-block h-full ${stepStyles[index] ?? stepStyles[0]}`}>
-              <div className="text-sm font-medium text-[#1a1a1a]/55">Шаг {index + 1}</div>
-              <h3 className="mt-4 text-[1.25rem] font-medium tracking-[-0.01em] text-[#1a1a1a] leading-[1.2]">
+              <div className="text-sm font-medium text-[#262626]/55">Шаг {index + 1}</div>
+              <h3 className="mt-4 text-[1.25rem] font-medium tracking-[-0.01em] text-[#262626] leading-[1.2]">
                 {step.title}
               </h3>
               <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">{step.description}</p>
