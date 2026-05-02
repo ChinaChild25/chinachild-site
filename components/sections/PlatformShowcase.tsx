@@ -6,10 +6,8 @@ type PlatformFeature = {
   id: string;
   title: string;
   description: string;
-  /** Путь к скриншоту/гифке в /public/platform/. Если пусто — рендерится
-   *  плейсхолдер с подсказкой, куда положить ассет. */
+  /** Скриншот/гифка в /public/platform/. Если пусто — placeholder. */
   media?: string;
-  /** alt-текст для изображения (SEO + a11y). */
   mediaAlt?: string;
 };
 
@@ -62,50 +60,63 @@ export default function PlatformShowcase() {
 
   return (
     <section className="page-shell-wide section-space">
-      <div className="card-block card-block-lg card-ink">
-        <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] text-white leading-[1.15] sm:text-[2rem] lg:text-[2.25rem] max-w-[16ch]">
-          Всё под рукой — в одной вкладке браузера
+      {/* Главный заголовок секции — на странице, ВНЕ карточек */}
+      <div className="section-head-center mx-auto max-w-3xl">
+        <h2 className="section-title">
+          Обучение проходит на собственной платформе ChinaChild
         </h2>
-        <p className="mt-4 max-w-2xl text-base leading-[1.55] text-white/70">
-          Платформа ChinaChild объединяет видеоуроки, тренажёры, записи и
-          AI-помощника. Один логин — весь курс.
+        <p className="section-description">
+          Видеоуроки, AI-тренажёр, записи занятий и трек прогресса — всё в одной
+          вкладке браузера. Один логин — весь курс HSK.
         </p>
+      </div>
 
-        <div className="mt-10 grid gap-8 lg:grid-cols-[1.05fr_1fr] lg:gap-12">
-          {/* Accordion — слева на десктопе, единственная колонка на моб */}
-          <div className="grid">
+      <div className="mt-10 grid gap-3 sm:mt-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] lg:items-stretch">
+        {/* Левая тёмная карточка с аккордеоном */}
+        <div className="card-block card-block-lg card-ink flex flex-col">
+          <h3 className="text-[1.5rem] font-medium tracking-[-0.01em] text-white leading-[1.2] max-w-[14ch]">
+            Всё под рукой — в одной вкладке браузера
+          </h3>
+          <div className="mt-8 grid">
             {features.map((feature, idx) => {
               const isActive = feature.id === activeId;
               return (
-                <button
+                <div
                   key={feature.id}
-                  type="button"
-                  onClick={() =>
-                    setActiveId((prev) => (prev === feature.id ? prev : feature.id))
-                  }
-                  aria-expanded={isActive}
-                  aria-controls={`platform-feature-${feature.id}`}
-                  className={`text-left transition ${
-                    idx > 0 ? "border-t border-white/10" : ""
-                  }`}
+                  className={idx > 0 ? "border-t border-white/10" : ""}
                 >
-                  <span className="flex items-center justify-between gap-4 py-5">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setActiveId((prev) => (prev === feature.id ? prev : feature.id))
+                    }
+                    aria-expanded={isActive}
+                    aria-controls={`platform-feature-${feature.id}`}
+                    className="flex w-full items-center justify-between gap-4 py-5 text-left"
+                  >
                     <span
-                      className={`text-[1.125rem] font-medium tracking-[-0.005em] leading-[1.3] sm:text-[1.25rem] ${
-                        isActive ? "text-white" : "text-white/70"
+                      className={`text-[1.0625rem] font-medium tracking-[-0.005em] leading-[1.3] ${
+                        isActive ? "text-white" : "text-white/85"
                       }`}
                     >
                       {feature.title}
                     </span>
                     <span
                       aria-hidden
-                      className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full transition ${
-                        isActive ? "bg-[#726BFF] text-white" : "bg-white/10 text-white/70"
+                      className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full transition-colors ${
+                        isActive
+                          ? "bg-[#726BFF] text-white"
+                          : "bg-white/10 text-white/70"
                       }`}
                     >
                       {isActive ? (
                         <svg width="14" height="2" viewBox="0 0 14 2" fill="none">
-                          <path d="M0 1H14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                          <path
+                            d="M0 1H14"
+                            stroke="currentColor"
+                            strokeWidth="1.6"
+                            strokeLinecap="round"
+                          />
                         </svg>
                       ) : (
                         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -118,48 +129,57 @@ export default function PlatformShowcase() {
                         </svg>
                       )}
                     </span>
-                  </span>
+                  </button>
 
-                  {/* На мобилке (≤1023px) активный feature раскрывается inline:
-                      описание + media stacked под кнопкой. */}
                   {isActive ? (
                     <div
                       id={`platform-feature-${feature.id}`}
-                      className="grid gap-5 pb-6 lg:hidden"
+                      className="pb-6"
                     >
-                      <p className="text-[15px] leading-[1.55] text-white/75">
+                      <p className="text-[15px] leading-[1.55] text-white/70">
                         {feature.description}
                       </p>
-                      <FeatureMedia
-                        media={feature.media}
-                        alt={feature.mediaAlt ?? feature.title}
-                      />
+                      {/* На мобиле + планшете (<1024px) media показывается
+                          здесь же, прямо под описанием активного пункта.
+                          На десктопе — улетает в правую белую карточку. */}
+                      <div className="mt-5 lg:hidden">
+                        <FeatureMedia
+                          media={feature.media}
+                          alt={feature.mediaAlt ?? feature.title}
+                        />
+                      </div>
                     </div>
                   ) : null}
-                </button>
+                </div>
               );
             })}
           </div>
+        </div>
 
-          {/* Desktop-only: media активной фичи справа, sticky-зона. */}
-          <div className="hidden lg:block">
-            <div className="lg:sticky lg:top-24 grid gap-5">
-              <p className="text-base leading-[1.55] text-white/75">
-                {active.description}
-              </p>
-              <FeatureMedia
-                media={active.media}
-                alt={active.mediaAlt ?? active.title}
-              />
-            </div>
-          </div>
+        {/* Правая белая карточка с media — только на десктопе.
+            Высота тянется к высоте левой dark-карточки (grid stretch),
+            media центрируется внутри. */}
+        <div className="hidden lg:flex card-block bg-white items-center justify-center !p-5">
+          <FeatureMedia
+            media={active.media}
+            alt={active.mediaAlt ?? active.title}
+            fillContainer
+          />
         </div>
       </div>
     </section>
   );
 }
 
-function FeatureMedia({ media, alt }: { media?: string; alt: string }) {
+function FeatureMedia({
+  media,
+  alt,
+  fillContainer,
+}: {
+  media?: string;
+  alt: string;
+  fillContainer?: boolean;
+}) {
   if (media) {
     // eslint-disable-next-line @next/next/no-img-element
     return (
@@ -167,7 +187,11 @@ function FeatureMedia({ media, alt }: { media?: string; alt: string }) {
         src={media}
         alt={alt}
         loading="lazy"
-        className="w-full rounded-[14px] border border-white/10 bg-white"
+        className={
+          fillContainer
+            ? "h-auto max-h-full w-full rounded-[12px] object-contain"
+            : "w-full rounded-[12px]"
+        }
       />
     );
   }
@@ -175,9 +199,17 @@ function FeatureMedia({ media, alt }: { media?: string; alt: string }) {
     <div
       role="img"
       aria-label={alt}
-      className="aspect-[16/10] w-full rounded-[14px] border border-white/10 bg-white/5 flex items-center justify-center text-center"
+      className={`flex w-full items-center justify-center rounded-[12px] border border-dashed text-center ${
+        fillContainer
+          ? "min-h-[280px] flex-1 border-[rgba(0,0,0,0.12)] bg-[#f5f5f3]"
+          : "aspect-[16/10] border-white/10 bg-white/5"
+      }`}
     >
-      <span className="px-6 text-xs uppercase tracking-[0.16em] text-white/40">
+      <span
+        className={`px-6 text-xs uppercase tracking-[0.16em] ${
+          fillContainer ? "text-[#9a9a9a]" : "text-white/40"
+        }`}
+      >
         Скриншот / GIF
       </span>
     </div>
