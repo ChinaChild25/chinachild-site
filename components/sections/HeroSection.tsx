@@ -20,7 +20,7 @@ export default function HeroSection() {
       <div className="mx-auto max-w-4xl text-center">
         <Link
           href="#otzyvy"
-          className="inline-flex items-center gap-2 rounded-full border border-[rgba(0,0,0,0.06)] bg-white/80 px-3.5 py-1.5 text-sm text-[#1e1e1e] transition hover:bg-white"
+          className="inline-flex items-center gap-2 text-sm text-[#1e1e1e] transition hover:opacity-70"
           aria-label="Средняя оценка выпускников по отзывам"
           itemScope
           itemType="https://schema.org/AggregateRating"
@@ -34,7 +34,7 @@ export default function HeroSection() {
           </span>
           <meta itemProp="reviewCount" content={String(siteFacts.reviewCount)} />
           <meta itemProp="worstRating" content="1" />
-          <span aria-hidden className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full border border-[rgba(0,0,0,0.18)] text-[10px] font-medium text-[#6b6b6b]">
+          <span aria-hidden className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full border border-[rgba(0,0,0,0.2)] text-[10px] font-medium text-[#6b6b6b]">
             i
           </span>
         </Link>

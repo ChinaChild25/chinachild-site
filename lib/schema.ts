@@ -3,8 +3,10 @@ import {
   BRAND_NAME,
   CONTACT_EMAIL,
   CONTACT_PHONE,
+  LICENSE_DETAILS,
   LICENSE_PROGRAM,
   LICENSE_REGION,
+  LICENSEE,
   PROMO_VIDEO,
   SITE_DESCRIPTION,
   SITE_NAME,
@@ -56,6 +58,8 @@ export function createOrganizationNode(): JsonLd {
     "@id": ID.organization,
     name: SITE_NAME,
     alternateName: BRAND_NAME,
+    legalName: LICENSEE.legalName,
+    taxID: LICENSEE.inn,
     url: SITE_URL,
     description: SITE_DESCRIPTION,
     email: CONTACT_EMAIL,
@@ -66,19 +70,42 @@ export function createOrganizationNode(): JsonLd {
       "@type": "PostalAddress",
       addressCountry: "RU",
       addressLocality: "Москва",
+      streetAddress: LICENSEE.address,
     },
     areaServed: {
       "@type": "Country",
       name: "Russia",
     },
+    contactPoint: [
+      {
+        "@type": "ContactPoint",
+        contactType: "customer service",
+        telephone: CONTACT_PHONE,
+        email: CONTACT_EMAIL,
+        availableLanguage: ["ru", "zh"],
+        areaServed: "RU",
+      },
+      {
+        "@type": "ContactPoint",
+        contactType: "sales",
+        telephone: CONTACT_PHONE,
+        email: CONTACT_EMAIL,
+        availableLanguage: ["ru"],
+        areaServed: "RU",
+      },
+    ],
     sameAs: [SITE_URL],
     aggregateRating: { "@id": ID.rating },
     hasCredential: {
       "@type": "EducationalOccupationalCredential",
-      name: `Образовательная лицензия — ${LICENSE_PROGRAM}`,
+      name: `Образовательная лицензия № ${LICENSE_DETAILS.registrationNumber}`,
+      identifier: LICENSE_DETAILS.registrationNumber,
+      dateCreated: LICENSE_DETAILS.issueDate,
+      url: absoluteUrl("/license"),
       recognizedBy: {
-        "@type": "Organization",
+        "@type": "GovernmentOrganization",
         name: LICENSE_REGION,
+        address: LICENSE_DETAILS.issuerAddress,
       },
     },
   };
@@ -93,6 +120,17 @@ export function createWebsiteNode(): JsonLd {
     url: SITE_URL,
     inLanguage: "ru-RU",
     publisher: { "@id": ID.organization },
+    // Sitelinks Searchbox — даёт брендовую поисковую строку прямо в Google SERP.
+    // Привязана к рабочей странице /search?q=..., которая фильтрует
+    // блог и глоссарий.
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
   };
 }
 
@@ -333,6 +371,10 @@ export function createHowToNode(): JsonLd {
 export function createFaqNode(items: FaqItem[]): JsonLd {
   return {
     "@type": "FAQPage",
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: ["[data-speakable]"],
+    },
     mainEntity: items.map((item) => ({
       "@type": "Question",
       name: item.question,

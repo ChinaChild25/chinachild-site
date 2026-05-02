@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import PageHero from "@/components/layout/PageHero";
+import JsonLd from "@/components/seo/JsonLd";
 import Reveal from "@/components/ui/Reveal";
 import { getAllGlossaryTerms } from "@/lib/glossary";
 import { buildMetadata } from "@/lib/metadata";
+import { absoluteUrl } from "@/lib/site-config";
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
@@ -34,6 +36,25 @@ const palette = [
 export default async function GlossaryPage() {
   const terms = await getAllGlossaryTerms();
 
+  const glossarySchema = {
+    "@context": "https://schema.org",
+    "@type": "DefinedTermSet",
+    "@id": `${absoluteUrl("/glossary")}#defined-term-set`,
+    name: "Глоссарий китайского языка ChinaChild",
+    description:
+      "Краткий справочник терминов китайского языка: HSK, пиньинь, путунхуа, тоны и другое.",
+    url: absoluteUrl("/glossary"),
+    inLanguage: "ru-RU",
+    hasDefinedTerm: terms.map((t) => ({
+      "@type": "DefinedTerm",
+      "@id": `${absoluteUrl(`/glossary/${t.slug}`)}#defined-term`,
+      name: t.term,
+      description: t.shortDefinition,
+      url: absoluteUrl(`/glossary/${t.slug}`),
+      inLanguage: "ru-RU",
+    })),
+  };
+
   return (
     <main>
       <Breadcrumbs
@@ -42,6 +63,7 @@ export default async function GlossaryPage() {
           { name: "Глоссарий", path: "/glossary" },
         ]}
       />
+      <JsonLd data={glossarySchema} id="glossary-defined-term-set" />
       <PageHero
         variant="lime"
         eyebrow="Глоссарий"

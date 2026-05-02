@@ -95,7 +95,7 @@ export default async function GlossaryTermPage({ params }: GlossaryTermPageProps
         <header className="mx-auto max-w-3xl">
           <span className="tag-pill">Глоссарий</span>
           <h1
-            className="mt-6 text-[2.4rem] font-bold leading-[1.04] tracking-[-0.04em] text-[#1b1b1b] sm:text-[3rem]"
+            className="mt-6 text-[2.4rem] font-medium leading-[1.08] tracking-[-0.025em] text-[#1e1e1e] sm:text-[3rem]"
             itemProp="name"
           >
             {term.term}
