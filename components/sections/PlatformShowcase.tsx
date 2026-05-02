@@ -156,15 +156,18 @@ export default function PlatformShowcase() {
           </div>
         </div>
 
-        {/* Правая белая карточка с media — только на десктопе.
-            Толстый чёрный бордер 1:1 с Yandex.Практикум, высота тянется
-            к высоте левой dark-карточки (grid stretch). */}
-        <div className="hidden lg:flex card-block bg-white items-center justify-center border-[20px] border-[#262626] rounded-xl !p-6">
-          <FeatureMedia
-            media={active.media}
-            alt={active.mediaAlt ?? active.title}
-            fillContainer
-          />
+        {/* Правая «рамка» — только на десктопе. Внешняя тёмная фигура
+            #262626 со скруглением 24px + внутренняя белая со скруглением
+            12px, между ними 20px тёмного «бордера». Высота тянется
+            к высоте левой карточки через grid stretch. */}
+        <div className="hidden lg:flex bg-[#262626] rounded-[24px] p-5 overflow-hidden">
+          <div className="flex flex-1 items-center justify-center rounded-[12px] bg-white p-6">
+            <FeatureMedia
+              media={active.media}
+              alt={active.mediaAlt ?? active.title}
+              fillContainer
+            />
+          </div>
         </div>
       </div>
     </section>
