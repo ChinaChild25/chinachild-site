@@ -1,4 +1,5 @@
 import { getAllPosts } from "@/lib/blog";
+import { BLOG_HUBS } from "@/lib/blog-hubs";
 import { renderSitemap, type UrlEntry } from "@/lib/sitemap-helpers";
 import { absoluteUrl } from "@/lib/site-config";
 
@@ -15,6 +16,14 @@ export async function GET() {
       changefreq: "weekly",
       priority: 0.8,
     },
+    // Hub-spoke: category-страницы блога — pillar-контент с собственным
+    // SEO-текстом и листингом spoke-статей.
+    ...BLOG_HUBS.map((hub): UrlEntry => ({
+      loc: absoluteUrl(`/blog/category/${hub.slug}`),
+      lastmod: now,
+      changefreq: "weekly",
+      priority: 0.7,
+    })),
     ...posts.map((post): UrlEntry => ({
       loc: absoluteUrl(`/blog/${post.slug}`),
       lastmod: new Date(post.dateModified).toISOString(),

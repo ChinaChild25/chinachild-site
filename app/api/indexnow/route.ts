@@ -1,4 +1,5 @@
 import { getAllPosts } from "@/lib/blog";
+import { BLOG_HUBS } from "@/lib/blog-hubs";
 import { cities } from "@/lib/cities";
 import { getAllGlossaryTerms } from "@/lib/glossary";
 import { hskLevels } from "@/lib/hsk-levels";
@@ -89,6 +90,7 @@ export async function GET(request: Request) {
 
   const posts = await getAllPosts();
   const blogUrls = posts.map((post) => absoluteUrl(`/blog/${post.slug}`));
+  const blogHubUrls = BLOG_HUBS.map((h) => absoluteUrl(`/blog/category/${h.slug}`));
   const glossary = await getAllGlossaryTerms();
   const glossaryUrls = glossary.map((term) => absoluteUrl(`/glossary/${term.slug}`));
   const teamUrls = teachers.map((t) => absoluteUrl(`/team/${t.slug}`));
@@ -97,6 +99,7 @@ export async function GET(request: Request) {
   const urlList = [
     ...STATIC_ROUTES.map(absoluteUrl),
     ...blogUrls,
+    ...blogHubUrls,
     ...glossaryUrls,
     ...teamUrls,
     ...cityUrls,
