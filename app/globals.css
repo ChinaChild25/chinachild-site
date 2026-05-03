@@ -154,28 +154,17 @@ body {
 }
 
 /* ==========================================================================
-   MOBILE PERF — отключаем дорогие backdrop-filter эффекты на мобилке.
-   На Moto G Power (Lighthouse benchmark) blur с saturate стоит 200-400ms
-   render-time. Заменяем на статичный полупрозрачный фон — визуально
-   минимальная разница, существенный прирост LCP / Speed Index.
+   MOBILE PERF — точечно отключаем backdrop-filter ТОЛЬКО там, где он
+   не критичен визуально (eyebrow, modal-backdrop). У header'а и floating
+   CTA стекло сохраняем — это сигнатурный элемент дизайна.
    ========================================================================== */
 @media (max-width: 767px) {
-  .site-header-wrapper,
-  .floating-cta-shell::before,
   .eyebrow,
   .lead-dialog::backdrop {
     -webkit-backdrop-filter: none !important;
     backdrop-filter: none !important;
   }
 
-  /* Без блюра — компенсируем непрозрачностью, чтобы header / floating
-     остались читаемыми поверх контента. */
-  .site-header-wrapper {
-    background-color: rgba(255, 255, 255, 0.94);
-  }
-  .floating-cta-shell::before {
-    background-color: rgba(255, 255, 255, 0.85);
-  }
   .eyebrow {
     background: rgba(255, 255, 255, 0.22);
     border-color: rgba(255, 255, 255, 0.3);
