@@ -11,7 +11,7 @@ import {
   CONTACT_PHONE,
   CONTACT_PHONE_TEL,
   LICENSE_PROGRAM,
-  LICENSE_REGION,
+  LICENSE_REGION_INSTRUMENTAL,
 } from "@/lib/site-config";
 import { teachers } from "@/lib/site-data";
 
@@ -85,7 +85,7 @@ export default function AboutPage() {
             <p>
               ChinaChild — онлайн-школа китайского языка для подростков с 12 лет и взрослых
               без подготовки. Мы работаем по программе HSK 1–2 и помогаем выйти на разговорный
-              уровень за 6 месяцев. Образовательная лицензия выдана {LICENSE_REGION} — на
+              уровень за 6 месяцев. Образовательная лицензия выдана {LICENSE_REGION_INSTRUMENTAL} — на
               программу {LICENSE_PROGRAM}. Это значит, что ученики могут вернуть налоговый
               вычет 13% от стоимости обучения, до 15 600 ₽ в год.
             </p>
@@ -146,7 +146,7 @@ export default function AboutPage() {
           <div className="mt-6 grid gap-3 text-base leading-[1.55] text-[#4b4b4b]">
             <p>
               Образовательная деятельность ChinaChild ведётся на основании образовательной
-              лицензии, выданной {LICENSE_REGION}. Программа дополнительного профессионального
+              лицензии, выданной {LICENSE_REGION_INSTRUMENTAL}. Программа дополнительного профессионального
               образования соответствует уровням {LICENSE_PROGRAM} международной системы HSK и
               регулируется Федеральным законом 273-ФЗ «Об образовании в Российской Федерации».
             </p>

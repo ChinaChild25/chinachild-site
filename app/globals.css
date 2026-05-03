@@ -138,6 +138,13 @@ body {
   padding-bottom: 0;
 }
 
+/* Десктоп: body-текст 18px по умолчанию — типографика крупнее, как у Yandex. */
+@media (min-width: 1024px) {
+  body {
+    font-size: var(--fs-body-desktop);
+  }
+}
+
 /* На мобильном floating CTA = sticky-плашка ~50px + 8px от низа + 6px halo.
    Резервируем 76px чтобы CTA не закрывал последний блок контента. */
 @media (max-width: 767px) {
@@ -1228,14 +1235,18 @@ textarea.lead-input {
 
 .lead-dialog-card .lead-input {
   border: 0;
-  background: #d65007;
+  /* Используем background-color (не shorthand!), чтобы НЕ сбрасывать
+     background-image/repeat/position/size, заданные в .lead-select.
+     Раньше с `background: #d65007` chevron в селекте размножался по всей
+     ширине поля. */
+  background-color: #d65007;
   color: #ffffff;
 }
 .lead-dialog-card .lead-input::placeholder {
   color: rgba(255, 255, 255, 0.55);
 }
 .lead-dialog-card .lead-input:focus {
-  background: #c44604;
+  background-color: #c44604;
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.6);
   border: 0;
 }
@@ -1246,6 +1257,11 @@ textarea.lead-input {
 
 .lead-dialog-card .lead-select {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='white'><path d='M5 7l5 6 5-6z'/></svg>");
+  /* Подстраховка: явно задаём, чтобы chevron был один и в правильном месте,
+     даже если кто-то выше переопределит `background:` shorthand'ом. */
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 18px 18px;
 }
 
 .lead-dialog-card .lead-checkbox {
@@ -1620,5 +1636,134 @@ textarea.lead-input {
   }
   .lead-submit:not(.lead-dialog-card .lead-submit):hover {
     background: #ffffff;
+  }
+
+  /* Текст лейблов и чекбоксов — на dark был фактически чёрным
+     (`rgba(30,30,30,0.78)`), не читался. Поднимаем до светлого. */
+  .lead-label:not(.lead-dialog-card .lead-label) {
+    color: var(--ink);
+  }
+
+  .lead-checkbox:not(.lead-dialog-card .lead-checkbox) {
+    color: rgba(237, 237, 237, 0.85);
+  }
+
+  .lead-checkbox-input:not(.lead-dialog-card .lead-checkbox-input) {
+    accent-color: #ededed;
+  }
+
+  /* Success-блок standalone-формы. */
+  .lead-success:not(.lead-dialog-card .lead-success) {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--ink);
+  }
+
+  .lead-success-text:not(.lead-dialog-card .lead-success-text) {
+    color: var(--muted);
+  }
+}
+
+/* ==========================================================================
+   VIOLET SPOTLIGHT — Yandex-приём «акцентная подсветка при скролле».
+   Когда секция оказывается посередине viewport, целый viewport заливается
+   фиолетовой плёнкой (position: fixed, z-index -1 — поверх body bg, но под
+   контентом). По мере прокрутки плёнка плавно гаснет.
+
+   Реализация: named view-timeline на секции + animation-timeline у
+   ::before-overlay и текстовых элементов. Чистый CSS, zero JS.
+   В браузерах без поддержки animation-timeline (Safari/Firefox)
+   плёнка просто не появляется — graceful fallback.
+   ========================================================================== */
+
+.violet-spotlight {
+  position: relative;
+  /* Объявляем именованный view-timeline на этой секции, чтобы её
+     дочерние элементы (text, ::before overlay) могли подвязать свою
+     анимацию к скролл-прогрессу именно ЭТОЙ секции, а не к своему. */
+  view-timeline-name: --violet-spotlight;
+  view-timeline-axis: block;
+}
+
+.violet-spotlight::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: #726BFF;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  will-change: opacity;
+}
+
+@supports (animation-timeline: view()) {
+  .violet-spotlight::before {
+    animation: violet-spotlight-fade linear both;
+    animation-timeline: --violet-spotlight;
+    animation-range: cover 0% cover 100%;
+  }
+
+  .violet-spotlight .section-title,
+  .violet-spotlight .section-description {
+    animation: violet-spotlight-text linear both;
+    animation-timeline: --violet-spotlight;
+    animation-range: cover 0% cover 100%;
+  }
+}
+
+@keyframes violet-spotlight-fade {
+  /* По мере прокрутки секции через viewport:
+     0%   — секция только-только показалась снизу     → плёнка прозрачна
+     40-60% — секция точно по центру viewport         → плёнка непрозрачна
+     100% — секция уже уехала вверх за край           → снова прозрачна */
+  0%,
+  100% {
+    opacity: 0;
+  }
+  40%,
+  60% {
+    opacity: 1;
+  }
+}
+
+@keyframes violet-spotlight-text {
+  /* Текст заголовка и описания инвертируется на белый,
+     синхронно с появлением фиолетовой плёнки. */
+  0%,
+  100% {
+    color: inherit;
+  }
+  40%,
+  60% {
+    color: #ffffff;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .violet-spotlight::before,
+  .violet-spotlight .section-title,
+  .violet-spotlight .section-description {
+    animation: none !important;
+  }
+}
+
+/* Mягкий lift для интерактивных карточек по всему сайту. */
+.card-lift {
+  transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (hover: hover) {
+  .card-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-lift {
+    transition: none;
+  }
+  .card-lift:hover {
+    transform: none;
   }
 }

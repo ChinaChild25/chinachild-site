@@ -14,6 +14,7 @@ import {
   CONTACT_PHONE_TEL,
   LICENSE_PROGRAM,
   LICENSE_REGION,
+  LICENSE_REGION_INSTRUMENTAL,
   SITE_NAME,
   SITE_URL,
 } from "@/lib/site-config";
@@ -133,7 +134,7 @@ export default async function CityLandingPage({ params }: CityPageProps) {
             </h2>
             <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">
               {city.licensedRegion
-                ? `Образовательная лицензия выдана ${LICENSE_REGION}. Документ о прохождении программы дополнительного профессионального образования можно использовать для возврата налогового вычета 13%.`
+                ? `Образовательная лицензия выдана ${LICENSE_REGION_INSTRUMENTAL}. Документ о прохождении программы дополнительного профессионального образования можно использовать для возврата налогового вычета 13%.`
                 : `Программа лицензирована ${LICENSE_REGION}. Получаете документ о прохождении программы дополнительного профессионального образования по итогам курса.`}
             </p>
           </article>

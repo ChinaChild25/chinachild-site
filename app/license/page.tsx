@@ -11,6 +11,7 @@ import {
   LICENSE_DETAILS,
   LICENSE_PROGRAM,
   LICENSE_REGION,
+  LICENSE_REGION_INSTRUMENTAL,
   LICENSEE,
   SITE_NAME,
   SITE_URL,
@@ -18,7 +19,7 @@ import {
 
 export const metadata: Metadata = buildMetadata({
   title: "Образовательная лицензия ChinaChild — Москва, программа HSK 1–2",
-  description: `Образовательная лицензия № ${LICENSE_DETAILS.registrationNumber}, выданная ${LICENSE_REGION} от ${LICENSE_DETAILS.issueDate}. Право на налоговый вычет 13% — до 15 600 ₽ в год.`,
+  description: `Образовательная лицензия № ${LICENSE_DETAILS.registrationNumber}, выданная ${LICENSE_REGION_INSTRUMENTAL} от ${LICENSE_DETAILS.issueDate}. Право на налоговый вычет 13% — до 15 600 ₽ в год.`,
   path: "/license",
   keywords: [
     "лицензия школы китайского",
@@ -52,7 +53,7 @@ const licenseGraph = {
           contentUrl: absoluteUrl("/license/license-scan.webp"),
           width: 800,
           height: 1132,
-          caption: `Скан образовательной лицензии № ${LICENSE_DETAILS.registrationNumber}, выданной ${LICENSE_REGION}`,
+          caption: `Скан образовательной лицензии № ${LICENSE_DETAILS.registrationNumber}, выданной ${LICENSE_REGION_INSTRUMENTAL}`,
           inLanguage: "ru-RU",
           creditText: SITE_NAME,
         },
@@ -108,7 +109,7 @@ export default function LicensePage() {
       <PageHero
         eyebrow="Документы"
         title="Образовательная лицензия ChinaChild"
-        description={`Лицензия № ${LICENSE_DETAILS.registrationNumber} выдана ${LICENSE_REGION} от ${LICENSE_DETAILS.issueDate}. Программа дополнительного профессионального образования «${LICENSE_PROGRAM}». Даёт ученикам право на налоговый вычет 13% — до 15 600 ₽ в год.`}
+        description={`Лицензия № ${LICENSE_DETAILS.registrationNumber} выдана ${LICENSE_REGION_INSTRUMENTAL} от ${LICENSE_DETAILS.issueDate}. Программа дополнительного профессионального образования «${LICENSE_PROGRAM}». Даёт ученикам право на налоговый вычет 13% — до 15 600 ₽ в год.`}
         primaryCta={{ label: "Записаться на пробное", modal: true }}
         secondaryCta={{ label: "О школе", href: "/about" }}
       />
@@ -142,7 +143,7 @@ export default function LicensePage() {
             <figure className="card-block bg-white p-3 sm:p-4">
               <Image
                 src="/license/license-scan.webp"
-                alt={`Скан образовательной лицензии № ${LICENSE_DETAILS.registrationNumber}, выданной ${LICENSE_REGION} от 18.12.2025 — основная страница`}
+                alt={`Скан образовательной лицензии № ${LICENSE_DETAILS.registrationNumber}, выданной ${LICENSE_REGION_INSTRUMENTAL} от 18.12.2025 — основная страница`}
                 title="Образовательная лицензия ChinaChild — основная страница"
                 width={800}
                 height={1132}

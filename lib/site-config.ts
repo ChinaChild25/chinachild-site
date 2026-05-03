@@ -27,6 +27,9 @@ export const CONTACT_PHONE_TEL = "+74950052582";
 export const PROMO_CODE = "КИТАПР26";
 export const TAX_DEDUCTION_MAX = "до 15 600 ₽ в год";
 export const LICENSE_REGION = "Департамент образования и науки города Москвы";
+/** Творительный падеж — «выдана …» / «выданной …». */
+export const LICENSE_REGION_INSTRUMENTAL =
+  "Департаментом образования и науки города Москвы";
 export const LICENSE_PROGRAM = "HSK 1-2";
 
 /** Полные реквизиты лицензии (выписка из реестра).

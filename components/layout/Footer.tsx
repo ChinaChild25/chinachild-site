@@ -6,7 +6,7 @@ import {
   CONTACT_PHONE_TEL,
   LICENSE_DETAILS,
   LICENSE_PROGRAM,
-  LICENSE_REGION,
+  LICENSE_REGION_INSTRUMENTAL,
   LICENSEE,
   SITE_URL,
 } from "@/lib/site-config";
@@ -48,20 +48,22 @@ export default function Footer() {
         </nav>
       </div>
 
-      <div className="page-shell-wide mt-16 border-t border-[rgba(0,0,0,0.06)] pt-10 grid gap-2 text-xs leading-[1.6] text-[#7a7a7a]">
-        <div>
-          {LICENSEE.legalName} · ИНН {LICENSEE.inn}
-        </div>
-        <div>
-          Образовательная лицензия № {LICENSE_DETAILS.registrationNumber} от 18.12.2025,
-          выдана {LICENSE_REGION}. Программа «{LICENSE_PROGRAM}». Налоговый вычет 13% —
-          до 15 600 ₽ в год.{" "}
-          <Link href="/license" className="underline underline-offset-4 hover:text-[#262626]">
-            Подробнее о лицензии
-          </Link>
-        </div>
-        <div className="mt-4 text-[#9a9a9a]">
-          © {new Date().getFullYear()} ChinaChild. Все права защищены.
+      <div className="page-shell-wide mt-32 sm:mt-40">
+        <div className="border-t border-[rgba(0,0,0,0.08)] pt-12 grid gap-3 text-xs leading-[1.6] text-[#7a7a7a]">
+          <div>
+            {LICENSEE.legalName} · ИНН {LICENSEE.inn}
+          </div>
+          <div>
+            Образовательная лицензия № {LICENSE_DETAILS.registrationNumber} от 18.12.2025,
+            выдана {LICENSE_REGION_INSTRUMENTAL}. Программа «{LICENSE_PROGRAM}».
+            Налоговый вычет 13% — до 15 600 ₽ в год.{" "}
+            <Link href="/license" className="underline underline-offset-4 hover:text-[#262626]">
+              Подробнее о лицензии
+            </Link>
+          </div>
+          <div className="mt-5 text-[#9a9a9a]">
+            © {new Date().getFullYear()} ChinaChild. Все права защищены.
+          </div>
         </div>
       </div>
     </footer>

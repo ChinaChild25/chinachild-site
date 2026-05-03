@@ -17,6 +17,7 @@ export default function PricingSection() {
       id="tseny"
       title="Гибкие тарифы и налоговый вычет"
       description={`Можно оплатить целиком или вернуть 13% через налоговый вычет. По промокоду ${PROMO_CODE} — выгода до 30%.`}
+      className="violet-spotlight"
     >
       <div className="grid gap-5 md:grid-cols-3">
         {pricingTiers.map((tier, index) => {
