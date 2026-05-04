@@ -71,7 +71,9 @@ export default async function GlossaryPage() {
         description="Краткий справочник с определениями ключевых терминов: HSK, пиньинь, путунхуа, тоны и другое. Каждый термин ведёт на отдельную страницу с разбором."
         primaryCta={{ label: "Записаться на пробное", modal: true }}
         secondaryCta={{ label: "Все курсы", href: "/courses" }}
-      />
+      illustration="/heroes/glossary.webp"
+illustrationAlt="Иероглиф 汉"
+/>
 
       <section className="page-shell-wide section-space">
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">

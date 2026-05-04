@@ -320,19 +320,19 @@ a:focus-visible {
 /* Большая «hero»-карточка для PageHero / About / Methodology */
 .card-block-lg {
   border-radius: 24px;
-  padding: 36px;
+  padding: 32px 28px;
 }
 
 @media (min-width: 768px) {
   .card-block-lg {
-    padding: 56px;
+    padding: 48px;
     border-radius: 28px;
   }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1280px) {
   .card-block-lg {
-    padding: 72px;
+    padding: 56px 64px;
     border-radius: 32px;
   }
 }
@@ -1313,13 +1313,18 @@ textarea.lead-input {
 
 .lead-dialog-card .lead-submit {
   background: #ffffff;
-  color: var(--ink);
+  /* Hardcoded — модал всегда оранжевый брендовый, dark-mode не должен
+     перекрашивать текст кнопки. var(--ink) на dark становится #ededed
+     (светло-серый), что делает текст нечитаемым на белой кнопке. */
+  color: #1a1a1a;
 }
 .lead-dialog-card .lead-submit:hover {
   background: #f0f0f0;
+  color: #1a1a1a;
 }
 .lead-dialog-card .lead-submit:active {
   background: #e6e6e6;
+  color: #1a1a1a;
 }
 
 .lead-dialog-card .lead-success {
@@ -1355,6 +1360,156 @@ textarea.lead-input {
   backdrop-filter: blur(12px) saturate(160%);
   border: 1px solid rgba(255, 255, 255, 0.22);
 }
+
+/* ==========================================================================
+   PAGE HERO — CLEAN PRODUCTION VERSION
+   ========================================================================== */
+
+.page-hero-section {
+  padding: 20px 0;
+}
+
+@media (min-width: 768px) {
+  .page-hero-section {
+    padding: 28px 0;
+  }
+}
+
+.page-hero-card {
+  border-radius: 24px;
+  overflow: hidden;
+  padding: 32px 24px;
+}
+
+@media (min-width: 768px) {
+  .page-hero-card {
+    padding: 48px;
+    border-radius: 28px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .page-hero-card {
+    padding: 56px 64px;
+    border-radius: 32px;
+  }
+}
+
+/* ==========================================================================
+   BACKGROUNDS
+   ========================================================================== */
+
+.card-violet { background: var(--violet); }
+.card-cream  { background: var(--cream); }
+.card-lime   { background: var(--lime); }
+.card-sky    { background: var(--sky); }
+
+/* ==========================================================================
+   HERO LAYOUT
+   ========================================================================== */
+
+.page-hero-layout {
+  display: flex;
+  flex-direction: column;
+}
+
+/* только если есть иллюстрация */
+.page-hero-layout--has-illustration {
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  .page-hero-layout--has-illustration {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  }
+}
+
+/* ==========================================================================
+   TEXT COLUMN
+   ========================================================================== */
+
+.page-hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  max-width: 640px;
+}
+
+.page-hero-title {
+  margin: 0;
+  font-size: clamp(2rem, 1.4rem + 2.5vw, 3.5rem);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.page-hero-description {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: rgba(38, 38, 38, 0.72);
+  max-width: 560px;
+}
+
+.page-hero-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+/* ==========================================================================
+   ILLUSTRATION
+   ========================================================================== */
+
+.page-hero-illustration {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .page-hero-illustration {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.page-hero-illustration-img {
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.12));
+}
+
+@media (min-width: 1280px) {
+  .page-hero-illustration-img {
+    max-width: 480px;
+  }
+}
+
+/* ==========================================================================
+   EYEBROW
+   ========================================================================== */
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+.eyebrow.eyebrow-on-light {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--ink);
+}
+
 
 /* Eyebrow на светлой пастельной карточке — тёмный текст, тёмная подложка. */
 .eyebrow.eyebrow-on-light {
@@ -1416,6 +1571,97 @@ textarea.lead-input {
 
 .prose-article a:hover {
   text-decoration-color: rgba(0, 0, 0, 0.6);
+}
+
+/* ----------------------------------------------------------------------
+   Таблицы в статьях блога — Yandex-аккуратные, с горизонтальным
+   скроллом на мобиле. Чистая семантика (<table>/<thead>/<tbody>) →
+   Google и Yandex понимают табличные данные, плюс это сильный SEO-
+   сигнал «структурированный контент» без всяких schema.org.
+   ---------------------------------------------------------------------- */
+.prose-table-wrap {
+  margin: 12px 0;
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+}
+
+.prose-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.prose-table thead {
+  background: var(--background-2);
+}
+
+.prose-table th {
+  text-align: left;
+  font-weight: 500;
+  color: var(--ink);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  letter-spacing: var(--tracking-body);
+}
+
+.prose-table td {
+  padding: 12px 16px;
+  color: var(--muted-strong);
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.prose-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.prose-table tr:hover td {
+  background: rgba(0, 0, 0, 0.015);
+}
+
+.prose-table strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+@media (max-width: 640px) {
+  .prose-table {
+    font-size: 0.875rem;
+  }
+  .prose-table th,
+  .prose-table td {
+    padding: 10px 12px;
+  }
+}
+
+/* Рисунки/диаграммы в статьях. */
+.prose-figure {
+  margin: 12px 0;
+  display: grid;
+  gap: 8px;
+}
+
+.prose-figure img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+}
+
+.prose-figure figcaption {
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-align: center;
+  letter-spacing: var(--tracking-body);
+}
+
+/* Dark mode — ховер на строке чуть светлее, hover-tint работает наоборот. */
+@media (prefers-color-scheme: dark) {
+  .prose-table tr:hover td {
+    background: rgba(255, 255, 255, 0.03);
+  }
 }
 
 /* ==========================================================================
@@ -1547,19 +1793,33 @@ textarea.lead-input {
     background: #ffffff;
   }
 
-  /* Чёрные CTA на тёмной теме инвертируем в светлые. */
+  /* Чёрные CTA-кнопки в текстовом потоке инвертируем в светлые,
+     чтобы они не сливались с dark-фоном. НО floating CTA остаётся
+     ТЁМНЫМ — это сигнатурный элемент дизайна. */
   .btn-pill,
   .btn-ink,
-  .floating-cta-btn,
   .mobile-drawer-cta {
     background: #ededed;
-    color: #262626;
+    color: #1a1a1a;
   }
   .btn-pill:hover,
   .btn-ink:hover,
-  .floating-cta-btn:hover,
   .mobile-drawer-cta:hover {
     background: #ffffff;
+  }
+
+  /* Floating CTA — сохраняем брендовый dark look на тёмной теме.
+     Стеклянная плашка тонируется чёрным. */
+  .floating-cta-btn {
+    background: #1a1a1a;
+    color: #ffffff;
+  }
+  .floating-cta-btn:hover {
+    background: #2d2d2d;
+  }
+  .floating-cta-shell::before {
+    background-color: rgba(0, 0, 0, 0.55);
+    border-color: rgba(255, 255, 255, 0.08);
   }
 
   /* card-ink тоже инвертируется (тёмные «Готовы начать?» баннеры). */
@@ -1642,7 +1902,10 @@ textarea.lead-input {
   }
 
   .lead-input:not(.lead-dialog-card .lead-input) {
-    background: #2a2a2a;
+    /* background-color (не shorthand!), чтобы не сбрасывать
+       background-image/repeat/position/size, заданные в .lead-select.
+       Иначе chevron в селекте размножается по всей ширине. */
+    background-color: #2a2a2a;
     color: var(--ink);
     border-color: var(--line);
   }
@@ -1656,6 +1919,11 @@ textarea.lead-input {
 
   .lead-select:not(.lead-dialog-card .lead-select) {
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23ededed'><path d='M5 7l5 6 5-6z'/></svg>");
+    /* Подстраховка — явно задаём, чтобы chevron был один и в правильной
+       позиции, даже если кто-то выше переопределит `background:` shorthand. */
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 18px 18px;
   }
 
   .lead-select:not(.lead-dialog-card .lead-select) option {
@@ -1776,6 +2044,38 @@ textarea.lead-input {
   .violet-spotlight .section-title,
   .violet-spotlight .section-description {
     animation: none !important;
+  }
+}
+
+/* Hub-pill для навигации по разделам блога — отдельный класс,
+   чтобы корректно отрабатывал dark-mode. */
+.blog-hub-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--ink);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  transition: background 160ms ease, color 160ms ease;
+}
+
+@media (hover: hover) {
+  .blog-hub-pill:hover {
+    background: #ffffff;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .blog-hub-pill {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--ink);
+    border-color: rgba(255, 255, 255, 0.06);
+  }
+  .blog-hub-pill:hover {
+    background: rgba(255, 255, 255, 0.14);
   }
 }
 

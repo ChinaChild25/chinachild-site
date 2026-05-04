@@ -54,7 +54,7 @@ export default async function BlogPage() {
             <Link
               key={hub.slug}
               href={`/blog/category/${hub.slug}`}
-              className="rounded-[10px] bg-white/85 px-3.5 py-2 text-sm font-medium text-[#262626] transition hover:bg-white"
+              className="blog-hub-pill"
             >
               {hub.heading}
             </Link>

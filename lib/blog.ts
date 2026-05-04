@@ -18,7 +18,9 @@ export type BlogPost = {
 export type ArticleBlock =
   | { type: "heading"; level: 2 | 3; text: string }
   | { type: "paragraph"; text: string }
-  | { type: "list"; items: string[] };
+  | { type: "list"; items: string[] }
+  | { type: "table"; headers: string[]; rows: string[][] }
+  | { type: "image"; src: string; alt: string };
 
 const BLOG_DIRECTORY = path.join(process.cwd(), "content", "blog");
 
@@ -129,6 +131,25 @@ export function formatPostDate(date: string): string {
   }).format(new Date(date));
 }
 
+/** Распарсивает строку формата `| cell1 | cell2 |` в массив ячеек.
+ *  Trailing/leading pipe + whitespace отбрасываются. */
+function parseTableRow(line: string): string[] {
+  return line
+    .replace(/^\|/, "")
+    .replace(/\|$/, "")
+    .split("|")
+    .map((cell) => cell.trim());
+}
+
+/** Проверяет, что строка — separator-row markdown-таблицы:
+ *  `|---|---|` или `| :--- | ---: |` (с возможным выравниванием). */
+function isTableSeparator(line: string): boolean {
+  if (!line.startsWith("|")) return false;
+  const cells = parseTableRow(line);
+  if (cells.length === 0) return false;
+  return cells.every((c) => /^:?-{3,}:?$/.test(c));
+}
+
 export function parseArticleBlocks(content: string): ArticleBlock[] {
   const lines = content.split("\n");
   const blocks: ArticleBlock[] = [];
@@ -159,7 +180,8 @@ export function parseArticleBlocks(content: string): ArticleBlock[] {
     listBuffer = [];
   };
 
-  for (const rawLine of lines) {
+  for (let i = 0; i < lines.length; i++) {
+    const rawLine = lines[i];
     const line = rawLine.trim();
 
     if (!line) {
@@ -191,6 +213,36 @@ export function parseArticleBlocks(content: string): ArticleBlock[] {
     if (/^\d+\.\s/.test(line)) {
       flushParagraph();
       listBuffer.push(line.replace(/^\d+\.\s/, ""));
+      continue;
+    }
+
+    // Markdown-таблица: текущая строка `| ... |`, следующая — separator.
+    if (line.startsWith("|") && i + 1 < lines.length) {
+      const nextLine = lines[i + 1].trim();
+      if (isTableSeparator(nextLine)) {
+        flushParagraph();
+        flushList();
+        const headers = parseTableRow(line);
+        const rows: string[][] = [];
+        i += 2; // пропускаем header и separator
+        while (i < lines.length) {
+          const dataLine = lines[i].trim();
+          if (!dataLine.startsWith("|")) break;
+          rows.push(parseTableRow(dataLine));
+          i++;
+        }
+        i--; // компенсируем for-loop's i++
+        blocks.push({ type: "table", headers, rows });
+        continue;
+      }
+    }
+
+    // Markdown-картинка: `![alt](url)` на отдельной строке.
+    const imageMatch = line.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
+    if (imageMatch) {
+      flushParagraph();
+      flushList();
+      blocks.push({ type: "image", alt: imageMatch[1], src: imageMatch[2] });
       continue;
     }
 

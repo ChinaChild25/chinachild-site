@@ -23,27 +23,80 @@ type BlogPostPageProps = {
 // dateModified bumps and content edits surface within 24h.
 export const revalidate = 86400;
 
+/** Разбирает inline-markdown: **жирный** + autolink, возвращает массив
+ *  React-узлов. Bold обрабатывается раньше autolink, чтобы внутри
+ *  выделенного текста ссылки тоже работали. */
+function renderInline(
+  text: string,
+  autolink: (text: string) => React.ReactNode | string,
+): React.ReactNode {
+  // Split на сегменты вокруг **bold**. Чётные индексы — обычный текст,
+  // нечётные — то, что было между **...**.
+  const parts = text.split(/\*\*(.+?)\*\*/g);
+  return parts.map((part, i) => {
+    if (i % 2 === 1) {
+      return <strong key={i}>{autolink(part)}</strong>;
+    }
+    return <span key={i}>{autolink(part)}</span>;
+  });
+}
+
 function renderBlock(
   block: ArticleBlock,
   index: number,
   autolink: (text: string) => React.ReactNode | string,
 ): React.ReactNode {
   if (block.type === "heading" && block.level === 2) {
-    return <h2 key={`${block.text}-${index}`}>{block.text}</h2>;
+    return <h2 key={`heading2-${index}`}>{block.text}</h2>;
   }
   if (block.type === "heading" && block.level === 3) {
-    return <h3 key={`${block.text}-${index}`}>{block.text}</h3>;
+    return <h3 key={`heading3-${index}`}>{block.text}</h3>;
   }
   if (block.type === "list") {
     return (
       <ul key={`list-${index}`}>
-        {block.items.map((item) => (
-          <li key={item}>{autolink(item)}</li>
+        {block.items.map((item, idx) => (
+          <li key={`${item}-${idx}`}>{renderInline(item, autolink)}</li>
         ))}
       </ul>
     );
   }
-  return <p key={`${block.text}-${index}`}>{autolink(block.text)}</p>;
+  if (block.type === "table") {
+    return (
+      <div key={`table-${index}`} className="prose-table-wrap">
+        <table className="prose-table">
+          <thead>
+            <tr>
+              {block.headers.map((cell, idx) => (
+                <th key={idx} scope="col">
+                  {renderInline(cell, autolink)}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {block.rows.map((row, rowIdx) => (
+              <tr key={rowIdx}>
+                {row.map((cell, cellIdx) => (
+                  <td key={cellIdx}>{renderInline(cell, autolink)}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+  if (block.type === "image") {
+    // eslint-disable-next-line @next/next/no-img-element
+    return (
+      <figure key={`image-${index}`} className="prose-figure">
+        <img src={block.src} alt={block.alt} loading="lazy" />
+        {block.alt ? <figcaption>{block.alt}</figcaption> : null}
+      </figure>
+    );
+  }
+  return <p key={`paragraph-${index}`}>{renderInline(block.text, autolink)}</p>;
 }
 
 export async function generateStaticParams(): Promise<Array<{ slug: string }>> {
