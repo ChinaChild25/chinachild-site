@@ -14,7 +14,7 @@ import {
 export default function Footer() {
   return (
     <footer className="site-footer rounded-t-[60px] bg-[#f3f0e8] py-16 text-[#262626]">
-      <div className="page-shell-wide grid gap-12 md:grid-cols-[1.2fr_0.8fr]">
+      <div className="page-shell-wide grid gap-12 pb-12 sm:pb-16 md:grid-cols-[1.2fr_0.8fr]">
         <div className="max-w-xl">
           <div className="text-[1.5rem] font-medium tracking-[-0.01em]">ChinaChild</div>
           <p className="mt-4 text-sm leading-[1.55] text-[#6b6b6b]">
@@ -48,7 +48,7 @@ export default function Footer() {
         </nav>
       </div>
 
-      <div className="page-shell-wide mt-32 sm:mt-40">
+      <div className="page-shell-wide mt-12 sm:mt-16">
         <div className="border-t border-[rgba(0,0,0,0.08)] pt-12 grid gap-3 text-xs leading-[1.6] text-[#7a7a7a]">
           <div>
             {LICENSEE.legalName} · ИНН {LICENSEE.inn}

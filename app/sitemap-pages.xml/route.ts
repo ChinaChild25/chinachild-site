@@ -39,6 +39,7 @@ export async function GET() {
     freeTrialMtime,
     compareMtime,
     licenseMtime,
+    docsMtime,
     zayavkaMtime,
     aboutMtime,
     methodologyMtime,
@@ -46,6 +47,8 @@ export async function GET() {
     reviewsMtime,
     glossaryIndexMtime,
     teamIndexMtime,
+    publicTreatyMtime,
+    userAgreementMtime,
     privacyMtime,
   ] = await Promise.all([
     fileMtime("app/page.tsx", now),
@@ -63,6 +66,7 @@ export async function GET() {
     fileMtime("app/free-trial/page.tsx", now),
     fileMtime("app/compare/mini-group-vs-individual/page.tsx", now),
     fileMtime("app/license/page.tsx", now),
+    fileMtime("app/docs/page.tsx", now),
     fileMtime("app/zayavka/page.tsx", now),
     fileMtime("app/about/page.tsx", now),
     fileMtime("app/methodology/page.tsx", now),
@@ -70,6 +74,8 @@ export async function GET() {
     fileMtime("app/reviews/page.tsx", now),
     fileMtime("app/glossary/page.tsx", now),
     fileMtime("app/team/page.tsx", now),
+    fileMtime("app/public-treaty/page.tsx", now),
+    fileMtime("app/user-agreement/page.tsx", now),
     fileMtime("app/privacy-policy/page.tsx", now),
   ]);
 
@@ -121,6 +127,7 @@ export async function GET() {
     { loc: absoluteUrl("/results"), lastmod: resultsMtime, changefreq: "monthly", priority: 0.78 },
     { loc: absoluteUrl("/reviews"), lastmod: reviewsMtime, changefreq: "weekly", priority: 0.78 },
     { loc: absoluteUrl("/license"), lastmod: licenseMtime, changefreq: "yearly", priority: 0.7 },
+    { loc: absoluteUrl("/docs"), lastmod: docsMtime, changefreq: "yearly", priority: 0.65 },
 
     // Team — E-E-A-T author profiles
     { loc: absoluteUrl("/team"), lastmod: teamIndexMtime, changefreq: "monthly", priority: 0.75 },
@@ -141,6 +148,8 @@ export async function GET() {
     })),
 
     // Legal
+    { loc: absoluteUrl("/public-treaty"), lastmod: publicTreatyMtime, changefreq: "yearly", priority: 0.25 },
+    { loc: absoluteUrl("/user-agreement"), lastmod: userAgreementMtime, changefreq: "yearly", priority: 0.25 },
     { loc: absoluteUrl("/privacy-policy"), lastmod: privacyMtime, changefreq: "yearly", priority: 0.25 },
   ];
 

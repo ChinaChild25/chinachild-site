@@ -1918,6 +1918,10 @@ textarea.lead-input {
     border-color: rgba(255, 255, 255, 0.06);
   }
 
+  .page-hero-description {
+    color: rgba(237, 237, 237, 0.78);
+  }
+
   /* Перекрываем hardcoded Tailwind arbitrary text-color utilities,
      которые рассыпаны по проекту — без этого тёмный текст остаётся
      на тёмных карточках. Селекторы attribute-prefix ловят

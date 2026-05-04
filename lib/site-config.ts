@@ -54,6 +54,8 @@ export const LICENSEE = {
   shortName: "ИП Толкачева И. В.",
   fullName: "Толкачева Ирина Владимировна",
   inn: "323101941586",
+  ogrnip: "323774600710570",
+  registrationDate: "2023-10-30",
   address: "108834, г. Москва, ул. Эдварда Грига, д. 18, к. 3, кв. 84",
 } as const;
 

@@ -570,8 +570,11 @@ export const footerLinks = [
   { title: "Результаты", href: "/results" },
   { title: "Отзывы", href: "/reviews" },
   { title: "Лицензия", href: "/license" },
+  { title: "Сведения об образовательной организации", href: "/docs" },
   { title: "Блог", href: "/blog" },
   { title: "Глоссарий", href: "/glossary" },
+  { title: "Публичная оферта", href: "/public-treaty" },
+  { title: "Пользовательское соглашение", href: "/user-agreement" },
   { title: "Политика конфиденциальности", href: "/privacy-policy" },
 ];
 
