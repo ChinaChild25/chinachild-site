@@ -17,6 +17,8 @@ type PageHeroProps = {
   variant?: "violet" | "cream" | "lime" | "sky";
   illustration?: string;
   illustrationAlt?: string;
+  illustrationWidth?: number;
+  illustrationHeight?: number;
 };
 
 function isModalCta(cta: Cta): cta is CtaModal {
@@ -39,6 +41,8 @@ export default function PageHero({
   variant = "violet",
   illustration,
   illustrationAlt = "",
+  illustrationWidth = 480,
+  illustrationHeight = 480,
 }: PageHeroProps) {
   return (
     <section className="page-shell-wide page-hero-section">
@@ -68,8 +72,8 @@ export default function PageHero({
               <Image
                 src={illustration}
                 alt={illustrationAlt || ""}
-                width={480}
-                height={480}
+                width={illustrationWidth}
+                height={illustrationHeight}
                 className="page-hero-illustration-img"
                 priority
               />

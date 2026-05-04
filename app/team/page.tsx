@@ -37,6 +37,10 @@ export default function TeamPage() {
         description="Авторы курсов, методисты и носители путунхуа. У каждого открытая страница с биографией и специализацией — это часть нашей политики прозрачности."
         primaryCta={{ label: "Записаться на пробное", modal: true }}
         secondaryCta={{ label: "О школе", href: "/about" }}
+        illustration="/heroes/team.webp"
+        illustrationAlt="Команда преподавателей онлайн-школы ChinaChild"
+        illustrationWidth={744}
+        illustrationHeight={962}
       />
 
       <section className="page-shell-wide section-space">

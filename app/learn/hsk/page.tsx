@@ -80,6 +80,10 @@ export default async function LearnHskHub() {
           defaultCourse: "hsk-preparation",
         }}
         secondaryCta={{ label: "Курс подготовки", href: "/courses/hsk-preparation" }}
+        illustration="/heroes/hsk.webp"
+        illustrationAlt="3D иллюстрация HSK в фиолетовом цвете"
+        illustrationWidth={1134}
+        illustrationHeight={499}
       />
 
       <section className="page-shell-wide section-space">

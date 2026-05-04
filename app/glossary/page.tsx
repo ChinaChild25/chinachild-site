@@ -73,7 +73,9 @@ export default async function GlossaryPage() {
         secondaryCta={{ label: "Все курсы", href: "/courses" }}
         illustration="/heroes/glossary.webp"
         illustrationAlt="Иероглиф 汉"
-/>
+        illustrationWidth={1201}
+        illustrationHeight={1065}
+      />
 
       <section className="page-shell-wide section-space">
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">

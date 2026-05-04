@@ -81,6 +81,8 @@ export default function CoursesIndexPage() {
         secondaryCta={{ label: "О школе", href: "/about" }}
         illustration="/heroes/courses.webp"
         illustrationAlt="Иероглиф 课程 курсы"
+        illustrationWidth={1254}
+        illustrationHeight={1254}
       />
 
       <section className="page-shell-wide section-space">

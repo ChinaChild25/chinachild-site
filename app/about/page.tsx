@@ -47,6 +47,8 @@ export default function AboutPage() {
         secondaryCta={{ label: "Методика школы", href: "/methodology" }}
         illustration="/heroes/about.webp"
         illustrationAlt="Chinachild логотип фиолетовый"
+        illustrationWidth={1254}
+        illustrationHeight={1254}
       />
 
       <section className="page-shell-wide section-space">

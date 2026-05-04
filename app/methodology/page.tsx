@@ -76,6 +76,8 @@ export default function MethodologyPage() {
         secondaryCta={{ label: "О школе", href: "/about" }}
         illustration="/heroes/methodology.webp"
         illustrationAlt="Иероглиф 学 и методика обучения китайскому языку в ChinaChild"
+        illustrationWidth={1289}
+        illustrationHeight={1221}
       />
 
       <section className="page-shell-wide section-space">

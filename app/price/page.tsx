@@ -39,6 +39,10 @@ export default function PricePage() {
         description="Прозрачные тарифы. Можно оплатить курс целиком, помесячно или вернуть 13% через налоговый вычет — мы лицензированы Москвой. По акции КИТАПР26 — выгода до 30%."
         primaryCta={{ label: "Записаться на пробное", modal: true }}
         secondaryCta={{ label: "Все курсы", href: "/courses" }}
+        illustration="/heroes/price.webp"
+        illustrationAlt="3D иллюстрация ценника в фиолетовом цвете"
+        illustrationWidth={1254}
+        illustrationHeight={1254}
       />
 
       <PricingSection />

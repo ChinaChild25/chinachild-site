@@ -1452,7 +1452,8 @@ textarea.lead-input {
   .page-hero-illustration {
     grid-row: 1 / 3;
     display: flex;
-    align-items: flex-end;
+    align-items: center;
+    align-self: center;
     justify-content: center;
   }
 }
@@ -2023,9 +2024,10 @@ textarea.lead-input {
 
 /* ==========================================================================
    VIOLET SPOTLIGHT — Yandex-приём «акцентная подсветка при скролле».
-   Когда секция оказывается посередине viewport, целый viewport заливается
-   фиолетовой плёнкой (position: fixed, z-index -1 — поверх body bg, но под
-   контентом). По мере прокрутки плёнка плавно гаснет.
+   Когда секция оказывается в активной зоне viewport, целый viewport сразу
+   заливается фиолетовой плёнкой (position: fixed, z-index -1 — поверх body bg,
+   но под контентом). Включение/выключение намеренно резкое, без градиентного
+   разгорания по краям.
 
    Реализация: named view-timeline на секции + animation-timeline у
    ::before-overlay и текстовых элементов. Чистый CSS, zero JS.
@@ -2069,29 +2071,27 @@ textarea.lead-input {
 }
 
 @keyframes violet-spotlight-fade {
-  /* По мере прокрутки секции через viewport:
-     0%   — секция только-только показалась снизу     → плёнка прозрачна
-     40-60% — секция точно по центру viewport         → плёнка непрозрачна
-     100% — секция уже уехала вверх за край           → снова прозрачна */
   0%,
+  24.99%,
+  75.01%,
   100% {
     opacity: 0;
   }
-  40%,
-  60% {
+  25%,
+  75% {
     opacity: 1;
   }
 }
 
 @keyframes violet-spotlight-text {
-  /* Текст заголовка и описания инвертируется на белый,
-     синхронно с появлением фиолетовой плёнки. */
   0%,
+  24.99%,
+  75.01%,
   100% {
     color: inherit;
   }
-  40%,
-  60% {
+  25%,
+  75% {
     color: #ffffff;
   }
 }

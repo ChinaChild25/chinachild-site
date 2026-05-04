@@ -41,6 +41,8 @@ export default async function BlogPage() {
         description="Методика, разбор HSK, советы родителям и истории учеников — всё, что помогает учиться эффективнее."
         illustration="/heroes/blog.webp"
         illustrationAlt="Иероглиф 博客 блог"
+        illustrationWidth={1254}
+        illustrationHeight={1254}
       />
 
       <section className="page-shell-wide pb-8" aria-label="Разделы блога">
