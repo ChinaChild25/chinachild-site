@@ -15,7 +15,6 @@ type PageHeroProps = {
   primaryCta?: Cta;
   secondaryCta?: Cta;
   variant?: "violet" | "cream" | "lime" | "sky";
-  /** Путь к иллюстрации (из /public). Если не указан — одноколоночный layout. */
   illustration?: string;
   illustrationAlt?: string;
 };
@@ -44,60 +43,22 @@ export default function PageHero({
   return (
     <section className="page-shell-wide page-hero-section">
       <div className={cn("page-hero-card", variantClasses[variant])}>
-        <div className={cn("page-hero-layout", illustration && "page-hero-layout--has-illustration")}>
-
-          {/* ── Текстовая колонка ── */}
+        <div
+          className={cn(
+            "page-hero-layout",
+            illustration && "page-hero-layout--has-illustration"
+          )}
+        >
+          {/* ── Текст ── */}
           <div className="page-hero-content">
             {eyebrow && (
               <span className="eyebrow eyebrow-on-light">{eyebrow}</span>
             )}
+
             <h1 className="page-hero-title">{title}</h1>
+
             {description && (
               <p className="page-hero-description">{description}</p>
-            )}
-            {(primaryCta || secondaryCta) && (
-              <div className="page-hero-ctas">
-                {primaryCta && (
-                  isModalCta(primaryCta) ? (
-                    <LeadModal
-                      triggerClassName={buttonStyles({ size: "large" })}
-                      source="page-hero"
-                      defaultCourse={primaryCta.defaultCourse}
-                    >
-                      {primaryCta.label}
-                    </LeadModal>
-                  ) : (
-                    <Link
-                      href={primaryCta.href}
-                      target={primaryCta.external ? "_blank" : undefined}
-                      rel={primaryCta.external ? "noreferrer" : undefined}
-                      className={buttonStyles({ size: "large" })}
-                    >
-                      {primaryCta.label}
-                    </Link>
-                  )
-                )}
-                {secondaryCta && (
-                  isModalCta(secondaryCta) ? (
-                    <LeadModal
-                      triggerClassName={buttonStyles({ variant: "secondary", size: "large" })}
-                      source="page-hero-secondary"
-                      defaultCourse={secondaryCta.defaultCourse}
-                    >
-                      {secondaryCta.label}
-                    </LeadModal>
-                  ) : (
-                    <Link
-                      href={secondaryCta.href}
-                      target={secondaryCta.external ? "_blank" : undefined}
-                      rel={secondaryCta.external ? "noreferrer" : undefined}
-                      className={buttonStyles({ variant: "secondary", size: "large" })}
-                    >
-                      {secondaryCta.label}
-                    </Link>
-                  )
-                )}
-              </div>
             )}
           </div>
 
@@ -106,12 +67,63 @@ export default function PageHero({
             <div className="page-hero-illustration" aria-hidden>
               <Image
                 src={illustration}
-                alt={illustrationAlt}
+                alt={illustrationAlt || ""}
                 width={480}
                 height={480}
                 className="page-hero-illustration-img"
                 priority
               />
+            </div>
+          )}
+
+          {/* ── CTA ── */}
+          {(primaryCta || secondaryCta) && (
+            <div className="page-hero-ctas">
+              {primaryCta &&
+                (isModalCta(primaryCta) ? (
+                  <LeadModal
+                    triggerClassName={buttonStyles({ size: "large" })}
+                    source="page-hero"
+                    defaultCourse={primaryCta.defaultCourse}
+                  >
+                    {primaryCta.label}
+                  </LeadModal>
+                ) : (
+                  <Link
+                    href={primaryCta.href}
+                    target={primaryCta.external ? "_blank" : undefined}
+                    rel={primaryCta.external ? "noreferrer" : undefined}
+                    className={buttonStyles({ size: "large" })}
+                  >
+                    {primaryCta.label}
+                  </Link>
+                ))}
+
+              {secondaryCta &&
+                (isModalCta(secondaryCta) ? (
+                  <LeadModal
+                    triggerClassName={buttonStyles({
+                      variant: "secondary",
+                      size: "large",
+                    })}
+                    source="page-hero-secondary"
+                    defaultCourse={secondaryCta.defaultCourse}
+                  >
+                    {secondaryCta.label}
+                  </LeadModal>
+                ) : (
+                  <Link
+                    href={secondaryCta.href}
+                    target={secondaryCta.external ? "_blank" : undefined}
+                    rel={secondaryCta.external ? "noreferrer" : undefined}
+                    className={buttonStyles({
+                      variant: "secondary",
+                      size: "large",
+                    })}
+                  >
+                    {secondaryCta.label}
+                  </Link>
+                ))}
             </div>
           )}
         </div>
