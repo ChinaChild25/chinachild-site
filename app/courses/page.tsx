@@ -79,6 +79,8 @@ export default function CoursesIndexPage() {
         description="Подбираем формат под уровень, возраст и темп: мини-группа до 5 человек, индивидуальные занятия или корпоративное обучение. Программа лицензирована департаментом города Москвы."
         primaryCta={{ label: "Записаться на пробное", modal: true }}
         secondaryCta={{ label: "О школе", href: "/about" }}
+        illustration="/heroes/courses.webp"
+        illustrationAlt="Иероглиф 课程 курсы"
       />
 
       <section className="page-shell-wide section-space">

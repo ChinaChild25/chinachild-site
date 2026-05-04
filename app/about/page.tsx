@@ -45,6 +45,8 @@ export default function AboutPage() {
         description="Мы помогаем подросткам с 12 лет и взрослым выйти на разговорный уровень китайского за 6 месяцев. Программа лицензирована департаментом города Москвы, ученики могут вернуть налоговый вычет 13%."
         primaryCta={{ label: "Записаться на пробное", modal: true }}
         secondaryCta={{ label: "Методика школы", href: "/methodology" }}
+        illustration="/heroes/about.webp"
+        illustrationAlt="Chinachild логотип фиолетовый"
       />
 
       <section className="page-shell-wide section-space">

@@ -39,6 +39,8 @@ export default async function BlogPage() {
         eyebrow="Блог"
         title="Статьи о китайском языке"
         description="Методика, разбор HSK, советы родителям и истории учеников — всё, что помогает учиться эффективнее."
+        illustration="/heroes/blog.webp"
+        illustrationAlt="Иероглиф 博客 блог"
       />
 
       <section className="page-shell-wide pb-8" aria-label="Разделы блога">

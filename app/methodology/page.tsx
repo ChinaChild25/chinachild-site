@@ -74,6 +74,8 @@ export default function MethodologyPage() {
         description="Программа выстроена по международной системе уровней HSK 1–2 и сочетает фонетику, лексику, грамматику, аудирование, чтение и говорение в единой логике. Материал подаётся последовательно — от пиньиня и базовых конструкций до простых диалогов и аутентичных текстов."
         primaryCta={{ label: "Записаться на пробное", modal: true }}
         secondaryCta={{ label: "О школе", href: "/about" }}
+        illustration="/heroes/methodology.webp"
+        illustrationAlt="Иероглиф 学 и методика обучения китайскому языку в ChinaChild"
       />
 
       <section className="page-shell-wide section-space">
