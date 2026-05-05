@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import JsonLd from "@/components/seo/JsonLd";
 import Avatar from "@/components/ui/Avatar";
+import DocumentUploadSlots from "@/components/ui/DocumentUploadSlots";
+import Reveal from "@/components/ui/Reveal";
 import { buildMetadata } from "@/lib/metadata";
 import {
   createBreadcrumbNode,
@@ -11,7 +13,7 @@ import {
   type JsonLd as JsonLdType,
 } from "@/lib/schema";
 import { absoluteUrl, SITE_URL } from "@/lib/site-config";
-import { teachers } from "@/lib/site-data";
+import { teachers, type Teacher } from "@/lib/site-data";
 
 type TeamMemberPageProps = {
   params: Promise<{ slug: string }>;
@@ -19,6 +21,21 @@ type TeamMemberPageProps = {
 
 export function generateStaticParams() {
   return teachers.map((t) => ({ slug: t.slug }));
+}
+
+function teacherName(teacher: Teacher) {
+  return teacher.displayName ?? teacher.name;
+}
+
+function teacherDescription(teacher: Teacher) {
+  return teacher.profileArticle?.join(" ") ?? teacher.bio ?? teacher.credentials;
+}
+
+function truncateDescription(value: string, maxLength = 155) {
+  if (value.length <= maxLength) return value;
+  const trimmed = value.slice(0, maxLength + 1);
+  const lastSpace = trimmed.lastIndexOf(" ");
+  return `${trimmed.slice(0, lastSpace > 100 ? lastSpace : maxLength).trim()}...`;
 }
 
 export async function generateMetadata({
@@ -33,16 +50,43 @@ export async function generateMetadata({
       path: `/team/${slug}`,
     });
   }
+
+  const name = teacherName(teacher);
   return buildMetadata({
-    title: `${teacher.name} — преподаватель ChinaChild | ${teacher.jobTitle ?? teacher.specialization}`,
-    description: teacher.bio ?? teacher.credentials,
+    title: `${name} — преподаватель ChinaChild | ${teacher.subject ?? teacher.jobTitle ?? teacher.specialization}`,
+    description: truncateDescription(teacherDescription(teacher)),
     path: `/team/${teacher.slug}`,
     keywords: [
-      teacher.name.toLowerCase(),
+      name.toLowerCase(),
       "преподаватель китайского",
+      "китайский язык онлайн",
       ...(teacher.knowsAbout ?? []).slice(0, 4),
     ],
   });
+}
+
+function DetailCard({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-[14px] bg-white/70 p-4">
+      <dt className="text-xs uppercase tracking-[0.08em] text-[#6b6b6b]">{label}</dt>
+      <dd className="mt-2 text-sm font-medium leading-[1.45] text-[#262626]">{value}</dd>
+    </div>
+  );
+}
+
+function CheckList({ items }: { items: string[] }) {
+  return (
+    <ul className="mt-5 grid gap-3">
+      {items.map((item) => (
+        <li key={item} className="flex gap-3 text-base leading-[1.6] text-[#4b4b4b]">
+          <span className="mt-[0.15rem] inline-grid h-6 w-6 shrink-0 place-items-center rounded-full bg-white/80 text-sm font-semibold text-[#262626]">
+            ✓
+          </span>
+          <span>{item}</span>
+        </li>
+      ))}
+    </ul>
+  );
 }
 
 export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
@@ -50,10 +94,12 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
   const teacher = teachers.find((t) => t.slug === slug);
   if (!teacher) notFound();
 
+  const name = teacherName(teacher);
   const url = absoluteUrl(`/team/${teacher.slug}`);
   const profilePageId = `${url}#profile`;
+  const article = teacher.profileArticle ?? [teacher.bio ?? teacher.credentials];
+  const documentSlots = teacher.documentSlots ?? 1;
 
-  // ProfilePage + the linked Person node + breadcrumbs.
   const graph: JsonLdType = {
     "@context": "https://schema.org",
     "@graph": [
@@ -61,8 +107,8 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
         "@type": "ProfilePage",
         "@id": profilePageId,
         url,
-        name: `${teacher.name} — преподаватель ChinaChild`,
-        description: teacher.bio ?? teacher.credentials,
+        name: `${name} — преподаватель ChinaChild`,
+        description: teacherDescription(teacher),
         inLanguage: "ru-RU",
         isPartOf: { "@id": `${SITE_URL}#website` },
         mainEntity: createTeacherNode(teacher),
@@ -71,7 +117,7 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
         ...createBreadcrumbNode([
           { name: "Главная", path: "/" },
           { name: "Команда", path: "/team" },
-          { name: teacher.name, path: `/team/${teacher.slug}` },
+          { name, path: `/team/${teacher.slug}` },
         ]),
         "@id": `${profilePageId}#breadcrumb`,
       },
@@ -84,98 +130,150 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
         items={[
           { name: "Главная", path: "/" },
           { name: "Команда", path: "/team" },
-          { name: teacher.name, path: `/team/${teacher.slug}` },
+          { name, path: `/team/${teacher.slug}` },
         ]}
       />
       <JsonLd data={graph} id={`team-${teacher.slug}-graph`} />
 
-      <article
-        className="page-shell section-space pt-10"
-        itemScope
-        itemType="https://schema.org/Person"
-      >
-        <header className="mx-auto max-w-3xl">
-          <div className="flex items-center gap-4">
-            <Avatar
-              name={teacher.name}
-              size={120}
-              src={teacher.image}
-              alt={teacher.imageAlt}
-              title={teacher.imageTitle}
-            />
-            <div>
-              <span className="tag-pill">Преподаватель</span>
+      <article itemScope itemType="https://schema.org/Person">
+        <section className="page-shell-wide section-space pt-10">
+          <div className="card-block card-block-lg card-violet-soft">
+            <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
+              <div>
+                <Avatar
+                  name={name}
+                  size={144}
+                  src={teacher.image}
+                  alt={teacher.imageAlt}
+                  title={teacher.imageTitle}
+                />
+              </div>
+              <div>
+                <span className="tag-pill">Профиль преподавателя</span>
+                <h1
+                  className="mt-5 text-[2.25rem] font-medium leading-[1.08] tracking-[-0.025em] text-[#262626] sm:text-[3rem]"
+                  itemProp="name"
+                >
+                  {name}
+                </h1>
+                <p className="mt-4 text-lg leading-[1.45] text-[#4b4b4b]" itemProp="jobTitle">
+                  {teacher.jobTitle ?? teacher.specialization}
+                </p>
+                <dl className="mt-8 grid gap-3 sm:grid-cols-3">
+                  <DetailCard label="Предмет" value={teacher.subject ?? teacher.specialization} />
+                  <DetailCard label="Формат" value={teacher.location ?? "Работает дистанционно"} />
+                  <DetailCard label="Опыт" value={teacher.experience} />
+                </dl>
+              </div>
             </div>
           </div>
-          <h1
-            className="mt-6 text-[2.25rem] font-medium leading-[1.08] tracking-[-0.025em] text-[#262626] sm:text-[3rem]"
-            itemProp="name"
-          >
-            {teacher.name}
-          </h1>
-          <p className="mt-3 text-lg text-[#6b6b6b]" itemProp="jobTitle">
-            {teacher.jobTitle ?? teacher.specialization}
-          </p>
-        </header>
+        </section>
 
-        <div className="prose-article mx-auto mt-10 max-w-3xl">
-          <p itemProp="description">{teacher.bio ?? teacher.credentials}</p>
-          {teacher.alumniOf ? (
-            <p>
-              <strong>Образование.</strong>{" "}
-              <span itemProp="alumniOf">{teacher.alumniOf}</span>
-            </p>
-          ) : null}
-          {teacher.knowsAbout && teacher.knowsAbout.length > 0 ? (
-            <>
-              <h2>Специализация</h2>
-              <ul>
+        <section className="page-shell-wide section-space">
+          <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+            <Reveal>
+              <div className="card-block card-block-lg card-cream h-full">
+                <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-[#1b1b1b] sm:text-4xl">
+                  О преподавателе
+                </h2>
+                <div className="mt-6 grid gap-4 text-base leading-[1.75] text-[#4b4b4b]">
+                  {article.map((paragraph) => (
+                    <p key={paragraph} itemProp="description">
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            </Reveal>
+
+            <Reveal>
+              <aside className="card-block card-sky h-full">
+                <h2 className="text-[1.5rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#262626]">
+                  Образование
+                </h2>
+                {teacher.educationTimeline && teacher.educationTimeline.length > 0 ? (
+                  <ol className="mt-6 grid gap-4">
+                    {teacher.educationTimeline.map((item) => (
+                      <li key={item} className="rounded-[14px] bg-white/70 p-4">
+                        <span className="text-sm leading-[1.55] text-[#262626]" itemProp="alumniOf">
+                          {item}
+                        </span>
+                      </li>
+                    ))}
+                  </ol>
+                ) : (
+                  <p className="mt-4 text-base leading-[1.6] text-[#4b4b4b]">
+                    {teacher.alumniOf}
+                  </p>
+                )}
+              </aside>
+            </Reveal>
+          </div>
+        </section>
+
+        {teacher.worksWith && teacher.worksWith.length > 0 ? (
+          <section className="page-shell-wide section-space">
+            <div className="card-block card-lime-soft">
+              <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-[#1b1b1b] sm:text-4xl">
+                С кем работает
+              </h2>
+              <CheckList items={teacher.worksWith} />
+            </div>
+          </section>
+        ) : null}
+
+        {teacher.knowsAbout && teacher.knowsAbout.length > 0 ? (
+          <section className="page-shell-wide section-space">
+            <div className="card-block card-cream-soft">
+              <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-[#1b1b1b] sm:text-4xl">
+                Специализация
+              </h2>
+              <ul className="mt-6 flex flex-wrap gap-3">
                 {teacher.knowsAbout.map((topic) => (
-                  <li key={topic} itemProp="knowsAbout">
+                  <li key={topic} itemProp="knowsAbout" className="tag-pill">
                     {topic}
                   </li>
                 ))}
               </ul>
-            </>
-          ) : null}
-          {teacher.sameAs && teacher.sameAs.length > 0 ? (
-            <>
-              <h2>Профили</h2>
-              <ul>
-                {teacher.sameAs.map((href) => (
-                  <li key={href}>
-                    <a
-                      href={href}
-                      target="_blank"
-                      rel="me noreferrer"
-                      itemProp="sameAs"
-                      className="font-semibold underline underline-offset-4"
-                    >
-                      {href.replace(/^https?:\/\//, "")}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </>
-          ) : null}
-        </div>
+            </div>
+          </section>
+        ) : null}
 
+        <section className="page-shell-wide section-space">
+          <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+            <div className="card-block card-block-lg card-cream-soft">
+              <span className="tag-pill">Документы</span>
+              <h2 className="mt-5 text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-[#1b1b1b] sm:text-4xl">
+                Документы и сертификаты
+              </h2>
+              <p className="mt-5 text-base leading-[1.65] text-[#4b4b4b]">
+                Здесь можно разместить дипломы, сертификаты HSK, документы о повышении
+                квалификации и другие подтверждения образования. Слоты принимают изображения
+                и PDF-файлы; после загрузки сразу появляется превью.
+              </p>
+            </div>
+            <DocumentUploadSlots slots={documentSlots} ownerName={name} />
+          </div>
+        </section>
       </article>
 
       <section className="page-shell-wide pb-20 pt-4 sm:pt-8 lg:pb-24">
-        <div className="card-block card-block-lg card-cream">
-          <h2 className="text-[1.5rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#262626] sm:text-[1.75rem]">
+        <div className="card-block card-block-lg card-ink">
+          <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-white sm:text-4xl">
             Записаться к {teacher.firstNameDative}
           </h2>
-          <p className="mt-4 max-w-2xl text-base leading-[1.6] text-[#4b4b4b] sm:text-[1.0625rem]">
-            Расписание и набор групп уточняет менеджер. Оставьте заявку или
-            позвоните нам — подберём ближайшее окно.
+          <p className="mt-4 max-w-2xl text-base leading-7 text-white/85">
+            Расписание и набор групп уточняет менеджер. Оставьте заявку — подберём
+            формат, уровень и ближайшее окно для пробного занятия.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/zayavka" className="btn-pill btn-ink btn-pill-large">
+            <Link href="/zayavka" className="btn-pill btn-white btn-pill-large">
               Оставить заявку
             </Link>
-            <Link href="/courses" className="btn-pill btn-white btn-pill-large">
+            <Link
+              href="/courses"
+              className="btn-pill btn-pill-large bg-white/15 text-white hover:bg-white/25"
+            >
               Все курсы
             </Link>
           </div>

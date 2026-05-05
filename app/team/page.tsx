@@ -61,15 +61,22 @@ export default function TeamPage() {
                   />
                   <div>
                     <div className="text-[1.125rem] font-medium tracking-[-0.005em] text-[#262626] leading-[1.2]">
-                      {teacher.name}
+                      {teacher.displayName ?? teacher.name}
                     </div>
                     <div className="text-xs text-[#6b6b6b]">
-                      {teacher.jobTitle ?? teacher.specialization}
+                      {teacher.subject ?? teacher.jobTitle ?? teacher.specialization}
                     </div>
                   </div>
                 </div>
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {teacher.location ? <span className="tag-pill">{teacher.location}</span> : null}
+                  <span className="tag-pill">{teacher.experience}</span>
+                </div>
                 <p className="mt-5 text-sm leading-7 text-[#4b4b4b]">
-                  {teacher.credentials}
+                  {(teacher.profileArticle?.[0] ?? teacher.bio ?? teacher.credentials).slice(0, 220)}
+                  {(teacher.profileArticle?.[0] ?? teacher.bio ?? teacher.credentials).length > 220
+                    ? "..."
+                    : ""}
                 </p>
                 <div className="mt-auto pt-6 text-sm font-semibold text-[#1b1b1b] underline-offset-4 group-hover:underline">
                   Профиль преподавателя →

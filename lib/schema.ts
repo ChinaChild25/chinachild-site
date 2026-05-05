@@ -177,7 +177,7 @@ export function createTeacherNode(teacher: Teacher): JsonLd {
   const node: JsonLd = {
     "@type": "Person",
     "@id": ID.teacher(teacher.slug),
-    name: teacher.name,
+    name: teacher.displayName ?? teacher.name,
     jobTitle: teacher.jobTitle ?? teacher.specialization,
     description: teacher.bio ?? teacher.credentials,
     knowsAbout:
