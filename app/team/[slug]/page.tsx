@@ -65,21 +65,12 @@ export async function generateMetadata({
   });
 }
 
-function DetailCard({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-[14px] bg-white/70 p-4">
-      <dt className="text-xs uppercase tracking-[0.08em] text-[#6b6b6b]">{label}</dt>
-      <dd className="mt-2 text-sm font-medium leading-[1.45] text-[#262626]">{value}</dd>
-    </div>
-  );
-}
-
 function CheckList({ items }: { items: string[] }) {
   return (
-    <ul className="mt-5 grid gap-3">
+    <ul className="mt-5 grid gap-3 md:grid-cols-2">
       {items.map((item) => (
         <li key={item} className="flex gap-3 text-base leading-[1.6] text-[#4b4b4b]">
-          <span className="mt-[0.15rem] inline-grid h-6 w-6 shrink-0 place-items-center rounded-full bg-white/80 text-sm font-semibold text-[#262626]">
+          <span className="mt-[0.15rem] inline-grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[var(--background-2)] text-sm font-semibold text-[#262626]">
             ✓
           </span>
           <span>{item}</span>
@@ -136,13 +127,13 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
       <JsonLd data={graph} id={`team-${teacher.slug}-graph`} />
 
       <article itemScope itemType="https://schema.org/Person">
-        <section className="page-shell-wide section-space pt-10">
+        <section className="page-shell-wide py-8 pt-10 md:py-10">
           <div className="card-block card-block-lg card-violet-soft">
-            <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
+            <div className="grid gap-8 lg:grid-cols-[0.55fr_1.45fr] lg:items-center">
               <div>
                 <Avatar
                   name={name}
-                  size={144}
+                  size={220}
                   src={teacher.image}
                   alt={teacher.imageAlt}
                   title={teacher.imageTitle}
@@ -159,20 +150,18 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
                 <p className="mt-4 text-lg leading-[1.45] text-[#4b4b4b]" itemProp="jobTitle">
                   {teacher.jobTitle ?? teacher.specialization}
                 </p>
-                <dl className="mt-8 grid gap-3 sm:grid-cols-3">
-                  <DetailCard label="Предмет" value={teacher.subject ?? teacher.specialization} />
-                  <DetailCard label="Формат" value={teacher.location ?? "Работает дистанционно"} />
-                  <DetailCard label="Опыт" value={teacher.experience} />
-                </dl>
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <span className="tag-pill">{teacher.experience}</span>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="page-shell-wide section-space">
-          <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+        <section className="page-shell-wide py-8 md:py-10">
+          <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
             <Reveal>
-              <div className="card-block card-block-lg card-cream h-full">
+              <div className="max-w-4xl">
                 <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-[#1b1b1b] sm:text-4xl">
                   О преподавателе
                 </h2>
@@ -212,52 +201,43 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
         </section>
 
         {teacher.worksWith && teacher.worksWith.length > 0 ? (
-          <section className="page-shell-wide section-space">
-            <div className="card-block card-lime-soft">
-              <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-[#1b1b1b] sm:text-4xl">
-                С кем работает
-              </h2>
-              <CheckList items={teacher.worksWith} />
-            </div>
+          <section className="page-shell-wide py-8 md:py-10">
+            <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-[#1b1b1b] sm:text-4xl">
+              С кем работает
+            </h2>
+            <CheckList items={teacher.worksWith} />
           </section>
         ) : null}
 
         {teacher.knowsAbout && teacher.knowsAbout.length > 0 ? (
-          <section className="page-shell-wide section-space">
-            <div className="card-block card-cream-soft">
-              <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-[#1b1b1b] sm:text-4xl">
-                Специализация
-              </h2>
-              <ul className="mt-6 flex flex-wrap gap-3">
-                {teacher.knowsAbout.map((topic) => (
-                  <li key={topic} itemProp="knowsAbout" className="tag-pill">
-                    {topic}
-                  </li>
-                ))}
-              </ul>
-            </div>
+          <section className="page-shell-wide py-8 md:py-10">
+            <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-[#1b1b1b] sm:text-4xl">
+              Специализация
+            </h2>
+            <ul className="mt-6 flex flex-wrap gap-3">
+              {teacher.knowsAbout.map((topic) => (
+                <li key={topic} itemProp="knowsAbout" className="tag-pill">
+                  {topic}
+                </li>
+              ))}
+            </ul>
           </section>
         ) : null}
 
-        <section className="page-shell-wide section-space">
-          <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-            <div className="card-block card-block-lg card-cream-soft">
+        <section className="page-shell-wide py-8 md:py-10">
+          <div className="grid gap-8 lg:grid-cols-[0.7fr_1.3fr]">
+            <div>
               <span className="tag-pill">Документы</span>
               <h2 className="mt-5 text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-[#1b1b1b] sm:text-4xl">
                 Документы и сертификаты
               </h2>
-              <p className="mt-5 text-base leading-[1.65] text-[#4b4b4b]">
-                Здесь можно разместить дипломы, сертификаты HSK, документы о повышении
-                квалификации и другие подтверждения образования. Слоты принимают изображения
-                и PDF-файлы; после загрузки сразу появляется превью.
-              </p>
             </div>
             <DocumentUploadSlots slots={documentSlots} ownerName={name} />
           </div>
         </section>
       </article>
 
-      <section className="page-shell-wide pb-20 pt-4 sm:pt-8 lg:pb-24">
+      <section className="page-shell-wide pb-16 pt-8 lg:pb-20">
         <div className="card-block card-block-lg card-ink">
           <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-white sm:text-4xl">
             Записаться к {teacher.firstNameDative}

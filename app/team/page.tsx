@@ -64,12 +64,11 @@ export default function TeamPage() {
                       {teacher.displayName ?? teacher.name}
                     </div>
                     <div className="text-xs text-[#6b6b6b]">
-                      {teacher.subject ?? teacher.jobTitle ?? teacher.specialization}
+                      {teacher.jobTitle ?? teacher.specialization}
                     </div>
                   </div>
                 </div>
                 <div className="mt-5 flex flex-wrap gap-2">
-                  {teacher.location ? <span className="tag-pill">{teacher.location}</span> : null}
                   <span className="tag-pill">{teacher.experience}</span>
                 </div>
                 <p className="mt-5 text-sm leading-7 text-[#4b4b4b]">
