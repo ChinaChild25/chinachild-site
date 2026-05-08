@@ -3,6 +3,7 @@ import Link from "next/link";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import PageHero from "@/components/layout/PageHero";
 import LeadModal from "@/components/forms/LeadModal";
+import VideoEmbed from "@/components/sections/VideoEmbed";
 import JsonLd from "@/components/seo/JsonLd";
 import Reveal from "@/components/ui/Reveal";
 import { buttonStyles } from "@/components/ui/button";
@@ -205,6 +206,12 @@ export default function MethodologyPage() {
         ]}
       />
       <JsonLd data={methodologyHowTo} id="methodology-how-to" />
+
+      <VideoEmbed
+        eyebrow="Как устроен урок"
+        title="Посмотрите, как проходит занятие в ChinaChild"
+        description="Запись с реального урока: видеозвонок в браузере, чат с куратором, AI-разбор тонов и тренажёр иероглифов в одном кабинете."
+      />
 
       <PageHero
         eyebrow="Методика ChinaChild"

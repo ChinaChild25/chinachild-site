@@ -3,6 +3,7 @@ import Link from "next/link";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import PageHero from "@/components/layout/PageHero";
 import LeadModal from "@/components/forms/LeadModal";
+import VideoEmbed from "@/components/sections/VideoEmbed";
 import Avatar from "@/components/ui/Avatar";
 import { buttonStyles } from "@/components/ui/button";
 import { buildMetadata } from "@/lib/metadata";
@@ -49,6 +50,12 @@ export default function AboutPage() {
         illustrationAlt="Chinachild логотип фиолетовый"
         illustrationWidth={1254}
         illustrationHeight={1254}
+      />
+
+      <VideoEmbed
+        eyebrow="Видеовизитка школы"
+        title="2 минуты, чтобы понять, как устроены занятия"
+        description="Короткое видео о платформе, преподавателях и формате уроков. Чтобы вы не покупали кота в мешке: видно, как именно проходит онлайн-занятие в ChinaChild."
       />
 
       <section className="page-shell-wide section-space">
