@@ -444,13 +444,13 @@ export default async function HskLevelPage({ params }: HskPageProps) {
               Записаться на подготовку
             </LeadModal>
             <Link
-              href="/courses/hsk-preparation"
+              href={`/courses/hsk-preparation#${level.slug}`}
               className={buttonStyles({
                 size: "large",
                 className: "bg-white/15 text-white hover:bg-white/25",
               })}
             >
-              Курс подготовки
+              Курс подготовки к HSK {level.level}
             </Link>
           </div>
         </div>

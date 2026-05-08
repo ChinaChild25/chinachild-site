@@ -8,7 +8,13 @@ import { buttonStyles } from "@/components/ui/button";
 import { createCourseSchema, type JsonLd as JsonLdType } from "@/lib/schema";
 import type { Course, FaqItem } from "@/lib/site-data";
 
-type Bullet = { title: string; body: string; tone: "violet-soft" | "cream" | "lime-soft" | "sky" | "peach-soft" | "cream-soft" };
+type Bullet = {
+  title: string;
+  body: string;
+  tone: "violet-soft" | "cream" | "lime-soft" | "sky" | "peach-soft" | "cream-soft";
+  /** Optional DOM id so external pages can deep-link via fragment (#hsk-1, etc.). */
+  id?: string;
+};
 
 type CourseLandingProps = {
   breadcrumb: { name: string; path: string };
@@ -64,9 +70,13 @@ export default function CourseLanding({
       />
 
       <section className="page-shell-wide section-space">
-        <div className="grid gap-5 md:grid-cols-3">
+        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {bullets.map((b) => (
-            <article key={b.title} className={`card-block h-full ${toneClass[b.tone]}`}>
+            <article
+              key={b.title}
+              id={b.id}
+              className={`card-block h-full scroll-mt-24 ${toneClass[b.tone]}`}
+            >
               <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#262626] leading-[1.2]">{b.title}</h2>
               <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">{b.body}</p>
             </article>

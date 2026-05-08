@@ -113,6 +113,15 @@ export async function GET() {
       priority: c.licensedRegion ? 0.85 : 0.78,
     })),
 
+    // Tutor / "репетитор китайского [город]" cluster (LocalBusiness + ProfessionalService)
+    { loc: absoluteUrl("/repetitor-kitayskogo"), lastmod: now, changefreq: "monthly", priority: 0.82 },
+    ...cities.map<UrlEntry>((c) => ({
+      loc: absoluteUrl(`/repetitor-kitayskogo/${c.slug}`),
+      lastmod: now,
+      changefreq: "monthly" as const,
+      priority: c.licensedRegion ? 0.82 : 0.75,
+    })),
+
     // Comparisons / decision pages
     {
       loc: absoluteUrl("/compare/mini-group-vs-individual"),
