@@ -762,25 +762,23 @@ a:focus-visible {
   transform: translateX(-50%);
   z-index: 900;
   pointer-events: none;
-}
-
-/* Стеклянная плашка-ободок вокруг CTA — Yandex-стиль:
-   видимый белый frosted-halo с blur+saturate, тонкая белая граница. */
-.floating-cta-shell::before {
-  content: "";
-  position: absolute;
-  inset: -10px;
+  /* Стеклянная плашка теперь — это padding самого контейнера,
+     а не ::before c inset:-10px. Это убирает CLS-риск:
+     halo не выходит за пределы родителя. */
+  padding: 10px;
   border-radius: 16px;
   background-color: rgba(255, 255, 255, 0.55);
   -webkit-backdrop-filter: blur(18px) saturate(180%);
   backdrop-filter: blur(18px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.7);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
-  z-index: -1;
-  /* Подсказываем браузеру, что слой композитный — анимация скролла
-     не вызывает paint этого элемента, экономит 50-100ms на mobile. */
+  /* Композитный слой — paint при скролле не дёргается. */
   will-change: transform;
-  transform: translateZ(0);
+  transform: translate(-50%, 0) translateZ(0);
+  /* Резервируем место под кнопку, чтобы при первом монте FloatingCta
+     браузер не сдвигал контент — pre-mount контейнер невидим, но
+     `contain` запрещает реflow за его пределы. */
+  contain: layout paint;
 }
 
 .floating-cta-glass {
@@ -814,16 +812,14 @@ a:focus-visible {
 
 @media (max-width: 767px) {
   /* На мобилке — полноширинный sticky-бар.
-     Стеклянная плашка остаётся как тонкий ободок сверху. */
+     Padding чуть меньше, чтобы кнопка визуально не уходила в края экрана. */
   .floating-cta-shell {
     left: 8px;
     right: 8px;
     bottom: 8px;
-    transform: none;
+    transform: translateZ(0);
     pointer-events: auto;
-  }
-  .floating-cta-shell::before {
-    inset: -6px;
+    padding: 6px;
     border-radius: 14px;
   }
   .floating-cta-glass {

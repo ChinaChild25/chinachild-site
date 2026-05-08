@@ -80,6 +80,16 @@ const nextConfig: NextConfig = {
         destination: "/blog/how-long-to-learn-chinese",
         permanent: true,
       },
+      // Short HSK URLs (/hsk-1 ... /hsk-6) — конкуренты бьют по точным
+      // запросам "hsk 1", "hsk 2 онлайн" с короткими slug-ами. Redirect
+      // на канонический /hsk/hsk-N сохраняет один canonical и при этом
+      // ловит длинный хвост запросов.
+      { source: "/hsk-1", destination: "/hsk/hsk-1", permanent: true },
+      { source: "/hsk-2", destination: "/hsk/hsk-2", permanent: true },
+      { source: "/hsk-3", destination: "/hsk/hsk-3", permanent: true },
+      { source: "/hsk-4", destination: "/hsk/hsk-4", permanent: true },
+      { source: "/hsk-5", destination: "/hsk/hsk-5", permanent: true },
+      { source: "/hsk-6", destination: "/hsk/hsk-6", permanent: true },
     ];
   },
 };

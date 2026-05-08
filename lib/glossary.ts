@@ -7,6 +7,9 @@ export type GlossaryTerm = {
   shortDefinition: string;
   body: string;
   related: string[];
+  /** Курсы, релевантные этому термину. Идут в CTA-блок на странице
+   *  глоссария. Если пусто — fallback на online-chinese + hsk-preparation. */
+  relatedCourses: string[];
   updatedAt: string;
 };
 
@@ -41,6 +44,10 @@ function build(slug: string, source: string): GlossaryTerm {
     shortDefinition: fm.shortDefinition ?? "",
     body: content,
     related: (fm.related ?? "")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean),
+    relatedCourses: (fm.relatedCourses ?? "")
       .split(",")
       .map((s) => s.trim())
       .filter(Boolean),

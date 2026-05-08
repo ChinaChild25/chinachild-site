@@ -7,6 +7,9 @@ import { getAllGlossaryTerms, getGlossarySlugs, getGlossaryTermBySlug } from "@/
 import { buildMetadata } from "@/lib/metadata";
 import { absoluteUrl } from "@/lib/site-config";
 import { createBreadcrumbNode } from "@/lib/schema";
+import { courses } from "@/lib/site-data";
+
+const FALLBACK_COURSES = ["online-chinese", "hsk-preparation"] as const;
 
 type GlossaryTermPageProps = {
   params: Promise<{ slug: string }>;
@@ -49,6 +52,15 @@ export default async function GlossaryTermPage({ params }: GlossaryTermPageProps
   const related = term.related
     .map((rs) => allTerms.find((t) => t.slug === rs))
     .filter((t): t is NonNullable<typeof t> => Boolean(t));
+
+  // Динамическая привязка курсов: термин может объявить свои relatedCourses,
+  // иначе — fallback на универсальную пару online-chinese + hsk-preparation.
+  const ctaCourseSlugs = term.relatedCourses.length > 0
+    ? term.relatedCourses
+    : Array.from(FALLBACK_COURSES);
+  const ctaCourses = ctaCourseSlugs
+    .map((cs) => courses.find((c) => c.slug === cs))
+    .filter((c): c is NonNullable<typeof c> => Boolean(c));
 
   const url = absoluteUrl(`/glossary/${term.slug}`);
   const articleId = `${url}#defined-term`;
@@ -155,22 +167,23 @@ export default async function GlossaryTermPage({ params }: GlossaryTermPageProps
               и подберёт подходящий курс.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link
-                href="/courses/online-chinese"
-                className="btn-pill btn-white"
-              >
-                Курс с нуля
-              </Link>
-              <Link
-                href="/courses/hsk-preparation"
-                className="btn-pill"
-                style={{
-                  background: "rgba(255,255,255,0.15)",
-                  color: "#ffffff",
-                }}
-              >
-                Подготовка к HSK
-              </Link>
+              {ctaCourses.map((course, idx) => (
+                <Link
+                  key={course.slug}
+                  href={`/courses/${course.slug}`}
+                  className={idx === 0 ? "btn-pill btn-white" : "btn-pill"}
+                  style={
+                    idx === 0
+                      ? undefined
+                      : {
+                          background: "rgba(255,255,255,0.15)",
+                          color: "#ffffff",
+                        }
+                  }
+                >
+                  {course.title}
+                </Link>
+              ))}
               <Link
                 href="/glossary"
                 className="btn-pill"
