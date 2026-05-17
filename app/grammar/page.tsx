@@ -129,7 +129,10 @@ export default async function GrammarPage({ searchParams }: GrammarPageProps) {
               >
                 <div className="flex flex-wrap gap-2">
                   {topic.chips.map((chip) => (
-                    <span key={chip} className="tag-pill">
+                    <span
+                      key={chip}
+                      className="inline-flex items-center rounded-[10px] bg-white/95 px-3 py-1.5 text-sm font-medium leading-none text-[#262626]"
+                    >
                       {chip}
                     </span>
                   ))}
@@ -146,16 +149,15 @@ export default async function GrammarPage({ searchParams }: GrammarPageProps) {
       </section>
 
       <section className="page-shell-wide section-space">
-        <header className="mb-6 flex flex-wrap items-end justify-between gap-4">
-          <div className="max-w-2xl">
-            <h2 className="text-[2rem] font-medium leading-tight tracking-[-0.015em] text-[#1b1b1b]">
-              Все правила
-            </h2>
-            <p className="mt-3 text-base leading-7 text-[#4b4b4b]">
-              Найдено {formatArticleCountRu(data.totalArticles)}. Используйте теги и поиск, чтобы сузить выборку.
-            </p>
-          </div>
-          <Link href="/grammar/tags" className="btn-pill btn-pill-compact btn-white">
+        <header className="mx-auto mb-6 flex max-w-2xl flex-col items-center text-center">
+          <h2 className="text-[2rem] font-medium leading-tight tracking-[-0.015em] text-[#1b1b1b]">
+            Все правила
+          </h2>
+          <p className="mt-3 text-base leading-7 text-[#4b4b4b]">
+            Найдено {formatArticleCountRu(data.totalArticles)}. Используйте теги и поиск, чтобы
+            сузить выборку.
+          </p>
+          <Link href="/grammar/tags" className="btn-pill btn-pill-compact btn-white mt-4">
             Все теги
           </Link>
         </header>

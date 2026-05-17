@@ -43,7 +43,9 @@ export default async function DictionaryHskPage() {
             href={`/dictionary/hsk/${hskVersionSlug(version.id)}`}
             className="card-block card-block-lg card-cream group flex h-full flex-col transition hover:-translate-y-1"
           >
-            <span className="tag-pill tag-pill-ink self-start">{version.label}</span>
+            <span className="inline-flex items-center self-start rounded-[10px] bg-[#262626] px-3 py-1.5 text-sm font-medium leading-none text-white">
+              {version.label}
+            </span>
             <h2 className="mt-6 text-[1.75rem] font-medium leading-tight tracking-[-0.02em] text-[#1b1b1b]">
               {version.label}
             </h2>

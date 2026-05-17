@@ -29,7 +29,9 @@ export default function HskDeckCard({
       href={href}
       className={`card-block group flex h-full flex-col transition hover:-translate-y-1 ${palette}`}
     >
-      <span className="tag-pill tag-pill-ink self-start">{deck.title}</span>
+      <span className="inline-flex items-center self-start rounded-[10px] bg-[#262626] px-3 py-1.5 text-sm font-medium leading-none text-white">
+        {deck.title}
+      </span>
       <p className="mt-6 text-[1.75rem] font-medium leading-tight tracking-[-0.02em] text-[#1b1b1b]">
         {planned > 0 ? formatWordCountRu(planned) : "Скоро"}
       </p>

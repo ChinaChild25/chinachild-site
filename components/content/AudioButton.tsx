@@ -1,7 +1,39 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Loader2, Pause, Play, Volume2 } from "lucide-react";
+import { Loader2, Pause } from "lucide-react";
+
+function SpeakerIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
+      <rect x="4" y="8" width="2.75" height="8" rx="0.5" stroke="currentColor" strokeWidth="1.65" />
+      <path
+        d="M6.75 8 12 5v14l-5.25-3"
+        stroke="currentColor"
+        strokeWidth="1.65"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M13.5 9.25c1.65 1.35 1.65 4.15 0 5.5"
+        stroke="currentColor"
+        strokeWidth="1.65"
+        strokeLinecap="round"
+      />
+      <path
+        d="M15.75 7c2.75 2.25 2.75 7.75 0 10"
+        stroke="currentColor"
+        strokeWidth="1.65"
+        strokeLinecap="round"
+      />
+      <path
+        d="M18 4.75c3.85 3.15 3.85 10.35 0 14.5"
+        stroke="currentColor"
+        strokeWidth="1.65"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
 
 type AudioState = "idle" | "loading" | "playing" | "error";
 
@@ -29,8 +61,14 @@ const sizeClasses: Record<Size, string> = {
 
 const iconSizes: Record<Size, string> = {
   sm: "size-4",
-  md: "size-[18px]",
+  md: "size-[17px]",
   lg: "size-5",
+};
+
+const primaryShapeClasses: Record<Size, string> = {
+  sm: "rounded-[8px]",
+  md: "rounded-[11px]",
+  lg: "rounded-[13px]",
 };
 
 export default function AudioButton({
@@ -97,7 +135,11 @@ export default function AudioButton({
       : "bg-white text-[#1b1b1b] ring-1 ring-black/[0.08] hover:bg-[#f6f3eb]";
 
   const stateClass =
-    state === "error" ? "bg-[#fdf0e8] text-[#8a3e1f] ring-[#e0a888]" : baseClass;
+    state === "error"
+      ? variant === "primary"
+        ? "bg-[#8a3e1f] text-white"
+        : "bg-[#fdf0e8] text-[#8a3e1f] ring-1 ring-[#e0a888]"
+      : baseClass;
 
   return (
     <button
@@ -107,7 +149,8 @@ export default function AudioButton({
       title={state === "error" ? "Озвучка недоступна" : ariaLabel}
       disabled={!src}
       className={[
-        "inline-flex shrink-0 items-center justify-center rounded-full transition-colors",
+        "inline-flex shrink-0 items-center justify-center transition-colors",
+        variant === "primary" ? primaryShapeClasses[size] : "rounded-full",
         "focus:outline-none focus-visible:ring-2 focus-visible:ring-[#262626] focus-visible:ring-offset-2",
         "disabled:cursor-not-allowed disabled:opacity-50",
         sizeClasses[size],
@@ -119,10 +162,8 @@ export default function AudioButton({
         <Loader2 className={`${iconSizes[size]} animate-spin`} aria-hidden />
       ) : state === "playing" ? (
         <Pause className={iconSizes[size]} aria-hidden />
-      ) : state === "error" ? (
-        <Volume2 className={iconSizes[size]} aria-hidden />
       ) : (
-        <Play className={iconSizes[size]} aria-hidden />
+        <SpeakerIcon className={iconSizes[size]} />
       )}
     </button>
   );

@@ -366,7 +366,7 @@ function ExamplesBlock({ content }: { content: AnyRecord }) {
         {cleanItems.map((item, index) => (
           <li
             key={index}
-            className="flex items-start justify-between gap-3 rounded-[var(--radius-card-md)] border border-[#e8e3da] bg-white px-5 py-4 transition-colors hover:border-[#d8c79a]"
+            className="flex items-start justify-between gap-3 rounded-[var(--radius-card-md)] bg-white px-5 py-4"
           >
             <div className="min-w-0 flex-1">
               <p className="text-[1.45rem] font-medium leading-[1.3] text-[#1b1b1b] sm:text-[1.55rem]">
@@ -397,6 +397,7 @@ function ExamplesBlock({ content }: { content: AnyRecord }) {
                 src={item.audioUrl}
                 ariaLabel="Прослушать пример"
                 size="md"
+                variant="primary"
                 className="mt-1 shrink-0"
               />
             ) : null}

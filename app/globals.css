@@ -517,7 +517,7 @@ a:focus-visible {
   align-items: center;
   width: 100%;
   max-width: var(--container-wide);
-  border-radius: var(--radius-button);
+  border-radius: 16px;
   padding: 0 12px;
   margin: 0 auto;
   border: 1px solid #ffffff;
@@ -528,6 +528,12 @@ a:focus-visible {
   background-color: var(--glass-white-80);
 
   box-sizing: border-box;
+}
+
+@media (max-width: 767px) {
+  .site-header-wrapper {
+    border-radius: 14px;
+  }
 }
 
 @media (min-width: 1448px) {

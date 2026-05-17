@@ -4,6 +4,7 @@ import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import PageHero from "@/components/layout/PageHero";
 import JsonLd from "@/components/seo/JsonLd";
 import HskDeckCard from "@/components/content/HskDeckCard";
+import DictionaryAboutInfo from "@/components/content/DictionaryAboutInfo";
 import DictionaryHomeSearch from "@/components/content/DictionaryHomeSearch";
 import DictionarySearchResults from "@/components/content/DictionarySearchResults";
 import {
@@ -103,36 +104,22 @@ export default async function DictionaryPage({
       />
 
       <section className="page-shell-wide section-space">
-        <div className="flex flex-col items-start gap-4">
+        <div className="mx-auto flex w-full max-w-2xl flex-col items-center gap-4 text-center">
           <DictionaryHomeSearch
             initialQuery={query}
             placeholder="Ищи слово, иероглиф, pinyin или перевод"
           />
-          <p className="text-xs text-[#9a9a9a]">
-            Понимает иероглифы, pinyin с тонами, без тонов и тональные числа, а также русские переводы.
-          </p>
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <p className="text-xs text-[#9a9a9a]">
+              Понимает иероглифы, pinyin с тонами, без тонов и тональные числа, а также русские
+              переводы.
+            </p>
+            {!query ? <DictionaryAboutInfo /> : null}
+          </div>
         </div>
       </section>
 
       {searchResult ? <DictionarySearchResults result={searchResult} /> : null}
-
-      {!query ? (
-        <section className="page-shell section-space">
-          <div className="prose-article mx-auto max-w-3xl">
-            <p>
-              Словарь ChinaChild собирает слова по уровням HSK — единой международной шкалы знания
-              китайского. Для каждого слова показываем упрощённое и традиционное написание, пиньинь,
-              значения и примеры предложений. Где доступно — превью написания иероглифов и связанные
-              правила грамматики.
-            </p>
-            <p>
-              На публичных страницах словарь работает в режиме справочника без авторизации.
-              Интерактивные карточки SRS, аудио и тренажёр написания доступны на учебной платформе
-              ChinaChild.
-            </p>
-          </div>
-        </section>
-      ) : null}
 
       {!query
         ? versions.map((version) => {

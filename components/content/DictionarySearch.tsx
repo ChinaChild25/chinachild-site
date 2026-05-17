@@ -33,7 +33,7 @@ export default function DictionarySearch({
     <form
       role="search"
       onSubmit={submit}
-      className="flex w-full max-w-2xl items-center gap-2 rounded-full bg-white px-5 py-3 shadow-sm"
+      className="flex w-full max-w-2xl items-center gap-2 rounded-[var(--radius-input)] bg-white px-5 py-3"
       aria-label="Поиск по словам уровня"
     >
       <input

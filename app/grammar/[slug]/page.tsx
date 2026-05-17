@@ -115,15 +115,15 @@ export default async function GrammarArticlePage({ params }: Props) {
             </p>
           ) : null}
           {article.tags.length > 0 ? (
-            <ul className="mt-6 flex flex-wrap gap-2">
+            <ul className="mt-6 flex flex-wrap gap-2.5">
               {article.tags.map((tag) => (
                 <li key={tag.id}>
                   <Link
                     href={`/grammar/tags/${tag.slug}`}
-                    className="rounded-full bg-white px-3 py-1 text-xs text-[#4b4b4b] hover:underline"
+                    className="inline-flex items-center rounded-[10px] bg-[#f3f0e8] px-4 py-2 text-[15px] font-medium leading-none text-[#262626] transition-colors hover:bg-[#ebe6dc]"
                   >
                     {tag.labelRu}
-                    <span className="ml-1 text-[11px] text-[#7a7a7a]">
+                    <span className="ml-1.5 text-sm font-normal text-[#6b6b6b]">
                       · {tagGroupLabel(tag.groupKey)}
                     </span>
                   </Link>

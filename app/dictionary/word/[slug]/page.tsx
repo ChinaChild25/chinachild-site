@@ -18,6 +18,7 @@ import {
 import { platformLinks } from "@/lib/content/platform-links";
 import { buildMetadata } from "@/lib/metadata";
 import { absoluteUrl } from "@/lib/site-config";
+import { wordHanziDisplayClass } from "@/lib/content/word-hanzi-size";
 import { createBreadcrumbNode } from "@/lib/schema";
 
 export const revalidate = 300;
@@ -108,18 +109,40 @@ export default async function WordDetailPage({ params }: Props) {
       <JsonLd data={graph} id={`word-${word.slug}-graph`} />
 
       <article className="page-shell-wide section-space pt-10">
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(360px,480px)] lg:items-start">
-          <div className="space-y-8">
-            <header className="card-block card-block-lg bg-white text-center lg:text-left">
-              <p className="text-[5rem] font-medium leading-none tracking-tight text-[#1b1b1b] sm:text-[7rem]">
-                {word.simplified}
+        <div className="grid gap-8 lg:grid-cols-2 lg:items-stretch">
+          <header className="card-block card-block-lg flex h-full flex-col bg-white text-center lg:text-left">
+            {word.hskBadges.length > 0 || word.frequencyRank ? (
+              <div className="mb-4 flex flex-wrap justify-center gap-2 lg:justify-end">
+                {word.hskBadges.map((badge) => {
+                  const label = formatHskBadge(badge.version, badge.level);
+                  if (!label) return null;
+                  return (
+                    <Link
+                      key={`${badge.version}-${badge.level}`}
+                      href={`/dictionary/hsk/${hskVersionSlug(badge.version)}/${badge.level}`}
+                      className="inline-flex items-center rounded-[10px] bg-[#f3f0e8] px-3 py-1.5 text-sm font-medium text-[#262626] transition-colors hover:bg-[#ebe6dc]"
+                    >
+                      {label}
+                    </Link>
+                  );
+                })}
+                {word.frequencyRank ? (
+                  <span className="inline-flex items-center rounded-[10px] border border-[#e8e3da] bg-white px-3 py-1.5 text-sm font-medium text-[#4b4b4b]">
+                    Частотность #{word.frequencyRank}
+                  </span>
+                ) : null}
+              </div>
+            ) : null}
+            <p className={`${wordHanziDisplayClass} text-[#1b1b1b]`}>
+              {word.simplified}
+            </p>
+            {word.traditional && word.traditional !== word.simplified ? (
+              <p className="mt-3 text-sm text-[#9a9a9a]">
+                Традиционное написание: <span className="text-[#4b4b4b]">{word.traditional}</span>
               </p>
-              {word.traditional && word.traditional !== word.simplified ? (
-                <p className="mt-3 text-sm text-[#9a9a9a]">
-                  Традиционное написание: <span className="text-[#4b4b4b]">{word.traditional}</span>
-                </p>
-              ) : null}
-              <div className="mt-4 flex items-center justify-center gap-3 lg:justify-start">
+            ) : null}
+            {word.primaryPinyin || word.audioUrl ? (
+              <div className="mt-auto flex flex-wrap items-center justify-center gap-3 pt-4 lg:justify-end">
                 {word.primaryPinyin ? (
                   <p className="text-2xl font-medium text-[#262626]">{word.primaryPinyin}</p>
                 ) : null}
@@ -132,81 +155,59 @@ export default async function WordDetailPage({ params }: Props) {
                   />
                 ) : null}
               </div>
-              <div className="mt-4 flex flex-wrap items-center justify-center gap-2 lg:justify-start">
-                {word.hskBadges.map((badge) => {
-                  const label = formatHskBadge(badge.version, badge.level);
-                  if (!label) return null;
-                  return (
-                    <Link
-                      key={`${badge.version}-${badge.level}`}
-                      href={`/dictionary/hsk/${hskVersionSlug(badge.version)}/${badge.level}`}
-                      className="tag-pill bg-[#262626] text-white hover:underline"
-                    >
-                      {label}
-                    </Link>
-                  );
-                })}
-                {word.frequencyRank ? (
-                  <span className="tag-pill">Частотность #{word.frequencyRank}</span>
-                ) : null}
-              </div>
-            </header>
-
-            {word.senses.length > 0 ? (
-              <section className="card-block bg-white">
-                <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1b1b1b]">Значения</h2>
-                <ol className="mt-4 space-y-3 text-base leading-7 text-[#262626]">
-                  {word.senses.map((sense, index) => (
-                    <li key={index} className="flex gap-3">
-                      <span className="text-[#9a9a9a]">{index + 1}.</span>
-                      <span>{sense.definition}</span>
-                    </li>
-                  ))}
-                </ol>
-              </section>
-            ) : word.baseTranslationRu ? (
-              <section className="card-block bg-white">
-                <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1b1b1b]">Значение</h2>
-                <p className="mt-4 text-base leading-7 text-[#262626]">{word.baseTranslationRu}</p>
-              </section>
             ) : null}
+          </header>
 
-            {word.pronunciations.length > 1 ? (
-              <section className="card-block bg-white">
-                <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1b1b1b]">Произношение</h2>
-                <ul className="mt-4 flex flex-wrap gap-2">
-                  {word.pronunciations.map((pron, index) => (
-                    <li key={index} className="tag-pill bg-[#f8f7f2]">
-                      {pron.pinyinDisplay}
-                      {pron.isPrimary ? " · основное" : null}
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            ) : null}
-          </div>
+          <StrokeOrderPreview characters={word.characters} className="h-full" />
 
-          <div className="space-y-8 lg:sticky lg:top-28">
-            <StrokeOrderPreview characters={word.characters} />
-            {word.characters.length > 0 ? (
-              <section className="card-block bg-white">
-                <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1b1b1b]">
-                  Иероглифы в слове
-                </h2>
-                <ul className="mt-4 flex flex-wrap gap-3">
-                  {word.characters.map((char) => (
-                    <li
-                      key={char.hanzi}
-                      className="flex size-20 items-center justify-center rounded-[var(--radius-card-md)] border border-[#e8e3da] bg-[#fbfaf5]"
-                    >
-                      <span className="text-4xl font-medium text-[#1b1b1b]">{char.hanzi}</span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            ) : null}
-          </div>
+          {word.senses.length > 0 ? (
+            <section className="card-block h-full bg-white">
+              <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1b1b1b]">Значения</h2>
+              <ol className="mt-4 space-y-3 text-base leading-7 text-[#262626]">
+                {word.senses.map((sense, index) => (
+                  <li key={index} className="flex gap-3">
+                    <span className="text-[#9a9a9a]">{index + 1}.</span>
+                    <span>{sense.definition}</span>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          ) : word.baseTranslationRu ? (
+            <section className="card-block h-full bg-white">
+              <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1b1b1b]">Значение</h2>
+              <p className="mt-4 text-base leading-7 text-[#262626]">{word.baseTranslationRu}</p>
+            </section>
+          ) : null}
+
+          {word.characters.length > 0 ? (
+            <section className="card-block h-full bg-white">
+              <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1b1b1b]">
+                Иероглифы в слове
+              </h2>
+              <ul className="mt-4 flex flex-wrap gap-4">
+                {word.characters.map((char) => (
+                  <li key={char.hanzi}>
+                    <span className="text-4xl font-medium text-[#1b1b1b]">{char.hanzi}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
         </div>
+
+        {word.pronunciations.length > 1 ? (
+          <section className="card-block mt-8 bg-white">
+            <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1b1b1b]">Произношение</h2>
+            <ul className="mt-4 flex flex-wrap gap-2">
+              {word.pronunciations.map((pron, index) => (
+                <li key={index} className="tag-pill bg-[#f8f7f2]">
+                  {pron.pinyinDisplay}
+                  {pron.isPrimary ? " · основное" : null}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
 
         <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
           {word.examples.length > 0 ? (
@@ -218,7 +219,7 @@ export default async function WordDetailPage({ params }: Props) {
                 {word.examples.map((example, index) => (
                   <li
                     key={index}
-                    className="flex items-start justify-between gap-3 rounded-[var(--radius-card-md)] border border-[#e8e3da] bg-white px-5 py-4 transition-colors hover:border-[#d8c79a]"
+                    className="flex items-start justify-between gap-3 rounded-[var(--radius-card-md)] bg-white px-5 py-4"
                   >
                     <div className="min-w-0 flex-1">
                       <p className="text-[1.35rem] font-medium leading-snug text-[#1b1b1b]">
@@ -238,6 +239,7 @@ export default async function WordDetailPage({ params }: Props) {
                         src={example.audioUrl}
                         ariaLabel="Прослушать пример"
                         size="md"
+                        variant="primary"
                         className="mt-1"
                       />
                     ) : null}

@@ -11,6 +11,10 @@ const CARD_PALETTE = [
   "card-cream-soft",
 ];
 
+const chipBase =
+  "inline-flex items-center rounded-[10px] px-3 py-1.5 text-sm font-medium leading-none";
+const chipMuted = "text-sm font-normal text-[#6b6b6b]";
+
 export default function GrammarArticleCard({
   article,
   paletteIndex,
@@ -29,9 +33,11 @@ export default function GrammarArticleCard({
       className={`card-block group flex h-full flex-col transition hover:-translate-y-1 ${palette}`}
     >
       <div className="flex flex-wrap items-center gap-2">
-        {badge ? <span className="tag-pill tag-pill-ink">{badge}</span> : null}
+        {badge ? (
+          <span className={`${chipBase} bg-[#262626] text-white`}>{badge}</span>
+        ) : null}
         {sectionNames.map((section) => (
-          <span key={section.id} className="tag-pill">
+          <span key={section.id} className={`${chipBase} bg-white/95 text-[#262626]`}>
             {section.titleRu}
           </span>
         ))}
@@ -43,13 +49,11 @@ export default function GrammarArticleCard({
         <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">{article.summary}</p>
       ) : null}
       {tagChips.length > 0 ? (
-        <ul className="mt-4 flex flex-wrap gap-2 text-xs text-[#6b6b6b]">
+        <ul className="mt-4 flex flex-wrap gap-2">
           {tagChips.map((tag) => (
-            <li key={tag.id} className="rounded-full bg-white/70 px-2.5 py-1">
+            <li key={tag.id} className={`${chipBase} bg-white/95 text-[#262626]`}>
               {tag.labelRu}
-              <span className="ml-1 text-[11px] text-[#7a7a7a]">
-                · {tagGroupLabel(tag.groupKey)}
-              </span>
+              <span className={`ml-1.5 ${chipMuted}`}>· {tagGroupLabel(tag.groupKey)}</span>
             </li>
           ))}
         </ul>

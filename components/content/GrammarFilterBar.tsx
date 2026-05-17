@@ -83,9 +83,9 @@ export default function GrammarFilterBar({ groups, initialQuery }: Props) {
   );
 
   return (
-    <div ref={containerRef} className="grammar-filter-bar">
+    <div ref={containerRef} className="grammar-filter-bar mx-auto flex w-full max-w-2xl flex-col items-center">
       <form
-        className="flex w-full max-w-2xl items-center gap-2 rounded-full bg-white px-5 py-3 shadow-sm"
+        className="flex w-full items-center gap-2 rounded-[var(--radius-input)] bg-white px-5 py-3"
         onSubmit={(event) => {
           event.preventDefault();
           submitQuery(query);
@@ -106,7 +106,7 @@ export default function GrammarFilterBar({ groups, initialQuery }: Props) {
         </button>
       </form>
 
-      <div className="mt-4 flex flex-wrap items-center gap-2">
+      <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
         {groups.map((group) => (
           <FilterDropdown
             key={group.key}
@@ -135,7 +135,7 @@ export default function GrammarFilterBar({ groups, initialQuery }: Props) {
       </div>
 
       {selectedTags.size > 0 ? (
-        <ul className="mt-3 flex flex-wrap gap-2" aria-label="Выбранные фильтры">
+        <ul className="mt-3 flex flex-wrap justify-center gap-2" aria-label="Выбранные фильтры">
           {[...selectedTags].map((slug) => {
             const tag = groups.flatMap((group) => group.tags).find((candidate) => candidate.slug === slug);
             if (!tag) return null;
