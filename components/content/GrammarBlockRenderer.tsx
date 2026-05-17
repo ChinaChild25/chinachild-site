@@ -51,7 +51,7 @@ export default function GrammarBlockRenderer({ blocks }: { blocks: GrammarBlock[
     );
   }
   return (
-    <div className="mx-auto max-w-[760px] space-y-8">
+    <div className="mx-auto min-w-0 max-w-[760px] space-y-8">
       {blocks.map((block) => (
         <BlockSwitch key={block.id} block={block} />
       ))}
@@ -360,7 +360,7 @@ function ExamplesBlock({ content }: { content: AnyRecord }) {
         {cleanItems.map((item, index) => (
           <li
             key={index}
-            className="content-surface-card flex items-start justify-between gap-3 rounded-[var(--radius-card-md)] bg-white px-5 py-4"
+            className="content-surface-card flex min-w-0 items-start justify-between gap-3 rounded-[var(--radius-card-md)] bg-white px-5 py-4"
           >
             <div className="min-w-0 flex-1">
               <p className="text-[1.45rem] font-medium leading-[1.3] text-[#1b1b1b] sm:text-[1.55rem]">

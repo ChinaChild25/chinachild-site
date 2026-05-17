@@ -121,10 +121,11 @@
 
 html {
   scroll-behavior: smooth;
-}
-
-html {
-  overflow-x: clip;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
+  background: var(--background);
+  overscroll-behavior-x: none;
 }
 
 body {
@@ -137,7 +138,10 @@ body {
   font-size: var(--fs-body);
   line-height: var(--lh-tight);
   letter-spacing: var(--tracking-body);
-  overflow-x: clip;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
+  overscroll-behavior-x: none;
 
   padding-top: 72px;  /* 8px top + 56px header + воздух */
   padding-bottom: 0;
@@ -214,15 +218,28 @@ a:focus-visible {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.site-shell > main {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .page-shell {
   width: min(var(--container-default), calc(100% - var(--page-gutter) * 2));
+  max-width: 100%;
+  min-width: 0;
   margin: 0 auto;
 }
 
 .page-shell-wide {
   width: min(var(--container-wide), calc(100% - var(--page-gutter) * 2));
+  max-width: 100%;
+  min-width: 0;
   margin: 0 auto;
 }
 
@@ -1881,6 +1898,9 @@ html[data-theme="dark"] {
 /* Grammar scheme / formula panels — theme-aware background + visible «+». */
 .grammar-scheme-panel {
   background: var(--cream);
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .grammar-formula-panel {
@@ -2309,27 +2329,16 @@ html[data-theme="dark"] {
 
 .violet-spotlight {
   position: relative;
-  /* Объявляем именованный view-timeline на этой секции, чтобы её
-     дочерние элементы (text, ::before overlay) могли подвязать свою
-     анимацию к скролл-прогрессу именно ЭТОЙ секции, а не к своему. */
+  isolation: isolate;
+  /* Фон секции, без position:fixed — иначе на iOS при горизонтальном
+     скролле проступает фиолетовая «подложка» за всей страницей. */
   view-timeline-name: --violet-spotlight;
   view-timeline-axis: block;
 }
 
-.violet-spotlight::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: #726BFF;
-  z-index: -1;
-  pointer-events: none;
-  opacity: 0;
-  will-change: opacity;
-}
-
 @supports (animation-timeline: view()) {
-  .violet-spotlight::before {
-    animation: violet-spotlight-fade linear both;
+  .violet-spotlight {
+    animation: violet-spotlight-bg linear both;
     animation-timeline: --violet-spotlight;
     animation-range: cover 0% cover 100%;
   }
@@ -2342,16 +2351,16 @@ html[data-theme="dark"] {
   }
 }
 
-@keyframes violet-spotlight-fade {
+@keyframes violet-spotlight-bg {
   0%,
   24.99%,
   75.01%,
   100% {
-    opacity: 0;
+    background-color: transparent;
   }
   25%,
   75% {
-    opacity: 1;
+    background-color: #726bff;
   }
 }
 
@@ -2369,7 +2378,7 @@ html[data-theme="dark"] {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .violet-spotlight::before,
+  .violet-spotlight,
   .violet-spotlight .section-title,
   .violet-spotlight .section-description {
     animation: none !important;
