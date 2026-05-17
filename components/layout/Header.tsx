@@ -4,8 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import LeadModal from "@/components/forms/LeadModal";
-import { CONTACT_PHONE, CONTACT_PHONE_TEL } from "@/lib/site-config";
-
+import ThemeToggle from "@/components/theme/ThemeToggle";
 const navigation = [
   { label: "Курсы", href: "/courses" },
   { label: "HSK", href: "/learn/hsk" },
@@ -72,16 +71,9 @@ export default function Header() {
                   </Link>
                 </li>
               ))}
-              <li>
-                <a
-                  href={`tel:${CONTACT_PHONE_TEL}`}
-                  className="site-header-link"
-                  aria-label={`Позвонить ${CONTACT_PHONE}`}
-                >
-                  {CONTACT_PHONE}
-                </a>
-              </li>
             </ul>
+
+            <ThemeToggle />
 
             <LeadModal
               triggerClassName="site-header-cta"
@@ -92,18 +84,21 @@ export default function Header() {
             </LeadModal>
           </nav>
 
-          <button
-            type="button"
-            aria-label={menuOpen ? "Закрыть меню" : "Открыть меню"}
-            aria-expanded={menuOpen}
-            aria-controls="mobile-drawer"
-            className={`site-header-burger ${menuOpen ? "is-open" : ""}`}
-            onClick={() => setMenuOpen((v) => !v)}
-          >
-            <span />
-            <span />
-            <span />
-          </button>
+          <div className="site-header-mobile-actions">
+            <ThemeToggle />
+            <button
+              type="button"
+              aria-label={menuOpen ? "Закрыть меню" : "Открыть меню"}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-drawer"
+              className={`site-header-burger ${menuOpen ? "is-open" : ""}`}
+              onClick={() => setMenuOpen((v) => !v)}
+            >
+              <span />
+              <span />
+              <span />
+            </button>
+          </div>
         </div>
       </header>
 
@@ -126,15 +121,6 @@ export default function Header() {
                 </Link>
               </li>
             ))}
-            <li>
-              <a
-                href={`tel:${CONTACT_PHONE_TEL}`}
-                className="mobile-drawer-link"
-                aria-label={`Позвонить ${CONTACT_PHONE}`}
-              >
-                {CONTACT_PHONE}
-              </a>
-            </li>
           </ul>
 
           <LeadModal

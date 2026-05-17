@@ -123,6 +123,10 @@ html {
   scroll-behavior: smooth;
 }
 
+html {
+  overflow-x: clip;
+}
+
 body {
   margin: 0;
   background: var(--background);
@@ -133,6 +137,7 @@ body {
   font-size: var(--fs-body);
   line-height: var(--lh-tight);
   letter-spacing: var(--tracking-body);
+  overflow-x: clip;
 
   padding-top: 72px;  /* 8px top + 56px header + воздух */
   padding-bottom: 0;
@@ -402,6 +407,31 @@ a:focus-visible {
   background: rgba(0, 0, 0, 0.05);
 }
 
+/* Аудио / порядок черт — контрастны на светлых и тёмных карточках. */
+.btn-media-primary {
+  background: #262626;
+  color: #ffffff;
+  border: 0;
+  cursor: pointer;
+  transition: background-color var(--t-base);
+}
+
+.btn-media-primary:hover:not(:disabled) {
+  background: #1a1a1a;
+}
+
+.btn-media-primary:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.btn-media-primary:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--background),
+    0 0 0 4px var(--ink);
+}
+
 .btn-block {
   width: 100%;
 }
@@ -631,6 +661,62 @@ a:focus-visible {
   color: #ffffff;
 }
 
+.site-header-mobile-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+@media (min-width: 1024px) {
+  .site-header-mobile-actions {
+    display: none;
+  }
+}
+
+/* Theme toggle — pill track + sliding thumb (sun / moon). */
+.theme-toggle {
+  position: relative;
+  flex-shrink: 0;
+  width: 52px;
+  height: 28px;
+  border: 0;
+  border-radius: 999px;
+  padding: 0;
+  cursor: pointer;
+  background: #e6e4de;
+  transition: background-color 200ms ease;
+}
+
+.theme-toggle-thumb {
+  position: absolute;
+  top: 3px;
+  left: 27px;
+  display: grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border-radius: 999px;
+  background: #262626;
+  color: #ffffff;
+  transition: left 200ms ease, background-color 200ms ease, color 200ms ease;
+}
+
+.theme-toggle-icon {
+  width: 14px;
+  height: 14px;
+}
+
+html[data-theme="dark"] .theme-toggle {
+  background: #3a3a3a;
+}
+
+html[data-theme="dark"] .theme-toggle-thumb {
+  left: 3px;
+  background: #f5f5f5;
+  color: #262626;
+}
+
 /* Бургер */
 .site-header-burger {
   display: flex;
@@ -643,7 +729,6 @@ a:focus-visible {
   padding: 0;
   background: transparent;
   border: 0;
-  margin-left: auto;
   position: relative;
 }
 
@@ -1722,7 +1807,7 @@ textarea.lead-input {
 }
 
 /* Dark mode — ховер на строке чуть светлее, hover-tint работает наоборот. */
-@media (prefers-color-scheme: dark) {
+html[data-theme="dark"] {
   .prose-table tr:hover td {
     background: rgba(255, 255, 255, 0.03);
   }
@@ -1793,56 +1878,154 @@ textarea.lead-input {
   }
 }
 
+/* Grammar scheme / formula panels — theme-aware background + visible «+». */
+.grammar-scheme-panel {
+  background: var(--cream);
+}
+
+.grammar-formula-panel {
+  background: var(--cream-soft);
+}
+
+.grammar-scheme-plus {
+  color: var(--ink);
+  line-height: 1;
+}
+
+/* Stroke order: wrap on mobile, single strip on desktop. */
+.stroke-order-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #e8e3da;
+  background: #fbfaf5;
+  padding: 8px;
+}
+
+@media (min-width: 1024px) {
+  .stroke-order-strip {
+    flex-wrap: nowrap;
+    width: fit-content;
+    gap: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .stroke-order-strip > * + * {
+    border-left: 1px solid #e8e3da;
+  }
+}
+
+/* Grammar callouts — светлые плашки; в dark отдельные тона. */
+.grammar-callout {
+  border-left: 4px solid transparent;
+  border-radius: 12px;
+  padding: 12px 16px 12px 16px;
+}
+
+@media (min-width: 640px) {
+  .grammar-callout {
+    padding-left: 20px;
+  }
+}
+
+.grammar-callout-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.grammar-callout-body {
+  margin-top: 6px;
+  font-size: 15px;
+  line-height: 1.65;
+  color: #2d2d2d;
+}
+
+.grammar-callout--info {
+  border-left-color: #a0b4d0;
+  background: #eef3fa;
+}
+
+.grammar-callout--info .grammar-callout-title {
+  color: #2d4a76;
+}
+
+.grammar-callout--tip {
+  border-left-color: #b8c980;
+  background: #f3f7e0;
+}
+
+.grammar-callout--tip .grammar-callout-title {
+  color: #4a5d20;
+}
+
+.grammar-callout--warning {
+  border-left-color: #e0a888;
+  background: #fdf0e8;
+}
+
+.grammar-callout--warning .grammar-callout-title {
+  color: #8a3e1f;
+}
+
+.grammar-callout--rule {
+  border-left-color: #b8b3e6;
+  background: #f1edff;
+}
+
+.grammar-callout--rule .grammar-callout-title {
+  color: #3a2f8a;
+}
+
 /* ==========================================================================
-   DARK MODE — авто-следование системной теме (как у Yandex Practicum).
-   Только переопределение токенов и точечные классовые правки. Без JS,
-   без toggle, не влияет на SEO/CWV.
+   DARK MODE — ручной переключатель (data-theme на <html>).
    ========================================================================== */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #121212;
-    --background-2: #262626;
-    --surface: #262626;
-    --foreground: #ededed;
-    --muted: #9a9a9a;
-    --muted-strong: #b8b8b8;
-    --line: rgba(255, 255, 255, 0.08);
+html[data-theme="dark"] {
+  color-scheme: dark;
 
-    /* Ink на тёмной теме = светлый, чтобы var(--ink) рисовал текст. */
-    --ink: #ededed;
-    --ink-700: #f3f3f3;
-    --ink-800: #ffffff;
-    --ink-btn: #ededed;
-    --ink-btn-hover: #ffffff;
+  /* Токены на самом <html> — вложенный :root здесь не срабатывает. */
+  --background: #121212;
+  --background-2: #262626;
+  --surface: #262626;
+  --foreground: #ededed;
+  --muted: #9a9a9a;
+  --muted-strong: #b8b8b8;
+  --line: rgba(255, 255, 255, 0.08);
 
-    /* Glass — header тонируется чёрным. */
-    --glass-white-80: rgba(28, 28, 28, 0.78);
-    --glass-white-25: rgba(28, 28, 28, 0.4);
-    --glass-white-06: rgba(255, 255, 255, 0.08);
-    --glass-white-05: rgba(255, 255, 255, 0.04);
+  /* Ink на тёмной теме = светлый, чтобы var(--ink) рисовал текст. */
+  --ink: #ededed;
+  --ink-700: #f3f3f3;
+  --ink-800: #ffffff;
+  --ink-btn: #ededed;
+  --ink-btn-hover: #ffffff;
 
-    /* Пастели приглушаем — оставляем цвет-маркеры разделов. */
-    --violet: #2a2740;
-    --cream:  #2b2722;
-    --lime:   #2a2e1c;
-    --sky:    #1e2832;
-    --peach:  #2f231e;
-    --faq-bg: #232323;
+  /* Glass — header тонируется чёрным. */
+  --glass-white-80: rgba(28, 28, 28, 0.78);
+  --glass-white-25: rgba(28, 28, 28, 0.4);
+  --glass-white-06: rgba(255, 255, 255, 0.08);
+  --glass-white-05: rgba(255, 255, 255, 0.04);
 
-    --violet-soft: #2a2740;
-    --cream-soft:  #2b2722;
-    --lime-soft:   #2a2e1c;
-    --sky-soft:    #1e2832;
-    --peach-soft:  #2f231e;
+  /* Пастели приглушаем — оставляем цвет-маркеры разделов. */
+  --violet: #2a2740;
+  --cream: #2b2722;
+  --lime: #2a2e1c;
+  --sky: #1e2832;
+  --peach: #2f231e;
+  --faq-bg: #232323;
 
-    --gray-base: #9a9a9a;
-    --gray-light: #3a3a3a;
-  }
+  --violet-soft: #2a2740;
+  --cream-soft: #2b2722;
+  --lime-soft: #2a2e1c;
+  --sky-soft: #1e2832;
+  --peach-soft: #2f231e;
 
-  body {
-    color-scheme: dark;
-  }
+  --gray-base: #9a9a9a;
+  --gray-light: #3a3a3a;
 
   /* Header — инвертируем стекло. */
   .site-header-wrapper {
@@ -1855,6 +2038,16 @@ textarea.lead-input {
   }
   .site-header-cta:hover {
     background: #ffffff;
+  }
+
+  .btn-media-primary {
+    background: #ededed;
+    color: #262626;
+  }
+
+  .btn-media-primary:hover:not(:disabled) {
+    background: #ffffff;
+    color: #262626;
   }
 
   /* Чёрные CTA-кнопки в текстовом потоке инвертируем в светлые,
@@ -1936,15 +2129,38 @@ textarea.lead-input {
   [class*="text-[#1b1b1b]"] {
     color: var(--ink) !important;
   }
+
+  /* Абзацы, переводы в примерах, подписи под схемами */
+  [class*="text-[#2d2d2d]"],
+  [class*="text-[#3a3a3a]"],
   [class*="text-[#4b4b4b]"] {
-    color: var(--muted-strong) !important;
+    color: rgba(237, 237, 237, 0.86) !important;
   }
+
+  /* Pinyin, метки блоков, вторичные подписи */
+  [class*="text-[#5a5a5a]"],
   [class*="text-[#6b6b6b]"] {
-    color: var(--muted) !important;
+    color: rgba(237, 237, 237, 0.64) !important;
   }
+
   [class*="text-[#9a9a9a]"],
   [class*="text-[#7a7a7a]"] {
-    color: #8a8a8a !important;
+    color: rgba(237, 237, 237, 0.52) !important;
+  }
+
+  [class*="bg-[#f3f0e8]"] {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+  }
+
+  .stroke-order-strip {
+    background: var(--cream-soft);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  @media (min-width: 1024px) {
+    .stroke-order-strip > * + * {
+      border-left-color: rgba(255, 255, 255, 0.1);
+    }
   }
 
   /* Tag pill на dark — фон под пастель. */
@@ -1958,9 +2174,55 @@ textarea.lead-input {
      в --surface. Транслюсцентные `bg-white/15`, `bg-white/06` и пр.
      ловятся через [class*="bg-white/"] — для них оставляем поведение
      overlay (полупрозрачный белый поверх тёмного — это OK). */
-  .bg-white:not([class*="bg-white/"]) {
+  .bg-white:not([class*="bg-white/"]),
+  .content-surface-card {
     background-color: var(--surface) !important;
     color: var(--ink);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .card-block {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .grammar-callout--info {
+    border-left-color: #6b8fc4;
+    background: #1a2638;
+  }
+
+  .grammar-callout--info .grammar-callout-title {
+    color: #a8c4e8 !important;
+  }
+
+  .grammar-callout--tip {
+    border-left-color: #8faa4a;
+    background: #242b18;
+  }
+
+  .grammar-callout--tip .grammar-callout-title {
+    color: #c8de8a !important;
+  }
+
+  .grammar-callout--warning {
+    border-left-color: #c98a62;
+    background: #2b2018;
+  }
+
+  .grammar-callout--warning .grammar-callout-title {
+    color: #f0b48a !important;
+  }
+
+  .grammar-callout--rule {
+    border-left-color: #9a8fd4;
+    background: #252238;
+  }
+
+  .grammar-callout--rule .grammar-callout-title {
+    color: #c9bdf5 !important;
+  }
+
+  .grammar-callout-body {
+    color: rgba(237, 237, 237, 0.88) !important;
   }
 
   /* Standalone form wrapper и lead-input — на dark получают тёмный фон. */
@@ -2135,7 +2397,7 @@ textarea.lead-input {
   }
 }
 
-@media (prefers-color-scheme: dark) {
+html[data-theme="dark"] {
   .blog-hub-pill {
     background: rgba(255, 255, 255, 0.08);
     color: var(--ink);

@@ -413,9 +413,11 @@ export async function getPublicGrammarHomeData(
 
   return {
     featuredTopics: buildFeaturedTopics(snap),
-    filters: groupTags(snap.tags.map((tag) => mapTag(tag, tagCounts))),
+    filters: groupTags(snap.tags.map((tag) => mapTag(tag, tagCounts)).filter((tag) => tag.articleCount > 0)),
     articles: filtered.slice(0, limit).map((article) => mapArticleCard(article, snap)),
-    sections: snap.sections.map((section) => mapSection(section, sectionCounts)),
+    sections: snap.sections
+      .map((section) => mapSection(section, sectionCounts))
+      .filter((section) => section.articleCount > 0),
     totalArticles: filtered.length,
   };
 }
@@ -513,7 +515,7 @@ export async function getPublicGrammarArticleBySlug(
 export async function getPublicGrammarTags(): Promise<GrammarTagGroup[]> {
   const snap = await getCachedSnapshot();
   const counts = articleCountsByTagId(snap);
-  return groupTags(snap.tags.map((tag) => mapTag(tag, counts)));
+  return groupTags(snap.tags.map((tag) => mapTag(tag, counts)).filter((tag) => tag.articleCount > 0));
 }
 
 export async function getPublicGrammarTagBySlug(slug: string): Promise<{
@@ -525,6 +527,7 @@ export async function getPublicGrammarTagBySlug(slug: string): Promise<{
   const tagRow = snap.tags.find((t) => t.slug === slug);
   if (!tagRow) return { tag: null, articles: [] };
   const tag = mapTag(tagRow, counts);
+  if (tag.articleCount === 0) return { tag: null, articles: [] };
   const articleIds = new Set(
     snap.articleTags.filter((rel) => rel.tag_id === tag.id).map((rel) => rel.article_id),
   );
@@ -537,7 +540,9 @@ export async function getPublicGrammarTagBySlug(slug: string): Promise<{
 export async function getPublicGrammarSections(): Promise<GrammarSection[]> {
   const snap = await getCachedSnapshot();
   const counts = articleCountsBySectionId(snap);
-  return snap.sections.map((section) => mapSection(section, counts));
+  return snap.sections
+    .map((section) => mapSection(section, counts))
+    .filter((section) => section.articleCount > 0);
 }
 
 /**
@@ -592,6 +597,7 @@ export async function getPublicGrammarSectionBySlug(slug: string): Promise<{
   const sectionRow = snap.sections.find((s) => s.slug === slug);
   if (!sectionRow) return { section: null, articles: [] };
   const section = mapSection(sectionRow, counts);
+  if (section.articleCount === 0) return { section: null, articles: [] };
   const articleIds = new Set(
     snap.articleSections.filter((rel) => rel.section_id === section.id).map((rel) => rel.article_id),
   );

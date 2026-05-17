@@ -219,7 +219,7 @@ export default async function WordDetailPage({ params }: Props) {
                 {word.examples.map((example, index) => (
                   <li
                     key={index}
-                    className="flex items-start justify-between gap-3 rounded-[var(--radius-card-md)] bg-white px-5 py-4"
+                    className="content-surface-card flex items-start justify-between gap-3 rounded-[var(--radius-card-md)] bg-white px-5 py-4"
                   >
                     <div className="min-w-0 flex-1">
                       <p className="text-[1.35rem] font-medium leading-snug text-[#1b1b1b]">

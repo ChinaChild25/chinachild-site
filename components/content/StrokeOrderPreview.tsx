@@ -286,7 +286,7 @@ export default function StrokeOrderPreview({
             disabled={isRunning}
             aria-label={actionLabel}
             title={actionLabel}
-            className="absolute right-0 top-0 grid size-9 place-items-center rounded-full bg-[#262626] text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-60"
+            className="btn-media-primary absolute right-0 top-0 grid size-9 place-items-center rounded-full transition-opacity"
           >
             {hasFinished ? (
               <RotateCcw className="size-4" aria-hidden />
@@ -296,7 +296,7 @@ export default function StrokeOrderPreview({
           </button>
         ) : null}
       </div>
-      <div className="mt-4 flex w-fit max-w-full justify-start divide-x divide-[#e8e3da] overflow-hidden border border-[#e8e3da] bg-[#fbfaf5] max-lg:flex-none lg:min-h-0 lg:flex-1">
+      <div className="stroke-order-strip mt-4 max-lg:flex-none lg:min-h-0 lg:flex-1">
         {characters.map((character, index) => (
           <StrokeCell
             key={`${character.hanzi}-${index}`}

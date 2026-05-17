@@ -131,7 +131,7 @@ export default function AudioButton({
 
   const baseClass =
     variant === "primary"
-      ? "bg-[#262626] text-white hover:bg-[#1a1a1a]"
+      ? "btn-media-primary"
       : "bg-white text-[#1b1b1b] ring-1 ring-black/[0.08] hover:bg-[#f6f3eb]";
 
   const stateClass =
@@ -151,8 +151,8 @@ export default function AudioButton({
       className={[
         "inline-flex shrink-0 items-center justify-center transition-colors",
         variant === "primary" ? primaryShapeClasses[size] : "rounded-full",
-        "focus:outline-none focus-visible:ring-2 focus-visible:ring-[#262626] focus-visible:ring-offset-2",
-        "disabled:cursor-not-allowed disabled:opacity-50",
+        variant === "primary" ? "" : "focus:outline-none focus-visible:ring-2 focus-visible:ring-[#262626] focus-visible:ring-offset-2",
+        variant === "primary" ? "" : "disabled:cursor-not-allowed disabled:opacity-50",
         sizeClasses[size],
         stateClass,
         className ?? "",

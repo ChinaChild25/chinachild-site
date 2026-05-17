@@ -5,6 +5,7 @@ import "./globals.css";
 import FloatingCta from "@/components/layout/FloatingCta";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
+import ThemeInitScript from "@/components/theme/ThemeInitScript";
 import JsonLd from "@/components/seo/JsonLd";
 import YandexMetrika from "@/components/seo/YandexMetrika";
 import { buildMetadata } from "@/lib/metadata";
@@ -49,7 +50,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: "#5c5cff",
-  colorScheme: "light",
+  colorScheme: "light dark",
   width: "device-width",
   initialScale: 1,
 };
@@ -60,8 +61,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru" className={inter.className}>
+    <html lang="ru" className={inter.className} data-theme="light" suppressHydrationWarning>
       <head>
+        <ThemeInitScript />
         {/* Preconnect / DNS-prefetch — kills first-byte latency for analytics. */}
         <link rel="preconnect" href="https://mc.yandex.ru" crossOrigin="" />
         <link rel="dns-prefetch" href="https://mc.yandex.ru" />

@@ -188,8 +188,8 @@ function SchemeBlock({ content }: { content: AnyRecord }) {
   return (
     <figure className="space-y-3">
       <p className="text-sm font-medium text-[#6b6b6b]">{label}</p>
-      <div className="overflow-x-auto rounded-[var(--radius-card)] bg-[#f1eee2] px-4 py-5 sm:px-6">
-        <div className="flex min-w-max items-stretch justify-center gap-2 sm:gap-3">
+      <div className="grammar-scheme-panel rounded-[var(--radius-card)] px-4 py-5 sm:px-6">
+        <div className="flex flex-wrap items-stretch justify-center gap-x-2 gap-y-3 sm:gap-x-3">
           {parts.map((part, index) => (
             <div key={index} className="contents">
               <SchemePill part={part} />
@@ -222,7 +222,7 @@ function SchemeSeparator() {
   return (
     <span
       aria-hidden
-      className="flex shrink-0 select-none items-center justify-center self-center text-2xl font-light text-[#1b1b1b]"
+      className="grammar-scheme-plus flex shrink-0 select-none items-center justify-center self-center text-2xl font-light"
     >
       +
     </span>
@@ -244,16 +244,16 @@ function FormulaBlock({ content }: { content: AnyRecord }) {
   return (
     <figure className="space-y-3">
       <p className="text-sm font-medium text-[#6b6b6b]">Формула</p>
-      <div className="overflow-x-auto rounded-[var(--radius-card-md)] bg-[#efeae0] px-4 py-3 sm:px-5">
+      <div className="grammar-scheme-panel grammar-formula-panel rounded-[var(--radius-card-md)] px-4 py-3 sm:px-5">
         {parts.length > 0 ? (
-          <div className="flex min-w-max items-center justify-center gap-2">
+          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-2">
             {parts.map((label, index) => (
               <span key={index} className="contents">
                 <span className="inline-flex items-center rounded-[10px] bg-white px-3 py-1.5 text-sm font-medium text-[#1b1b1b] ring-1 ring-black/[0.05]">
                   {label}
                 </span>
                 {index < parts.length - 1 ? (
-                  <span aria-hidden className="select-none text-lg text-[#1b1b1b]">
+                  <span aria-hidden className="grammar-scheme-plus select-none text-lg">
                     +
                   </span>
                 ) : null}
@@ -270,29 +270,23 @@ function FormulaBlock({ content }: { content: AnyRecord }) {
 }
 
 // ---------- Callout ----------
-const CALLOUT_TONE_PALETTE: Record<string, { border: string; bg: string; eyebrow: string; label: string }> = {
-  info:    { border: "#a0b4d0", bg: "#eef3fa", eyebrow: "#2d4a76", label: "Обрати внимание" },
-  tip:     { border: "#b8c980", bg: "#f3f7e0", eyebrow: "#4a5d20", label: "Совет"          },
-  warning: { border: "#e0a888", bg: "#fdf0e8", eyebrow: "#8a3e1f", label: "Важно"          },
-  rule:    { border: "#b8b3e6", bg: "#f1edff", eyebrow: "#3a2f8a", label: "Правило"        },
+const CALLOUT_LABELS: Record<string, string> = {
+  info: "Обрати внимание",
+  tip: "Совет",
+  warning: "Важно",
+  rule: "Правило",
 };
 
 function CalloutBlock({ content }: { content: AnyRecord }) {
   const text = readText(content);
   if (!text) return null;
   const toneRaw = asString(content.tone).toLowerCase();
-  const tone = CALLOUT_TONE_PALETTE[toneRaw] ? toneRaw : "info";
-  const palette = CALLOUT_TONE_PALETTE[tone]!;
-  const title = asString(content.title) || palette.label;
+  const tone = CALLOUT_LABELS[toneRaw] ? toneRaw : "info";
+  const title = asString(content.title) || CALLOUT_LABELS[tone] || "Обрати внимание";
   return (
-    <aside
-      className="rounded-[12px] border-l-[4px] py-3 pl-4 pr-4 sm:pl-5"
-      style={{ borderLeftColor: palette.border, backgroundColor: palette.bg }}
-    >
-      <p className="text-sm font-medium" style={{ color: palette.eyebrow }}>
-        {title}
-      </p>
-      <p className="mt-1.5 text-[15px] leading-[1.65] text-[#2d2d2d]">{text}</p>
+    <aside className={`grammar-callout grammar-callout--${tone}`}>
+      <p className="grammar-callout-title">{title}</p>
+      <p className="grammar-callout-body">{text}</p>
     </aside>
   );
 }
@@ -366,7 +360,7 @@ function ExamplesBlock({ content }: { content: AnyRecord }) {
         {cleanItems.map((item, index) => (
           <li
             key={index}
-            className="flex items-start justify-between gap-3 rounded-[var(--radius-card-md)] bg-white px-5 py-4"
+            className="content-surface-card flex items-start justify-between gap-3 rounded-[var(--radius-card-md)] bg-white px-5 py-4"
           >
             <div className="min-w-0 flex-1">
               <p className="text-[1.45rem] font-medium leading-[1.3] text-[#1b1b1b] sm:text-[1.55rem]">
