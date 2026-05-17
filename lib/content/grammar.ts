@@ -1,6 +1,8 @@
 import "server-only";
+import { createHash } from "node:crypto";
 import { unstable_cache as nextCache } from "next/cache";
 import { getPublicSupabaseClient } from "@/lib/supabase/public-content";
+import { fetchAudioUrls } from "@/lib/content/audio";
 import {
   normalizeTagGroupKey,
   TAG_GROUP_ORDER,
@@ -428,6 +430,23 @@ export async function getPublicGrammarSlugs(): Promise<string[]> {
   return snap.articles.map((article) => article.slug);
 }
 
+/**
+ * Computes the stable synthetic uuid used as `owner_id` for grammar-example
+ * audio rows in `vocab_audio_assets`. Must match the algorithm in
+ * `chinachild-sandbox/scripts/backfill-learning-audio.ts`.
+ */
+function grammarExampleOwnerId(articleId: string, blockId: string, index: number): string {
+  const key = `grammar_example|${articleId}|${blockId}|${index}`;
+  const hex = createHash("sha256").update(key).digest("hex").slice(0, 32);
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20, 32)}`;
+}
+
+type GrammarBlockContent = { items?: Array<Record<string, unknown>>; [key: string]: unknown };
+
+function looksLikeRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
 export async function getPublicGrammarArticleBySlug(
   slug: string,
 ): Promise<GrammarArticleDetail | null> {
@@ -435,19 +454,59 @@ export async function getPublicGrammarArticleBySlug(
   const article = snap.articles.find((candidate) => candidate.slug === slug);
   if (!article) return null;
   const card = mapArticleCard(article, snap);
+
+  const articleBlocks = snap.blocks
+    .filter((block) => block.article_id === article.id)
+    .sort((a, b) => a.order_index - b.order_index);
+
+  // Compute stable owner ids for every grammar example item in this article
+  // and look up cached audio URLs in one round-trip.
+  const exampleAudioKeys: Array<{ blockId: string; index: number; ownerId: string }> = [];
+  for (const block of articleBlocks) {
+    if (block.block_type !== "examples") continue;
+    const content = looksLikeRecord(block.content) ? (block.content as GrammarBlockContent) : null;
+    const items = Array.isArray(content?.items) ? content!.items! : [];
+    items.forEach((_, index) => {
+      exampleAudioKeys.push({
+        blockId: block.id,
+        index,
+        ownerId: grammarExampleOwnerId(article.id, block.id, index),
+      });
+    });
+  }
+  const audioByOwnerId = await fetchAudioUrls(
+    "grammar_example",
+    exampleAudioKeys.map((entry) => entry.ownerId),
+  );
+  const audioByBlockIndex = new Map<string, string>(); // key = `${blockId}|${index}`
+  for (const entry of exampleAudioKeys) {
+    const url = audioByOwnerId.get(entry.ownerId);
+    if (url) audioByBlockIndex.set(`${entry.blockId}|${entry.index}`, url);
+  }
+
   return {
     ...card,
     locale: article.locale,
-    blocks: snap.blocks
-      .filter((block) => block.article_id === article.id)
-      .sort((a, b) => a.order_index - b.order_index)
-      .map((block) => ({
+    blocks: articleBlocks.map((block) => {
+      let content: unknown = block.content;
+      if (block.block_type === "examples" && looksLikeRecord(content)) {
+        const original = content as GrammarBlockContent;
+        const items = Array.isArray(original.items) ? original.items : [];
+        const itemsWithAudio = items.map((item, index) => {
+          const url = audioByBlockIndex.get(`${block.id}|${index}`);
+          if (!url) return item;
+          return { ...item, audio_url: url };
+        });
+        content = { ...original, items: itemsWithAudio };
+      }
+      return {
         id: block.id,
         articleId: block.article_id,
         blockType: block.block_type,
-        content: block.content,
+        content,
         orderIndex: block.order_index,
-      })),
+      };
+    }),
   };
 }
 

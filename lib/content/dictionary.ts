@@ -1,6 +1,7 @@
 import "server-only";
 import { unstable_cache as nextCache } from "next/cache";
 import { getPublicSupabaseClient } from "@/lib/supabase/public-content";
+import { fetchAudioUrls } from "@/lib/content/audio";
 import {
   escapeForPostgrestOr,
   normalizeQuery,
@@ -234,7 +235,7 @@ export async function getPublicHskLevelTerms(
   if (itemRows.length === 0) return { deck, terms: [], totalImported: 0 };
 
   const termIds = itemRows.map((row) => row.term_id);
-  const [termsRes, pronRes, sensesRes] = await Promise.all([
+  const [termsRes, pronRes, sensesRes, termAudioMap] = await Promise.all([
     supabase
       .from("vocab_terms")
       .select(
@@ -249,6 +250,7 @@ export async function getPublicHskLevelTerms(
       .from("vocab_senses")
       .select("term_id, locale, definition, order_index")
       .in("term_id", termIds),
+    fetchAudioUrls("term", termIds),
   ]);
   if (termsRes.error || pronRes.error || sensesRes.error) {
     console.warn(
@@ -297,6 +299,7 @@ export async function getPublicHskLevelTerms(
         frequencyRank: term.frequency_rank,
         primaryPinyin: pron?.pinyin_display ?? null,
         primarySense: sense?.definition ?? term.base_translation_ru ?? null,
+        audioUrl: termAudioMap.get(term.id) ?? null,
       };
       if (query) {
         const haystack = [
@@ -360,7 +363,7 @@ export async function getPublicWordBySlug(slug: string): Promise<WordDetail | nu
       .order("order_index", { ascending: true }),
     supabase
       .from("vocab_examples")
-      .select("term_id, hanzi, pinyin, translation_ru, order_index")
+      .select("id, term_id, hanzi, pinyin, translation_ru, order_index")
       .eq("term_id", term.id)
       .order("order_index", { ascending: true }),
     supabase.from("vocab_deck_items").select("deck_id, term_id, order_index").eq("term_id", term.id),
@@ -374,11 +377,18 @@ export async function getPublicWordBySlug(slug: string): Promise<WordDetail | nu
   const senses = ((sensesRes.data ?? []) as SenseRow[])
     .filter((s) => s.locale === "ru")
     .map((s) => ({ definition: s.definition, locale: s.locale, orderIndex: s.order_index }));
-  const examples = ((examplesRes.data ?? []) as ExampleRow[]).map((e) => ({
+  const exampleRows = (examplesRes.data ?? []) as Array<ExampleRow & { id: string }>;
+  const exampleIds = exampleRows.map((row) => row.id).filter(Boolean);
+  const [termAudioMap, exampleAudioMap] = await Promise.all([
+    fetchAudioUrls("term", [term.id]),
+    fetchAudioUrls("example", exampleIds),
+  ]);
+  const examples = exampleRows.map((e) => ({
     hanzi: e.hanzi,
     pinyin: e.pinyin,
     translationRu: e.translation_ru,
     orderIndex: e.order_index,
+    audioUrl: exampleAudioMap.get(e.id) ?? null,
   }));
 
   // HSK badges from deck memberships.
@@ -447,6 +457,7 @@ export async function getPublicWordBySlug(slug: string): Promise<WordDetail | nu
     frequencyRank: term.frequency_rank,
     primaryPinyin: pronunciations.find((p) => p.isPrimary)?.pinyinDisplay ?? pronunciations[0]?.pinyinDisplay ?? null,
     primarySense: senses[0]?.definition ?? null,
+    audioUrl: termAudioMap.get(term.id) ?? null,
     pronunciations,
     senses,
     examples,
@@ -564,7 +575,7 @@ export async function searchPublicDictionary(
     return { ...emptyResult, hasHanzi: normalized.hasHanzi };
   }
 
-  const [termsRes, pronRes, sensesRes, badgesRes] = await Promise.all([
+  const [termsRes, pronRes, sensesRes, badgesRes, termAudioMap] = await Promise.all([
     supabase
       .from("vocab_terms")
       .select(
@@ -581,6 +592,7 @@ export async function searchPublicDictionary(
       .in("term_id", termIds)
       .eq("locale", "ru"),
     fetchHskBadgesForTerms(termIds, normalized),
+    fetchAudioUrls("term", termIds),
   ]);
 
   const termsRaw = (termsRes.data ?? []) as Array<{
@@ -637,6 +649,7 @@ export async function searchPublicDictionary(
         frequencyRank: term.frequency_rank,
         primaryPinyin: pron?.pinyin_display ?? null,
         primarySense: sense?.definition ?? term.base_translation_ru ?? null,
+        audioUrl: termAudioMap.get(id) ?? null,
         matchedBy: matchedTermIds.get(id) ?? "meaning",
         hskBadges: badgesRes.get(id) ?? [],
       },

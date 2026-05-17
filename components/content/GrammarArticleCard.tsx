@@ -47,7 +47,7 @@ export default function GrammarArticleCard({
           {tagChips.map((tag) => (
             <li key={tag.id} className="rounded-full bg-white/70 px-2.5 py-1">
               {tag.labelRu}
-              <span className="ml-1 text-[10px] uppercase tracking-wide text-[#9a9a9a]">
+              <span className="ml-1 text-[11px] text-[#7a7a7a]">
                 · {tagGroupLabel(tag.groupKey)}
               </span>
             </li>

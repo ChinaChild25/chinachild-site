@@ -93,10 +93,12 @@ export default async function GrammarArticlePage({ params }: Props) {
       <article className="page-shell section-space pt-10" itemScope itemType="https://schema.org/LearningResource">
         <header className="mx-auto max-w-3xl">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="tag-pill">Грамматика</span>
-            {badge ? <span className="tag-pill tag-pill-ink">{badge}</span> : null}
+            <span className="tag-pill bg-[#f1eee2]">Грамматика</span>
+            {badge ? (
+              <span className="tag-pill bg-[#262626] text-white">{badge}</span>
+            ) : null}
             {article.sections.slice(0, 2).map((section) => (
-              <span key={section.id} className="tag-pill">
+              <span key={section.id} className="tag-pill bg-[#f1eee2]">
                 {section.titleRu}
               </span>
             ))}
@@ -121,7 +123,7 @@ export default async function GrammarArticlePage({ params }: Props) {
                     className="rounded-full bg-white px-3 py-1 text-xs text-[#4b4b4b] hover:underline"
                   >
                     {tag.labelRu}
-                    <span className="ml-1 text-[10px] uppercase tracking-wide text-[#9a9a9a]">
+                    <span className="ml-1 text-[11px] text-[#7a7a7a]">
                       · {tagGroupLabel(tag.groupKey)}
                     </span>
                   </Link>

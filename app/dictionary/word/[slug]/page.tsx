@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import JsonLd from "@/components/seo/JsonLd";
+import AudioButton from "@/components/content/AudioButton";
 import {
   getPublicWordBySlug,
   getPublicWordSlugs,
@@ -116,7 +117,26 @@ export default async function WordDetailPage({ params }: Props) {
             </p>
           ) : null}
           {word.primaryPinyin ? (
-            <p className="mt-4 text-2xl font-medium text-[#262626]">{word.primaryPinyin}</p>
+            <div className="mt-4 flex items-center justify-center gap-3">
+              <p className="text-2xl font-medium text-[#262626]">{word.primaryPinyin}</p>
+              {word.audioUrl ? (
+                <AudioButton
+                  src={word.audioUrl}
+                  ariaLabel="Прослушать слово"
+                  size="md"
+                  variant="primary"
+                />
+              ) : null}
+            </div>
+          ) : word.audioUrl ? (
+            <div className="mt-4 flex justify-center">
+              <AudioButton
+                src={word.audioUrl}
+                ariaLabel="Прослушать слово"
+                size="md"
+                variant="primary"
+              />
+            </div>
           ) : null}
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
             {word.hskBadges.map((badge) => {
@@ -126,7 +146,7 @@ export default async function WordDetailPage({ params }: Props) {
                 <Link
                   key={`${badge.version}-${badge.level}`}
                   href={`/dictionary/hsk/${hskVersionSlug(badge.version)}/${badge.level}`}
-                  className="tag-pill tag-pill-ink hover:underline"
+                  className="tag-pill bg-[#262626] text-white hover:underline"
                 >
                   {label}
                 </Link>
@@ -176,15 +196,32 @@ export default async function WordDetailPage({ params }: Props) {
             <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1b1b1b]">
               Примеры — {formatExampleCountRu(word.examples.length)}
             </h2>
-            <ol className="mt-4 space-y-4">
+            <ol className="mt-4 space-y-3">
               {word.examples.map((example, index) => (
-                <li key={index} className="card-block card-cream-soft">
-                  <p className="text-lg font-medium text-[#1b1b1b]">{example.hanzi}</p>
-                  {example.pinyin ? (
-                    <p className="text-sm text-[#6b6b6b]">{example.pinyin}</p>
-                  ) : null}
-                  {example.translationRu ? (
-                    <p className="mt-1 text-sm leading-6 text-[#4b4b4b]">{example.translationRu}</p>
+                <li
+                  key={index}
+                  className="flex items-start justify-between gap-3 rounded-[var(--radius-card-md)] border border-[#e8e3da] bg-white px-5 py-4 transition-colors hover:border-[#d8c79a]"
+                >
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[1.35rem] font-medium leading-snug text-[#1b1b1b]">
+                      {example.hanzi}
+                    </p>
+                    {example.pinyin ? (
+                      <p className="mt-1.5 text-sm italic text-[#5a5a5a]">{example.pinyin}</p>
+                    ) : null}
+                    {example.translationRu ? (
+                      <p className="mt-2 text-[15px] leading-[1.55] text-[#3a3a3a]">
+                        {example.translationRu}
+                      </p>
+                    ) : null}
+                  </div>
+                  {example.audioUrl ? (
+                    <AudioButton
+                      src={example.audioUrl}
+                      ariaLabel="Прослушать пример"
+                      size="md"
+                      className="mt-1"
+                    />
                   ) : null}
                 </li>
               ))}

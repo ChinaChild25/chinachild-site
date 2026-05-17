@@ -121,6 +121,7 @@ export type WordExample = {
   pinyin: string | null;
   translationRu: string | null;
   orderIndex: number;
+  audioUrl: string | null;
 };
 
 export type WordCharacterStroke = {
@@ -142,6 +143,7 @@ export type WordCard = {
   frequencyRank: number | null;
   primaryPinyin: string | null;
   primarySense: string | null;
+  audioUrl: string | null;
 };
 
 export type WordDetail = WordCard & {

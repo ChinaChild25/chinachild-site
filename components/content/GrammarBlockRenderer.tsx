@@ -1,9 +1,22 @@
 import Link from "next/link";
 import type { GrammarBlock } from "@/lib/content/types";
+import AudioButton from "@/components/content/AudioButton";
 
-// Renders grammar_blocks rows. The `content` jsonb shape is the same one used
-// by the platform's renderer; we read defensively because authors / fixtures
-// may use slightly different keys.
+// Public grammar_blocks renderer. Each block type gets its own visual
+// treatment so a published article reads like a real lesson, not a stack of
+// identical beige cards.
+//
+// Content key mapping mirrors the platform fixtures actually in the DB:
+//   heading / paragraph / callout — `content.text_ru` (fall back to `text`)
+//   scheme                        — `content.label_ru` + `content.parts[]` (each `label`, optional `hint`)
+//   examples                      — `content.items[]` with `hanzi`, `pinyin`, `translation_ru`, optional `literal`, optional `audio_url`
+//   list                          — `content.text_ru` (intro) + `content.items[]` (strings); `style="mistakes"` styles it as common-mistakes
+//   related                       — `content.label_ru` + `content.items[]` with `title` and optional `href`
+//   vocabulary_links              — `content.terms[]` with `slug` and `label` (hanzi)
+//   formula                       — `content.formula` + optional `content.text_ru`
+//
+// Visual language stays inside the chinachild-site palette. No new design
+// system, no Laoshi clone. Empty data returns null — no large empty cards.
 
 type AnyRecord = Record<string, unknown>;
 
@@ -19,16 +32,26 @@ function asArray<T>(value: unknown): T[] {
   return Array.isArray(value) ? (value as T[]) : [];
 }
 
+function readText(content: AnyRecord): string {
+  return (
+    asString(content.text_ru) ||
+    asString(content.text) ||
+    asString(content.body) ||
+    asString(content.title_ru) ||
+    asString(content.title)
+  );
+}
+
 export default function GrammarBlockRenderer({ blocks }: { blocks: GrammarBlock[] }) {
   if (blocks.length === 0) {
     return (
-      <p className="text-sm text-[#9a9a9a]">
-        Подробная разметка статьи пока не загружена. Полная версия доступна в учебной платформе.
+      <p className="text-sm text-[#6b6b6b]">
+        Подробная разметка статьи пока не добавлена. Полная версия доступна в учебной платформе.
       </p>
     );
   }
   return (
-    <div className="prose-article mx-auto max-w-3xl space-y-6">
+    <div className="mx-auto max-w-[760px] space-y-8">
       {blocks.map((block) => (
         <BlockSwitch key={block.id} block={block} />
       ))}
@@ -62,179 +85,426 @@ function BlockSwitch({ block }: { block: GrammarBlock }) {
   }
 }
 
+// ---------- Heading ----------
 function HeadingBlock({ content }: { content: AnyRecord }) {
-  const text = asString(content.text) || asString(content.title);
+  const text = readText(content);
   const levelRaw = content.level;
   const level =
     typeof levelRaw === "number" && Number.isFinite(levelRaw)
       ? Math.min(6, Math.max(2, Math.trunc(levelRaw)))
       : 2;
   if (!text) return null;
-  const Tag = `h${level}` as "h2" | "h3" | "h4" | "h5" | "h6";
-  return <Tag className="font-medium tracking-[-0.01em] text-[#1b1b1b]">{text}</Tag>;
-}
-
-function ParagraphBlock({ content }: { content: AnyRecord }) {
-  const text = asString(content.text) || asString(content.body);
-  if (!text) return null;
-  return <p>{text}</p>;
-}
-
-function ListBlock({ content }: { content: AnyRecord }) {
-  const items = asArray<unknown>(content.items).map((item) => asString(item));
-  const ordered = content.style === "ordered" || content.ordered === true;
-  if (items.length === 0) return null;
-  const Tag = ordered ? "ol" : "ul";
+  const sizes: Record<string, string> = {
+    h2: "text-[1.6rem] sm:text-[1.85rem]",
+    h3: "text-[1.25rem] sm:text-[1.35rem]",
+    h4: "text-[1.1rem]",
+    h5: "text-base font-semibold",
+    h6: "text-sm font-semibold",
+  };
+  const Tag = (`h${level}`) as "h2" | "h3" | "h4" | "h5" | "h6";
+  const sizeClass = sizes[`h${level}`] ?? sizes.h3;
   return (
-    <Tag className={ordered ? "list-decimal pl-6" : "list-disc pl-6"}>
-      {items.map((item, index) => (
-        <li key={index} className="my-1.5">
-          {item}
-        </li>
-      ))}
+    <Tag className={`mt-2 font-medium leading-[1.2] tracking-[-0.012em] text-[#1b1b1b] ${sizeClass}`}>
+      {text}
     </Tag>
   );
 }
 
-function SchemeBlock({ content }: { content: AnyRecord }) {
-  const slots = asArray<unknown>(content.slots).map((slot) => asRecord(slot));
-  const caption = asString(content.caption);
-  if (slots.length === 0) return null;
+// ---------- Paragraph ----------
+function ParagraphBlock({ content }: { content: AnyRecord }) {
+  const text = readText(content);
+  if (!text) return null;
+  const paragraphs = text.split(/\n\n+/).filter(Boolean);
   return (
-    <figure className="card-block card-cream-soft">
-      <div className="flex flex-wrap items-center gap-2">
-        {slots.map((slot, index) => (
-          <span key={index} className="tag-pill bg-white">
-            {asString(slot.label) || asString(slot.text)}
-          </span>
-        ))}
+    <div className="space-y-4">
+      {paragraphs.map((paragraph, index) => (
+        <p key={index} className="text-[1.05rem] leading-[1.7] text-[#2d2d2d]">
+          {paragraph}
+        </p>
+      ))}
+    </div>
+  );
+}
+
+// ---------- List ----------
+function ListBlock({ content }: { content: AnyRecord }) {
+  const items = asArray<unknown>(content.items).map((item) => asString(item)).filter(Boolean);
+  if (items.length === 0) return null;
+  const intro = readText(content);
+  const ordered = content.style === "ordered" || content.ordered === true;
+  const isMistakes = content.style === "mistakes" || content.style === "checklist";
+
+  const listEl = ordered ? (
+    <ol className="list-decimal space-y-1.5 pl-6 text-[1.05rem] leading-[1.65] text-[#2d2d2d]">
+      {items.map((item, index) => (
+        <li key={index}>{item}</li>
+      ))}
+    </ol>
+  ) : (
+    <ul className="space-y-1.5 pl-1 text-[1.05rem] leading-[1.65] text-[#2d2d2d]">
+      {items.map((item, index) => (
+        <li key={index} className="flex gap-3">
+          <span aria-hidden className="mt-[0.65rem] inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-[#9a9a9a]" />
+          <span>{item}</span>
+        </li>
+      ))}
+    </ul>
+  );
+
+  if (isMistakes) {
+    return (
+      <aside className="rounded-[var(--radius-card-md)] border border-[#eadcd2] bg-[#fdf3ec] px-5 py-4">
+        <p className="text-sm font-medium text-[#8a4a2a]">Частые ошибки</p>
+        {intro ? <p className="mt-2 text-[15px] leading-[1.55] text-[#3a3a3a]">{intro}</p> : null}
+        <div className="mt-3">{listEl}</div>
+      </aside>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      {intro ? <p className="text-[1.05rem] leading-[1.7] text-[#2d2d2d]">{intro}</p> : null}
+      {listEl}
+    </div>
+  );
+}
+
+// ---------- Scheme ----------
+type SchemePart = { label: string; hint?: string };
+
+function SchemeBlock({ content }: { content: AnyRecord }) {
+  const partsRaw = asArray<AnyRecord>(content.parts);
+  const parts: SchemePart[] = partsRaw
+    .map((part) => ({
+      label: asString(part.label) || asString(part.text),
+      hint: asString(part.hint) || asString(part.note) || undefined,
+    }))
+    .filter((part) => part.label.length > 0);
+  if (parts.length === 0) return null;
+
+  const label = asString(content.label_ru) || asString(content.label) || "Схема";
+  const caption = readText({ ...content, text_ru: content.caption ?? content.text_ru });
+
+  return (
+    <figure className="space-y-3">
+      <p className="text-sm font-medium text-[#6b6b6b]">{label}</p>
+      <div className="overflow-x-auto rounded-[var(--radius-card)] bg-[#f1eee2] px-4 py-5 sm:px-6">
+        <div className="flex min-w-max items-stretch justify-center gap-2 sm:gap-3">
+          {parts.map((part, index) => (
+            <div key={index} className="contents">
+              <SchemePill part={part} />
+              {index < parts.length - 1 ? <SchemeSeparator /> : null}
+            </div>
+          ))}
+        </div>
       </div>
       {caption ? (
-        <figcaption className="mt-3 text-sm text-[#4b4b4b]">{caption}</figcaption>
+        <figcaption className="text-sm leading-[1.55] text-[#4b4b4b]">{caption}</figcaption>
       ) : null}
     </figure>
   );
 }
 
-function FormulaBlock({ content }: { content: AnyRecord }) {
-  const formula = asString(content.formula) || asString(content.text);
-  const note = asString(content.note);
-  if (!formula) return null;
+function SchemePill({ part }: { part: SchemePart }) {
   return (
-    <figure className="card-block card-violet-soft">
-      <p className="text-xl font-medium text-[#1b1b1b]">{formula}</p>
-      {note ? <p className="mt-2 text-sm text-[#4b4b4b]">{note}</p> : null}
-    </figure>
-  );
-}
-
-function CalloutBlock({ content }: { content: AnyRecord }) {
-  const tone = asString(content.tone) || "info";
-  const title = asString(content.title);
-  const text = asString(content.text) || asString(content.body);
-  if (!text && !title) return null;
-  const toneClass =
-    tone === "warning" ? "card-peach-soft" : tone === "tip" ? "card-lime-soft" : "card-sky";
-  return (
-    <aside className={`card-block ${toneClass}`}>
-      {title ? <p className="text-sm font-medium uppercase tracking-wide text-[#1b1b1b]">{title}</p> : null}
-      {text ? <p className="mt-2 leading-7">{text}</p> : null}
-    </aside>
-  );
-}
-
-type ExampleEntry = {
-  hanzi?: unknown;
-  pinyin?: unknown;
-  translation?: unknown;
-  translation_ru?: unknown;
-  ru?: unknown;
-  term_slug?: unknown;
-  termSlug?: unknown;
-};
-
-function ExamplesBlock({ content }: { content: AnyRecord }) {
-  const items = asArray<ExampleEntry>(content.items ?? content.examples);
-  if (items.length === 0) return null;
-  return (
-    <div className="card-block card-cream">
-      <ol className="space-y-4">
-        {items.map((item, index) => {
-          const hanzi = asString(item.hanzi);
-          const pinyin = asString(item.pinyin);
-          const translation =
-            asString(item.translation_ru) || asString(item.ru) || asString(item.translation);
-          const termSlug = asString(item.term_slug) || asString(item.termSlug);
-          return (
-            <li key={index}>
-              <p className="text-lg font-medium text-[#1b1b1b]">{hanzi}</p>
-              {pinyin ? <p className="text-sm text-[#6b6b6b]">{pinyin}</p> : null}
-              {translation ? (
-                <p className="mt-1 text-sm leading-6 text-[#4b4b4b]">{translation}</p>
-              ) : null}
-              {termSlug ? (
-                <Link
-                  href={`/dictionary/word/${termSlug}`}
-                  className="mt-2 inline-flex text-xs font-medium text-[#262626] underline-offset-4 hover:underline"
-                >
-                  Открыть слово в словаре →
-                </Link>
-              ) : null}
-            </li>
-          );
-        })}
-      </ol>
+    <div className="flex min-w-[6.5rem] flex-col items-center justify-center rounded-[14px] bg-white px-4 py-3 text-center shadow-[0_1px_0_rgba(0,0,0,0.04)] ring-1 ring-black/[0.05]">
+      <p className="text-[15px] font-medium leading-snug text-[#1b1b1b] sm:text-base">
+        {part.label}
+      </p>
+      {part.hint ? (
+        <p className="mt-1 max-w-[10rem] text-[12px] leading-snug text-[#6b6b6b]">{part.hint}</p>
+      ) : null}
     </div>
   );
 }
 
-function RelatedBlock({ content }: { content: AnyRecord }) {
-  const links = asArray<AnyRecord>(content.links ?? content.items);
-  if (links.length === 0) return null;
+function SchemeSeparator() {
   return (
-    <aside className="card-block card-sky">
-      <h3 className="text-base font-medium text-[#1b1b1b]">Связанные статьи</h3>
-      <ul className="mt-3 flex flex-wrap gap-2">
-        {links.map((link, index) => {
-          const slug = asString(link.slug);
-          const title = asString(link.title);
-          // Never surface a raw slug — skip the link if no human title is set.
-          if (!slug || !title) return null;
-          return (
-            <li key={index}>
-              <Link href={`/grammar/${slug}`} className="tag-pill bg-white hover:underline">
-                {title}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+    <span
+      aria-hidden
+      className="flex shrink-0 select-none items-center justify-center self-center text-2xl font-light text-[#1b1b1b]"
+    >
+      +
+    </span>
+  );
+}
+
+// ---------- Formula ----------
+function FormulaBlock({ content }: { content: AnyRecord }) {
+  const formula = asString(content.formula);
+  // The fixture sometimes uses "formula" with "+" separators, identical to a
+  // scheme's parts list. Render as a compact scheme-like row but smaller.
+  const note = readText(content);
+  if (!formula && !note) return null;
+  const parts = formula
+    .split("+")
+    .map((part) => part.trim())
+    .filter(Boolean);
+
+  return (
+    <figure className="space-y-3">
+      <p className="text-sm font-medium text-[#6b6b6b]">Формула</p>
+      <div className="overflow-x-auto rounded-[var(--radius-card-md)] bg-[#efeae0] px-4 py-3 sm:px-5">
+        {parts.length > 0 ? (
+          <div className="flex min-w-max items-center justify-center gap-2">
+            {parts.map((label, index) => (
+              <span key={index} className="contents">
+                <span className="inline-flex items-center rounded-[10px] bg-white px-3 py-1.5 text-sm font-medium text-[#1b1b1b] ring-1 ring-black/[0.05]">
+                  {label}
+                </span>
+                {index < parts.length - 1 ? (
+                  <span aria-hidden className="select-none text-lg text-[#1b1b1b]">
+                    +
+                  </span>
+                ) : null}
+              </span>
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-sm text-[#4b4b4b]">{formula}</p>
+        )}
+      </div>
+      {note ? <p className="text-sm leading-[1.55] text-[#4b4b4b]">{note}</p> : null}
+    </figure>
+  );
+}
+
+// ---------- Callout ----------
+const CALLOUT_TONE_PALETTE: Record<string, { border: string; bg: string; eyebrow: string; label: string }> = {
+  info:    { border: "#a0b4d0", bg: "#eef3fa", eyebrow: "#2d4a76", label: "Обрати внимание" },
+  tip:     { border: "#b8c980", bg: "#f3f7e0", eyebrow: "#4a5d20", label: "Совет"          },
+  warning: { border: "#e0a888", bg: "#fdf0e8", eyebrow: "#8a3e1f", label: "Важно"          },
+  rule:    { border: "#b8b3e6", bg: "#f1edff", eyebrow: "#3a2f8a", label: "Правило"        },
+};
+
+function CalloutBlock({ content }: { content: AnyRecord }) {
+  const text = readText(content);
+  if (!text) return null;
+  const toneRaw = asString(content.tone).toLowerCase();
+  const tone = CALLOUT_TONE_PALETTE[toneRaw] ? toneRaw : "info";
+  const palette = CALLOUT_TONE_PALETTE[tone]!;
+  const title = asString(content.title) || palette.label;
+  return (
+    <aside
+      className="rounded-[12px] border-l-[4px] py-3 pl-4 pr-4 sm:pl-5"
+      style={{ borderLeftColor: palette.border, backgroundColor: palette.bg }}
+    >
+      <p className="text-sm font-medium" style={{ color: palette.eyebrow }}>
+        {title}
+      </p>
+      <p className="mt-1.5 text-[15px] leading-[1.65] text-[#2d2d2d]">{text}</p>
     </aside>
   );
 }
 
-function VocabularyLinksBlock({ content }: { content: AnyRecord }) {
-  const links = asArray<AnyRecord>(content.links ?? content.items ?? content.terms);
-  if (links.length === 0) return null;
+// ---------- Examples ----------
+type ExampleEntry = {
+  hanzi?: unknown;
+  pinyin?: unknown;
+  translation_ru?: unknown;
+  translation?: unknown;
+  literal?: unknown;
+  ru?: unknown;
+  term_slug?: unknown;
+  termSlug?: unknown;
+  audio_url?: unknown;
+  audioUrl?: unknown;
+  highlight_ranges?: unknown;
+  highlights?: unknown;
+};
+
+type HighlightRange = { start?: unknown; end?: unknown };
+
+function renderHighlightedHanzi(text: string, ranges: HighlightRange[]): React.ReactNode {
+  if (ranges.length === 0) return text;
+  const cleaned = ranges
+    .map((range) => ({
+      start: typeof range.start === "number" ? range.start : -1,
+      end: typeof range.end === "number" ? range.end : -1,
+    }))
+    .filter((range) => range.start >= 0 && range.end > range.start && range.end <= text.length)
+    .sort((a, b) => a.start - b.start);
+  if (cleaned.length === 0) return text;
+  const out: React.ReactNode[] = [];
+  let cursor = 0;
+  cleaned.forEach((range, index) => {
+    if (range.start > cursor) out.push(text.slice(cursor, range.start));
+    out.push(
+      <mark
+        key={`hl-${index}`}
+        className="rounded-[4px] bg-[#fff1b8] px-[2px] py-[1px] text-[#1b1b1b]"
+      >
+        {text.slice(range.start, range.end)}
+      </mark>,
+    );
+    cursor = range.end;
+  });
+  if (cursor < text.length) out.push(text.slice(cursor));
+  return out;
+}
+
+function ExamplesBlock({ content }: { content: AnyRecord }) {
+  const items = asArray<ExampleEntry>(content.items ?? content.examples);
+  const cleanItems = items
+    .map((item) => ({
+      hanzi: asString(item.hanzi),
+      pinyin: asString(item.pinyin),
+      translation:
+        asString(item.translation_ru) || asString(item.ru) || asString(item.translation),
+      literal: asString(item.literal),
+      termSlug: asString(item.term_slug) || asString(item.termSlug),
+      audioUrl: asString(item.audio_url) || asString(item.audioUrl),
+      highlights: asArray<HighlightRange>(item.highlight_ranges ?? item.highlights),
+    }))
+    .filter((item) => item.hanzi.length > 0);
+  if (cleanItems.length === 0) return null;
+
   return (
-    <aside className="card-block card-lime-soft">
-      <h3 className="text-base font-medium text-[#1b1b1b]">Слова из словаря</h3>
-      <ul className="mt-3 flex flex-wrap gap-2">
-        {links.map((link, index) => {
-          const slug = asString(link.slug) || asString(link.term_slug);
-          // Prefer hanzi or human display label. Never surface the raw slug.
-          const display =
-            asString(link.display) || asString(link.hanzi) || asString(link.title);
-          if (!slug || !display) return null;
-          return (
+    <section className="space-y-3">
+      <h3 className="text-sm font-medium text-[#6b6b6b]">Примеры</h3>
+      <ol className="space-y-3" role="list">
+        {cleanItems.map((item, index) => (
+          <li
+            key={index}
+            className="flex items-start justify-between gap-3 rounded-[var(--radius-card-md)] border border-[#e8e3da] bg-white px-5 py-4 transition-colors hover:border-[#d8c79a]"
+          >
+            <div className="min-w-0 flex-1">
+              <p className="text-[1.45rem] font-medium leading-[1.3] text-[#1b1b1b] sm:text-[1.55rem]">
+                {renderHighlightedHanzi(item.hanzi, item.highlights)}
+              </p>
+              {item.pinyin ? (
+                <p className="mt-1.5 text-sm italic text-[#5a5a5a]">{item.pinyin}</p>
+              ) : null}
+              {item.translation ? (
+                <p className="mt-2 text-[15px] leading-[1.55] text-[#3a3a3a]">{item.translation}</p>
+              ) : null}
+              {item.literal ? (
+                <p className="mt-1 text-[13px] leading-[1.5] text-[#6b6b6b]">
+                  Дословно: {item.literal}
+                </p>
+              ) : null}
+              {item.termSlug ? (
+                <Link
+                  href={`/dictionary/word/${item.termSlug}`}
+                  className="mt-3 inline-flex text-xs font-medium text-[#262626] underline-offset-4 hover:underline"
+                >
+                  Открыть слово в словаре →
+                </Link>
+              ) : null}
+            </div>
+            {item.audioUrl ? (
+              <AudioButton
+                src={item.audioUrl}
+                ariaLabel="Прослушать пример"
+                size="md"
+                className="mt-1 shrink-0"
+              />
+            ) : null}
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
+
+// ---------- Related ----------
+function RelatedBlock({ content }: { content: AnyRecord }) {
+  const label = asString(content.label_ru) || asString(content.label) || "Изучить дальше";
+  const linksRaw = asArray<AnyRecord>(content.items ?? content.links);
+  const links = linksRaw.flatMap((link) => {
+    const title = asString(link.title);
+    const href =
+      asString(link.href) ||
+      (asString(link.slug) ? `/grammar/${asString(link.slug)}` : "");
+    if (!title) return [];
+    return [{ title, href }];
+  });
+  if (links.length === 0) return null;
+
+  return (
+    <section className="space-y-3">
+      <h3 className="text-sm font-medium text-[#6b6b6b]">{label}</h3>
+      <ul className="flex flex-wrap gap-2">
+        {links.map((link, index) =>
+          link.href ? (
             <li key={index}>
-              <Link href={`/dictionary/word/${slug}`} className="tag-pill bg-white hover:underline">
-                {display}
+              <Link
+                href={link.href}
+                className="inline-flex items-center rounded-[14px] bg-white px-4 py-2.5 text-[15px] font-medium text-[#1b1b1b] ring-1 ring-black/[0.06] transition-colors hover:bg-[#f6f3eb]"
+              >
+                {link.title}
               </Link>
             </li>
-          );
-        })}
+          ) : (
+            <li key={index}>
+              <span className="inline-flex items-center rounded-[14px] bg-white px-4 py-2.5 text-[15px] font-medium text-[#1b1b1b] ring-1 ring-black/[0.06]">
+                {link.title}
+              </span>
+            </li>
+          ),
+        )}
       </ul>
-    </aside>
+    </section>
+  );
+}
+
+// ---------- Vocabulary links ----------
+type VocabLinkEntry = {
+  slug?: unknown;
+  term_slug?: unknown;
+  label?: unknown;
+  hanzi?: unknown;
+  display?: unknown;
+  pinyin?: unknown;
+  translation_ru?: unknown;
+  ru?: unknown;
+  meaning?: unknown;
+};
+
+function VocabularyLinksBlock({ content }: { content: AnyRecord }) {
+  const termsRaw = asArray<VocabLinkEntry>(content.terms ?? content.items ?? content.links);
+  const items = termsRaw.flatMap((entry) => {
+    const slug = asString(entry.slug) || asString(entry.term_slug);
+    const display =
+      asString(entry.label) || asString(entry.hanzi) || asString(entry.display);
+    if (!slug || !display) return [];
+    return [
+      {
+        slug,
+        display,
+        pinyin: asString(entry.pinyin),
+        translation:
+          asString(entry.translation_ru) || asString(entry.ru) || asString(entry.meaning),
+      },
+    ];
+  });
+  if (items.length === 0) return null;
+
+  return (
+    <section className="space-y-3">
+      <h3 className="text-sm font-medium text-[#6b6b6b]">Слова из словаря</h3>
+      <ul className="grid gap-2 sm:grid-cols-2">
+        {items.map((item) => (
+          <li key={item.slug}>
+            <Link
+              href={`/dictionary/word/${item.slug}`}
+              className="flex items-baseline gap-3 rounded-[var(--radius-card-md)] border border-[#e8e3da] bg-white px-4 py-3 transition-colors hover:border-[#d8c79a]"
+            >
+              <span className="text-[1.2rem] font-medium leading-none text-[#1b1b1b]">
+                {item.display}
+              </span>
+              <span className="flex min-w-0 flex-col leading-tight">
+                {item.pinyin ? (
+                  <span className="text-xs italic text-[#5a5a5a]">{item.pinyin}</span>
+                ) : null}
+                {item.translation ? (
+                  <span className="truncate text-[13px] text-[#3a3a3a]">{item.translation}</span>
+                ) : null}
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
