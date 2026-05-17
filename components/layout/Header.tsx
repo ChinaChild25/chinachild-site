@@ -14,6 +14,8 @@ const navigation = [
   { label: "О школе", href: "/about" },
   { label: "Команда", href: "/team" },
   { label: "Блог", href: "/blog" },
+  { label: "Грамматика", href: "/grammar" },
+  { label: "Словарь", href: "/dictionary" },
   { label: "Глоссарий", href: "/glossary" },
 ];
 

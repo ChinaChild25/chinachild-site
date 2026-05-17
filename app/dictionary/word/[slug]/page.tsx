@@ -1,0 +1,285 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import Breadcrumbs from "@/components/layout/Breadcrumbs";
+import JsonLd from "@/components/seo/JsonLd";
+import {
+  getPublicWordBySlug,
+  getPublicWordSlugs,
+} from "@/lib/content/dictionary";
+import { getPublicGrammarRelatedForTerm } from "@/lib/content/grammar";
+import {
+  formatExampleCountRu,
+  formatHskBadge,
+  hskVersionSlug,
+} from "@/lib/content/labels";
+import { platformLinks } from "@/lib/content/platform-links";
+import { buildMetadata } from "@/lib/metadata";
+import { absoluteUrl } from "@/lib/site-config";
+import { createBreadcrumbNode } from "@/lib/schema";
+
+export const revalidate = 300;
+
+export async function generateStaticParams(): Promise<Array<{ slug: string }>> {
+  const slugs = await getPublicWordSlugs(500);
+  return slugs.map((slug) => ({ slug }));
+}
+
+type Props = { params: Promise<{ slug: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const word = await getPublicWordBySlug(slug);
+  if (!word) {
+    return buildMetadata({
+      title: "Слово не найдено | Словарь ChinaChild",
+      description: "Запрошенное слово отсутствует в словаре.",
+      path: `/dictionary/word/${slug}`,
+    });
+  }
+  const description = [
+    word.simplified,
+    word.primaryPinyin,
+    word.primarySense ?? word.baseTranslationRu ?? "",
+  ]
+    .filter(Boolean)
+    .join(" — ");
+  return buildMetadata({
+    title: `${word.simplified} (${word.primaryPinyin ?? ""}) — китайское слово | ChinaChild`,
+    description: description || `Китайское слово ${word.simplified}. Значение, пиньинь и примеры.`,
+    path: `/dictionary/word/${word.slug}`,
+    keywords: [word.simplified, word.primaryPinyin ?? "", "китайский словарь", "перевод"].filter(Boolean),
+  });
+}
+
+export default async function WordDetailPage({ params }: Props) {
+  const { slug } = await params;
+  const word = await getPublicWordBySlug(slug);
+  if (!word) notFound();
+
+  const relatedGrammar = await getPublicGrammarRelatedForTerm({
+    slug: word.slug,
+    simplified: word.simplified,
+    defaultDisplay: word.defaultDisplay,
+  });
+
+  const url = absoluteUrl(`/dictionary/word/${word.slug}`);
+  const firstHsk = word.hskBadges[0];
+
+  const graph = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "DefinedTerm",
+        "@id": `${url}#term`,
+        name: word.simplified,
+        alternateName: word.traditional ?? undefined,
+        description: word.primarySense ?? word.baseTranslationRu ?? undefined,
+        url,
+        inLanguage: ["zh", "ru-RU"],
+        inDefinedTermSet: {
+          "@type": "DefinedTermSet",
+          name: "Китайский словарь ChinaChild",
+          url: absoluteUrl("/dictionary"),
+        },
+      },
+      {
+        ...createBreadcrumbNode([
+          { name: "Главная", path: "/" },
+          { name: "Словарь", path: "/dictionary" },
+          { name: word.simplified, path: `/dictionary/word/${word.slug}` },
+        ]),
+        "@id": `${url}#breadcrumb`,
+      },
+    ],
+  };
+
+  return (
+    <main>
+      <Breadcrumbs
+        items={[
+          { name: "Главная", path: "/" },
+          { name: "Словарь", path: "/dictionary" },
+          { name: word.simplified, path: `/dictionary/word/${word.slug}` },
+        ]}
+      />
+      <JsonLd data={graph} id={`word-${word.slug}-graph`} />
+
+      <article className="page-shell section-space pt-10">
+        <header className="mx-auto max-w-3xl text-center">
+          <p className="text-[5rem] font-medium leading-none tracking-tight text-[#1b1b1b] sm:text-[7rem]">
+            {word.simplified}
+          </p>
+          {word.traditional && word.traditional !== word.simplified ? (
+            <p className="mt-3 text-sm text-[#9a9a9a]">
+              Традиционное написание: <span className="text-[#4b4b4b]">{word.traditional}</span>
+            </p>
+          ) : null}
+          {word.primaryPinyin ? (
+            <p className="mt-4 text-2xl font-medium text-[#262626]">{word.primaryPinyin}</p>
+          ) : null}
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+            {word.hskBadges.map((badge) => {
+              const label = formatHskBadge(badge.version, badge.level);
+              if (!label) return null;
+              return (
+                <Link
+                  key={`${badge.version}-${badge.level}`}
+                  href={`/dictionary/hsk/${hskVersionSlug(badge.version)}/${badge.level}`}
+                  className="tag-pill tag-pill-ink hover:underline"
+                >
+                  {label}
+                </Link>
+              );
+            })}
+            {word.frequencyRank ? (
+              <span className="tag-pill">Частотность #{word.frequencyRank}</span>
+            ) : null}
+          </div>
+        </header>
+
+        {word.senses.length > 0 ? (
+          <section className="mx-auto mt-12 max-w-3xl">
+            <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1b1b1b]">Значения</h2>
+            <ol className="mt-4 space-y-3 text-base leading-7 text-[#262626]">
+              {word.senses.map((sense, index) => (
+                <li key={index} className="flex gap-3">
+                  <span className="text-[#9a9a9a]">{index + 1}.</span>
+                  <span>{sense.definition}</span>
+                </li>
+              ))}
+            </ol>
+          </section>
+        ) : word.baseTranslationRu ? (
+          <section className="mx-auto mt-12 max-w-3xl">
+            <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1b1b1b]">Значение</h2>
+            <p className="mt-4 text-base leading-7 text-[#262626]">{word.baseTranslationRu}</p>
+          </section>
+        ) : null}
+
+        {word.pronunciations.length > 1 ? (
+          <section className="mx-auto mt-10 max-w-3xl">
+            <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1b1b1b]">Произношение</h2>
+            <ul className="mt-4 flex flex-wrap gap-2">
+              {word.pronunciations.map((pron, index) => (
+                <li key={index} className="tag-pill bg-white">
+                  {pron.pinyinDisplay}
+                  {pron.isPrimary ? " · основное" : null}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
+
+        {word.examples.length > 0 ? (
+          <section className="mx-auto mt-10 max-w-3xl">
+            <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1b1b1b]">
+              Примеры — {formatExampleCountRu(word.examples.length)}
+            </h2>
+            <ol className="mt-4 space-y-4">
+              {word.examples.map((example, index) => (
+                <li key={index} className="card-block card-cream-soft">
+                  <p className="text-lg font-medium text-[#1b1b1b]">{example.hanzi}</p>
+                  {example.pinyin ? (
+                    <p className="text-sm text-[#6b6b6b]">{example.pinyin}</p>
+                  ) : null}
+                  {example.translationRu ? (
+                    <p className="mt-1 text-sm leading-6 text-[#4b4b4b]">{example.translationRu}</p>
+                  ) : null}
+                </li>
+              ))}
+            </ol>
+          </section>
+        ) : null}
+
+        {word.characters.length > 0 ? (
+          <section className="mx-auto mt-10 max-w-3xl">
+            <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1b1b1b]">
+              Иероглифы
+            </h2>
+            <p className="mt-2 text-sm text-[#6b6b6b]">
+              Превью порядка черт. Анимированный тренажёр доступен в платформе.
+            </p>
+            <ul className="mt-4 flex flex-wrap gap-3">
+              {word.characters.map((char) => (
+                <li
+                  key={char.hanzi}
+                  className="card-block card-cream flex h-32 w-32 items-center justify-center"
+                >
+                  <span className="text-5xl font-medium text-[#1b1b1b]">{char.hanzi}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
+
+        {relatedGrammar.length > 0 ? (
+          <section className="mx-auto mt-10 max-w-3xl">
+            <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#1b1b1b]">
+              Связанные правила грамматики
+            </h2>
+            <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+              {relatedGrammar.map((article) => (
+                <li key={article.id}>
+                  <Link
+                    href={`/grammar/${article.slug}`}
+                    className="card-block card-sky group flex h-full flex-col transition hover:-translate-y-0.5"
+                  >
+                    <p className="text-base font-medium leading-tight text-[#1b1b1b]">
+                      {article.title}
+                    </p>
+                    {article.summary ? (
+                      <p className="mt-2 text-sm leading-[1.5] text-[#4b4b4b]">{article.summary}</p>
+                    ) : null}
+                    <span className="mt-auto pt-3 text-xs font-medium text-[#262626] underline-offset-4 group-hover:underline">
+                      Открыть правило →
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
+
+        <aside className="mx-auto mt-12 max-w-3xl">
+          <div className="card-block card-block-lg card-ink">
+            <h2 className="text-[1.5rem] font-medium tracking-[-0.01em] leading-[1.2] text-white">
+              Учите это слово в платформе
+            </h2>
+            <p className="mt-3 text-base leading-7 text-white/85">
+              Добавьте слово в свои карточки SRS, послушайте аудио и тренируйте написание иероглифов.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <a
+                href={platformLinks.vocabularyWord(word.slug)}
+                target="_blank"
+                rel="noreferrer"
+                className="btn-pill btn-white"
+              >
+                Добавить в карточки на платформе
+              </a>
+              <a
+                href={platformLinks.vocabularyTrain()}
+                target="_blank"
+                rel="noreferrer"
+                className="btn-pill"
+                style={{ background: "rgba(255,255,255,0.15)", color: "#fff" }}
+              >
+                Тренировать написание
+              </a>
+              {firstHsk ? (
+                <Link
+                  href={`/dictionary/hsk/${hskVersionSlug(firstHsk.version)}/${firstHsk.level}`}
+                  className="btn-pill"
+                  style={{ background: "rgba(255,255,255,0.15)", color: "#fff" }}
+                >
+                  Назад к уровню
+                </Link>
+              ) : null}
+            </div>
+          </div>
+        </aside>
+      </article>
+    </main>
+  );
+}

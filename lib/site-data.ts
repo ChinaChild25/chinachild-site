@@ -657,6 +657,8 @@ export const footerLinks = [
   { title: "Лицензия", href: "/license" },
   { title: "Сведения об образовательной организации", href: "/docs" },
   { title: "Блог", href: "/blog" },
+  { title: "Грамматика", href: "/grammar" },
+  { title: "Словарь", href: "/dictionary" },
   { title: "Глоссарий", href: "/glossary" },
   { title: "Публичная оферта", href: "/public-treaty" },
   { title: "Пользовательское соглашение", href: "/user-agreement" },

@@ -6,6 +6,16 @@ import { getAllGlossaryTerms } from "@/lib/glossary";
 import { teachers } from "@/lib/site-data";
 import { cities } from "@/lib/cities";
 import { hskLevels } from "@/lib/hsk-levels";
+import {
+  getPublicGrammarArticles,
+  getPublicGrammarSections,
+  getPublicGrammarTags,
+} from "@/lib/content/grammar";
+import {
+  getPublicHskVersions,
+  getPublicWordSlugs,
+} from "@/lib/content/dictionary";
+import { hskVersionSlug } from "@/lib/content/labels";
 
 export const dynamic = "force-static";
 
@@ -21,6 +31,16 @@ async function fileMtime(relPath: string, fallback: string): Promise<string> {
 export async function GET() {
   const now = new Date().toISOString();
   const glossary = await getAllGlossaryTerms();
+  // Public grammar + dictionary content. These calls degrade gracefully to []
+  // when Supabase env vars are missing (e.g. preview builds before linking).
+  const [grammarArticles, grammarTagGroups, grammarSections, hskVersions, wordSlugs] =
+    await Promise.all([
+      getPublicGrammarArticles(),
+      getPublicGrammarTags(),
+      getPublicGrammarSections(),
+      getPublicHskVersions(),
+      getPublicWordSlugs(500),
+    ]);
 
   // Pull mtime for the most-edited templates so lastmod is credible.
   const [
@@ -145,6 +165,54 @@ export async function GET() {
       lastmod: term.updatedAt,
       changefreq: "monthly" as const,
       priority: 0.55,
+    })),
+
+    // Grammar SEO lane — bridged from chinachild-sandbox via public Supabase read.
+    { loc: absoluteUrl("/grammar"), lastmod: now, changefreq: "weekly", priority: 0.85 },
+    { loc: absoluteUrl("/grammar/tags"), lastmod: now, changefreq: "monthly", priority: 0.65 },
+    ...grammarTagGroups.flatMap<UrlEntry>((group) =>
+      group.tags.map((tag) => ({
+        loc: absoluteUrl(`/grammar/tags/${tag.slug}`),
+        lastmod: now,
+        changefreq: "monthly" as const,
+        priority: 0.55,
+      })),
+    ),
+    ...grammarSections.map<UrlEntry>((section) => ({
+      loc: absoluteUrl(`/grammar/sections/${section.slug}`),
+      lastmod: now,
+      changefreq: "monthly" as const,
+      priority: 0.6,
+    })),
+    ...grammarArticles.map<UrlEntry>((article) => ({
+      loc: absoluteUrl(`/grammar/${article.slug}`),
+      lastmod: now,
+      changefreq: "monthly" as const,
+      priority: article.isFeatured ? 0.78 : 0.7,
+    })),
+
+    // Dictionary SEO lane.
+    { loc: absoluteUrl("/dictionary"), lastmod: now, changefreq: "weekly", priority: 0.85 },
+    { loc: absoluteUrl("/dictionary/hsk"), lastmod: now, changefreq: "monthly", priority: 0.7 },
+    ...hskVersions.flatMap<UrlEntry>((version) => [
+      {
+        loc: absoluteUrl(`/dictionary/hsk/${hskVersionSlug(version.id)}`),
+        lastmod: now,
+        changefreq: "monthly" as const,
+        priority: 0.7,
+      },
+      ...version.decks.map<UrlEntry>((deck) => ({
+        loc: absoluteUrl(`/dictionary/hsk/${hskVersionSlug(version.id)}/${deck.hskLevel}`),
+        lastmod: now,
+        changefreq: "monthly" as const,
+        priority: 0.65,
+      })),
+    ]),
+    ...wordSlugs.map<UrlEntry>((slug) => ({
+      loc: absoluteUrl(`/dictionary/word/${slug}`),
+      lastmod: now,
+      changefreq: "monthly" as const,
+      priority: 0.5,
     })),
 
     // Legal
