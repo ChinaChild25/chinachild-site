@@ -410,7 +410,9 @@ export async function getPublicWordBySlug(slug: string): Promise<WordDetail | nu
       .filter((b): b is { version: HskVersionId; level: string; deckSlug: string } => Boolean(b));
   }
 
-  // Stroke data for each unique hanzi in the simplified form.
+  // Stroke data for each unique hanzi in the simplified form. Include every
+  // character so the public page can render a clean static fallback when the
+  // stored Hanzi Writer JSON is not available yet.
   const characters: WordDetail["characters"] = [];
   const uniqueHanzi = Array.from(new Set(Array.from(term.simplified)));
   if (uniqueHanzi.length > 0) {
@@ -419,6 +421,7 @@ export async function getPublicWordBySlug(slug: string): Promise<WordDetail | nu
       .select("id, hanzi")
       .in("hanzi", uniqueHanzi);
     const charRows = (chars ?? []) as Array<CharacterRow & { id: string }>;
+    let strokesByCharId = new Map<string, StrokeRow>();
     if (charRows.length > 0) {
       const { data: strokes } = await supabase
         .from("character_stroke_assets")
@@ -427,23 +430,21 @@ export async function getPublicWordBySlug(slug: string): Promise<WordDetail | nu
           "character_id",
           charRows.map((c) => c.id),
         );
-      const strokesByCharId = new Map(
+      strokesByCharId = new Map(
         ((strokes ?? []) as StrokeRow[]).map((s) => [s.character_id, s]),
       );
-      for (const hanzi of uniqueHanzi) {
-        const charRow = charRows.find((c) => c.hanzi === hanzi);
-        if (!charRow) continue;
-        const stroke = strokesByCharId.get(charRow.id);
-        if (!stroke) continue;
-        characters.push({
-          hanzi,
-          strokes: stroke.strokes,
-          medians: stroke.medians,
-          rawSvg: stroke.raw_svg,
-          viewportWidth: stroke.viewport_width,
-          viewportHeight: stroke.viewport_height,
-        });
-      }
+    }
+    for (const hanzi of uniqueHanzi) {
+      const charRow = charRows.find((c) => c.hanzi === hanzi);
+      const stroke = charRow ? strokesByCharId.get(charRow.id) : undefined;
+      characters.push({
+        hanzi,
+        strokes: stroke?.strokes ?? null,
+        medians: stroke?.medians ?? null,
+        rawSvg: stroke?.raw_svg ?? null,
+        viewportWidth: stroke?.viewport_width ?? null,
+        viewportHeight: stroke?.viewport_height ?? null,
+      });
     }
   }
 

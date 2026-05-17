@@ -126,11 +126,11 @@ export type WordExample = {
 
 export type WordCharacterStroke = {
   hanzi: string;
-  strokes: unknown;
-  medians: unknown;
+  strokes: unknown | null;
+  medians: unknown | null;
   rawSvg: string | null;
-  viewportWidth: number;
-  viewportHeight: number;
+  viewportWidth: number | null;
+  viewportHeight: number | null;
 };
 
 export type WordCard = {
