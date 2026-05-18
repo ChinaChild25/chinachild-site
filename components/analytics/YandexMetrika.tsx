@@ -2,7 +2,7 @@
 
 import Script from "next/script";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 declare global {
   interface Window {
@@ -15,11 +15,17 @@ const YM_ID = Number(process.env.NEXT_PUBLIC_YM_ID);
 export function YandexMetrika() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  // useSearchParams() resolves through Suspense asynchronously, so this effect
+  // can fire twice for the same pageview (once with empty params, once when
+  // they arrive). Track the last URL we already reported and skip duplicates.
+  const lastUrl = useRef<string | null>(null);
 
   useEffect(() => {
     if (!YM_ID || typeof window === "undefined" || !window.ym) return;
     const query = searchParams?.toString();
     const url = pathname + (query ? `?${query}` : "");
+    if (lastUrl.current === url) return;
+    lastUrl.current = url;
     window.ym(YM_ID, "hit", url, { referer: document.referrer });
   }, [pathname, searchParams]);
 
