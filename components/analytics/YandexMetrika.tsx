@@ -2,11 +2,16 @@
 
 import Script from "next/script";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 declare global {
   interface Window {
     ym?: (id: number, action: string, ...args: unknown[]) => void;
+    // Module-level dedupe: useRef wasn't enough because the Suspense boundary
+    // can re-mount this component, giving each React instance its own ref.
+    // window survives re-mount, so the second instance sees the URL we just
+    // reported and bails before firing another hit.
+    __lastYmUrl?: string;
   }
 }
 
@@ -15,17 +20,13 @@ const YM_ID = Number(process.env.NEXT_PUBLIC_YM_ID);
 export function YandexMetrika() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  // useSearchParams() resolves through Suspense asynchronously, so this effect
-  // can fire twice for the same pageview (once with empty params, once when
-  // they arrive). Track the last URL we already reported and skip duplicates.
-  const lastUrl = useRef<string | null>(null);
 
   useEffect(() => {
     if (!YM_ID || typeof window === "undefined" || !window.ym) return;
     const query = searchParams?.toString();
     const url = pathname + (query ? `?${query}` : "");
-    if (lastUrl.current === url) return;
-    lastUrl.current = url;
+    if (window.__lastYmUrl === url) return;
+    window.__lastYmUrl = url;
     window.ym(YM_ID, "hit", url, { referer: document.referrer });
   }, [pathname, searchParams]);
 
