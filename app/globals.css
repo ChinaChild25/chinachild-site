@@ -98,6 +98,10 @@
   --container-wide: 1424px;          /* LPC header / wide blocks */
   --section-pad-x: 20px;
 
+  /* Text selection */
+  --selection-bg: #262626;
+  --selection-fg: #ffffff;
+
   /* Transitions */
   --t-fast: 0.1s ease-out;
   --t-base: 0.2s ease;
@@ -205,8 +209,13 @@ a:focus-visible {
 }
 
 ::selection {
-  background: var(--ink);
-  color: #ffffff;
+  background: var(--selection-bg);
+  color: var(--selection-fg);
+}
+
+::-moz-selection {
+  background: var(--selection-bg);
+  color: var(--selection-fg);
 }
 
 /* ==========================================================================
@@ -2024,6 +2033,9 @@ html[data-theme="dark"] {
   --ink-btn: #ededed;
   --ink-btn-hover: #ffffff;
 
+  --selection-bg: #4a6fa5;
+  --selection-fg: #ffffff;
+
   /* Glass — header тонируется чёрным. */
   --glass-white-80: rgba(28, 28, 28, 0.78);
   --glass-white-25: rgba(28, 28, 28, 0.4);
@@ -2199,6 +2211,18 @@ html[data-theme="dark"] {
     background-color: var(--surface) !important;
     color: var(--ink);
     border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Плотные белые вкладыши на пастельных карточках (образование, методика,
+     таблицы HSK): в light — bg-white/55–/95, в dark — тёмный inset, иначе
+     светлый текст (#ededed) оказывается на светло-сером фоне. */
+  [class*="bg-white/55"],
+  [class*="bg-white/60"],
+  [class*="bg-white/65"],
+  [class*="bg-white/70"],
+  [class*="bg-white/95"] {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   .card-block {

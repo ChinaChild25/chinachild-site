@@ -1,6 +1,7 @@
 import { getAllPosts } from "@/lib/blog";
 import { renderSitemap, type UrlEntry } from "@/lib/sitemap-helpers";
 import { absoluteUrl } from "@/lib/site-config";
+import { resolveTeacherCertificates } from "@/lib/team-certificates";
 import { teachers } from "@/lib/site-data";
 
 export const dynamic = "force-static";
@@ -52,17 +53,23 @@ export async function GET() {
     // Google Images. Подпись и caption строятся из imageAlt / specialization.
     ...teachers
       .filter((t): t is typeof t & { image: string } => Boolean(t.image))
-      .map((t): UrlEntry => ({
-        loc: absoluteUrl(`/team/${t.slug}`),
-        lastmod: now,
-        images: [
-          {
-            loc: absoluteUrl(t.image),
-            title: t.imageAlt ?? `${t.name} — преподаватель китайского языка, ChinaChild`,
-            caption: t.specialization,
-          },
-        ],
-      })),
+      .map((t): UrlEntry => {
+        const portrait = {
+          loc: absoluteUrl(t.image),
+          title: t.imageAlt ?? `${t.name} — преподаватель китайского языка, ChinaChild`,
+          caption: t.specialization,
+        };
+        const certificateImages = resolveTeacherCertificates(t.certificates).map((cert) => ({
+          loc: absoluteUrl(cert.src),
+          title: cert.alt,
+          caption: cert.caption ?? cert.name,
+        }));
+        return {
+          loc: absoluteUrl(`/team/${t.slug}`),
+          lastmod: now,
+          images: [portrait, ...certificateImages],
+        };
+      }),
     // Сканы образовательной лицензии — отдельный канал в Yandex.Картинки
     // и Google Images. На образовательной лицензии Google «вешает»
     // E-E-A-T-сигналы для всей подсайта.

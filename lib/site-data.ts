@@ -34,6 +34,18 @@ export type Course = {
   instructorSlug?: string;
 };
 
+export type TeacherCertificate = {
+  /** Путь в /public, например /team/certificates/zhao-li-hsk-6.webp */
+  src: string;
+  /** Краткое название для schema.org (HSK 6, диплом бакалавра…) */
+  name: string;
+  alt: string;
+  caption?: string;
+  title?: string;
+  width?: number;
+  height?: number;
+};
+
 export type Teacher = {
   slug: string;
   name: string;
@@ -56,7 +68,8 @@ export type Teacher = {
   profileArticle?: string[];
   worksWith?: string[];
   educationTimeline?: string[];
-  documentSlots?: number;
+  /** Сканы дипломов и сертификатов — файлы в /public/team/certificates/ */
+  certificates?: TeacherCertificate[];
   /** Topics the teacher is an authority on — fed into Person.knowsAbout */
   knowsAbout?: string[];
   /** External profile URLs — fed into Person.sameAs (E-E-A-T signal) */
@@ -339,7 +352,20 @@ export const teachers: Teacher[] = [
       "2021–2022 — Южно-Китайский педагогический университет 华南师范大学",
       "2023 — Новосибирский государственный педагогический университет",
     ],
-    documentSlots: 2,
+    certificates: [
+      {
+        src: "/team/certificates/anastasia-ponomareva-hsk-2.webp",
+        name: "HSK 2",
+        alt: "Сертификат HSK 2 — Анастасия Пономарёва, преподаватель ChinaChild",
+        caption: "Международный экзамен HSK, уровень 2",
+      },
+      {
+        src: "/team/certificates/anastasia-ponomareva-diploma.webp",
+        name: "Диплом о высшем образовании",
+        alt: "Диплом Анастасии Пономарёвой — педагогическое образование, ChinaChild",
+        caption: "Высшее педагогическое образование",
+      },
+    ],
     knowsAbout: [
       "Китайский язык",
       "Английский язык",
@@ -384,7 +410,14 @@ export const teachers: Teacher[] = [
       "с 2017 — Wuhan University",
       "2017–2021 — Wuchang University of Technology / 武昌理工学院",
     ],
-    documentSlots: 1,
+    certificates: [
+      {
+        src: "/team/certificates/anastasia-erina-hsk-4.webp",
+        name: "HSK 4",
+        alt: "Сертификат HSK 4 — Анастасия Ерина, преподаватель ChinaChild",
+        caption: "Международный экзамен HSK, уровень 4",
+      },
+    ],
     knowsAbout: [
       "Китайский язык",
       "Бизнес-китайский",
@@ -431,7 +464,20 @@ export const teachers: Teacher[] = [
       "2012–2016 — Харбинский технологический институт, бакалавр",
       "2018–2020 — ННГУ им. Лобачевского, экономика, магистр",
     ],
-    documentSlots: 2,
+    certificates: [
+      {
+        src: "/team/certificates/zhao-li-hsk-6.webp",
+        name: "HSK 6",
+        alt: "Сертификат HSK 6 — Чжао Ли, преподаватель-носитель ChinaChild",
+        caption: "Международный экзамен HSK, уровень 6",
+      },
+      {
+        src: "/team/certificates/zhao-li-diploma-bachelor.webp",
+        name: "Диплом бакалавра",
+        alt: "Диплом бакалавра Чжао Ли — Харбинский технологический институт",
+        caption: "Харбинский технологический институт, 2012–2016",
+      },
+    ],
     knowsAbout: [
       "Путунхуа",
       "Разговорный китайский",
@@ -477,7 +523,20 @@ export const teachers: Teacher[] = [
       "2005–2010 — РХГА, культуролог-востоковед",
       "2022 — 辽宁师范大学 (повышение квалификации)",
     ],
-    documentSlots: 2,
+    certificates: [
+      {
+        src: "/team/certificates/milena-karlova-hsk-4.webp",
+        name: "HSK 4",
+        alt: "Сертификат HSK 4 — Милена-Мария Карлова, преподаватель ChinaChild",
+        caption: "Международный экзамен HSK, уровень 4",
+      },
+      {
+        src: "/team/certificates/milena-karlova-diploma.webp",
+        name: "Диплом востоковеда",
+        alt: "Диплом Милены-Марии Карловой — культуролог-востоковед, РХГА",
+        caption: "РХГА, культуролог-востоковед, 2005–2010",
+      },
+    ],
     knowsAbout: [
       "Китайский язык",
       "Китайская культура",

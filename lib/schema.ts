@@ -173,7 +173,10 @@ export function createReviewNode(review: Review): JsonLd {
   };
 }
 
-export function createTeacherNode(teacher: Teacher): JsonLd {
+export function createTeacherNode(
+  teacher: Teacher,
+  options?: { certificates?: Teacher["certificates"] },
+): JsonLd {
   const node: JsonLd = {
     "@type": "Person",
     "@id": ID.teacher(teacher.slug),
@@ -212,6 +215,26 @@ export function createTeacherNode(teacher: Teacher): JsonLd {
   }
   if (teacher.sameAs && teacher.sameAs.length > 0) {
     node.sameAs = teacher.sameAs;
+  }
+  const credentials = options?.certificates ?? teacher.certificates;
+  if (credentials && credentials.length > 0) {
+    node.hasCredential = credentials.map((cert, index) => ({
+      "@type": "EducationalOccupationalCredential",
+      "@id": `${SITE_URL}/team/${teacher.slug}#credential-${index}`,
+      name: cert.name,
+      description: cert.caption,
+      credentialCategory: "certificate",
+      image: {
+        "@type": "ImageObject",
+        url: absoluteUrl(cert.src),
+        contentUrl: absoluteUrl(cert.src),
+        width: cert.width ?? 800,
+        height: cert.height ?? 1132,
+        caption: cert.alt,
+        inLanguage: "ru-RU",
+        creditText: "ChinaChild",
+      },
+    }));
   }
   return node;
 }

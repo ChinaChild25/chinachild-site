@@ -13,8 +13,13 @@ import { absoluteUrl } from "@/lib/site-config";
 
 export const revalidate = 300;
 
-export async function generateMetadata(): Promise<Metadata> {
-  return buildMetadata({
+export async function generateMetadata({ searchParams }: GrammarPageProps): Promise<Metadata> {
+  const params = await searchParams;
+  const query = readParam(params.q).trim();
+  const tags = readParam(params.tags).trim();
+  const limit = readParam(params.limit).trim();
+  const hasFilters = Boolean(query || tags || limit);
+  const metadata = buildMetadata({
     title: "Грамматика китайского языка — справочник и правила | ChinaChild",
     description:
       "Бесплатный справочник по грамматике китайского: схемы, конструкции, примеры с пиньинем и переводом. HSK 1–6 и Новый HSK.",
@@ -27,6 +32,12 @@ export async function generateMetadata(): Promise<Metadata> {
       "порядок слов в китайском",
     ],
   });
+  if (!hasFilters) return metadata;
+  return {
+    ...metadata,
+    robots: { index: false, follow: true, googleBot: { index: false, follow: true } },
+    alternates: { canonical: absoluteUrl("/grammar") },
+  };
 }
 
 type GrammarPageProps = {

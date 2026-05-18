@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import PageHero from "@/components/layout/PageHero";
+import JsonLd from "@/components/seo/JsonLd";
 import { getPublicHskVersions } from "@/lib/content/dictionary";
 import { formatWordCountRu, hskVersionSlug } from "@/lib/content/labels";
 import { buildMetadata } from "@/lib/metadata";
+import { absoluteUrl } from "@/lib/site-config";
+import { createBreadcrumbNode } from "@/lib/schema";
 
 export const revalidate = 300;
 
@@ -19,6 +22,28 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function DictionaryHskPage() {
   const versions = await getPublicHskVersions();
+  const url = absoluteUrl("/dictionary/hsk");
+  const graph = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": `${url}#collection`,
+        name: "HSK — шкалы и уровни",
+        url,
+        inLanguage: "ru-RU",
+        description: "Списки слов по шкалам Новый HSK 3.0 и HSK 2.0.",
+      },
+      {
+        ...createBreadcrumbNode([
+          { name: "Главная", path: "/" },
+          { name: "Словарь", path: "/dictionary" },
+          { name: "HSK", path: "/dictionary/hsk" },
+        ]),
+        "@id": `${url}#breadcrumb`,
+      },
+    ],
+  };
   return (
     <main>
       <Breadcrumbs
@@ -28,6 +53,7 @@ export default async function DictionaryHskPage() {
           { name: "HSK", path: "/dictionary/hsk" },
         ]}
       />
+      <JsonLd data={graph} id="dictionary-hsk-graph" />
       <PageHero
         variant="violet"
         eyebrow="HSK"

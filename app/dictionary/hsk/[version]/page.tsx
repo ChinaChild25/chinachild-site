@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import PageHero from "@/components/layout/PageHero";
+import JsonLd from "@/components/seo/JsonLd";
 import HskDeckCard from "@/components/content/HskDeckCard";
 import {
   getPublicHskLevels,
@@ -14,6 +15,8 @@ import {
   normalizeHskVersionParam,
 } from "@/lib/content/labels";
 import { buildMetadata } from "@/lib/metadata";
+import { absoluteUrl } from "@/lib/site-config";
+import { createBreadcrumbNode } from "@/lib/schema";
 
 export const revalidate = 300;
 
@@ -28,11 +31,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { version: versionParam } = await params;
   const version = normalizeHskVersionParam(versionParam);
   if (!version) {
-    return buildMetadata({
-      title: "Шкала HSK не найдена | ChinaChild",
-      description: "Запрошенная шкала HSK не существует.",
-      path: `/dictionary/hsk/${versionParam}`,
-    });
+    return {
+      ...buildMetadata({
+        title: "Шкала HSK не найдена | ChinaChild",
+        description: "Запрошенная шкала HSK не существует.",
+        path: "/dictionary/hsk",
+      }),
+      robots: { index: false, follow: true, googleBot: { index: false, follow: true } },
+      alternates: { canonical: absoluteUrl("/dictionary/hsk") },
+    };
   }
   return buildMetadata({
     title: `${hskVersionLabel(version)} — все уровни словаря | ChinaChild`,
@@ -46,6 +53,30 @@ export default async function HskVersionPage({ params }: Props) {
   const version = normalizeHskVersionParam(versionParam);
   if (!version) notFound();
   const decks = await getPublicHskLevels(version);
+  const versionLabel = hskVersionLabel(version);
+  const url = absoluteUrl(`/dictionary/hsk/${versionParam}`);
+  const graph = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": `${url}#collection`,
+        name: versionLabel,
+        url,
+        inLanguage: "ru-RU",
+        description: `Все уровни шкалы ${versionLabel} с пиньинем и переводами.`,
+      },
+      {
+        ...createBreadcrumbNode([
+          { name: "Главная", path: "/" },
+          { name: "Словарь", path: "/dictionary" },
+          { name: "HSK", path: "/dictionary/hsk" },
+          { name: versionLabel, path: `/dictionary/hsk/${versionParam}` },
+        ]),
+        "@id": `${url}#breadcrumb`,
+      },
+    ],
+  };
 
   return (
     <main>
@@ -54,14 +85,15 @@ export default async function HskVersionPage({ params }: Props) {
           { name: "Главная", path: "/" },
           { name: "Словарь", path: "/dictionary" },
           { name: "HSK", path: "/dictionary/hsk" },
-          { name: hskVersionLabel(version), path: `/dictionary/hsk/${versionParam}` },
+          { name: versionLabel, path: `/dictionary/hsk/${versionParam}` },
         ]}
       />
+      <JsonLd data={graph} id={`dictionary-hsk-${versionParam}-graph`} />
       <PageHero
         variant="violet"
         eyebrow="HSK"
-        title={hskVersionLabel(version)}
-        description={`Все уровни шкалы ${hskVersionLabel(version)} — кликните по карточке, чтобы открыть список слов.`}
+        title={versionLabel}
+        description={`Все уровни шкалы ${versionLabel} — кликните по карточке, чтобы открыть список слов.`}
         secondaryCta={{ label: "Все шкалы HSK", href: "/dictionary/hsk" }}
       />
 

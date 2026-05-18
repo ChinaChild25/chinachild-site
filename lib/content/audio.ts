@@ -11,6 +11,14 @@ import { getPublicSupabaseClient } from "@/lib/supabase/public-content";
 
 export type AudioOwnerType = "term" | "example" | "grammar_example";
 
+function chunkValues<T>(values: ReadonlyArray<T>, size: number): T[][] {
+  const chunks: T[][] = [];
+  for (let index = 0; index < values.length; index += size) {
+    chunks.push(values.slice(index, index + size) as T[]);
+  }
+  return chunks;
+}
+
 export async function fetchAudioUrls(
   ownerType: AudioOwnerType,
   ownerIds: ReadonlyArray<string>,
@@ -20,25 +28,24 @@ export async function fetchAudioUrls(
   const supabase = getPublicSupabaseClient();
   if (!supabase) return result;
 
-  // `.in()` accepts up to ~1k ids; chunk if we ever surpass that. For now
-  // the dictionary level pages cap at 500 terms per page so one round-trip
-  // is fine.
-  const { data, error } = await supabase
-    .from("vocab_audio_assets")
-    .select("owner_id, public_url, storage_path")
-    .eq("owner_type", ownerType)
-    .in("owner_id", ownerIds as string[]);
-  if (error) {
-    console.warn(`[public-content/audio] ${ownerType} fetch error:`, error.message);
-    return result;
-  }
-  for (const row of (data ?? []) as Array<{
-    owner_id: string;
-    public_url: string | null;
-    storage_path: string | null;
-  }>) {
-    const url = row.public_url ?? null;
-    if (url) result.set(row.owner_id, url);
+  for (const chunk of chunkValues(ownerIds, 100)) {
+    const { data, error } = await supabase
+      .from("vocab_audio_assets")
+      .select("owner_id, public_url, storage_path")
+      .eq("owner_type", ownerType)
+      .in("owner_id", chunk as string[]);
+    if (error) {
+      console.warn(`[public-content/audio] ${ownerType} fetch error:`, error.message);
+      continue;
+    }
+    for (const row of (data ?? []) as Array<{
+      owner_id: string;
+      public_url: string | null;
+      storage_path: string | null;
+    }>) {
+      const url = row.public_url ?? null;
+      if (url) result.set(row.owner_id, url);
+    }
   }
   return result;
 }

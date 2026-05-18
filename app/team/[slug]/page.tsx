@@ -3,10 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import JsonLd from "@/components/seo/JsonLd";
+import CertificateGallery from "@/components/content/CertificateGallery";
 import Avatar from "@/components/ui/Avatar";
-import DocumentUploadSlots from "@/components/ui/DocumentUploadSlots";
 import Reveal from "@/components/ui/Reveal";
 import { buildMetadata } from "@/lib/metadata";
+import { resolveTeacherCertificates } from "@/lib/team-certificates";
 import {
   createBreadcrumbNode,
   createTeacherNode,
@@ -89,8 +90,7 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
   const url = absoluteUrl(`/team/${teacher.slug}`);
   const profilePageId = `${url}#profile`;
   const article = teacher.profileArticle ?? [teacher.bio ?? teacher.credentials];
-  const documentSlots = teacher.documentSlots ?? 1;
-
+  const visibleCertificates = resolveTeacherCertificates(teacher.certificates);
   const graph: JsonLdType = {
     "@context": "https://schema.org",
     "@graph": [
@@ -102,7 +102,7 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
         description: teacherDescription(teacher),
         inLanguage: "ru-RU",
         isPartOf: { "@id": `${SITE_URL}#website` },
-        mainEntity: createTeacherNode(teacher),
+        mainEntity: createTeacherNode(teacher, { certificates: visibleCertificates }),
       },
       {
         ...createBreadcrumbNode([
@@ -224,17 +224,27 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
           </section>
         ) : null}
 
-        <section className="page-shell-wide py-8 md:py-10">
-          <div className="grid gap-8 lg:grid-cols-[0.7fr_1.3fr]">
-            <div>
-              <span className="tag-pill">Документы</span>
-              <h2 className="mt-5 text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-[#1b1b1b] sm:text-4xl">
-                Документы и сертификаты
-              </h2>
+        {visibleCertificates.length > 0 ? (
+          <section className="page-shell-wide py-8 md:py-10">
+            <div className="grid gap-8 lg:grid-cols-[0.7fr_1.3fr]">
+              <Reveal>
+                <div>
+                  <span className="tag-pill">Документы</span>
+                  <h2 className="mt-5 text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-[#1b1b1b] sm:text-4xl">
+                    Документы и сертификаты
+                  </h2>
+                  <p className="mt-4 max-w-md text-base leading-[1.6] text-[#4b4b4b]">
+                    Сканы дипломов и международных сертификатов HSK — для прозрачности
+                    квалификации преподавателя.
+                  </p>
+                </div>
+              </Reveal>
+              <Reveal>
+                <CertificateGallery items={visibleCertificates} />
+              </Reveal>
             </div>
-            <DocumentUploadSlots slots={documentSlots} ownerName={name} />
-          </div>
-        </section>
+          </section>
+        ) : null}
       </article>
 
       <section className="page-shell-wide pb-16 pt-8 lg:pb-20">

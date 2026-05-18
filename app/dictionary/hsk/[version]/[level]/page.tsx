@@ -44,24 +44,52 @@ function readParam(value: string | string[] | undefined): string {
   return "";
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { version: versionParam, level } = await params;
+  const sp = await searchParams;
+  const query = readParam(sp.q).trim();
   const version = normalizeHskVersionParam(versionParam);
   if (!version) {
-    return buildMetadata({
-      title: "Уровень HSK не найден | ChinaChild",
-      description: "Запрошенный уровень HSK не существует.",
-      path: `/dictionary/hsk/${versionParam}/${level}`,
-    });
+    return {
+      ...buildMetadata({
+        title: "Уровень HSK не найден | ChinaChild",
+        description: "Запрошенный уровень HSK не существует.",
+        path: "/dictionary/hsk",
+      }),
+      robots: { index: false, follow: true, googleBot: { index: false, follow: true } },
+      alternates: { canonical: absoluteUrl("/dictionary/hsk") },
+    };
   }
   const versionLabel = hskVersionLabel(version);
   const heading = version === "3.0" ? `Новый HSK ${level}` : `HSK ${level}`;
-  return buildMetadata({
+  const path = `/dictionary/hsk/${versionParam}/${level}`;
+  const versions = await getPublicHskVersions();
+  const versionSummary = versions.find((candidate) => candidate.id === version);
+  const hasLevel = versionSummary?.decks.some((deck) => deck.hskLevel === level) ?? false;
+  if (!hasLevel) {
+    const versionPath = `/dictionary/hsk/${versionParam}`;
+    return {
+      ...buildMetadata({
+        title: "Уровень HSK не найден | ChinaChild",
+        description: "Запрошенный уровень HSK не существует.",
+        path: versionPath,
+      }),
+      robots: { index: false, follow: true, googleBot: { index: false, follow: true } },
+      alternates: { canonical: absoluteUrl(versionPath) },
+    };
+  }
+  const metadata = buildMetadata({
     title: `${heading} — список слов с пиньинем и переводом | ChinaChild`,
     description: `Полный список слов уровня ${heading} (${versionLabel}). Пиньинь, переводы и примеры — бесплатно и без регистрации.`,
-    path: `/dictionary/hsk/${versionParam}/${level}`,
+    path,
     keywords: [heading.toLowerCase(), "HSK слова", "китайский словарь", "пиньинь"],
   });
+  if (!query) return metadata;
+  return {
+    ...metadata,
+    robots: { index: false, follow: true, googleBot: { index: false, follow: true } },
+    alternates: { canonical: absoluteUrl(path) },
+  };
 }
 
 export default async function HskLevelPage({ params, searchParams }: Props) {

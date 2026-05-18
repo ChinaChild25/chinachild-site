@@ -6,6 +6,7 @@ import GrammarArticleCard from "@/components/content/GrammarArticleCard";
 import { getPublicGrammarTagBySlug, getPublicGrammarTags } from "@/lib/content/grammar";
 import { formatArticleCountRu, tagGroupLabel } from "@/lib/content/labels";
 import { buildMetadata } from "@/lib/metadata";
+import { absoluteUrl } from "@/lib/site-config";
 
 export const revalidate = 300;
 
@@ -20,11 +21,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const { tag } = await getPublicGrammarTagBySlug(slug);
   if (!tag) {
-    return buildMetadata({
-      title: "Тег не найден | Грамматика ChinaChild",
-      description: "Запрошенный тег отсутствует.",
-      path: `/grammar/tags/${slug}`,
-    });
+    return {
+      ...buildMetadata({
+        title: "Тег не найден | Грамматика ChinaChild",
+        description: "Запрошенный тег отсутствует.",
+        path: "/grammar/tags",
+      }),
+      robots: { index: false, follow: true, googleBot: { index: false, follow: true } },
+      alternates: { canonical: absoluteUrl("/grammar/tags") },
+    };
   }
   return buildMetadata({
     title: `${tag.labelRu} — грамматика китайского | ChinaChild`,

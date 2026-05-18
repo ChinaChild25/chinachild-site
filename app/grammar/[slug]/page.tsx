@@ -26,11 +26,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const article = await getPublicGrammarArticleBySlug(slug);
   if (!article) {
-    return buildMetadata({
-      title: "Статья не найдена | Грамматика ChinaChild",
-      description: "Запрошенная статья отсутствует в справочнике.",
-      path: `/grammar/${slug}`,
-    });
+    return {
+      ...buildMetadata({
+        title: "Статья не найдена | Грамматика ChinaChild",
+        description: "Запрошенная статья отсутствует в справочнике.",
+        path: "/grammar",
+      }),
+      robots: { index: false, follow: true, googleBot: { index: false, follow: true } },
+      alternates: { canonical: absoluteUrl("/grammar") },
+    };
   }
   const description =
     article.summary ?? `Правило китайской грамматики: ${article.title}. Объяснение и примеры.`;
@@ -64,7 +68,7 @@ export default async function GrammarArticlePage({ params }: Props) {
         description: article.summary ?? undefined,
         url,
         inLanguage: "ru-RU",
-        learningResourceType: "Grammar lesson",
+        learningResourceType: "Правило грамматики",
         educationalLevel: badge ?? undefined,
         keywords: article.tags.map((tag) => tag.labelRu).join(", "),
       },

@@ -86,6 +86,14 @@ type StrokeRow = {
   viewport_height: number;
 };
 
+function chunkValues<T>(values: ReadonlyArray<T>, size: number): T[][] {
+  const chunks: T[][] = [];
+  for (let index = 0; index < values.length; index += size) {
+    chunks.push(values.slice(index, index + size) as T[]);
+  }
+  return chunks;
+}
+
 // ---- Deck-only snapshot (cheap; loaded on dictionary hub pages) ----
 
 async function loadDecks(): Promise<DeckRow[]> {
@@ -219,7 +227,7 @@ export async function getPublicHskLevelTerms(
   if (!deck) return null;
   if (!supabase) return { deck, terms: [], totalImported: 0 };
 
-  const limit = Math.max(1, Math.min(options.limit ?? 500, 2000));
+  const limit = Math.max(1, Math.min(options.limit ?? 2000, 2000));
 
   const { data: items, error: itemsError } = await supabase
     .from("vocab_deck_items")
@@ -235,34 +243,43 @@ export async function getPublicHskLevelTerms(
   if (itemRows.length === 0) return { deck, terms: [], totalImported: 0 };
 
   const termIds = itemRows.map((row) => row.term_id);
-  const [termsRes, pronRes, sensesRes, termAudioMap] = await Promise.all([
-    supabase
-      .from("vocab_terms")
-      .select(
-        "id, slug, simplified, traditional, default_display, base_translation_ru, base_translation_en, frequency_rank, part_of_speech",
-      )
-      .in("id", termIds),
-    supabase
-      .from("vocab_pronunciations")
-      .select("term_id, pinyin_display, pinyin_normalized, is_primary, order_index")
-      .in("term_id", termIds),
-    supabase
-      .from("vocab_senses")
-      .select("term_id, locale, definition, order_index")
-      .in("term_id", termIds),
-    fetchAudioUrls("term", termIds),
-  ]);
-  if (termsRes.error || pronRes.error || sensesRes.error) {
-    console.warn(
-      "[public-content/dictionary] level fan-out error:",
-      termsRes.error?.message ?? pronRes.error?.message ?? sensesRes.error?.message,
-    );
-    return { deck, terms: [], totalImported: 0 };
+  const termRows: TermRow[] = [];
+  const pronunciations: PronunciationRow[] = [];
+  const senses: SenseRow[] = [];
+  let fanOutFailed = false;
+
+  for (const chunk of chunkValues(termIds, 100)) {
+    const [termsRes, pronRes, sensesRes] = await Promise.all([
+      supabase
+        .from("vocab_terms")
+        .select(
+          "id, slug, simplified, traditional, default_display, base_translation_ru, base_translation_en, frequency_rank, part_of_speech",
+        )
+        .in("id", chunk),
+      supabase
+        .from("vocab_pronunciations")
+        .select("term_id, pinyin_display, pinyin_normalized, is_primary, order_index")
+        .in("term_id", chunk),
+      supabase
+        .from("vocab_senses")
+        .select("term_id, locale, definition, order_index")
+        .in("term_id", chunk),
+    ]);
+    if (termsRes.error || pronRes.error || sensesRes.error) {
+      fanOutFailed = true;
+      console.warn(
+        "[public-content/dictionary] level fan-out error:",
+        termsRes.error?.message ?? pronRes.error?.message ?? sensesRes.error?.message,
+      );
+      continue;
+    }
+    termRows.push(...((termsRes.data ?? []) as TermRow[]));
+    pronunciations.push(...((pronRes.data ?? []) as PronunciationRow[]));
+    senses.push(...((sensesRes.data ?? []) as SenseRow[]));
   }
 
-  const termRows = (termsRes.data ?? []) as TermRow[];
-  const pronunciations = (pronRes.data ?? []) as PronunciationRow[];
-  const senses = (sensesRes.data ?? []) as SenseRow[];
+  if (fanOutFailed && termRows.length === 0) return { deck, terms: [], totalImported: 0 };
+  const termAudioMap = await fetchAudioUrls("term", termIds);
 
   const termById = new Map(termRows.map((t) => [t.id, t]));
   const primaryPronByTermId = new Map<string, PronunciationRow>();
@@ -322,7 +339,7 @@ export async function getPublicHskLevelTerms(
 
 // ---- Single word detail ----
 
-export async function getPublicWordSlugs(limit = 500): Promise<string[]> {
+export async function getPublicWordSlugs(limit = 2000): Promise<string[]> {
   const supabase = getPublicSupabaseClient();
   if (!supabase) return [];
   const { data, error } = await supabase.from("vocab_terms").select("slug").limit(limit);

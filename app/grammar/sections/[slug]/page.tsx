@@ -9,6 +9,7 @@ import {
 } from "@/lib/content/grammar";
 import { formatArticleCountRu } from "@/lib/content/labels";
 import { buildMetadata } from "@/lib/metadata";
+import { absoluteUrl } from "@/lib/site-config";
 
 export const revalidate = 300;
 
@@ -23,11 +24,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const { section } = await getPublicGrammarSectionBySlug(slug);
   if (!section) {
-    return buildMetadata({
-      title: "Раздел не найден | Грамматика ChinaChild",
-      description: "Запрошенный раздел отсутствует.",
-      path: `/grammar/sections/${slug}`,
-    });
+    return {
+      ...buildMetadata({
+        title: "Раздел не найден | Грамматика ChinaChild",
+        description: "Запрошенный раздел отсутствует.",
+        path: "/grammar",
+      }),
+      robots: { index: false, follow: true, googleBot: { index: false, follow: true } },
+      alternates: { canonical: absoluteUrl("/grammar") },
+    };
   }
   return buildMetadata({
     title: `${section.titleRu} — грамматика китайского | ChinaChild`,

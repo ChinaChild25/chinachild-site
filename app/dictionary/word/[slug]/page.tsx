@@ -24,7 +24,7 @@ import { createBreadcrumbNode } from "@/lib/schema";
 export const revalidate = 300;
 
 export async function generateStaticParams(): Promise<Array<{ slug: string }>> {
-  const slugs = await getPublicWordSlugs(500);
+  const slugs = await getPublicWordSlugs();
   return slugs.map((slug) => ({ slug }));
 }
 
@@ -34,22 +34,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const word = await getPublicWordBySlug(slug);
   if (!word) {
-    return buildMetadata({
-      title: "Слово не найдено | Словарь ChinaChild",
-      description: "Запрошенное слово отсутствует в словаре.",
-      path: `/dictionary/word/${slug}`,
-    });
+    return {
+      ...buildMetadata({
+        title: "Слово не найдено | Словарь ChinaChild",
+        description: "Запрошенное слово отсутствует в словаре.",
+        path: "/dictionary",
+      }),
+      robots: { index: false, follow: true, googleBot: { index: false, follow: true } },
+      alternates: { canonical: absoluteUrl("/dictionary") },
+    };
   }
-  const description = [
-    word.simplified,
-    word.primaryPinyin,
-    word.primarySense ?? word.baseTranslationRu ?? "",
-  ]
-    .filter(Boolean)
-    .join(" — ");
+  const meaning = word.primarySense ?? word.baseTranslationRu ?? "значение, пиньинь и примеры";
+  const pinyin = word.primaryPinyin ? ` (${word.primaryPinyin})` : "";
   return buildMetadata({
-    title: `${word.simplified} (${word.primaryPinyin ?? ""}) — китайское слово | ChinaChild`,
-    description: description || `Китайское слово ${word.simplified}. Значение, пиньинь и примеры.`,
+    title: `${word.simplified}${pinyin} — ${meaning} | Китайский словарь ChinaChild`,
+    description: `${word.simplified}${pinyin}: ${meaning}. Пиньинь, перевод, примеры, аудио и HSK-уровни в словаре ChinaChild.`,
     path: `/dictionary/word/${word.slug}`,
     keywords: [word.simplified, word.primaryPinyin ?? "", "китайский словарь", "перевод"].filter(Boolean),
   });
@@ -68,6 +67,7 @@ export default async function WordDetailPage({ params }: Props) {
 
   const url = absoluteUrl(`/dictionary/word/${word.slug}`);
   const firstHsk = word.hskBadges[0];
+  const alternateNames = [word.traditional, word.primaryPinyin].filter(Boolean);
 
   const graph = {
     "@context": "https://schema.org",
@@ -76,7 +76,7 @@ export default async function WordDetailPage({ params }: Props) {
         "@type": "DefinedTerm",
         "@id": `${url}#term`,
         name: word.simplified,
-        alternateName: word.traditional ?? undefined,
+        alternateName: alternateNames.length > 0 ? alternateNames : undefined,
         description: word.primarySense ?? word.baseTranslationRu ?? undefined,
         url,
         inLanguage: ["zh", "ru-RU"],
