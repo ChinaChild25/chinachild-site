@@ -7,10 +7,8 @@ import { useEffect } from "react";
 declare global {
   interface Window {
     ym?: (id: number, action: string, ...args: unknown[]) => void;
-    // Module-level dedupe: useRef wasn't enough because the Suspense boundary
-    // can re-mount this component, giving each React instance its own ref.
-    // window survives re-mount, so the second instance sees the URL we just
-    // reported and bails before firing another hit.
+    // Global dedupe survives Suspense re-mounts and prevents duplicate pageviews
+    // for the same URL. With defer:true, every pageview is sent manually here.
     __lastYmUrl?: string;
   }
 }
@@ -26,8 +24,9 @@ export function YandexMetrika() {
     const query = searchParams?.toString();
     const url = pathname + (query ? `?${query}` : "");
     if (window.__lastYmUrl === url) return;
+    const referer = window.__lastYmUrl || document.referrer;
     window.__lastYmUrl = url;
-    window.ym(YM_ID, "hit", url, { referer: document.referrer });
+    window.ym(YM_ID, "hit", url, { referer });
   }, [pathname, searchParams]);
 
   if (!YM_ID || process.env.NODE_ENV !== "production") return null;

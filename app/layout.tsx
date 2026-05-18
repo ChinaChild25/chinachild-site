@@ -71,7 +71,9 @@ export default function RootLayout({
         <ThemeInitScript />
         {/* Preconnect / DNS-prefetch — kills first-byte latency for analytics. */}
         <link rel="preconnect" href="https://mc.yandex.ru" crossOrigin="" />
+        <link rel="preconnect" href="https://mc.yandex.com" crossOrigin="" />
         <link rel="dns-prefetch" href="https://mc.yandex.ru" />
+        <link rel="dns-prefetch" href="https://mc.yandex.com" />
         {/* Atom feed for blog discovery */}
         <link
           rel="alternate"
