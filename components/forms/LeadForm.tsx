@@ -50,7 +50,7 @@ type AnalyticsWindow = Window & {
 function trackLeadSubmitted(meta: { course?: string; source?: string }) {
   if (typeof window === "undefined") return;
   const win = window as AnalyticsWindow;
-  const counterIdRaw = process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID;
+  const counterIdRaw = process.env.NEXT_PUBLIC_YM_ID;
   const counterId = counterIdRaw ? Number(counterIdRaw) : NaN;
 
   try {

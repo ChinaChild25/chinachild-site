@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { Suspense } from "react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import FloatingCta from "@/components/layout/FloatingCta";
@@ -7,7 +8,7 @@ import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import ThemeInitScript from "@/components/theme/ThemeInitScript";
 import JsonLd from "@/components/seo/JsonLd";
-import YandexMetrika from "@/components/seo/YandexMetrika";
+import { YandexMetrika } from "@/components/analytics/YandexMetrika";
 import { buildMetadata } from "@/lib/metadata";
 import { createSiteGraph } from "@/lib/schema";
 import { SITE_URL } from "@/lib/site-config";
@@ -79,9 +80,14 @@ export default function RootLayout({
         />
       </head>
       <body>
+        {/* Analytics mounted as close to <body> top as possible so Yandex registers
+            the visit even if the user leaves immediately. useSearchParams() must be
+            wrapped in Suspense to avoid de-opting the whole tree to client rendering. */}
+        <Suspense fallback={null}>
+          <YandexMetrika />
+        </Suspense>
         {/* Site-wide JSON-LD @graph: connected nodes for richer SERP rendering */}
         <JsonLd data={createSiteGraph()} id="site-graph" />
-        <YandexMetrika />
         <div className="site-shell">
           <Header />
           {children}
