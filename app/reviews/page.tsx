@@ -8,6 +8,7 @@ import LeadModal from "@/components/forms/LeadModal";
 import { buttonStyles } from "@/components/ui/button";
 import { buildMetadata } from "@/lib/metadata";
 import { createAggregateRatingSchema, createReviewSchemas } from "@/lib/schema";
+import { absoluteUrl } from "@/lib/site-config";
 import { reviews, siteFacts } from "@/lib/site-data";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -38,8 +39,8 @@ export default function ReviewsPage() {
       <PageHero
         eyebrow={`Средняя оценка ${siteFacts.aggregateRating} из 5`}
         title="Отзывы учеников ChinaChild"
-        description="Что пишут наши ученики после прохождения курса. Все отзывы — из формы обратной связи на chinachild.ru."
-        primaryCta={{ label: "Оставить отзыв", href: "https://chinachild.ru/reviews", external: true }}
+        description="Что пишут наши ученики после прохождения курса. Все отзывы — из формы обратной связи на сайте."
+        primaryCta={{ label: "Оставить отзыв", href: absoluteUrl("/reviews"), external: true }}
         secondaryCta={{ label: "Записаться на пробное", modal: true }}
       />
 

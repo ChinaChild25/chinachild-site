@@ -21,10 +21,9 @@ export async function GET() {
     "fbclid",
     "gad_source",
   ].join("&");
+  const host = new URL(SITE_URL).host;
 
   const lines = [
-    "# ChinaChild — robots.txt",
-    "",
     "User-Agent: *",
     "Allow: /",
     "Disallow: /api/",
@@ -42,12 +41,9 @@ export async function GET() {
     "Allow: /",
     "Disallow: /api/",
     "",
-    `Host: ${SITE_URL}`,
+    `Host: ${host}`,
     "",
     `Sitemap: ${absoluteUrl("/sitemap.xml")}`,
-    `Sitemap: ${absoluteUrl("/sitemap-pages.xml")}`,
-    `Sitemap: ${absoluteUrl("/sitemap-blog.xml")}`,
-    `Sitemap: ${absoluteUrl("/sitemap-images.xml")}`,
     "",
   ];
 

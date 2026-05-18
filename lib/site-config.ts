@@ -1,6 +1,13 @@
 export const SITE_NAME = "ChinaChild";
 export const BRAND_NAME = "HSK+";
-export const SITE_URL = "https://chinachild.ru";
+const DEFAULT_SITE_URL = "https://chinachild-site.vercel.app";
+
+function normalizeOrigin(value: string | undefined): string {
+  const origin = value?.trim() || DEFAULT_SITE_URL;
+  return origin.replace(/\/+$/, "");
+}
+
+export const SITE_URL = normalizeOrigin(process.env.NEXT_PUBLIC_SITE_URL);
 
 /** Когда вы зальёте промо-видео, заполните эти поля и в schema.ts
  *  автоматически появится VideoObject node со ссылками на Метрику. */
