@@ -9,6 +9,7 @@ import Header from "@/components/layout/Header";
 import ThemeInitScript from "@/components/theme/ThemeInitScript";
 import JsonLd from "@/components/seo/JsonLd";
 import { YandexMetrika } from "@/components/analytics/YandexMetrika";
+import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { buildMetadata } from "@/lib/metadata";
 import { createSiteGraph } from "@/lib/schema";
 import { SITE_URL } from "@/lib/site-config";
@@ -86,6 +87,7 @@ export default function RootLayout({
         <Suspense fallback={null}>
           <YandexMetrika />
         </Suspense>
+        <GoogleAnalytics />
         {/* Site-wide JSON-LD @graph: connected nodes for richer SERP rendering */}
         <JsonLd data={createSiteGraph()} id="site-graph" />
         <div className="site-shell">
