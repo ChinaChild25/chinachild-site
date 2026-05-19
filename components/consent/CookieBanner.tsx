@@ -1,10 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { useConsent } from "@/lib/consent/context";
 
 export default function CookieBanner() {
-  const { isBannerOpen, acceptAll, acceptNecessaryOnly } = useConsent();
+  const { isBannerOpen, acceptAll, acceptNecessaryOnly, updatePreferences } = useConsent();
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [analyticsPref, setAnalyticsPref] = useState(true);
+  const [marketingPref, setMarketingPref] = useState(false);
 
   if (!isBannerOpen) return null;
 
@@ -14,34 +18,125 @@ export default function CookieBanner() {
       aria-modal="false"
       aria-label="Согласие на использование cookies"
       aria-live="polite"
-      className="fixed bottom-0 left-0 right-0 z-[60] border-t border-[rgba(0,0,0,0.08)] bg-[#f8f7f2] text-[#262626] shadow-[0_-12px_32px_rgba(0,0,0,0.08)]"
+      className="cookie-banner-shell"
     >
-      <div className="page-shell-wide flex flex-col gap-4 py-4 md:flex-row md:items-center md:justify-between md:py-5">
-        <p className="max-w-2xl text-sm leading-[1.55] text-[#6b6b6b]">
-          Мы используем cookies и сервисы аналитики (Яндекс Метрика, Google Analytics),
-          чтобы понимать, какие страницы помогают выбрать курс. Подробнее — в{" "}
-          <Link href="/privacy-policy" className="underline underline-offset-4 hover:text-[#262626]">
-            политике конфиденциальности
-          </Link>
-          .
-        </p>
-        <div className="flex flex-col gap-2 sm:flex-row sm:flex-shrink-0">
-          <button
-            type="button"
-            onClick={acceptNecessaryOnly}
-            className="btn-pill btn-white"
-          >
-            Только необходимые
-          </button>
-          <button
-            type="button"
-            onClick={acceptAll}
-            className="btn-pill btn-ink"
-          >
-            Принять все
-          </button>
-        </div>
+      <div className="cookie-banner-card">
+        {!detailsOpen ? (
+          <>
+            <div className="flex items-start gap-3">
+              <div className="text-2xl leading-none" aria-hidden>
+                🍪
+              </div>
+              <div className="flex-1">
+                <h2 className="cookie-banner-title">Cookies и аналитика</h2>
+                <p className="cookie-banner-text">
+                  Используем для понимания, как улучшить сайт. Подробнее в{" "}
+                  <Link href="/privacy-policy" className="cookie-banner-link">
+                    политике конфиденциальности
+                  </Link>
+                  .
+                </p>
+              </div>
+            </div>
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={acceptNecessaryOnly}
+                className="cookie-banner-btn cookie-banner-btn-secondary"
+              >
+                Только необходимые
+              </button>
+              <button
+                type="button"
+                onClick={acceptAll}
+                className="cookie-banner-btn cookie-banner-btn-primary"
+              >
+                Принять все
+              </button>
+            </div>
+            <button
+              type="button"
+              onClick={() => setDetailsOpen(true)}
+              className="cookie-banner-link-button"
+            >
+              Настроить
+            </button>
+          </>
+        ) : (
+          <>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setDetailsOpen(false)}
+                aria-label="Назад"
+                className="cookie-banner-back"
+              >
+                ←
+              </button>
+              <h2 className="cookie-banner-title">Настройки cookies</h2>
+            </div>
+            <div className="mt-4 space-y-3">
+              <CategoryRow
+                title="Необходимые"
+                description="Нужны для базовой работы сайта"
+                checked
+                disabled
+              />
+              <CategoryRow
+                title="Аналитика"
+                description="Помогают понять, как улучшить сайт"
+                checked={analyticsPref}
+                onChange={setAnalyticsPref}
+              />
+              <CategoryRow
+                title="Маркетинг"
+                description="Персонализация и реклама"
+                checked={marketingPref}
+                onChange={setMarketingPref}
+              />
+            </div>
+            <button
+              type="button"
+              onClick={() =>
+                updatePreferences({ analytics: analyticsPref, marketing: marketingPref })
+              }
+              className="cookie-banner-btn cookie-banner-btn-primary mt-5 w-full"
+            >
+              Сохранить выбор
+            </button>
+          </>
+        )}
       </div>
     </div>
+  );
+}
+
+function CategoryRow({
+  title,
+  description,
+  checked,
+  disabled = false,
+  onChange,
+}: {
+  title: string;
+  description: string;
+  checked: boolean;
+  disabled?: boolean;
+  onChange?: (v: boolean) => void;
+}) {
+  return (
+    <label className={`cookie-banner-row${disabled ? " is-disabled" : ""}`}>
+      <input
+        type="checkbox"
+        checked={checked}
+        disabled={disabled}
+        onChange={(e) => onChange?.(e.target.checked)}
+        className="cookie-banner-checkbox"
+      />
+      <div className="min-w-0 flex-1">
+        <div className="cookie-banner-row-title">{title}</div>
+        <div className="cookie-banner-row-desc">{description}</div>
+      </div>
+    </label>
   );
 }

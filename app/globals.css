@@ -2462,3 +2462,261 @@ html[data-theme="dark"] {
     transform: none;
   }
 }
+
+/* ==========================================================================
+   Cookie consent banner — floating card bottom-left. Equal-weight buttons
+   (no dark patterns per CNIL / EU Cookie Pledge). Light defaults; dark theme
+   overrides hooked into the project's html[data-theme="dark"] selector.
+   ========================================================================== */
+
+.cookie-banner-shell {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  z-index: 950;
+  animation: cookie-banner-slide-in 200ms ease-out both;
+}
+
+@media (min-width: 640px) {
+  .cookie-banner-shell {
+    right: auto;
+    width: 420px;
+  }
+}
+
+.cookie-banner-card {
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+  color: #262626;
+  padding: 20px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
+.cookie-banner-title {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #1b1b1b;
+  letter-spacing: -0.01em;
+}
+
+.cookie-banner-text {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #5a5a5a;
+}
+
+.cookie-banner-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color var(--t-base);
+}
+
+.cookie-banner-link:hover {
+  color: #1b1b1b;
+}
+
+.cookie-banner-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.2;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color var(--t-base), border-color var(--t-base),
+    color var(--t-base);
+}
+
+.cookie-banner-btn-primary {
+  background: var(--ink);
+  color: #ffffff;
+}
+
+.cookie-banner-btn-primary:hover {
+  background: #1a1a1a;
+}
+
+.cookie-banner-btn-secondary {
+  background: #ffffff;
+  color: #262626;
+  border-color: rgba(0, 0, 0, 0.16);
+}
+
+.cookie-banner-btn-secondary:hover {
+  background: #fafaf7;
+}
+
+.cookie-banner-link-button {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 6px 0;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #6b6b6b;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-align: center;
+  transition: color var(--t-base);
+}
+
+.cookie-banner-link-button:hover {
+  color: #1b1b1b;
+}
+
+.cookie-banner-back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 0;
+  background: transparent;
+  color: #6b6b6b;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color var(--t-base), color var(--t-base);
+}
+
+.cookie-banner-back:hover {
+  color: #1b1b1b;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.cookie-banner-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.cookie-banner-row.is-disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.cookie-banner-checkbox {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: var(--ink);
+  cursor: inherit;
+}
+
+.cookie-banner-row-title {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #1b1b1b;
+  letter-spacing: -0.005em;
+}
+
+.cookie-banner-row-desc {
+  margin-top: 2px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #6b6b6b;
+}
+
+@keyframes cookie-banner-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cookie-banner-shell {
+    animation: none;
+  }
+}
+
+html[data-theme="dark"] .cookie-banner-card {
+  background: #1a1a1a;
+  color: #ededed;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+html[data-theme="dark"] .cookie-banner-title {
+  color: #f5f5f5;
+}
+
+html[data-theme="dark"] .cookie-banner-text,
+html[data-theme="dark"] .cookie-banner-row-desc {
+  color: #a3a3a3;
+}
+
+html[data-theme="dark"] .cookie-banner-link:hover {
+  color: #ffffff;
+}
+
+html[data-theme="dark"] .cookie-banner-btn-primary {
+  background: #ffffff;
+  color: #1a1a1a;
+}
+
+html[data-theme="dark"] .cookie-banner-btn-primary:hover {
+  background: #ededed;
+}
+
+html[data-theme="dark"] .cookie-banner-btn-secondary {
+  background: transparent;
+  color: #ededed;
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+html[data-theme="dark"] .cookie-banner-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+html[data-theme="dark"] .cookie-banner-link-button {
+  color: #a3a3a3;
+}
+
+html[data-theme="dark"] .cookie-banner-link-button:hover {
+  color: #ffffff;
+}
+
+html[data-theme="dark"] .cookie-banner-back {
+  color: #a3a3a3;
+}
+
+html[data-theme="dark"] .cookie-banner-back:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+html[data-theme="dark"] .cookie-banner-row-title {
+  color: #f5f5f5;
+}
+
+html[data-theme="dark"] .cookie-banner-checkbox {
+  accent-color: #ededed;
+}
+
+/* Hide FloatingCta on phones while the cookie banner occupies the
+   bottom of the viewport; desktop banner is a 420px corner card so the
+   centred CTA stays visible there. */
+@media (max-width: 639px) {
+  .floating-cta-shell--mobile-hidden {
+    display: none;
+  }
+}
