@@ -3,6 +3,7 @@
 import Script from "next/script";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
+import { useConsent } from "@/lib/consent/context";
 
 declare global {
   interface Window {
@@ -16,10 +17,13 @@ declare global {
 const YM_ID = Number(process.env.NEXT_PUBLIC_YM_ID);
 
 export function YandexMetrika() {
+  const { consent } = useConsent();
+  const analyticsEnabled = consent?.analytics === true;
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   useEffect(() => {
+    if (!analyticsEnabled) return;
     if (!YM_ID || typeof window === "undefined" || !window.ym) return;
     const query = searchParams?.toString();
     const url = pathname + (query ? `?${query}` : "");
@@ -27,9 +31,10 @@ export function YandexMetrika() {
     const referer = window.__lastYmUrl || document.referrer;
     window.__lastYmUrl = url;
     window.ym(YM_ID, "hit", url, { referer });
-  }, [pathname, searchParams]);
+  }, [analyticsEnabled, pathname, searchParams]);
 
   if (!YM_ID || process.env.NODE_ENV !== "production") return null;
+  if (!analyticsEnabled) return null;
 
   return (
     <>
