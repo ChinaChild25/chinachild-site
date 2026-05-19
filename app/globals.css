@@ -132,6 +132,16 @@ html {
   overscroll-behavior-x: none;
 }
 
+/* Long Cyrillic words ("Преподаватель-носитель", "Пономарёва" в крупных
+   заголовках) могут не помещаться по ширине на 360-414px вьюпортах. Без
+   разрешения переноса они визуально клипуются краем .site-shell { overflow-x:
+   hidden } — добавляем мягкий перенос на любой границе, если иначе никак. */
+h1, h2, h3, h4 {
+  overflow-wrap: break-word;
+  word-break: normal;
+  min-width: 0;
+}
+
 body {
   margin: 0;
   background: var(--background);
@@ -502,7 +512,13 @@ a:focus-visible {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  white-space: nowrap;
+  /* Allow long pills (multi-word "experience" labels on /team) to wrap on
+     narrow viewports instead of forcing the parent card past the screen edge.
+     Short pills like "HSK 1-6" still render on one line because they have no
+     wrap point inside them. */
+  white-space: normal;
+  overflow-wrap: anywhere;
+  max-width: 100%;
   border-radius: var(--radius-tag);
   padding: 6px 10px;
   background: rgba(255, 255, 255, 0.88);
