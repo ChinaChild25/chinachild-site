@@ -106,9 +106,19 @@ function StrokeCell({
     writer.updateDimensions({ width: renderPx, height: renderPx, padding: 12 });
   }, [renderPx]);
 
+  // Writer-init must not re-run on every renderPx change — ResizeObserver fires
+  // sub-pixel adjustments during the animation (hanzi-writer's own SVG tweaks
+  // height by fractions), so listing renderPx here used to tear down the
+  // writer mid-animation, cancel the running onComplete callback, and restart
+  // forever. We only need to wait until renderPx > 0 once, then leave further
+  // resize updates to the dedicated updateDimensions effect.
+  const renderPxRef = useRef(renderPx);
+  renderPxRef.current = renderPx;
+  const isSized = renderPx > 0;
+
   useEffect(() => {
     const el = targetRef.current;
-    if (!el || renderPx <= 0) {
+    if (!el || !isSized) {
       writerRef.current = null;
       setWriterReady(false);
       if (el) el.innerHTML = "";
@@ -116,6 +126,7 @@ function StrokeCell({
     }
 
     let cancelled = false;
+    const initialPx = renderPxRef.current;
     el.innerHTML = "";
     setLoadFailed(false);
     setLoading(true);
@@ -125,8 +136,8 @@ function StrokeCell({
       .then(({ default: HanziWriter }) => {
         if (cancelled || !targetRef.current) return;
         const writer = HanziWriter.create(targetRef.current, character.hanzi, {
-          width: renderPx,
-          height: renderPx,
+          width: initialPx,
+          height: initialPx,
           padding: 12,
           showOutline: true,
           showCharacter: true,
@@ -173,7 +184,7 @@ function StrokeCell({
       setWriterReady(false);
       if (el) el.innerHTML = "";
     };
-  }, [character.hanzi, charData, playSession, renderPx]);
+  }, [character.hanzi, charData, playSession, isSized]);
 
   useEffect(() => {
     const writer = writerRef.current;
