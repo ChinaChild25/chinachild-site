@@ -10,6 +10,8 @@ import ThemeInitScript from "@/components/theme/ThemeInitScript";
 import JsonLd from "@/components/seo/JsonLd";
 import { YandexMetrika } from "@/components/analytics/YandexMetrika";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
+import { ConsentProvider } from "@/lib/consent/context";
+import CookieBanner from "@/components/consent/CookieBanner";
 import { buildMetadata } from "@/lib/metadata";
 import { createSiteGraph } from "@/lib/schema";
 import { SITE_URL } from "@/lib/site-config";
@@ -83,21 +85,26 @@ export default function RootLayout({
         />
       </head>
       <body>
-        {/* Analytics mounted as close to <body> top as possible so Yandex registers
-            the visit even if the user leaves immediately. useSearchParams() must be
-            wrapped in Suspense to avoid de-opting the whole tree to client rendering. */}
-        <Suspense fallback={null}>
-          <YandexMetrika />
-        </Suspense>
-        <GoogleAnalytics />
-        {/* Site-wide JSON-LD @graph: connected nodes for richer SERP rendering */}
-        <JsonLd data={createSiteGraph()} id="site-graph" />
-        <div className="site-shell">
-          <Header />
-          {children}
-          <Footer />
-          <FloatingCta />
-        </div>
+        <ConsentProvider>
+          {/* Analytics mounted close to <body> top so Yandex registers the visit even
+              if the user leaves immediately. Both counters are gated on
+              consent.analytics inside their components — no script tags are emitted
+              until the user accepts. useSearchParams() needs Suspense to avoid
+              de-opting the whole tree to client rendering. */}
+          <Suspense fallback={null}>
+            <YandexMetrika />
+          </Suspense>
+          <GoogleAnalytics />
+          {/* Site-wide JSON-LD @graph: connected nodes for richer SERP rendering */}
+          <JsonLd data={createSiteGraph()} id="site-graph" />
+          <div className="site-shell">
+            <Header />
+            {children}
+            <Footer />
+            <FloatingCta />
+          </div>
+          <CookieBanner />
+        </ConsentProvider>
         <SpeedInsights />
       </body>
     </html>

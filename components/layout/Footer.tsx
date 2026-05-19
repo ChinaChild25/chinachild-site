@@ -1,4 +1,5 @@
 import Link from "next/link";
+import CookieSettingsButton from "@/components/consent/CookieSettingsButton";
 import { footerLinks } from "@/lib/site-data";
 import {
   CONTACT_PHONE,
@@ -62,7 +63,10 @@ export default function Footer() {
               Подробнее о лицензии
             </Link>
           </div>
-          <div className="mt-5 text-[#9a9a9a]">
+          <div className="mt-1">
+            <CookieSettingsButton />
+          </div>
+          <div className="mt-4 text-[#9a9a9a]">
             © {new Date().getFullYear()} ChinaChild. Все права защищены.
           </div>
         </div>
