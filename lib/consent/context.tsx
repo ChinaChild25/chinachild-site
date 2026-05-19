@@ -9,6 +9,8 @@ import {
   type ReactNode,
 } from "react";
 
+import { initConsentMode, updateConsent } from "./gtag";
+
 // v2: switched from hard-blocking analytics scripts to Consent Mode v2 +
 // Yandex.Metrika cookieless-then-upgrade. The contract changed enough that
 // existing v1 decisions must be re-collected (granular analytics/marketing
@@ -44,7 +46,14 @@ export function ConsentProvider({ children }: { children: ReactNode }) {
   // Hydrate from localStorage on mount. Until hydration is complete we expose
   // consent=null and isBannerOpen=false so the server-rendered HTML matches
   // what the client paints on the first frame.
+  //
+  // Consent Mode v2 default ('denied' for ad/analytics storage) must land in
+  // the dataLayer BEFORE the gtag.js script processes any queued events. We
+  // emit it synchronously here, before reading the saved decision, so a
+  // returning user with full consent still has the default → update sequence
+  // gtag expects, and a first-time user starts in denied state by default.
   useEffect(() => {
+    initConsentMode();
     setHydrated(true);
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -52,6 +61,7 @@ export function ConsentProvider({ children }: { children: ReactNode }) {
         const parsed = JSON.parse(raw) as ConsentState;
         if (parsed && parsed.version === VERSION) {
           setConsent(parsed);
+          updateConsent({ analytics: parsed.analytics, marketing: parsed.marketing });
           return;
         }
       }
@@ -71,6 +81,7 @@ export function ConsentProvider({ children }: { children: ReactNode }) {
     };
     setConsent(state);
     setIsBannerOpen(false);
+    updateConsent({ analytics, marketing });
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch {
