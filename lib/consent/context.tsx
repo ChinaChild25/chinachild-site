@@ -9,8 +9,12 @@ import {
   type ReactNode,
 } from "react";
 
-const STORAGE_KEY = "cookie-consent-v1";
-const VERSION = "v1";
+// v2: switched from hard-blocking analytics scripts to Consent Mode v2 +
+// Yandex.Metrika cookieless-then-upgrade. The contract changed enough that
+// existing v1 decisions must be re-collected (granular analytics/marketing
+// flags are now load-bearing). v1 entries in localStorage are ignored.
+const STORAGE_KEY = "cookie-consent-v2";
+const VERSION = "v2";
 
 export type ConsentState = {
   necessary: true;
