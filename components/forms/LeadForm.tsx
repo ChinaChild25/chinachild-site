@@ -114,7 +114,13 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
     event.preventDefault();
     if (status === "submitting") return;
 
-    const formData = new FormData(event.currentTarget);
+    // Capture the form node before awaiting fetch — React releases the
+    // synthetic event after the handler returns, so event.currentTarget is
+    // null by the time we'd otherwise call .reset() on it, which surfaced as
+    // "Cannot read properties of null (reading 'reset')" after successful
+    // submits.
+    const form = event.currentTarget;
+    const formData = new FormData(form);
     const consentPd = formData.get("consent_pd") === "on";
     if (!consentPd) {
       setStatus("error");
@@ -162,7 +168,7 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
       }
       setStatus("success");
       trackLeadSubmitted({ course: payload.course, source: payload.source_page });
-      event.currentTarget.reset();
+      form.reset();
       setFormStartedAt(Date.now());
     } catch (err) {
       setStatus("error");
