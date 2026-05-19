@@ -63,12 +63,10 @@ function RiceGrid() {
 
 function StrokeCell({
   character,
-  playSession,
   active,
   onComplete,
 }: {
   character: StoredStrokeData;
-  playSession: number;
   active: boolean;
   onComplete: () => void;
 }) {
@@ -184,7 +182,7 @@ function StrokeCell({
       setWriterReady(false);
       if (el) el.innerHTML = "";
     };
-  }, [character.hanzi, charData, playSession, isSized]);
+  }, [character.hanzi, charData, isSized]);
 
   useEffect(() => {
     const writer = writerRef.current;
@@ -249,14 +247,13 @@ export default function StrokeOrderPreview({
   className?: string;
 }) {
   const animatableIndices = useMemo(() => characters.map((_, index) => index), [characters]);
-  const [playSession, setPlaySession] = useState(0);
   const [hasFinished, setHasFinished] = useState(false);
   const [activePosition, setActivePosition] = useState<number | null>(null);
   const isRunning = activePosition !== null;
 
   function start() {
     if (animatableIndices.length === 0) return;
-    setPlaySession((session) => session + 1);
+    setHasFinished(false);
     setActivePosition(0);
   }
 
@@ -312,7 +309,6 @@ export default function StrokeOrderPreview({
           <StrokeCell
             key={`${character.hanzi}-${index}`}
             character={character}
-            playSession={playSession}
             active={activeIndex === index}
             onComplete={completeActive}
           />
