@@ -90,15 +90,19 @@ function trackLeadSubmitted(meta: { course?: string; source?: string }) {
 export default function LeadForm({ defaultCourse, source, compact }: LeadFormProps) {
   const nameId = useId();
   const phoneId = useId();
+  const emailId = useId();
   const courseId = useId();
   const timeId = useId();
+  const messageId = useId();
   const consentId = useId();
   const marketingId = useId();
   const honeypotId = useId();
+  const websiteHoneypotId = useId();
 
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<FieldError | null>(null);
   const [pageHref, setPageHref] = useState<string>("");
+  const [formStartedAt, setFormStartedAt] = useState<number>(() => Date.now());
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -111,21 +115,30 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
     if (status === "submitting") return;
 
     const formData = new FormData(event.currentTarget);
+    const consentPd = formData.get("consent_pd") === "on";
+    if (!consentPd) {
+      setStatus("error");
+      setError({
+        field: "consent_pd",
+        message: "Подтвердите согласие на обработку персональных данных",
+      });
+      return;
+    }
+
     const payload = {
       name: String(formData.get("name") ?? ""),
       phone: String(formData.get("phone") ?? ""),
+      email: String(formData.get("email") ?? ""),
       course: String(formData.get("course") ?? ""),
-      comment: [
-        formData.get("callTime")
-          ? `Удобное время для звонка: ${formData.get("callTime")}`
-          : "",
-        formData.get("marketing") === "on" ? "Согласен на рассылку." : "",
-      ]
-        .filter(Boolean)
-        .join(" "),
-      consent: formData.get("consent") === "on",
+      call_time: String(formData.get("callTime") ?? ""),
+      message: String(formData.get("message") ?? ""),
+      consent_pd: consentPd,
+      consent_marketing: formData.get("consent_marketing") === "on",
       company: String(formData.get("company") ?? ""), // honeypot
-      source: source ?? pageHref,
+      website: String(formData.get("website") ?? ""), // honeypot
+      form_started_at: String(formStartedAt),
+      source_page: source ?? pageHref,
+      referrer: typeof document === "undefined" ? "" : document.referrer,
       utm: readUtm(),
     };
 
@@ -148,8 +161,9 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
         return;
       }
       setStatus("success");
-      trackLeadSubmitted({ course: payload.course, source: payload.source });
+      trackLeadSubmitted({ course: payload.course, source: payload.source_page });
       event.currentTarget.reset();
+      setFormStartedAt(Date.now());
     } catch (err) {
       setStatus("error");
       setError({
@@ -224,6 +238,21 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
       </div>
 
       <div className="lead-field">
+        <label htmlFor={emailId} className="lead-label">
+          Email
+        </label>
+        <input
+          id={emailId}
+          name="email"
+          type="email"
+          maxLength={200}
+          autoComplete="email"
+          className="lead-input"
+          aria-invalid={error?.field === "email" || undefined}
+        />
+      </div>
+
+      <div className="lead-field">
         <label htmlFor={courseId} className="lead-label">
           Что вас интересует
         </label>
@@ -254,6 +283,19 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
         />
       </div>
 
+      <div className="lead-field">
+        <label htmlFor={messageId} className="lead-label">
+          Комментарий
+        </label>
+        <textarea
+          id={messageId}
+          name="message"
+          maxLength={2000}
+          rows={3}
+          className="lead-input"
+        />
+      </div>
+
       {/* Honeypot */}
       <div
         aria-hidden="true"
@@ -267,19 +309,18 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
       >
         <label htmlFor={honeypotId}>Компания (не заполнять)</label>
         <input id={honeypotId} name="company" type="text" tabIndex={-1} autoComplete="off" />
+        <label htmlFor={websiteHoneypotId}>Сайт (не заполнять)</label>
+        <input id={websiteHoneypotId} name="website" type="url" tabIndex={-1} autoComplete="off" />
       </div>
 
       <label htmlFor={marketingId} className="lead-checkbox">
         <input
           id={marketingId}
-          name="marketing"
+          name="consent_marketing"
           type="checkbox"
-          defaultChecked
           className="lead-checkbox-input"
         />
-        <span>
-          Я согласен(а) получать рекламные и информационные сообщения от ChinaChild.
-        </span>
+        <span>Согласен получать новости и предложения школы на email</span>
       </label>
 
       <label htmlFor={consentId} className="lead-checkbox">
@@ -288,19 +329,17 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
         </span>
         <input
           id={consentId}
-          name="consent"
+          name="consent_pd"
           type="checkbox"
           required
-          defaultChecked
           className="lead-checkbox-input"
+          aria-invalid={error?.field === "consent_pd" || undefined}
         />
         <span>
-          Даю согласие на обработку моих персональных данных, указанных выше, в целях
-          получения обратной связи по заявке. Подробнее в{" "}
+          Я даю согласие на обработку персональных данных в соответствии с{" "}
           <a href="/privacy-policy" className="underline underline-offset-2">
-            политике конфиденциальности
+            Политикой конфиденциальности
           </a>
-          .
         </span>
       </label>
 
