@@ -17,7 +17,7 @@ const features: PlatformFeature[] = [
     title: "Видеозвонки в браузере",
     description:
       "Уроки идут в реальном времени прямо в браузере — без установки Zoom или Skype. Качество связи мониторится автоматически.",
-    media: "",
+    media: "/platform/video-calls.webp",
     mediaAlt: "Видеозвонок с преподавателем китайского языка в браузере",
   },
   {
@@ -25,7 +25,7 @@ const features: PlatformFeature[] = [
     title: "Расписание и напоминания",
     description:
       "Календарь занятий синхронизирован с Google Calendar и iCal. SMS- и email-напоминания приходят за час до урока — никто не пропустит.",
-    media: "",
+    media: "/platform/schedule.webp",
     mediaAlt: "Расписание занятий китайским языком в личном кабинете",
   },
   {
@@ -33,7 +33,7 @@ const features: PlatformFeature[] = [
     title: "AI-тренажёр иероглифов",
     description:
       "Встроенный ассистент на базе ChatGPT помогает разобрать тон, проверить написание иероглифа и подобрать подходящий перевод — 24/7.",
-    media: "",
+    media: "/platform/ai-trainer.webp",
     mediaAlt: "AI-тренажёр иероглифов и словарь китайского языка",
   },
   {
@@ -41,7 +41,7 @@ const features: PlatformFeature[] = [
     title: "Записи уроков",
     description:
       "Каждый урок автоматически сохраняется в личный кабинет — можно пересмотреть тему, повторить произношение и догнать пропущенное.",
-    media: "",
+    media: "/platform/recordings.webp",
     mediaAlt: "Запись урока китайского языка в личном кабинете ChinaChild",
   },
   {
@@ -49,7 +49,7 @@ const features: PlatformFeature[] = [
     title: "Трек прогресса по HSK",
     description:
       "Личный план обучения с разбивкой по уровням HSK 1–6. Видно, какие темы уже сданы и сколько осталось до сертификата.",
-    media: "",
+    media: "/platform/progress.webp",
     mediaAlt: "Трек прогресса ученика по уровням HSK 1-6",
   },
 ];
