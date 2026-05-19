@@ -51,6 +51,9 @@ export default function Footer() {
           <div>
             {LICENSEE.legalName} · ИНН {LICENSEE.inn}
           </div>
+          <div className="text-[#8a8a8a]">
+            ОГРНИП {LICENSEE.ogrnip} · Юридический адрес: {LICENSEE.address}
+          </div>
           <div>
             Образовательная лицензия № {LICENSE_DETAILS.registrationNumber} от 18.12.2025,
             выдана {LICENSE_REGION_INSTRUMENTAL}. Программа «{LICENSE_PROGRAM}».
