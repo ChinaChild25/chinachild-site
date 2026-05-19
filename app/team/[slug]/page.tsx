@@ -101,7 +101,7 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
         name: `${name} — преподаватель ChinaChild`,
         description: teacherDescription(teacher),
         inLanguage: "ru-RU",
-        isPartOf: { "@id": `${SITE_URL}#website` },
+        isPartOf: { "@id": `${SITE_URL}/#website` },
         mainEntity: createTeacherNode(teacher, { certificates: visibleCertificates }),
       },
       {

@@ -1,7 +1,5 @@
-import JsonLd from "@/components/seo/JsonLd";
 import Reveal from "@/components/ui/Reveal";
 import SectionShell from "@/components/ui/SectionShell";
-import { createFaqSchema } from "@/lib/schema";
 import { faqs, type FaqItem } from "@/lib/site-data";
 
 type FAQSectionProps = {
@@ -17,7 +15,6 @@ export default function FAQSection({
   title = "Отвечаем на вопросы",
   description,
   items = faqs,
-  schemaId = "faq-schema",
 }: FAQSectionProps) {
   const resolvedDescription =
     description ??
@@ -31,22 +28,12 @@ export default function FAQSection({
       title={title}
       description={resolvedDescription}
     >
-      <JsonLd data={createFaqSchema(items)} id={schemaId} />
-      <div
-        className="faq-card"
-        itemScope
-        itemType="https://schema.org/FAQPage"
-      >
+      <div className="faq-card">
         {items.map((item) => (
           <Reveal key={item.question}>
-            <details
-              className="faq-row"
-              itemScope
-              itemProp="mainEntity"
-              itemType="https://schema.org/Question"
-            >
+            <details className="faq-row">
               <summary className="faq-summary" data-speakable>
-                <span className="faq-question" itemProp="name">
+                <span className="faq-question">
                   {item.question}
                 </span>
                 <svg
@@ -80,13 +67,8 @@ export default function FAQSection({
                   />
                 </svg>
               </summary>
-              <div
-                itemProp="acceptedAnswer"
-                itemScope
-                itemType="https://schema.org/Answer"
-                className="faq-answer-wrap"
-              >
-                <p className="faq-answer" itemProp="text" data-speakable>
+              <div className="faq-answer-wrap">
+                <p className="faq-answer" data-speakable>
                   {item.answer}
                 </p>
               </div>

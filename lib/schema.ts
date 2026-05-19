@@ -1,10 +1,8 @@
 import {
   absoluteUrl,
   BRAND_NAME,
-  CONTACT_EMAIL,
   CONTACT_PHONE,
   LICENSE_DETAILS,
-  LICENSE_PROGRAM,
   LICENSE_REGION,
   LICENSEE,
   PROMO_VIDEO,
@@ -36,16 +34,25 @@ export type BreadcrumbItem = {
 // Every node referenced in another node must have a matching @id here.
 // ---------------------------------------------------------------------------
 const ID = {
-  organization: `${SITE_URL}#organization`,
-  website: `${SITE_URL}#website`,
-  logo: `${SITE_URL}#logo`,
-  publisher: `${SITE_URL}#publisher`,
-  rating: `${SITE_URL}#aggregate-rating`,
-  service: `${SITE_URL}#service`,
-  howTo: `${SITE_URL}#how-to`,
+  organization: `${SITE_URL}/#organization`,
+  website: `${SITE_URL}/#website`,
+  logo: `${SITE_URL}/#logo`,
+  publisher: `${SITE_URL}/#publisher`,
+  service: `${SITE_URL}/#service`,
+  howTo: `${SITE_URL}/#how-to`,
   homepage: `${SITE_URL}/#webpage`,
   teacher: (slug: string) => `${SITE_URL}/about#teacher-${slug}`,
   course: (slug: string) => `${SITE_URL}/courses/${slug}#course`,
+};
+const SITE_HOME_URL = `${SITE_URL}/`;
+const IMAGE_RIGHTS = {
+  creator: {
+    "@type": "Organization",
+    name: SITE_NAME,
+    url: SITE_HOME_URL,
+  },
+  license: absoluteUrl("/public-treaty"),
+  acquireLicensePage: absoluteUrl("/zayavka"),
 };
 
 // ---------------------------------------------------------------------------
@@ -60,9 +67,8 @@ export function createOrganizationNode(): JsonLd {
     alternateName: BRAND_NAME,
     legalName: LICENSEE.legalName,
     taxID: LICENSEE.inn,
-    url: SITE_URL,
+    url: SITE_HOME_URL,
     description: SITE_DESCRIPTION,
-    email: CONTACT_EMAIL,
     telephone: CONTACT_PHONE,
     image: { "@id": ID.logo },
     logo: { "@id": ID.logo },
@@ -81,7 +87,6 @@ export function createOrganizationNode(): JsonLd {
         "@type": "ContactPoint",
         contactType: "customer service",
         telephone: CONTACT_PHONE,
-        email: CONTACT_EMAIL,
         availableLanguage: ["ru", "zh"],
         areaServed: "RU",
       },
@@ -89,13 +94,11 @@ export function createOrganizationNode(): JsonLd {
         "@type": "ContactPoint",
         contactType: "sales",
         telephone: CONTACT_PHONE,
-        email: CONTACT_EMAIL,
         availableLanguage: ["ru"],
         areaServed: "RU",
       },
     ],
-    sameAs: [SITE_URL],
-    aggregateRating: { "@id": ID.rating },
+    sameAs: [SITE_HOME_URL],
     hasCredential: {
       "@type": "EducationalOccupationalCredential",
       name: `Образовательная лицензия № ${LICENSE_DETAILS.registrationNumber}`,
@@ -117,7 +120,7 @@ export function createWebsiteNode(): JsonLd {
     "@id": ID.website,
     name: SITE_NAME,
     alternateName: BRAND_NAME,
-    url: SITE_URL,
+    url: SITE_HOME_URL,
     inLanguage: "ru-RU",
     publisher: { "@id": ID.organization },
     // Sitelinks Searchbox — даёт брендовую поисковую строку прямо в Google SERP.
@@ -150,7 +153,6 @@ export function createLogoNode(): JsonLd {
 export function createAggregateRatingNode(): JsonLd {
   return {
     "@type": "AggregateRating",
-    "@id": ID.rating,
     itemReviewed: { "@id": ID.organization },
     ratingValue: String(siteFacts.aggregateRating),
     reviewCount: String(siteFacts.reviewCount),
@@ -205,6 +207,7 @@ export function createTeacherNode(
       inLanguage: "ru-RU",
       creditText: "ChinaChild",
       copyrightNotice: `© ${new Date().getFullYear()} ChinaChild`,
+      ...IMAGE_RIGHTS,
     };
   }
   if (teacher.alumniOf) {
@@ -346,7 +349,7 @@ export function createPromoVideoNode(): JsonLd | null {
   }
   return {
     "@type": "VideoObject",
-    "@id": `${SITE_URL}#promo-video`,
+    "@id": `${SITE_URL}/#promo-video`,
     name: PROMO_VIDEO.name,
     description: PROMO_VIDEO.description,
     thumbnailUrl: PROMO_VIDEO.thumbnailUrl.startsWith("http")
@@ -355,7 +358,7 @@ export function createPromoVideoNode(): JsonLd | null {
     contentUrl: PROMO_VIDEO.contentUrl,
     uploadDate: PROMO_VIDEO.uploadDate || new Date().toISOString().slice(0, 10),
     ...(PROMO_VIDEO.duration ? { duration: PROMO_VIDEO.duration } : {}),
-    publisher: { "@id": `${SITE_URL}#organization` },
+    publisher: { "@id": ID.organization },
     inLanguage: "ru-RU",
   };
 }
@@ -371,7 +374,7 @@ export function createAggregateOfferNode(): JsonLd {
   const highPrice = Math.max(...prices);
   return {
     "@type": "AggregateOffer",
-    "@id": `${SITE_URL}#aggregate-offer`,
+    "@id": `${SITE_URL}/#aggregate-offer`,
     offerCount: courses.length,
     priceCurrency: "RUB",
     lowPrice: String(lowPrice),
@@ -440,14 +443,14 @@ export function createBreadcrumbNode(items: BreadcrumbItem[]): JsonLd {
 
 /**
  * Always-on site-wide @graph mounted in app/layout.tsx.
- * Carries Organization, WebSite, Logo, AggregateRating, Service, HowTo,
- * all teacher Person nodes, all Course nodes, all Reviews and a
+ * Carries Organization, WebSite, Logo, Service, HowTo,
+ * all teacher Person nodes, all Course nodes and a
  * SpeakableSpecification for voice assistants — connected via @id.
  */
 export function createSiteGraph(): JsonLd {
   const speakable: JsonLd = {
     "@type": "SpeakableSpecification",
-    "@id": `${SITE_URL}#speakable`,
+    "@id": `${SITE_URL}/#speakable`,
     cssSelector: ["h1", "[data-speakable]", ".faq-question", ".faq-answer"],
     xpath: ["/html/head/title"],
   };
@@ -456,13 +459,11 @@ export function createSiteGraph(): JsonLd {
     createOrganizationNode(),
     createWebsiteNode(),
     createLogoNode(),
-    createAggregateRatingNode(),
     createServiceNode(),
     createHowToNode(),
     speakable,
     ...teachers.map((t) => createTeacherNode(t)),
     ...courses.map((c) => createCourseNode(c)),
-    ...reviews.map((r) => createReviewNode(r)),
   ];
 
   const aggregateOffer = createAggregateOfferNode();

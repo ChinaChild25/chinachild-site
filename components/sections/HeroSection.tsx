@@ -1,8 +1,6 @@
 import Link from "next/link";
 import LeadModal from "@/components/forms/LeadModal";
-import JsonLd from "@/components/seo/JsonLd";
 import { buttonStyles } from "@/components/ui/button";
-import { createEducationalOrganizationSchema } from "@/lib/schema";
 import { siteFacts } from "@/lib/site-data";
 
 const proofPoints = [
@@ -15,25 +13,19 @@ const proofPoints = [
 export default function HeroSection() {
   return (
     <section className="page-shell-wide pt-10 pb-12 sm:pt-16 lg:pt-20 lg:pb-20">
-      <JsonLd data={createEducationalOrganizationSchema()} id="home-edu-org-schema" />
-
       <div className="mx-auto max-w-4xl text-center">
         <Link
           href="#otzyvy"
           className="inline-flex items-center gap-2 text-sm text-[#262626] transition hover:opacity-70"
           aria-label="Средняя оценка выпускников по отзывам"
-          itemScope
-          itemType="https://schema.org/AggregateRating"
         >
           <span aria-hidden className="text-[#FFB800] leading-none">★</span>
           <span className="font-medium">
-            <span itemProp="ratingValue">{siteFacts.aggregateRating}</span> из <span itemProp="bestRating">5</span>
+            <span>{siteFacts.aggregateRating}</span> из <span>5</span>
           </span>
           <span className="text-[#6b6b6b]">
             · на основании отзывов выпускников
           </span>
-          <meta itemProp="reviewCount" content={String(siteFacts.reviewCount)} />
-          <meta itemProp="worstRating" content="1" />
           <span aria-hidden className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full border border-[rgba(0,0,0,0.2)] text-[10px] font-medium text-[#6b6b6b]">
             i
           </span>

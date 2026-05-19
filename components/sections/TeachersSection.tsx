@@ -1,10 +1,8 @@
 import Link from "next/link";
-import JsonLd from "@/components/seo/JsonLd";
 import Avatar from "@/components/ui/Avatar";
 import { buttonStyles } from "@/components/ui/button";
 import Reveal from "@/components/ui/Reveal";
 import SectionShell from "@/components/ui/SectionShell";
-import { createTeachersSchemas } from "@/lib/schema";
 import { teachers } from "@/lib/site-data";
 
 const palette = [
@@ -21,7 +19,6 @@ export default function TeachersSection() {
       title="Преподаватели китайского языка ChinaChild"
       description="Команда прошла подготовку в ведущих вузах региона — ЮФУ и ДГТУ. Опыт индивидуального и группового обучения — более 10 лет."
     >
-      <JsonLd data={createTeachersSchemas()} />
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         {teachers.map((teacher, index) => (
           <Reveal key={teacher.slug} className="h-full">

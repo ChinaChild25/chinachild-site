@@ -7,7 +7,7 @@ import Avatar from "@/components/ui/Avatar";
 import LeadModal from "@/components/forms/LeadModal";
 import { buttonStyles } from "@/components/ui/button";
 import { buildMetadata } from "@/lib/metadata";
-import { createAggregateRatingSchema, createReviewSchemas } from "@/lib/schema";
+import { createReviewSchemas } from "@/lib/schema";
 import { absoluteUrl } from "@/lib/site-config";
 import { reviews, siteFacts } from "@/lib/site-data";
 
@@ -35,7 +35,7 @@ export default function ReviewsPage() {
           { name: "Отзывы", path: "/reviews" },
         ]}
       />
-      <JsonLd data={[createAggregateRatingSchema(), ...createReviewSchemas()]} id="reviews-page-schema" />
+      <JsonLd data={createReviewSchemas()} id="reviews-page-schema" />
       <PageHero
         eyebrow={`Средняя оценка ${siteFacts.aggregateRating} из 5`}
         title="Отзывы учеников ChinaChild"

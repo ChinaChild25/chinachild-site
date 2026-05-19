@@ -12,14 +12,8 @@ import ResultsSection from "@/components/sections/ResultsSection";
 import ReviewsSection from "@/components/sections/ReviewsSection";
 import TeachersSection from "@/components/sections/TeachersSection";
 import WhySection from "@/components/sections/WhySection";
-import JsonLd from "@/components/seo/JsonLd";
 import { getLatestPosts } from "@/lib/blog";
 import { buildMetadata } from "@/lib/metadata";
-import {
-  createEducationalOrganizationSchema,
-  createHomepageSchemas,
-  createWebsiteSchema,
-} from "@/lib/schema";
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
@@ -48,11 +42,6 @@ export default async function HomePage() {
 
   return (
     <main>
-      {/* Богатая SEO-разметка для SERP */}
-      <JsonLd data={createEducationalOrganizationSchema()} id="home-org-schema" />
-      <JsonLd data={createWebsiteSchema()} id="home-website-schema" />
-      <JsonLd data={createHomepageSchemas()} id="home-cluster-schema" />
-
       <HeroSection />
       <AudienceSection />
       <WhySection />

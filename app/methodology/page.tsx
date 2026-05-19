@@ -170,7 +170,7 @@ const methodologyHowTo = {
     },
   ],
   url: absoluteUrl("/methodology"),
-  provider: { "@id": `${SITE_URL}#organization` },
+  provider: { "@id": `${SITE_URL}/#organization` },
 };
 
 function SectionTitle({

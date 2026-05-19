@@ -71,7 +71,7 @@ function buildLevelGraph(level: HskLevel) {
         name: `Подготовка к HSK ${level.level}`,
         description: level.positioning,
         url,
-        provider: { "@id": `${SITE_URL}#organization` },
+        provider: { "@id": `${SITE_URL}/#organization` },
         educationalLevel: `HSK ${level.level}, CEFR ${level.cefrEquivalent}`,
         inLanguage: "ru-RU",
         teaches: [

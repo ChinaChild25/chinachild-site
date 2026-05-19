@@ -1,8 +1,6 @@
-import JsonLd from "@/components/seo/JsonLd";
 import Avatar from "@/components/ui/Avatar";
 import Reveal from "@/components/ui/Reveal";
 import SectionShell from "@/components/ui/SectionShell";
-import { createAggregateRatingSchema, createReviewSchemas } from "@/lib/schema";
 import { reviews, siteFacts } from "@/lib/site-data";
 
 export default function ReviewsSection() {
@@ -10,9 +8,8 @@ export default function ReviewsSection() {
     <SectionShell
       id="otzyvy"
       title="Отзывы наших учеников"
-      description={`Средняя оценка ${siteFacts.aggregateRating} из 5 — на основе отзывов на сайте chinachild.ru.`}
+      description={`Средняя оценка ${siteFacts.aggregateRating} из 5 — на основе отзывов на сайте.`}
     >
-      <JsonLd data={[createAggregateRatingSchema(), ...createReviewSchemas()]} />
       <div className="grid gap-5 lg:grid-cols-[0.4fr_1.6fr]">
         <Reveal>
           <article className="card-block card-violet h-full">

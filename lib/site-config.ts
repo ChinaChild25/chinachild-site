@@ -76,5 +76,15 @@ export function absoluteUrl(path: string): string {
     return SITE_URL;
   }
 
+  try {
+    const url = new URL(path);
+    if (url.hostname === "chinachild.ru" || url.hostname === "www.chinachild.ru") {
+      return `${SITE_URL}${url.pathname}${url.search}${url.hash}`;
+    }
+    return path;
+  } catch {
+    // Relative path: resolve against the current public site origin.
+  }
+
   return `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
 }

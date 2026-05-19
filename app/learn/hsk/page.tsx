@@ -49,8 +49,8 @@ export default async function LearnHskHub() {
         description:
           "Хаб всех материалов по HSK на сайте ChinaChild: уровни 1–6, курсы, статьи блога, термины глоссария.",
         inLanguage: "ru-RU",
-        isPartOf: { "@id": `${SITE_URL}#website` },
-        about: { "@id": `${SITE_URL}#organization` },
+        isPartOf: { "@id": `${SITE_URL}/#website` },
+        about: { "@id": `${SITE_URL}/#organization` },
         hasPart: hskLevels.map((l) => ({
           "@type": "Course",
           name: `HSK ${l.level}`,
