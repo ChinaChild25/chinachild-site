@@ -39,7 +39,7 @@ export async function GET() {
       getPublicGrammarTags(),
       getPublicGrammarSections(),
       getPublicHskVersions(),
-      getPublicWordSlugs(500),
+      getPublicWordSlugs(),
     ]);
 
   // Pull mtime for the most-edited templates so lastmod is credible.

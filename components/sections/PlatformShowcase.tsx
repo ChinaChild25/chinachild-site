@@ -71,13 +71,16 @@ export default function PlatformShowcase() {
         </p>
       </div>
 
-      <div className="mt-10 grid gap-3 sm:mt-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] lg:items-stretch">
-        {/* Левая тёмная карточка с аккордеоном */}
-        <div className="card-block card-block-lg card-ink flex flex-col">
-          <h3 className="text-[1.5rem] font-medium tracking-[-0.01em] text-white leading-[1.2] max-w-[14ch]">
+      <div className="mt-10 grid gap-3 sm:mt-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]">
+        {/* Левая тёмная карточка с аккордеоном. Намеренно используем
+            card-block (а не card-block-lg) и поджатые отступы, чтобы
+            её натуральная высота совпала с высотой правой рамки,
+            у которой аспект жёстко 756/491. */}
+        <div className="card-block card-ink flex flex-col">
+          <h3 className="text-[1.5rem] font-medium tracking-[-0.01em] text-white leading-[1.2] lg:max-w-[26ch]">
             Всё под рукой — в одной вкладке браузера
           </h3>
-          <div className="mt-8 grid">
+          <div className="mt-6 grid">
             {features.map((feature, idx) => {
               const isActive = feature.id === activeId;
               return (
@@ -92,7 +95,7 @@ export default function PlatformShowcase() {
                     }
                     aria-expanded={isActive}
                     aria-controls={`platform-feature-${feature.id}`}
-                    className="flex w-full items-center justify-between gap-4 py-5 text-left"
+                    className="flex w-full items-center justify-between gap-4 py-4 text-left"
                   >
                     <span
                       className={`text-[1.0625rem] font-medium tracking-[-0.005em] leading-[1.3] ${
@@ -103,14 +106,14 @@ export default function PlatformShowcase() {
                     </span>
                     <span
                       aria-hidden
-                      className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full transition-colors ${
+                      className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full transition-colors ${
                         isActive
                           ? "bg-[#726BFF] text-white"
                           : "bg-white/10 text-white/70"
                       }`}
                     >
                       {isActive ? (
-                        <svg width="14" height="2" viewBox="0 0 14 2" fill="none">
+                        <svg width="12" height="2" viewBox="0 0 14 2" fill="none">
                           <path
                             d="M0 1H14"
                             stroke="currentColor"
@@ -119,7 +122,7 @@ export default function PlatformShowcase() {
                           />
                         </svg>
                       ) : (
-                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
                           <path
                             d="M7 0V14M0 7H14"
                             stroke="currentColor"
@@ -134,7 +137,7 @@ export default function PlatformShowcase() {
                   {isActive ? (
                     <div
                       id={`platform-feature-${feature.id}`}
-                      className="pb-6"
+                      className="pb-5"
                     >
                       <p className="text-[15px] leading-[1.55] text-white/70">
                         {feature.description}
@@ -156,18 +159,16 @@ export default function PlatformShowcase() {
           </div>
         </div>
 
-        {/* Правая «рамка» — только на десктопе. Внешняя тёмная фигура
-            #262626 со скруглением 24px + внутренняя белая со скруглением
-            12px, между ними 20px тёмного «бордера». Высота тянется
-            к высоте левой карточки через grid stretch. */}
+        {/* Правая «рамка» — только на десктопе. Высоту берём из
+            grid-stretch (= высота левой карточки), скриншот внутри
+            заполняет рамку через object-cover, чтобы не оставалось
+            пустых полей даже при небольшом расхождении аспектов. */}
         <div className="hidden lg:flex bg-[#262626] rounded-[24px] p-5 overflow-hidden">
-          <div className="flex flex-1 items-center justify-center rounded-[12px] bg-white p-6">
-            <FeatureMedia
-              media={active.media}
-              alt={active.mediaAlt ?? active.title}
-              fillContainer
-            />
-          </div>
+          <FeatureMedia
+            media={active.media}
+            alt={active.mediaAlt ?? active.title}
+            fillContainer
+          />
         </div>
       </div>
     </section>
@@ -192,8 +193,8 @@ function FeatureMedia({
         loading="lazy"
         className={
           fillContainer
-            ? "h-auto max-h-full w-full rounded-[12px] object-contain"
-            : "w-full rounded-[12px]"
+            ? "h-full w-full rounded-[12px] object-cover"
+            : "aspect-[756/491] w-full rounded-[12px] object-cover"
         }
       />
     );
@@ -204,15 +205,11 @@ function FeatureMedia({
       aria-label={alt}
       className={`flex w-full items-center justify-center rounded-[12px] border border-dashed text-center ${
         fillContainer
-          ? "min-h-[280px] flex-1 border-[rgba(0,0,0,0.12)] bg-[#f5f5f3]"
-          : "aspect-[16/10] border-white/10 bg-white/5"
+          ? "h-full flex-1 border-white/10 bg-white/5"
+          : "aspect-[756/491] border-white/10 bg-white/5"
       }`}
     >
-      <span
-        className={`px-6 text-xs uppercase tracking-[0.16em] ${
-          fillContainer ? "text-[#9a9a9a]" : "text-white/40"
-        }`}
-      >
+      <span className="px-6 text-xs uppercase tracking-[0.16em] text-white/40">
         Скриншот / GIF
       </span>
     </div>

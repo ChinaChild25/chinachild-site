@@ -10,8 +10,11 @@ const securityHeaders = [
   { key: "X-Frame-Options", value: "SAMEORIGIN" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   {
+    // microphone=(self) — нужно для /diagnostic, Speech Recognition оценивает
+    // произношение пользователя локально. Без allowlist Web Speech API
+    // отказывается стартовать.
     key: "Permissions-Policy",
-    value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+    value: "camera=(), microphone=(self), geolocation=(), interest-cohort=()",
   },
   {
     // Permissive CSP that allows Yandex.Metrika, our own assets, Google Fonts

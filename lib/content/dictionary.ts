@@ -48,6 +48,7 @@ type TermRow = {
   base_translation_en: string | null;
   frequency_rank: number | null;
   part_of_speech: string | null;
+  metadata: Record<string, unknown> | null;
 };
 
 type PronunciationRow = {
@@ -92,6 +93,10 @@ function chunkValues<T>(values: ReadonlyArray<T>, size: number): T[][] {
     chunks.push(values.slice(index, index + size) as T[]);
   }
   return chunks;
+}
+
+function isPublicTerm(row: Pick<TermRow, "metadata">): boolean {
+  return row.metadata?.source !== "chinachild-demo";
 }
 
 // ---- Deck-only snapshot (cheap; loaded on dictionary hub pages) ----
@@ -253,7 +258,7 @@ export async function getPublicHskLevelTerms(
       supabase
         .from("vocab_terms")
         .select(
-          "id, slug, simplified, traditional, default_display, base_translation_ru, base_translation_en, frequency_rank, part_of_speech",
+          "id, slug, simplified, traditional, default_display, base_translation_ru, base_translation_en, frequency_rank, part_of_speech, metadata",
         )
         .in("id", chunk),
       supabase
@@ -273,7 +278,7 @@ export async function getPublicHskLevelTerms(
       );
       continue;
     }
-    termRows.push(...((termsRes.data ?? []) as TermRow[]));
+    termRows.push(...((termsRes.data ?? []) as TermRow[]).filter(isPublicTerm));
     pronunciations.push(...((pronRes.data ?? []) as PronunciationRow[]));
     senses.push(...((sensesRes.data ?? []) as SenseRow[]));
   }
@@ -342,12 +347,14 @@ export async function getPublicHskLevelTerms(
 export async function getPublicWordSlugs(limit = 2000): Promise<string[]> {
   const supabase = getPublicSupabaseClient();
   if (!supabase) return [];
-  const { data, error } = await supabase.from("vocab_terms").select("slug").limit(limit);
+  const { data, error } = await supabase.from("vocab_terms").select("slug, metadata").limit(limit);
   if (error) {
     console.warn("[public-content/dictionary] slug list error:", error.message);
     return [];
   }
-  return (data ?? []).map((row: { slug: string }) => row.slug);
+  return ((data ?? []) as Array<Pick<TermRow, "slug" | "metadata">>)
+    .filter(isPublicTerm)
+    .map((row) => row.slug);
 }
 
 export async function getPublicWordBySlug(slug: string): Promise<WordDetail | null> {
@@ -356,7 +363,7 @@ export async function getPublicWordBySlug(slug: string): Promise<WordDetail | nu
   const { data: termData, error: termError } = await supabase
     .from("vocab_terms")
     .select(
-      "id, slug, simplified, traditional, default_display, base_translation_ru, base_translation_en, frequency_rank, part_of_speech",
+      "id, slug, simplified, traditional, default_display, base_translation_ru, base_translation_en, frequency_rank, part_of_speech, metadata",
     )
     .eq("slug", slug)
     .maybeSingle();
@@ -366,6 +373,7 @@ export async function getPublicWordBySlug(slug: string): Promise<WordDetail | nu
   }
   if (!termData) return null;
   const term = termData as TermRow;
+  if (!isPublicTerm(term)) return null;
 
   const [pronRes, sensesRes, examplesRes, deckItemsRes] = await Promise.all([
     supabase
@@ -542,11 +550,11 @@ export async function searchPublicDictionary(
     ].join(",");
     const { data, error } = await supabase
       .from("vocab_terms")
-      .select("id")
+      .select("id, metadata")
       .or(filters)
       .limit(cleanLimit);
     if (!error && data) {
-      for (const row of data as Array<{ id: string }>) {
+      for (const row of (data as Array<Pick<TermRow, "id" | "metadata">>).filter(isPublicTerm)) {
         matchedTermIds.set(row.id, normalized.hasHanzi ? "hanzi" : "meaning");
       }
     }
@@ -597,7 +605,7 @@ export async function searchPublicDictionary(
     supabase
       .from("vocab_terms")
       .select(
-        "id, slug, simplified, traditional, default_display, base_translation_ru, base_translation_en, frequency_rank, part_of_speech",
+        "id, slug, simplified, traditional, default_display, base_translation_ru, base_translation_en, frequency_rank, part_of_speech, metadata",
       )
       .in("id", termIds),
     supabase
@@ -613,7 +621,7 @@ export async function searchPublicDictionary(
     fetchAudioUrls("term", termIds),
   ]);
 
-  const termsRaw = (termsRes.data ?? []) as Array<{
+  const termsRawUnfiltered = (termsRes.data ?? []) as Array<{
     id: string;
     slug: string;
     simplified: string;
@@ -623,7 +631,9 @@ export async function searchPublicDictionary(
     base_translation_en: string | null;
     frequency_rank: number | null;
     part_of_speech: string | null;
+    metadata: Record<string, unknown> | null;
   }>;
+  const termsRaw = termsRawUnfiltered.filter(isPublicTerm);
   const termById = new Map(termsRaw.map((t) => [t.id, t]));
   const primaryPron = new Map<string, { pinyin_display: string; is_primary: boolean; order_index: number }>();
   for (const p of (pronRes.data ?? []) as Array<{
