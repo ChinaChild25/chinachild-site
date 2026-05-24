@@ -124,7 +124,7 @@ export default async function GrammarArticlePage({ params }: Props) {
                 <li key={tag.id}>
                   <Link
                     href={`/grammar/tags/${tag.slug}`}
-                    className="inline-flex items-center rounded-[10px] bg-[#f3f0e8] px-4 py-2 text-[15px] font-medium leading-none text-[#262626] transition-colors hover:bg-[#ebe6dc]"
+                    className="inline-flex items-center rounded-[10px] bg-[#f8f7f2] px-4 py-2 text-[15px] font-medium leading-none text-[#262626] transition-colors hover:bg-[#ece8df]"
                   >
                     {tag.labelRu}
                     <span className="ml-1.5 text-sm font-normal text-[#6b6b6b]">

@@ -85,7 +85,7 @@ export default function GrammarFilterBar({ groups, initialQuery }: Props) {
   return (
     <div ref={containerRef} className="grammar-filter-bar mx-auto flex w-full max-w-2xl flex-col items-center">
       <form
-        className="flex w-full items-center gap-2 rounded-[var(--radius-input)] bg-white px-5 py-3"
+        className="flex w-full items-center gap-2 rounded-[var(--radius-input)] bg-[#f5f5f6] px-5 py-3 transition-colors focus-within:bg-[#ebeaed]"
         onSubmit={(event) => {
           event.preventDefault();
           submitQuery(query);

@@ -6,6 +6,7 @@ import { getAllGlossaryTerms } from "@/lib/glossary";
 import { teachers } from "@/lib/site-data";
 import { cities } from "@/lib/cities";
 import { hskLevels } from "@/lib/hsk-levels";
+import { hskTestLevels } from "@/lib/hsk-test/levels";
 import {
   getPublicGrammarArticles,
   getPublicGrammarSections,
@@ -122,6 +123,15 @@ export async function GET() {
       lastmod: hskTemplateMtime,
       changefreq: "monthly" as const,
       priority: 0.85,
+    })),
+
+    // HSK level test (interactive quiz). Landing + per-level long-tail pages.
+    { loc: absoluteUrl("/chinese/hsk-test"), lastmod: now, changefreq: "weekly", priority: 0.9 },
+    ...hskTestLevels.map<UrlEntry>((l) => ({
+      loc: absoluteUrl(`/chinese/hsk-test/${l.slug}`),
+      lastmod: now,
+      changefreq: "monthly" as const,
+      priority: 0.82,
     })),
 
     // City landings (geo-targeted)

@@ -5,6 +5,7 @@ import JsonLd from "@/components/seo/JsonLd";
 import PageHero from "@/components/layout/PageHero";
 import Avatar from "@/components/ui/Avatar";
 import LeadModal from "@/components/forms/LeadModal";
+import YandexLocalSection from "@/components/sections/YandexLocalSection";
 import { buttonStyles } from "@/components/ui/button";
 import { buildMetadata } from "@/lib/metadata";
 import { createReviewSchemas } from "@/lib/schema";
@@ -15,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
     title: "Отзывы учеников школы китайского ChinaChild",
     description:
-      "Отзывы учеников онлайн-школы китайского ChinaChild. Средняя оценка 4.9 из 5. Реальные истории про то, как наши ученики прошли путь от первых слов до разговорного уровня HSK 2.",
+      "Отзывы учеников ChinaChild. Средняя оценка 4.9 из 5: реальные истории — от первых слов до разговорного уровня HSK 2.",
     path: "/reviews",
     keywords: [
       "отзывы chinachild",
@@ -65,6 +66,8 @@ export default function ReviewsPage() {
           ))}
         </div>
       </section>
+
+      <YandexLocalSection />
 
       <section className="page-shell-wide section-space">
         <div className="card-block card-block-lg card-ink">

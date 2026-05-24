@@ -7,7 +7,7 @@ import { CONTACT_EMAIL, CONTACT_PHONE, CONTACT_PHONE_TEL } from "@/lib/site-conf
 export const metadata: Metadata = buildMetadata({
   title: "Бесплатный пробный урок китайского языка — ChinaChild",
   description:
-    "Бесплатный пробный урок китайского в ChinaChild. Преподаватель оценит уровень, поставит цель и подберёт подходящий курс. Запись на удобное время — без обязательств.",
+    "Бесплатный пробный урок китайского: преподаватель оценит уровень, подберёт курс и составит план. Запись на удобное время без обязательств.",
   path: "/free-trial",
   keywords: [
     "пробный урок китайского",

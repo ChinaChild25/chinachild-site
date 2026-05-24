@@ -120,7 +120,7 @@ export default async function WordDetailPage({ params }: Props) {
                     <Link
                       key={`${badge.version}-${badge.level}`}
                       href={`/dictionary/hsk/${hskVersionSlug(badge.version)}/${badge.level}`}
-                      className="inline-flex items-center rounded-[10px] bg-[#f3f0e8] px-3 py-1.5 text-sm font-medium text-[#262626] transition-colors hover:bg-[#ebe6dc]"
+                      className="inline-flex items-center rounded-[10px] bg-[#f8f7f2] px-3 py-1.5 text-sm font-medium text-[#262626] transition-colors hover:bg-[#ece8df]"
                     >
                       {label}
                     </Link>

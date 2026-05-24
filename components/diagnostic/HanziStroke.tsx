@@ -12,6 +12,14 @@ interface Props {
   /** Задержка между чертами, мс. */
   delay?: number;
   className?: string;
+  /** Override stroke colour. Defaults to var(--d-ink). Use this when the
+   *  hanzi sits on a fixed-light pastel background (HSK-test hero) so
+   *  strokes don't flip to white in dark theme. */
+  strokeColor?: string;
+  /** Accent mode — no faded template character, no outline. The hanzi is
+   *  drawn from scratch in brush strokes. Use this when the animation is
+   *  decorative (heroes, watermarks) and NOT a tracing/training tool. */
+  accent?: boolean;
 }
 
 /**
@@ -27,6 +35,8 @@ export default function HanziStroke({
   shuffled = false,
   delay = 220,
   className,
+  strokeColor,
+  accent = false,
 }: Props) {
   const ref = useRef<HTMLDivElement | null>(null);
 
@@ -59,20 +69,31 @@ export default function HanziStroke({
         node.innerHTML = "";
 
         const ink =
-          getComputedStyle(document.documentElement).getPropertyValue("--d-ink").trim() || "#0a0a0a";
+          strokeColor ||
+          getComputedStyle(document.documentElement).getPropertyValue("--d-ink").trim() ||
+          "#0a0a0a";
 
         writer = HanziWriter.create(node, hanzi, {
           width: size,
           height: size,
           padding: Math.max(6, Math.round(size * 0.04)),
-          showOutline: true,
-          showCharacter: !shuffled,
+          // Accent mode: no faded ghost character, no outline — strokes
+          // appear from scratch in the stroke colour. Tracing/training
+          // mode (default) shows the outline + faded char as a guide.
+          showOutline: !accent,
+          showCharacter: !shuffled && !accent,
           strokeColor: ink,
           outlineColor: "rgba(0,0,0,0.18)",
           radicalColor: ink,
           strokeAnimationSpeed: 1.15,
           delayBetweenStrokes: delay,
         });
+
+        // In accent mode the user shouldn't see the static character flash
+        // before the strokes start drawing. Hide it explicitly.
+        if (accent && writer && !shuffled) {
+          try { writer.hideCharacter(); } catch { /* ignore */ }
+        }
 
         if (shuffled && writer) {
           // Тип F: показываем неправильный порядок (соседние пары меняем местами)
@@ -112,7 +133,7 @@ export default function HanziStroke({
       }
       if (node) node.innerHTML = "";
     };
-  }, [hanzi, size, loop, shuffled, delay]);
+  }, [hanzi, size, loop, shuffled, delay, strokeColor, accent]);
 
   return (
     <div

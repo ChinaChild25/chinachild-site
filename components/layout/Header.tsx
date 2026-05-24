@@ -5,18 +5,37 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import LeadModal from "@/components/forms/LeadModal";
 import ThemeToggle from "@/components/theme/ThemeToggle";
-const navigation = [
+/**
+ * Header navigation is split into two tiers:
+ *
+ * - `primaryNav` — shown in the horizontal desktop bar. Capped at five items
+ *   so the header never wraps even at ~1180px viewport (Praktikum-style
+ *   utilitarian density: курсы + продукт + конверсия + траст).
+ * - `drawerOnly` — secondary surfaces that only show inside the burger
+ *   drawer. Keeps the desktop bar quiet but doesn't lose discoverability
+ *   of grammar/dictionary/glossary pages.
+ *
+ * The drawer renders [...primaryNav, ...drawerOnly] so all routes stay
+ * reachable on narrow viewports.
+ */
+const primaryNav = [
   { label: "Курсы", href: "/courses" },
   { label: "HSK", href: "/learn/hsk" },
+  { label: "Тест HSK", href: "/chinese/hsk-test" },
   { label: "Цены", href: "/price" },
-  { label: "Методика", href: "/methodology" },
   { label: "О школе", href: "/about" },
+];
+
+const drawerOnly = [
+  { label: "Методика", href: "/methodology" },
   { label: "Команда", href: "/team" },
   { label: "Блог", href: "/blog" },
   { label: "Грамматика", href: "/grammar" },
   { label: "Словарь", href: "/dictionary" },
   { label: "Глоссарий", href: "/glossary" },
 ];
+
+const drawerNav = [...primaryNav, ...drawerOnly];
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -64,7 +83,7 @@ export default function Header() {
             className="site-header-menu"
           >
             <ul className="site-header-nav">
-              {navigation.map((item) => (
+              {primaryNav.map((item) => (
                 <li key={item.href}>
                   <Link href={item.href} className="site-header-link">
                     {item.label}
@@ -110,7 +129,7 @@ export default function Header() {
       >
         <nav aria-label="Мобильная навигация" className="mobile-drawer-inner">
           <ul className="mobile-drawer-nav">
-            {navigation.map((item) => (
+            {drawerNav.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}

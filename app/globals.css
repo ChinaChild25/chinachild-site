@@ -8,9 +8,9 @@
    ========================================================================== */
 
 :root {
-  /* Surfaces / page backgrounds — Yandex off-white кремовый */
-  --background: #f8f7f2;            /* Yandex off-white card */
-  --background-2: #f3f0e8;          /* Yandex off-white card-2 */
+  /* Surfaces / page backgrounds */
+  --background: #ffffff;            /* Body — чистый белый */
+  --background-2: #f8f7f2;          /* Карточки / чипы — мягкий крем */
   --surface: #ffffff;
   --foreground: #262626;
   --muted: #6d6d6d;
@@ -36,7 +36,7 @@
   --lime:   #dce9a7;
   --sky:    #cddcee;
   --peach:  #f7d7c6;
-  --faq-bg: #ece8df;
+  --faq-bg: #f8f7f2;
 
   /* Soft tints были выцветшие — у Яндекса все карточки идут в одной
      насыщенности из блюпринта, поэтому возвращаем полные значения.
@@ -263,18 +263,18 @@ a:focus-visible {
 }
 
 .section-space {
-  padding: 56px 0;
+  padding: 40px 0;
 }
 
 @media (min-width: 768px) {
   .section-space {
-    padding: 72px 0;
+    padding: 52px 0;
   }
 }
 
 @media (min-width: 1280px) {
   .section-space {
-    padding: 96px 0;
+    padding: 64px 0;
   }
 }
 
@@ -428,11 +428,11 @@ a:focus-visible {
 }
 
 .btn-white {
-  background: #ffffff;
+  background: #f5f5f6;
   color: var(--ink);
 }
 .btn-white:hover {
-  background: #f0f0f0;
+  background: #ebeaed;
 }
 
 .btn-ghost {
@@ -441,6 +441,18 @@ a:focus-visible {
 }
 .btn-ghost:hover {
   background: rgba(0, 0, 0, 0.05);
+}
+
+/* (i)-кнопка-триггер тултипа в словаре. Базовый стиль для светлой темы;
+   тёмная переопределяется в html[data-theme="dark"]. */
+.dictionary-info-toggle {
+  background: #f5f5f6;
+  color: #6b6b6b;
+}
+.dictionary-info-toggle:hover,
+.dictionary-info-toggle[data-open="true"] {
+  background: #ebeaed;
+  color: #1e1e1e;
 }
 
 /* Аудио / порядок черт — контрастны на светлых и тёмных карточках. */
@@ -653,7 +665,10 @@ a:focus-visible {
   margin-left: auto;
 }
 
-@media (min-width: 1024px) {
+/* Burger threshold: 1180px. Below this the trimmed 5-item primary nav
+   would start crowding the brand/CTA, so we swap to the drawer instead
+   of letting items wrap. */
+@media (min-width: 1180px) {
   .site-header-menu {
     display: flex;
   }
@@ -710,7 +725,7 @@ a:focus-visible {
   margin-left: auto;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1180px) {
   .site-header-mobile-actions {
     display: none;
   }
@@ -794,7 +809,7 @@ html[data-theme="dark"] .theme-toggle-thumb {
   transform: translateY(-7px) rotate(-45deg);
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1180px) {
   .site-header-burger {
     display: none;
   }
@@ -877,7 +892,7 @@ html[data-theme="dark"] .theme-toggle-thumb {
   background: var(--ink-700);
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1180px) {
   .mobile-drawer {
     display: none;
   }
@@ -1217,22 +1232,27 @@ html[data-theme="dark"] .theme-toggle-thumb {
 .lead-input {
   width: 100%;
   height: 48px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid transparent;
   border-radius: var(--radius-input);
   padding: 0 14px;
   font-size: 1rem;
-  background: #ffffff;
+  background: #f5f5f6;
   color: var(--ink);
   outline: none;
-  transition: border-color 160ms ease, box-shadow 160ms ease,
-    background 160ms ease;
+  transition: background 160ms ease, border-color 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .lead-input::placeholder {
   color: rgba(30, 30, 30, 0.4);
 }
 
+.lead-input:hover {
+  background: #ebeaed;
+}
+
 .lead-input:focus {
+  background: #ffffff;
   border-color: rgba(0, 0, 0, 0.4);
   box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06);
 }
@@ -2113,6 +2133,77 @@ html[data-theme="dark"] {
     background: #ffffff;
   }
 
+  /* Поисковые «Найти» внутри <form role="search"> — оставляем
+     чёрно-белыми: светлый шейп ловит контраст с тёмной кнопкой
+     лучше, чем со светлой. */
+  [role="search"] .btn-pill,
+  [role="search"] .btn-ink {
+    background: #1e1e1e;
+    color: #ffffff;
+  }
+  [role="search"] .btn-pill:hover,
+  [role="search"] .btn-ink:hover {
+    background: #2d2d2d;
+  }
+
+  /* Поле ввода в поиске — шейп светлый (по требованию), значит
+     текст и placeholder должны быть тёмными, иначе var(--ink)=#ededed
+     даёт «белое на белом». !important нужен, потому что body
+     задаёт color: var(--foreground) на все потомки. */
+  [role="search"] input {
+    color: #1e1e1e !important;
+    caret-color: #1e1e1e;
+  }
+  [role="search"] input::placeholder {
+    color: rgba(30, 30, 30, 0.5) !important;
+  }
+  [role="search"] input::selection {
+    background: rgba(30, 30, 30, 0.22);
+    color: #1e1e1e;
+  }
+
+  /* Нативный «крестик» сброса в type="search" — Safari/Chromium рисуют
+     его системным светлым иконом в dark mode. Перерисовываем тёмным,
+     чтобы он не сливался со светлым шейпом поиска. */
+  [role="search"] input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 16px;
+    width: 16px;
+    margin-left: 6px;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%231e1e1e' stroke-width='1.6' stroke-linecap='round'><path d='M3 3l10 10M13 3L3 13'/></svg>");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 12px 12px;
+    opacity: 0.7;
+  }
+  [role="search"] input[type="search"]::-webkit-search-cancel-button:hover {
+    opacity: 1;
+  }
+
+  /* (i)-иконка в словаре: на ховере фон становится светлым,
+     поэтому стрелочные иконки должны быть тёмными — иначе
+     общий dark override превратит их в светлые на светлом. */
+  .dictionary-info-toggle {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(237, 237, 237, 0.7);
+  }
+  .dictionary-info-toggle:hover,
+  .dictionary-info-toggle[data-open="true"] {
+    background: #ededed;
+    color: #1e1e1e !important;
+  }
+
+  /* Тултипы (role="tooltip") — общий dark-фон уже подхватывается
+     через .bg-white override, но у text-[#4b4b4b]/text-[#6b6b6b]
+     уже есть свои правила выше, поэтому отдельно усиливаем рамку
+     и тень, чтобы плашка читалась поверх тёмного body. */
+  [role="tooltip"] {
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  }
+
   /* Floating CTA — сохраняем брендовый dark look на тёмной теме.
      Стеклянная плашка тонируется чёрным. */
   .floating-cta-btn {
@@ -2196,7 +2287,7 @@ html[data-theme="dark"] {
     color: rgba(237, 237, 237, 0.52) !important;
   }
 
-  [class*="bg-[#f3f0e8]"] {
+  [class*="bg-[#f8f7f2]"] {
     background-color: rgba(255, 255, 255, 0.1) !important;
   }
 
@@ -2232,6 +2323,7 @@ html[data-theme="dark"] {
   /* Плотные белые вкладыши на пастельных карточках (образование, методика,
      таблицы HSK): в light — bg-white/55–/95, в dark — тёмный inset, иначе
      светлый текст (#ededed) оказывается на светло-сером фоне. */
+  [class*="bg-white/40"],
   [class*="bg-white/55"],
   [class*="bg-white/60"],
   [class*="bg-white/65"],
@@ -2370,10 +2462,20 @@ html[data-theme="dark"] {
 .violet-spotlight {
   position: relative;
   isolation: isolate;
+  /* Скругление как у подвала — секция читается как отдельная плашка,
+     а не «полоса до края экрана». */
+  border-radius: 60px;
+  overflow: hidden;
   /* Фон секции, без position:fixed — иначе на iOS при горизонтальном
      скролле проступает фиолетовая «подложка» за всей страницей. */
   view-timeline-name: --violet-spotlight;
   view-timeline-axis: block;
+}
+
+@media (max-width: 767px) {
+  .violet-spotlight {
+    border-radius: 32px;
+  }
 }
 
 @supports (animation-timeline: view()) {
@@ -3939,4 +4041,1477 @@ html[data-theme="dark"] .d-share-btn:hover { background: rgba(255,255,255,0.04);
     stroke-dashoffset: 0 !important;
   }
 }
+
+/* ==========================================================================
+   HSK Test — landing + interactive test UI.
+   Uses Praktikum-style pastel cards. All button/chip shapes follow the site
+   token --radius-button (6px) and --radius-card-md (16px) — NO pill radii.
+   Surfaces use --surface/--background-2 so dark theme just works.
+   ========================================================================== */
+
+.hsk-test-card-1 { background: #BFD9F2; color: #1b1b1b; }
+.hsk-test-card-2 { background: #A89EE8; color: #1b1b1b; }
+.hsk-test-card-3 { background: #D9B8E8; color: #1b1b1b; }
+.hsk-test-card-4 { background: #F0A8B0; color: #1b1b1b; }
+
+.hsk-test-level-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .hsk-test-level-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+}
+
+.hsk-test-level-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 28px;
+  border-radius: var(--radius-card);
+  min-height: 280px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
+  color: #1b1b1b;
+}
+
+@media (min-width: 768px) {
+  .hsk-test-level-card {
+    padding: 36px;
+    min-height: 340px;
+  }
+}
+
+.hsk-test-level-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+}
+
+.hsk-test-level-card-title {
+  font-size: clamp(56px, 9vw, 120px);
+  font-weight: 600;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  color: #1b1b1b;
+  margin: 0;
+}
+
+.hsk-test-level-card-blurb {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #1b1b1b;
+  margin: 0;
+  max-width: 360px;
+}
+
+@media (min-width: 768px) {
+  .hsk-test-level-card-blurb { font-size: 17px; }
+}
+
+.hsk-test-level-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
+}
+
+.hsk-test-level-card-chip {
+  background: rgba(255, 255, 255, 0.6);
+  color: #1b1b1b;
+  border-radius: var(--radius-tag);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 10px;
+  line-height: 1;
+}
+
+.hsk-test-level-card-cta {
+  align-self: flex-start;
+  background: var(--ink);
+  color: #ffffff;
+  padding: 12px 18px;
+  border-radius: var(--radius-button);
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.hsk-test-level-card-cta:hover { background: var(--ink-700); }
+
+/* Hero trust-badges row */
+.hsk-test-trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 22px;
+}
+
+.hsk-test-trust-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.55);
+  border-radius: var(--radius-tag);
+  font-size: 13px;
+  font-weight: 500;
+  color: #1b1b1b;
+}
+
+/* ----- Test-runner surface ------------------------------------------------ */
+.hsk-test-runner-shell {
+  min-height: calc(100vh - 200px);
+  background: var(--background-2);
+  padding: 28px 0 80px;
+}
+
+.hsk-test-runner-card {
+  width: min(720px, calc(100% - 32px));
+  margin: 0 auto;
+  background: var(--surface);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  color: var(--ink);
+}
+
+@media (min-width: 768px) {
+  .hsk-test-runner-card { padding: 36px; }
+}
+
+.hsk-test-runner-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.hsk-test-progress {
+  flex: 1;
+  height: 6px;
+  background: var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.hsk-test-progress-bar {
+  height: 100%;
+  background: var(--ink);
+  border-radius: 4px;
+  transition: width 0.25s ease;
+}
+
+.hsk-test-progress-label {
+  font-size: 14px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.hsk-test-exit {
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: var(--radius-button);
+  font-family: inherit;
+}
+.hsk-test-exit:hover { color: var(--ink); background: rgba(0,0,0,0.04); }
+
+.hsk-test-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: hsk-test-fade-in 0.25s ease;
+}
+
+@keyframes hsk-test-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Question prompt hanzi — large static glyph at the top of choice questions. */
+.hsk-test-hanzi {
+  font-size: clamp(72px, 14vw, 128px);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 4px 0;
+}
+
+.hsk-test-pinyin {
+  font-size: 18px;
+  color: var(--muted);
+}
+
+.hsk-test-pinyin-passage {
+  font-size: 14px;
+  font-style: italic;
+}
+
+.hsk-test-question {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 4px 0 0;
+}
+
+@media (min-width: 768px) {
+  .hsk-test-question { font-size: 22px; }
+}
+
+.hsk-test-sentence {
+  font-size: clamp(24px, 4vw, 32px);
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.hsk-test-translation {
+  font-size: 15px;
+  color: var(--muted);
+}
+
+.hsk-test-translation-large {
+  font-size: 20px;
+  color: var(--ink);
+}
+
+.hsk-test-passage {
+  font-size: clamp(20px, 3vw, 24px);
+  line-height: 1.55;
+  color: var(--ink);
+  background: var(--background-2);
+  padding: 20px 22px;
+  border-radius: var(--radius-card-md);
+  border-left: 3px solid var(--violet);
+}
+
+/* Choices */
+.hsk-test-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.hsk-test-choice {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-align: left;
+  background: var(--background-2);
+  border: 0;
+  color: var(--ink);
+  padding: 16px 20px;
+  border-radius: var(--radius-card-md);
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: background-color 0.12s ease;
+  font-family: inherit;
+  width: 100%;
+}
+
+.hsk-test-choice:hover {
+  background: rgba(0, 0, 0, 0.08);
+  color: var(--ink);
+}
+.hsk-test-choice:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+.hsk-test-choice-active {
+  background: var(--ink);
+  color: var(--background);
+}
+
+.hsk-test-choice-marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-button);
+  background: rgba(0, 0, 0, 0.08);
+  font-size: 13px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.hsk-test-choice-active .hsk-test-choice-marker {
+  background: rgba(255, 255, 255, 0.18);
+  color: var(--background);
+}
+
+.hsk-test-choice-text { flex: 1; }
+
+/* sentence_order tiles */
+.hsk-test-order-area {
+  min-height: 64px;
+  padding: 12px;
+  border-radius: var(--radius-card-md);
+  background: var(--background-2);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.hsk-test-order-placeholder {
+  color: var(--muted);
+  font-size: 14px;
+  padding: 4px 8px;
+}
+
+.hsk-test-order-pool {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.hsk-test-tile {
+  background: var(--surface);
+  border: 0;
+  box-shadow: inset 0 0 0 1px var(--line);
+  border-radius: var(--radius-button);
+  padding: 10px 14px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: box-shadow 0.12s ease, transform 0.12s ease, background 0.12s ease;
+  font-family: inherit;
+  color: var(--ink);
+}
+.hsk-test-tile:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink);
+  transform: translateY(-1px);
+}
+.hsk-test-tile-active {
+  background: var(--ink);
+  color: var(--background);
+  box-shadow: none;
+}
+
+/* pair matching */
+.hsk-test-pairs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hsk-test-pair-row {
+  display: grid;
+  grid-template-columns: minmax(96px, auto) minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  background: var(--background-2);
+  border-radius: var(--radius-card-md);
+}
+
+@media (min-width: 768px) {
+  .hsk-test-pair-row {
+    grid-template-columns: 140px 1fr;
+    padding: 14px;
+  }
+}
+
+.hsk-test-pair-left {
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.hsk-test-pair-right {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.hsk-test-pair-option {
+  background: var(--surface);
+  border: 0;
+  box-shadow: inset 0 0 0 1px var(--line);
+  border-radius: var(--radius-button);
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: box-shadow 0.12s ease, background-color 0.12s ease;
+  font-family: inherit;
+  color: var(--ink);
+}
+.hsk-test-pair-option:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+.hsk-test-pair-option-active {
+  background: var(--ink);
+  color: var(--background);
+  box-shadow: none;
+}
+.hsk-test-pair-option-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Runner footer (back / next) */
+.hsk-test-runner-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.hsk-test-runner-footer .hsk-test-back {
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  padding: 12px 18px;
+  border-radius: var(--radius-button);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+}
+.hsk-test-runner-footer .hsk-test-back:hover {
+  color: var(--ink);
+  background: rgba(0,0,0,0.04);
+}
+.hsk-test-runner-footer .hsk-test-back:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.hsk-test-next {
+  background: var(--ink);
+  color: var(--background);
+  border: 0;
+  padding: 14px 24px;
+  border-radius: var(--radius-button);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  font-family: inherit;
+}
+.hsk-test-next:hover { background: var(--ink-700); }
+.hsk-test-next:disabled { background: var(--gray-base); cursor: not-allowed; color: rgba(255,255,255,0.85); }
+
+/* ----- Result screen ----------------------------------------------------- */
+.hsk-test-result-hero {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 1fr;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .hsk-test-result-hero {
+    grid-template-columns: 260px 1fr;
+    gap: 36px;
+  }
+}
+
+.hsk-test-result-badge {
+  width: 100%;
+  max-width: 260px;
+  aspect-ratio: 1;
+  /* Background is read from the per-level CSS var the page sets on the
+     element. Light theme uses the raw pastel; dark theme blends it with
+     the page background (see overrides further down). */
+  background: var(--hsk-deep, var(--violet));
+  border-radius: var(--radius-card);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px;
+  color: #1b1b1b;
+}
+
+.hsk-test-result-shell {
+  background: var(--hsk-base, var(--violet-soft));
+}
+
+.hsk-test-result-badge-eyebrow {
+  font-size: 13px;
+  color: #1b1b1b;
+  opacity: 0.7;
+}
+
+.hsk-test-result-badge-level {
+  font-size: clamp(44px, 7vw, 72px);
+  font-weight: 600;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  color: #1b1b1b;
+  white-space: nowrap;
+}
+
+.hsk-test-result-score {
+  font-size: 14px;
+  color: #1b1b1b;
+  opacity: 0.7;
+}
+
+/* Skill grid — 2 columns of cards (was a black-on-black bars layout) */
+.hsk-test-skills {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+  margin-top: 24px;
+}
+@media (min-width: 540px) {
+  .hsk-test-skills { grid-template-columns: 1fr 1fr; }
+}
+
+.hsk-test-skill-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 20px;
+  background: rgba(255, 255, 255, 0.55);
+  border-radius: var(--radius-card-md);
+}
+
+.hsk-test-skill-row-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.hsk-test-skill-name {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.hsk-test-skill-pct {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+
+/* Explicit `display: block` so inline-default <span> ancestors don't break
+   the percentage-width fill rendering. */
+.hsk-test-skill-track {
+  display: block;
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.hsk-test-skill-fill {
+  display: block;
+  height: 100%;
+  min-width: 2px; /* keep a tiny dot at 0% so the user sees the track has a fill mechanic */
+  background: var(--ink);
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+html[data-theme="dark"] .hsk-test-skill-row {
+  background: rgba(255, 255, 255, 0.06);
+}
+html[data-theme="dark"] .hsk-test-skill-track {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Dark-theme: drop the global .card-block border (set at line ~2333) on
+   every HSK-test surface so cards don't outline themselves on dark bg. */
+html[data-theme="dark"] .hsk-test-result-main .card-block,
+html[data-theme="dark"] .hsk-test-landing-hero,
+html[data-theme="dark"] .hsk-test-landing-section .card-block,
+html[data-theme="dark"] .hsk-test-runner-card,
+html[data-theme="dark"] .hsk-test-cert,
+html[data-theme="dark"] .hsk-test-lead-inline {
+  border: 0;
+}
+
+/* Mode-picker (inline cards) */
+.hsk-test-mode-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.hsk-test-mode-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px 16px;
+  align-items: center;
+  padding: 20px 22px;
+  border-radius: var(--radius-card-md);
+  background: var(--background-2);
+  border: 0;
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.12s ease, transform 0.12s ease;
+  width: 100%;
+  color: inherit;
+}
+
+.hsk-test-mode-card:hover {
+  background: rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}
+
+.hsk-test-mode-card-title {
+  font-size: 19px;
+  font-weight: 500;
+  color: var(--ink);
+  grid-column: 1;
+}
+
+.hsk-test-mode-card-meta {
+  font-size: 13px;
+  color: var(--muted);
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.hsk-test-mode-card-arrow {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  font-size: 22px;
+  color: var(--ink);
+}
+
+/* ----- Certificate (on-screen preview) ----------------------------------
+   Lives inside the share card (card-sky-soft). No background of its own —
+   we don't want the card-in-card look — just a static Unicode hanzi as a
+   decorative accent in column 2 and the level info in column 1. */
+.hsk-test-cert {
+  position: relative;
+  padding: 4px 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 20px;
+  align-items: center;
+  color: var(--ink);
+  width: 100%;
+}
+
+.hsk-test-cert-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.hsk-test-cert-eyebrow {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.hsk-test-cert-level {
+  font-size: 52px;
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+  .hsk-test-cert-level { font-size: 60px; }
+}
+
+.hsk-test-cert-name {
+  font-size: 16px;
+  color: var(--ink);
+  line-height: 1.4;
+}
+.hsk-test-cert-score {
+  font-size: 16px;
+  color: var(--muted);
+}
+.hsk-test-cert-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+.hsk-test-cert-chip {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--ink);
+  border-radius: var(--radius-tag);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 10px;
+  line-height: 1;
+}
+html[data-theme="dark"] .hsk-test-cert-chip {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--ink);
+}
+
+/* Static, export-friendly hanzi accent — Ma Shan Zheng brush calligraphy.
+   Not Inter with negative letter-spacing pretending to be a hanzi. */
+.hsk-test-cert-hanzi-static {
+  font-family: var(--font-hanzi-callig), "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", sans-serif;
+  font-size: 140px;
+  line-height: 1;
+  font-weight: 400;
+  letter-spacing: 0;
+  opacity: 0.55;
+  user-select: none;
+}
+@media (min-width: 768px) {
+  .hsk-test-cert-hanzi-static { font-size: 180px; }
+}
+
+/* Reusable accent-hanzi utility — applies the calligraphy font to any
+   inline hanzi we want to render as a brush-style display character. */
+.font-hanzi-callig {
+  font-family: var(--font-hanzi-callig), "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", sans-serif;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hsk-test-stack { animation: none; }
+}
+
+/* Mode picker disclaimer & runner footer note */
+.hsk-test-mode-disclaimer {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 6px 4px 0;
+  text-align: center;
+}
+
+.hsk-test-runner-meta {
+  margin-top: 22px;
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+}
+.hsk-test-runner-meta a { color: inherit; text-decoration: underline; }
+
+/* Result hero stats row */
+.hsk-test-result-shell { color: #1b1b1b; }
+
+.hsk-test-result-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 28px;
+  margin-top: 24px;
+}
+.hsk-test-result-stats > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.hsk-test-result-stat-label {
+  font-size: 13px;
+  color: rgba(27, 27, 27, 0.7);
+}
+.hsk-test-result-stat-value {
+  font-size: 22px;
+  font-weight: 600;
+  color: #1b1b1b;
+  letter-spacing: -0.02em;
+}
+
+/* Section spacing between result blocks */
+.hsk-test-result-section {
+  margin-top: 40px;
+}
+@media (min-width: 768px) {
+  .hsk-test-result-section { margin-top: 56px; }
+}
+
+/* Recommendation card layout */
+.hsk-test-recommendation {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 1fr;
+  align-items: center;
+}
+@media (min-width: 768px) {
+  .hsk-test-recommendation { grid-template-columns: 1.4fr 1fr; }
+}
+.hsk-test-recommendation-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Name input on the share/cert block */
+.hsk-test-name-input {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.hsk-test-name-input input {
+  padding: 12px 14px;
+  border-radius: var(--radius-input);
+  border: 0;
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 16px;
+  color: var(--ink);
+  font-family: inherit;
+  outline: none;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+.hsk-test-name-input input:focus {
+  background: #ffffff;
+  box-shadow: inset 0 0 0 2px var(--ink);
+}
+html[data-theme="dark"] .hsk-test-name-input input {
+  background: rgba(255, 255, 255, 0.08);
+}
+html[data-theme="dark"] .hsk-test-name-input input:focus {
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 0 0 2px var(--ink);
+}
+
+/* Share buttons */
+.hsk-test-share {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.hsk-test-share-btn {
+  background: var(--ink);
+  color: var(--background);
+  border: 0;
+  padding: 12px 18px;
+  border-radius: var(--radius-button);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background-color 0.15s ease;
+}
+.hsk-test-share-btn:hover { background: var(--ink-700); }
+.hsk-test-share-btn-ghost {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--ink);
+  border: 0;
+}
+.hsk-test-share-btn-ghost:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+html[data-theme="dark"] .hsk-test-share-btn-ghost {
+  background: rgba(255, 255, 255, 0.08);
+}
+html[data-theme="dark"] .hsk-test-share-btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+/* Result footer */
+.hsk-test-result-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 40px;
+}
+
+/* Result page is full-width <main> (site-shell forces 100%) with an inner
+   page-shell div that constrains the content + provides edge gutters. */
+.hsk-test-result-main {
+  width: 100%;
+}
+.hsk-test-result-inner {
+  /* Override the global --page-gutter scoped to this subtree so the result
+     page always has generous breathing room from screen edges. */
+  --page-gutter: clamp(20px, 4.5vw, 40px);
+}
+
+/* ----- Printable certificate (offscreen, captured for PNG download) ---- */
+.hsk-test-print-stage {
+  position: fixed;
+  left: -10000px;
+  top: 0;
+  width: 1414px;
+  height: 1000px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.hsk-test-printable-cert {
+  position: relative;
+  width: 1414px;
+  height: 1000px;
+  padding: 80px 96px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-family: var(--font-family-base);
+  color: #1b1b1b;
+  overflow: hidden;
+  /* No border-radius on print — a clean rectangle prints/shares cleaner. */
+}
+
+.hsk-test-printable-cert-hanzi {
+  position: absolute;
+  right: 80px;
+  bottom: 60px;
+  font-family: var(--font-hanzi-callig), "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", sans-serif;
+  font-size: 640px;
+  line-height: 0.85;
+  font-weight: 400;
+  letter-spacing: 0;
+  opacity: 0.5;
+  user-select: none;
+  pointer-events: none;
+}
+
+.hsk-test-printable-cert-head {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.hsk-test-printable-cert-brand {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.hsk-test-printable-cert-logo {
+  display: inline-flex;
+  width: 64px;
+  height: 64px;
+}
+.hsk-test-printable-cert-logo svg {
+  width: 100%;
+  height: 100%;
+}
+.hsk-test-printable-cert-brandname {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.hsk-test-printable-cert-brand-title {
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #1b1b1b;
+}
+.hsk-test-printable-cert-brand-sub {
+  font-size: 16px;
+  color: rgba(27, 27, 27, 0.65);
+}
+.hsk-test-printable-cert-date {
+  font-size: 18px;
+  color: rgba(27, 27, 27, 0.7);
+}
+
+.hsk-test-printable-cert-body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  max-width: 760px;
+}
+
+.hsk-test-printable-cert-eyebrow {
+  font-size: 22px;
+  color: rgba(27, 27, 27, 0.7);
+}
+
+.hsk-test-printable-cert-name {
+  font-size: 56px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: #1b1b1b;
+}
+
+.hsk-test-printable-cert-statement {
+  font-size: 24px;
+  line-height: 1.4;
+  color: #1b1b1b;
+  max-width: 640px;
+}
+
+.hsk-test-printable-cert-level {
+  font-size: 180px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: #1b1b1b;
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+}
+
+.hsk-test-printable-cert-level-cefr {
+  font-size: 36px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: rgba(27, 27, 27, 0.7);
+}
+
+.hsk-test-printable-cert-foot {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 56px;
+  flex-wrap: wrap;
+}
+.hsk-test-printable-cert-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.hsk-test-printable-cert-metric-label {
+  font-size: 16px;
+  color: rgba(27, 27, 27, 0.65);
+}
+.hsk-test-printable-cert-metric-value {
+  font-size: 28px;
+  font-weight: 600;
+  color: #1b1b1b;
+  letter-spacing: -0.02em;
+}
+
+.hsk-test-printable-cert-signoff {
+  position: absolute;
+  left: 96px;
+  bottom: 36px;
+  z-index: 1;
+  font-size: 15px;
+  color: rgba(27, 27, 27, 0.5);
+  letter-spacing: 0;
+}
+
+/* Share section — certificate stacked above controls on mobile, side-by-side
+   on lg. card-cream-soft wraps both — no garish color stacking. */
+.hsk-test-share-section .hsk-test-share-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1fr;
+  margin-top: 24px;
+  align-items: start;
+}
+@media (min-width: 1024px) {
+  .hsk-test-share-section .hsk-test-share-grid {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: 28px;
+  }
+}
+
+.hsk-test-share-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.hsk-test-share-controls .hsk-test-name-input {
+  margin-top: 0;
+}
+
+/* HanziStroke container styling */
+.hsk-test-hero-hanzi {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Audio player button — used by audio_choice and tone_id renderers */
+.hsk-test-audio {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.hsk-test-audio-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border-radius: var(--radius-card-md);
+  background: var(--background-2);
+  border: 0;
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background-color 0.12s ease;
+}
+.hsk-test-audio-btn:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.06);
+}
+.hsk-test-audio-btn:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+html[data-theme="dark"] .hsk-test-audio-btn {
+  background: rgba(255, 255, 255, 0.08);
+}
+html[data-theme="dark"] .hsk-test-audio-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+/* Landing page density — tighter than generic section-space */
+.hsk-test-landing-hero-wrap {
+  padding: 24px 0 0;
+}
+@media (min-width: 768px) {
+  .hsk-test-landing-hero-wrap { padding: 32px 0 0; }
+}
+.hsk-test-landing-hero {
+  padding: 28px;
+}
+@media (min-width: 768px) {
+  .hsk-test-landing-hero { padding: 40px; }
+}
+@media (min-width: 1280px) {
+  .hsk-test-landing-hero { padding: 48px 56px; }
+}
+.hsk-test-landing-section {
+  padding: 32px 0;
+}
+@media (min-width: 768px) {
+  .hsk-test-landing-section { padding: 40px 0; }
+}
+@media (min-width: 1280px) {
+  .hsk-test-landing-section { padding: 48px 0; }
+}
+
+/* Inline lead form on result page */
+.hsk-test-lead-inline { /* card-block already applies padding */ }
+.hsk-test-lead-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.hsk-test-lead-form .hsk-test-name-input {
+  margin-top: 0;
+}
+.hsk-test-lead-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.hsk-test-lead-consent input[type="checkbox"] {
+  margin-top: 3px;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  accent-color: var(--ink);
+}
+.hsk-test-lead-consent a { color: inherit; }
+.hsk-test-lead-error {
+  font-size: 13px;
+  color: #b04141;
+  margin: 0;
+}
+html[data-theme="dark"] .hsk-test-lead-error {
+  color: #ff8a8a;
+}
+.hsk-test-lead-submit {
+  align-self: flex-start;
+  margin-top: 4px;
+}
+.hsk-test-lead-inline-success {
+  text-align: left;
+}
+
+/* Inline lead form should keep its dark-card inputs theme-aware too —
+   the card-cream-soft bg flips dark on dark, but the input keeps using
+   --surface from the general .hsk-test-name-input rules. */
+
+
+/* ----- DARK THEME OVERRIDES --------------------------------------------- */
+html[data-theme="dark"] {
+  /* HSK-level pastel cards (landing + per-level pages) stay pastel even
+     in dark theme — they're brand identity. Force dark text on them so
+     the site-wide ink override doesn't make them illegible. */
+  .hsk-test-card-1,
+  .hsk-test-card-2,
+  .hsk-test-card-3,
+  .hsk-test-card-4,
+  .hsk-test-card-1 *,
+  .hsk-test-card-2 *,
+  .hsk-test-card-3 *,
+  .hsk-test-card-4 * {
+    color: #1b1b1b;
+  }
+
+  /* Result-page hero, on the other hand, gets a proper dark adaptation:
+     mix the per-level pastel with the page bg via color-mix so the card
+     reads as a tinted dark surface (HSK identity preserved as a hue,
+     not a giant light island on a dark page). */
+  .hsk-test-result-shell {
+    background: color-mix(in srgb, var(--hsk-base) 22%, var(--background-2));
+  }
+  .hsk-test-result-badge {
+    background: color-mix(in srgb, var(--hsk-deep) 32%, var(--background-2));
+    color: var(--ink);
+  }
+  /* Let text follow the ink ladder (light on dark) */
+  .hsk-test-result-shell,
+  .hsk-test-result-shell * {
+    color: var(--ink);
+  }
+  .hsk-test-result-badge-eyebrow,
+  .hsk-test-result-score {
+    color: var(--muted) !important;
+  }
+
+  /* The site-wide override remaps [class*="text-[#1b1b1b]"] to var(--ink).
+     Inside pastel cards on dark we want them to stay dark — restore.
+     Note: the result hero (.hsk-test-result-shell) goes dark in dark
+     theme now via color-mix, so its text should follow var(--ink) (light)
+     and is NOT in this list. */
+  .hsk-test-card-1 [class*="text-[#1b1b1b]"],
+  .hsk-test-card-2 [class*="text-[#1b1b1b]"],
+  .hsk-test-card-3 [class*="text-[#1b1b1b]"],
+  .hsk-test-card-4 [class*="text-[#1b1b1b]"] {
+    color: #1b1b1b !important;
+  }
+
+  /* Runner card — explicit dark surface */
+  .hsk-test-runner-shell { background: var(--background); }
+  .hsk-test-runner-card {
+    background: var(--surface);
+    border: 0;
+    box-shadow: none;
+  }
+  .hsk-test-choice {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--ink);
+  }
+  .hsk-test-choice:hover {
+    background: rgba(255, 255, 255, 0.14);
+    color: var(--ink);
+  }
+  .hsk-test-choice-active {
+    background: var(--ink);
+    color: var(--background);
+  }
+  .hsk-test-choice-marker { background: rgba(255, 255, 255, 0.12); }
+  .hsk-test-choice-active .hsk-test-choice-marker {
+    background: rgba(0, 0, 0, 0.18);
+    color: var(--ink);
+  }
+
+  .hsk-test-passage {
+    background: rgba(255, 255, 255, 0.04);
+    border-left-color: var(--violet);
+  }
+  .hsk-test-order-area {
+    background: rgba(255, 255, 255, 0.04);
+  }
+  .hsk-test-pair-row { background: rgba(255, 255, 255, 0.04); }
+
+  .hsk-test-tile,
+  .hsk-test-pair-option {
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: none;
+  }
+  .hsk-test-tile:hover,
+  .hsk-test-pair-option:hover {
+    background: rgba(255, 255, 255, 0.14);
+    box-shadow: none;
+  }
+  .hsk-test-tile-active,
+  .hsk-test-pair-option-active {
+    background: var(--ink);
+    color: var(--background);
+    box-shadow: none;
+  }
+
+  .hsk-test-progress { background: rgba(255, 255, 255, 0.08); }
+  .hsk-test-progress-bar { background: var(--ink); }
+
+  /* Next button — dark theme already inverts .btn-pill, but .hsk-test-next
+     is its own button. Mirror the inversion. */
+  .hsk-test-next {
+    background: var(--ink);
+    color: var(--background);
+  }
+  .hsk-test-next:hover { background: var(--ink-700); }
+  .hsk-test-next:disabled {
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  /* Share buttons mirror */
+  .hsk-test-share-btn {
+    background: var(--ink);
+    color: var(--background);
+  }
+  .hsk-test-share-btn:hover { background: var(--ink-700); }
+
+  /* Skill cards */
+  .hsk-test-skill-row {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+  .hsk-test-skill-track { background: rgba(255, 255, 255, 0.1); }
+  .hsk-test-skill-fill { background: var(--ink); }
+
+  /* Mode picker */
+  .hsk-test-mode-card {
+    background: rgba(255, 255, 255, 0.06);
+  }
+  .hsk-test-mode-card:hover { background: rgba(255, 255, 255, 0.1); }
+
+  /* Trust badges on hero pastel */
+  .hsk-test-trust-item {
+    background: rgba(255, 255, 255, 0.55);
+    color: #1b1b1b;
+  }
+
+  /* Certificate chips — keep dark text on the pastel background */
+  .hsk-test-cert-chip { background: rgba(255, 255, 255, 0.65); color: #1b1b1b; }
+}
+
+/* ==========================================================================
+   YANDEX LOCAL WIDGETS — карта и отзывы из Яндекс.Бизнес.
+   Iframe от Яндекса не стилизуется напрямую (cross-origin),
+   поэтому даём ему светлый «карточный» фрейм с нашим radius/тенью.
+   В dark-теме оставляем фон фрейма светлым (иначе виджет смотрится
+   инородно), но окантовку и тень адаптируем под dark.
+   ========================================================================== */
+
+.yandex-widget-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-card-md);
+  background: #ffffff;
+  border: 1px solid var(--line);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  isolation: isolate;
+  width: 100%;
+}
+
+.yandex-widget-frame iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #ffffff;
+}
+
+/* Карта — широкая короткая полоса (4:3 на мобиле, ~16:10 на десктопе). */
+.yandex-widget-frame--map {
+  aspect-ratio: 4 / 3;
+}
+
+@media (min-width: 640px) {
+  .yandex-widget-frame--map {
+    aspect-ratio: 16 / 11;
+  }
+}
+
+@media (min-width: 1024px) {
+  .yandex-widget-frame--map {
+    aspect-ratio: 4 / 3;
+    min-height: 420px;
+  }
+}
+
+/* Отзывы — вертикальная карточка, скроллится внутри. */
+.yandex-widget-frame--reviews {
+  height: 560px;
+}
+
+@media (min-width: 640px) {
+  .yandex-widget-frame--reviews {
+    height: 640px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .yandex-widget-frame--reviews {
+    height: 100%;
+    min-height: 600px;
+  }
+}
+
+/* Атрибуция Яндекса — обязательна по ToS виджета, но в дефолтном
+   embed это цветные «прозрачные» ссылки поверх карты. Прячем их
+   визуально под фреймом — оставляем clickable-полоску снизу, чтобы
+   выполнить требование атрибуции и не уродовать карточку. */
+.yandex-widget-attribution {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 6px 12px;
+  font-size: 11px;
+  line-height: 1.3;
+  color: rgba(38, 38, 38, 0.55);
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0.96) 0%,
+    rgba(255, 255, 255, 0.0) 100%
+  );
+  text-align: center;
+  text-decoration: none;
+  letter-spacing: 0;
+  transition: color var(--t-base);
+  z-index: 2;
+  pointer-events: auto;
+}
+
+.yandex-widget-attribution:hover {
+  color: rgba(38, 38, 38, 0.85);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Mobile: на тач-устройствах прокрутка iframe карты ломает
+   page-scroll. Накладываем «лоадер-плёнку» через pointer-events,
+   когда блок ещё не в фокусе — пользователь касается, и карта
+   становится интерактивной. На десктопе не нужно. */
+@media (max-width: 767px) {
+  .yandex-widget-frame iframe {
+    touch-action: pan-y;
+  }
+}
+
+/* ----------------------------------------------------------------------
+   Dark mode — рамка адаптируется под тёмный фон карточки, но сам
+   iframe остаётся светлым (Яндекс не отдаёт dark-вариант через query
+   у map-widget v1, а инверсию через CSS filter применять нельзя —
+   карта станет нечитаемой). Делаем мягкий бордер и тонкое свечение,
+   чтобы виджет визуально «лежал» на тёмной подложке.
+   ---------------------------------------------------------------------- */
+html[data-theme="dark"] .yandex-widget-frame {
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+html[data-theme="dark"] .yandex-widget-attribution {
+  color: rgba(38, 38, 38, 0.55);
+}
+
 

@@ -1,5 +1,7 @@
+import JsonLd from "@/components/seo/JsonLd";
 import Reveal from "@/components/ui/Reveal";
 import SectionShell from "@/components/ui/SectionShell";
+import { createFaqSchema } from "@/lib/schema";
 import { faqs, type FaqItem } from "@/lib/site-data";
 
 type FAQSectionProps = {
@@ -7,6 +9,9 @@ type FAQSectionProps = {
   title?: string;
   description?: string;
   items?: FaqItem[];
+  /** Renders FAQPage JSON-LD by default. Pass false to skip — for example
+   *  on pages that already emit FAQPage via createPageGraph({ faqs }). */
+  schema?: boolean;
   schemaId?: string;
 };
 
@@ -15,6 +20,8 @@ export default function FAQSection({
   title = "Отвечаем на вопросы",
   description,
   items = faqs,
+  schema = true,
+  schemaId = "faq-section-schema",
 }: FAQSectionProps) {
   const resolvedDescription =
     description ??
@@ -28,6 +35,9 @@ export default function FAQSection({
       title={title}
       description={resolvedDescription}
     >
+      {schema && items.length > 0 ? (
+        <JsonLd data={createFaqSchema(items)} id={schemaId} />
+      ) : null}
       <div className="faq-card">
         {items.map((item) => (
           <Reveal key={item.question}>

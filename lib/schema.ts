@@ -147,6 +147,9 @@ export function createLogoNode(): JsonLd {
     width: 512,
     height: 512,
     caption: SITE_NAME,
+    creditText: SITE_NAME,
+    copyrightNotice: `© ${new Date().getFullYear()} ${SITE_NAME}`,
+    ...IMAGE_RIGHTS,
   };
 }
 
@@ -236,6 +239,8 @@ export function createTeacherNode(
         caption: cert.alt,
         inLanguage: "ru-RU",
         creditText: "ChinaChild",
+        copyrightNotice: `© ${new Date().getFullYear()} ChinaChild`,
+        ...IMAGE_RIGHTS,
       },
     }));
   }

@@ -699,6 +699,7 @@ export const faqs: FaqItem[] = [
 export const footerLinks = [
   { title: "Все курсы", href: "/courses" },
   { title: "Хаб HSK", href: "/learn/hsk" },
+  { title: "Тест на уровень HSK", href: "/chinese/hsk-test" },
   { title: "Подготовка к HSK", href: "/courses/hsk-preparation" },
   { title: "Школьникам 12+", href: "/courses/chinese-for-kids" },
   { title: "Взрослым с нуля", href: "/courses/chinese-for-adults" },
@@ -713,15 +714,19 @@ export const footerLinks = [
   { title: "Методика", href: "/methodology" },
   { title: "Результаты", href: "/results" },
   { title: "Отзывы", href: "/reviews" },
-  { title: "Лицензия", href: "/license" },
-  { title: "Сведения об образовательной организации", href: "/docs" },
   { title: "Блог", href: "/blog" },
   { title: "Грамматика", href: "/grammar" },
   { title: "Словарь", href: "/dictionary" },
   { title: "Глоссарий", href: "/glossary" },
+  // Legal / regulatory cluster — kept at the bottom of the footer so it
+  // doesn't break the flow of marketing/content links above. Order
+  // matches Yandex Praktikum/Skyeng: license → docs → public treaty →
+  // user agreement → privacy policy.
+  { title: "Лицензия", href: "/license" },
   { title: "Публичная оферта", href: "/public-treaty" },
   { title: "Пользовательское соглашение", href: "/user-agreement" },
   { title: "Политика конфиденциальности", href: "/privacy-policy" },
+  { title: "Сведения об образовательной организации", href: "/docs" },
 ];
 
 export const siteFacts = {

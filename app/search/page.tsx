@@ -98,7 +98,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 type="search"
                 defaultValue={q}
                 placeholder="HSK, пиньинь, китайский с нуля…"
-                className="h-12 w-full rounded-[8px] border border-[rgba(0,0,0,0.08)] bg-white px-4 text-base text-[#262626] outline-none transition focus:border-[rgba(0,0,0,0.3)]"
+                className="h-12 w-full rounded-[8px] bg-[#f5f5f6] px-4 text-base text-[#262626] outline-none transition focus:bg-[#ebeaed]"
                 autoComplete="off"
               />
               <button

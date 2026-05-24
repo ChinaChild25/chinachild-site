@@ -37,7 +37,7 @@ export default function GrammarArticleCard({
           <span className={`${chipBase} bg-[#262626] text-white`}>{badge}</span>
         ) : null}
         {sectionNames.map((section) => (
-          <span key={section.id} className={`${chipBase} bg-[#f3f0e8] text-[#262626]`}>
+          <span key={section.id} className={`${chipBase} bg-[#f8f7f2] text-[#262626]`}>
             {section.titleRu}
           </span>
         ))}
@@ -51,7 +51,7 @@ export default function GrammarArticleCard({
       {tagChips.length > 0 ? (
         <ul className="mt-4 flex flex-wrap gap-2">
           {tagChips.map((tag) => (
-            <li key={tag.id} className={`${chipBase} bg-[#f3f0e8] text-[#262626]`}>
+            <li key={tag.id} className={`${chipBase} bg-[#f8f7f2] text-[#262626]`}>
               {tag.labelRu}
               <span className={`ml-1.5 ${chipMuted}`}>· {tagGroupLabel(tag.groupKey)}</span>
             </li>

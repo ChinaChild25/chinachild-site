@@ -17,11 +17,8 @@ export default function DictionaryAboutInfo() {
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
         aria-label="Подробнее о словаре"
-        className={`inline-flex size-7 items-center justify-center rounded-[10px] transition-colors ${
-          open
-            ? "bg-[#ebe6dc] text-[#262626]"
-            : "bg-[#f3f0e8] text-[#6b6b6b] hover:bg-[#ebe6dc] hover:text-[#262626]"
-        }`}
+        className="dictionary-info-toggle inline-flex size-7 items-center justify-center rounded-[10px] transition-colors"
+        data-open={open}
       >
         <Info className="size-4" strokeWidth={1.75} aria-hidden />
       </button>

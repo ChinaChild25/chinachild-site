@@ -6,7 +6,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
     title: "Подготовка к HSK 1, 2, 3, 4, 5, 6 онлайн — школа ChinaChild",
     description:
-      "Курсы подготовки к HSK 1–6 онлайн в школе ChinaChild. Лицензированная программа, мини-группы до 5 человек, разговорный уровень за 6 месяцев. Бесплатный тест на уровень HSK.",
+      "Курсы HSK 1–6 онлайн: лицензированная программа, мини-группы до 5, разговорный уровень за 6 месяцев. Бесплатный тест на уровень HSK.",
     path: "/courses/hsk-preparation",
     keywords: [
       "подготовка к HSK",

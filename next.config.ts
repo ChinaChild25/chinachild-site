@@ -28,7 +28,7 @@ const securityHeaders = [
       "img-src 'self' data: blob: https://mc.yandex.ru https://mc.yandex.com https://yandex.ru https://*.yandex.ru https://*.yandex.com https://mc.webvisor.org https://mc.webvisor.com https://www.google-analytics.com https://*.google-analytics.com https://stats.g.doubleclick.net https://*.vercel.app",
       "connect-src 'self' https://mc.yandex.ru https://mc.yandex.com https://*.yandex.ru https://*.mc.yandex.ru https://yandex.ru https://mc.webvisor.org https://mc.webvisor.com wss://mc.yandex.ru wss://mc.yandex.com wss://*.yandex.ru wss://mc.webvisor.org wss://mc.webvisor.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://stats.g.doubleclick.net https://*.vercel-insights.com https://vitals.vercel-insights.com https://*.supabase.co https://cdn.jsdelivr.net",
       "media-src 'self' blob: data: https://*.supabase.co",
-      "frame-src https://mc.yandex.ru https://mc.yandex.com https://mc.webvisor.org https://mc.webvisor.com",
+      "frame-src https://mc.yandex.ru https://mc.yandex.com https://mc.webvisor.org https://mc.webvisor.com https://yandex.ru https://*.yandex.ru",
       "frame-ancestors 'self'",
       "base-uri 'self'",
       "form-action 'self'",

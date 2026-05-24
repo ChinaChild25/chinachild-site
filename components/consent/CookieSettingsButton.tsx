@@ -8,7 +8,7 @@ export default function CookieSettingsButton() {
     <button
       type="button"
       onClick={reopenBanner}
-      className="text-sm text-[#6b6b6b] underline underline-offset-4 transition hover:text-[#262626]"
+      className="text-sm text-white/55 underline underline-offset-4 transition hover:text-white"
     >
       Настройки cookies
     </button>

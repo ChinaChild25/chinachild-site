@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Ma_Shan_Zheng } from "next/font/google";
 import { Suspense } from "react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
@@ -23,12 +23,23 @@ const inter = Inter({
   weight: ["400", "500", "600", "700"],
 });
 
+// Ma Shan Zheng — brush-calligraphy Chinese display font. Used for accent
+// hanzi in HSK-test heroes, certificates, and result-page watermarks via
+// the `.font-hanzi-callig` utility — never for body text.
+const maShanZheng = Ma_Shan_Zheng({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-hanzi-callig",
+  weight: ["400"],
+  preload: false,
+});
+
 export const metadata: Metadata = {
   ...buildMetadata({
     title:
       "ChinaChild — Онлайн-школа китайского языка | Курсы HSK 1–6 для подростков 12+ и взрослых",
     description:
-      "Лицензированная онлайн-школа китайского языка ChinaChild (HSK+). Программа HSK 1–2 — разговорный уровень за 6 месяцев. Мини-группы до 5 человек, преподаватели ЮФУ и ДГТУ, налоговый вычет 13%.",
+      "Онлайн-школа китайского ChinaChild: программа HSK 1–2, разговорный уровень за 6 месяцев, мини-группы до 5. Налоговый вычет 13%.",
     path: "/",
     keywords: [
       "китайский язык онлайн",
@@ -54,7 +65,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f8f7f2" },
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
     { media: "(prefers-color-scheme: dark)", color: "#121212" },
   ],
   colorScheme: "light dark",
@@ -68,7 +79,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru" className={inter.className} data-theme="light" suppressHydrationWarning>
+    <html
+      lang="ru"
+      className={`${inter.className} ${maShanZheng.variable}`}
+      data-theme="light"
+      suppressHydrationWarning
+    >
       <head>
         <ThemeInitScript />
         {/* Preconnect / DNS-prefetch — kills first-byte latency for analytics. */}

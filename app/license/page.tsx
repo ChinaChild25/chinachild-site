@@ -19,7 +19,7 @@ import {
 
 export const metadata: Metadata = buildMetadata({
   title: "Образовательная лицензия ChinaChild — Москва, программа HSK 1–2",
-  description: `Образовательная лицензия № ${LICENSE_DETAILS.registrationNumber}, выданная ${LICENSE_REGION_INSTRUMENTAL} от ${LICENSE_DETAILS.issueDate}. Право на налоговый вычет 13% — до 15 600 ₽ в год.`,
+  description: `Лицензия № ${LICENSE_DETAILS.registrationNumber} от Департамента образования Москвы. Право на налоговый вычет 13% — до 15 600 ₽ в год.`,
   path: "/license",
   keywords: [
     "лицензия школы китайского",
@@ -56,6 +56,7 @@ const licenseGraph = {
           caption: `Скан образовательной лицензии № ${LICENSE_DETAILS.registrationNumber}, выданной ${LICENSE_REGION_INSTRUMENTAL}`,
           inLanguage: "ru-RU",
           creditText: SITE_NAME,
+          copyrightNotice: `© ${new Date().getFullYear()} ${SITE_NAME}`,
         },
         {
           "@type": "ImageObject",
@@ -67,6 +68,7 @@ const licenseGraph = {
           caption: `Приложение к образовательной лицензии № ${LICENSE_DETAILS.registrationNumber} с печатью ${LICENSE_REGION}`,
           inLanguage: "ru-RU",
           creditText: SITE_NAME,
+          copyrightNotice: `© ${new Date().getFullYear()} ${SITE_NAME}`,
         },
       ],
       recognizedBy: {

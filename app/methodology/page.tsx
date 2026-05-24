@@ -13,7 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
     title: "Методика ChinaChild: платформа, AI-тренажёр и носители китайского",
     description:
-      "Как устроено обучение китайскому в ChinaChild: собственная платформа без Zoom, WebRTC-уроки, HD-записи, AI-анализ тонов, тренажёр и связка методиста, носителя путунхуа и AI-ассистента.",
+      "Методика ChinaChild: своя платформа без Zoom, HD-записи уроков, AI-анализ тонов, тренажёр и связка методиста, носителя путунхуа и AI-помощника.",
     path: "/methodology",
     keywords: [
       "методика обучения китайскому",

@@ -25,7 +25,7 @@ export default function RouteError({
         страницу или вернуться на главную.
       </p>
       {process.env.NODE_ENV === "development" && (
-        <pre className="mt-6 max-w-full overflow-auto rounded-lg bg-[#f3f0e8] p-4 text-left text-xs text-[#262626]">
+        <pre className="mt-6 max-w-full overflow-auto rounded-lg bg-[#f8f7f2] p-4 text-left text-xs text-[#262626]">
           {error.message}
           {error.digest ? `\n\nDigest: ${error.digest}` : ""}
         </pre>

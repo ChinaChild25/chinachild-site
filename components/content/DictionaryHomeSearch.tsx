@@ -48,7 +48,7 @@ export default function DictionaryHomeSearch({
     <form
       role="search"
       onSubmit={submit}
-      className="flex w-full max-w-2xl items-center gap-2 rounded-[var(--radius-input)] bg-white px-5 py-3"
+      className="flex w-full max-w-2xl items-center gap-2 rounded-[var(--radius-input)] bg-[#f5f5f6] px-5 py-3 transition-colors focus-within:bg-[#ebeaed]"
       aria-label="Поиск по китайскому словарю"
     >
       <input
