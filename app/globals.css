@@ -30,6 +30,33 @@
   --glass-white-06: rgba(255, 255, 255, 0.06);
   --glass-white-05: rgba(255, 255, 255, 0.05);
 
+  /* Floating CTA glass reference.
+     Keep these tokens together: this is the approved Practicum-like lens.
+     The glass must mostly inherit the page color through backdrop-filter,
+     not paint a white plate over it. */
+  --floating-cta-glass-padding: 12px;
+  --floating-cta-glass-radius: 18px;
+  --floating-cta-glass-border: rgba(255, 255, 255, 0.16);
+  --floating-cta-glass-bg: rgba(255, 255, 255, 0.055);
+  --floating-cta-glass-filter: blur(26px) saturate(170%) contrast(112%) brightness(108%);
+  --floating-cta-glass-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.22),
+    inset 0 -1px 1px rgba(255, 255, 255, 0.1),
+    inset 0 0 26px rgba(255, 255, 255, 0.06);
+  --floating-cta-glass-sheen:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.035) 20%, transparent 42%, transparent 58%, rgba(255, 255, 255, 0.035) 80%, rgba(255, 255, 255, 0.16)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.11), transparent 34%, transparent 66%, rgba(255, 255, 255, 0.055));
+  --floating-cta-glass-sheen-opacity: 0.72;
+  --floating-cta-glass-edge:
+    radial-gradient(ellipse 115px 82% at 0% 50%, rgba(255, 255, 255, 0.18), transparent 72%),
+    radial-gradient(ellipse 115px 82% at 100% 50%, rgba(255, 255, 255, 0.16), transparent 72%);
+  --floating-cta-glass-edge-opacity: 0.58;
+  --floating-cta-btn-width: min(208px, calc(100vw - 40px));
+  --floating-cta-btn-height: 42px;
+  --floating-cta-btn-padding-x: 18px;
+  --floating-cta-btn-radius: 4px;
+  --floating-cta-btn-font-size: 18px;
+
   /* Pastel cards — точные HEX из blueprint */
   --violet: #d8d3ff;
   --cream:  #e8e3d8;
@@ -899,8 +926,9 @@ html[data-theme="dark"] .theme-toggle-thumb {
 }
 
 /* ==========================================================================
-   FLOATING CTA — 1:1 Яндекс
-   Стеклянная плашка radius 18px + чёрная кнопка radius 6px
+   FLOATING CTA — approved frosted lens.
+   Do not tune this by eye in-place. Restore/change the --floating-cta-* tokens
+   in :root above so the glass, button and dark-mode overrides stay in sync.
    ========================================================================== */
 
 .floating-cta-shell {
@@ -910,37 +938,70 @@ html[data-theme="dark"] .theme-toggle-thumb {
   transform: translateX(-50%);
   z-index: 900;
   pointer-events: none;
-  contain: layout;
+  contain: layout paint;
 }
 
 .floating-cta-glass {
+  position: relative;
   display: inline-flex;
-  padding: 10px;
-  border-radius: 22px;
+  isolation: isolate;
+  padding: var(--floating-cta-glass-padding);
+  border-radius: var(--floating-cta-glass-radius);
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.54);
-  -webkit-backdrop-filter: blur(16px) saturate(165%);
-  backdrop-filter: blur(16px) saturate(165%);
+  border: 1px solid var(--floating-cta-glass-border);
+  background: var(--floating-cta-glass-bg);
+  -webkit-backdrop-filter: var(--floating-cta-glass-filter);
+  backdrop-filter: var(--floating-cta-glass-filter);
+  box-sizing: border-box;
+  box-shadow: var(--floating-cta-glass-shadow);
+}
+
+.floating-cta-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  z-index: 0;
+  pointer-events: none;
+  background: var(--floating-cta-glass-sheen);
+  opacity: var(--floating-cta-glass-sheen-opacity);
+}
+
+.floating-cta-glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  z-index: 0;
+  pointer-events: none;
+  background: var(--floating-cta-glass-edge);
+  filter: blur(12px);
+  opacity: var(--floating-cta-glass-edge-opacity);
 }
 
 .floating-cta-btn {
   position: relative;
+  z-index: 1;
   pointer-events: auto;
-  padding: 14px 24px;
-  background: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--floating-cta-btn-width);
+  min-width: 0;
+  min-height: var(--floating-cta-btn-height);
+  padding: 0 var(--floating-cta-btn-padding-x);
+  background: #1d1d1d;
   color: #ffffff;
-  border-radius: var(--radius-button);
+  border-radius: var(--floating-cta-btn-radius);
   border: none;
   cursor: pointer;
-  font-size: 15px;
-  font-weight: 500;
+  font-size: var(--floating-cta-btn-font-size);
+  font-weight: 400;
   line-height: 100%;
-  min-width: 180px;
   text-align: center;
   white-space: nowrap;
   outline: none;
   transition: background-color var(--t-base);
-  display: inline-block;
   text-decoration: none;
 }
 
@@ -960,19 +1021,19 @@ html[data-theme="dark"] .theme-toggle-thumb {
   }
   .floating-cta-glass {
     width: 100%;
-    padding: 6px;
-    border-radius: 18px;
+    padding: var(--floating-cta-glass-padding);
+    border-radius: var(--floating-cta-glass-radius);
   }
   .floating-cta-btn {
     width: 100%;
     min-width: 0;
-    height: 50px;
-    border-radius: var(--radius-button);
-    padding: 14px;
+    min-height: var(--floating-cta-btn-height);
+    border-radius: var(--floating-cta-btn-radius);
+    padding: 0 var(--floating-cta-btn-padding-x);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 15px;
+    font-size: var(--floating-cta-btn-font-size);
   }
 }
 
@@ -2068,6 +2129,21 @@ html[data-theme="dark"] {
   --glass-white-06: rgba(255, 255, 255, 0.08);
   --glass-white-05: rgba(255, 255, 255, 0.04);
 
+  --floating-cta-glass-border: rgba(255, 255, 255, 0.14);
+  --floating-cta-glass-bg: rgba(255, 255, 255, 0.05);
+  --floating-cta-glass-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.18),
+    inset 0 -1px 1px rgba(255, 255, 255, 0.08),
+    inset 0 0 26px rgba(255, 255, 255, 0.05);
+  --floating-cta-glass-sheen:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.03) 20%, transparent 42%, transparent 58%, rgba(255, 255, 255, 0.03) 80%, rgba(255, 255, 255, 0.14)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.09), transparent 34%, transparent 66%, rgba(255, 255, 255, 0.045));
+  --floating-cta-glass-sheen-opacity: 0.68;
+  --floating-cta-glass-edge:
+    radial-gradient(ellipse 115px 82% at 0% 50%, rgba(255, 255, 255, 0.16), transparent 72%),
+    radial-gradient(ellipse 115px 82% at 100% 50%, rgba(255, 255, 255, 0.14), transparent 72%);
+  --floating-cta-glass-edge-opacity: 0.54;
+
   /* Пастели приглушаем — оставляем цвет-маркеры разделов. */
   --violet: #2a2740;
   --cream: #2b2722;
@@ -2205,9 +2281,6 @@ html[data-theme="dark"] {
   }
   .floating-cta-shell::before {
     background-color: transparent;
-  }
-  .floating-cta-glass {
-    background: rgba(255, 255, 255, 0.2);
   }
 
   /* card-ink тоже инвертируется (тёмные «Готовы начать?» баннеры). */

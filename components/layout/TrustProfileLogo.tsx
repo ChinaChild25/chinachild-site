@@ -32,7 +32,7 @@ export default function TrustProfileLogo({
     [logo.fallback, logo.onDark, logo.onLight, surface],
   ) as string[];
   const src = sources.find((candidate) => !failedSrcs.includes(candidate));
-  const visualHeight = 24;
+  const visualHeight = 36;
   const visualWidth = Math.round((logo.width / logo.height) * visualHeight);
   const shouldInvert = surface === "dark" && logo.invertOnDark;
 

@@ -45,7 +45,7 @@ export default function Footer() {
             <div className="text-xs font-medium text-white/45">
               Площадки и отзывы
             </div>
-            <div className="mt-3 flex flex-wrap gap-2">
+            <div className="mt-3 flex flex-wrap gap-4">
               {TRUST_PROFILE_LINKS.map((link) => (
                 <a
                   key={link.href}
@@ -53,7 +53,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noreferrer"
                   aria-label={`${link.label} ChinaChild`}
-                  className="inline-flex h-8 items-center justify-center text-white/80 transition duration-150 hover:-translate-y-0.5 hover:text-white hover:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/45"
+                  className="inline-flex h-10 items-center justify-center text-white/80 transition duration-150 hover:-translate-y-0.5 hover:text-white hover:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/45"
                 >
                   <TrustProfileLogo label={link.label} logo={link.logo} surface="dark" />
                 </a>

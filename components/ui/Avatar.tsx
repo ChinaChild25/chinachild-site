@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 
 const tones = [
   { bg: "var(--violet-soft)", fg: "var(--violet)" },
-  { bg: "var(--cream)", fg: "var(--foreground)" },
+  { bg: "#d8e9ff", fg: "#2a4a6e" },
   { bg: "var(--lime-soft)", fg: "#3a4d12" },
   { bg: "var(--sky)", fg: "#2a4a6e" },
   { bg: "var(--peach-soft)", fg: "#a04020" },
@@ -85,6 +85,8 @@ export default function Avatar({
       style={{
         width: size,
         height: size,
+        minWidth: size,
+        minHeight: size,
         background: tone.bg,
         color: tone.fg,
         fontSize,
