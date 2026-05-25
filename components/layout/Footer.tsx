@@ -2,6 +2,7 @@ import Link from "next/link";
 import CookieSettingsButton from "@/components/consent/CookieSettingsButton";
 import { footerLinks } from "@/lib/site-data";
 import {
+  CONTACT_EMAIL,
   CONTACT_PHONE,
   CONTACT_PHONE_TEL,
   LICENSE_DETAILS,
@@ -27,6 +28,12 @@ export default function Footer() {
           <div className="mt-6 grid gap-2 text-sm text-white">
             <a href={`tel:${CONTACT_PHONE_TEL}`} className="font-medium transition hover:opacity-70">
               {CONTACT_PHONE}
+            </a>
+            <a
+              href={`mailto:${CONTACT_EMAIL}`}
+              className="text-white/65 transition hover:text-white"
+            >
+              {CONTACT_EMAIL}
             </a>
             <a href={SITE_URL} className="text-white/65 transition hover:text-white">
               {siteHost}

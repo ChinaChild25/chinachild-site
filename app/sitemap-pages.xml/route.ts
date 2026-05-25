@@ -63,6 +63,7 @@ export async function GET() {
     docsMtime,
     zayavkaMtime,
     aboutMtime,
+    repetitorMtime,
     methodologyMtime,
     resultsMtime,
     reviewsMtime,
@@ -90,6 +91,7 @@ export async function GET() {
     fileMtime("app/docs/page.tsx", now),
     fileMtime("app/zayavka/page.tsx", now),
     fileMtime("app/about/page.tsx", now),
+    fileMtime("app/repetitor-kitayskogo/page.tsx", now),
     fileMtime("app/methodology/page.tsx", now),
     fileMtime("app/results/page.tsx", now),
     fileMtime("app/reviews/page.tsx", now),
@@ -153,6 +155,7 @@ export async function GET() {
 
     // Trust / E-E-A-T
     { loc: absoluteUrl("/about"), lastmod: aboutMtime, changefreq: "monthly", priority: 0.82 },
+    { loc: absoluteUrl("/repetitor-kitayskogo"), lastmod: repetitorMtime, changefreq: "monthly", priority: 0.8 },
     { loc: absoluteUrl("/methodology"), lastmod: methodologyMtime, changefreq: "monthly", priority: 0.82 },
     { loc: absoluteUrl("/results"), lastmod: resultsMtime, changefreq: "monthly", priority: 0.78 },
     { loc: absoluteUrl("/reviews"), lastmod: reviewsMtime, changefreq: "weekly", priority: 0.78 },

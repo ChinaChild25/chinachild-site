@@ -447,6 +447,37 @@ export function createBreadcrumbNode(items: BreadcrumbItem[]): JsonLd {
 // ---------------------------------------------------------------------------
 
 /**
+ * Top-level navigation items — fed into SiteNavigationElement nodes so Yandex
+ * and Google can promote them as sitelinks under the brand SERP result. Order
+ * reflects business priority: money pages → trust → tools → content.
+ */
+const SITE_NAVIGATION: { name: string; path: string }[] = [
+  { name: "Курсы китайского", path: "/courses" },
+  { name: "Подготовка к HSK", path: "/courses/hsk-preparation" },
+  { name: "Цены", path: "/price" },
+  { name: "Бесплатный пробный урок", path: "/free-trial" },
+  { name: "Тест на уровень HSK", path: "/chinese/hsk-test" },
+  { name: "О школе", path: "/about" },
+  { name: "Команда", path: "/team" },
+  { name: "Отзывы", path: "/reviews" },
+  { name: "Лицензия", path: "/license" },
+  { name: "Блог", path: "/blog" },
+  { name: "Грамматика", path: "/grammar" },
+  { name: "Словарь", path: "/dictionary" },
+];
+
+function createSiteNavigationNodes(): JsonLd[] {
+  return SITE_NAVIGATION.map((item, index) => ({
+    "@type": "SiteNavigationElement",
+    "@id": `${SITE_URL}/#nav-${index}`,
+    name: item.name,
+    url: absoluteUrl(item.path),
+    position: index + 1,
+    isPartOf: { "@id": ID.website },
+  }));
+}
+
+/**
  * Always-on site-wide @graph mounted in app/layout.tsx.
  * Carries Organization, WebSite, Logo, Service, HowTo,
  * all teacher Person nodes, all Course nodes and a
@@ -467,6 +498,7 @@ export function createSiteGraph(): JsonLd {
     createServiceNode(),
     createHowToNode(),
     speakable,
+    ...createSiteNavigationNodes(),
     ...teachers.map((t) => createTeacherNode(t)),
     ...courses.map((c) => createCourseNode(c)),
   ];

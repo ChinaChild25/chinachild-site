@@ -14,6 +14,7 @@ export default function manifest(): MetadataRoute.Manifest {
     lang: "ru-RU",
     categories: ["education", "lifestyle"],
     icons: [
+      { src: "/icon0.svg", sizes: "any", type: "image/svg+xml", purpose: "any" },
       { src: "/icon.png", sizes: "512x512", type: "image/png", purpose: "any" },
       { src: "/icon.png", sizes: "192x192", type: "image/png", purpose: "any" },
       { src: "/apple-icon.png", sizes: "180x180", type: "image/png" },
