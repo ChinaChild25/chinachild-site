@@ -68,7 +68,7 @@ const principles = [
 const platformTabs: AboutPlatformTab[] = [
   {
     id: "video-calls",
-    label: "Видеоуроки",
+    label: "Урок",
     caption:
       "Урок идёт прямо в браузере — без Zoom и без установки. Слышно собеседника, видно доску, всё под рукой.",
     media: "/platform/video-calls.webp",
@@ -84,7 +84,7 @@ const platformTabs: AboutPlatformTab[] = [
   },
   {
     id: "ai-trainer",
-    label: "AI-тренажёр",
+    label: "Тренажёр",
     caption:
       "Иероглифы по порядку черт, тоны через микрофон, перевод и подсказка — встроенный ассистент на базе ChatGPT.",
     media: "/platform/ai-trainer.webp",
@@ -92,7 +92,7 @@ const platformTabs: AboutPlatformTab[] = [
   },
   {
     id: "recordings",
-    label: "Записи уроков",
+    label: "Записи",
     caption:
       "Каждое занятие автоматически попадает в кабинет — пересмотреть тему или догнать пропущенный урок легко.",
     media: "/platform/recordings.webp",
@@ -100,7 +100,7 @@ const platformTabs: AboutPlatformTab[] = [
   },
   {
     id: "progress",
-    label: "Прогресс HSK",
+    label: "Прогресс",
     caption:
       "Личный план обучения по HSK 1–6: видно сданные темы и сколько осталось до сертификата.",
     media: "/platform/progress.webp",
@@ -502,7 +502,7 @@ export default function AboutPage() {
                 Подробнее о методике и платформе →
               </Link>
             </div>
-            <Reveal>
+            <Reveal className="min-w-0">
               <AboutPlatformTabs tabs={platformTabs} />
             </Reveal>
           </div>

@@ -18,12 +18,14 @@ export default function AboutPlatformTabs({ tabs }: { tabs: AboutPlatformTab[] }
   if (!active) return null;
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* Tabs row — horizontally scrollable on mobile, wraps on desktop. */}
+    <div className="flex w-full min-w-0 flex-col gap-4">
+      {/* Segmented control — strictly one row на любой ширине.
+          Сетка с равными колонками: ничего не оверфлоит, не переносится во второй ряд. */}
       <div
         role="tablist"
         aria-label="Возможности платформы ChinaChild"
-        className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:flex-wrap lg:overflow-visible"
+        className="grid w-full grid-cols-5 gap-1 rounded-[14px] bg-white/55 p-1 sm:gap-1.5"
+        style={{ gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))` }}
       >
         {tabs.map((tab) => {
           const isActive = tab.id === active.id;
@@ -36,13 +38,13 @@ export default function AboutPlatformTabs({ tabs }: { tabs: AboutPlatformTab[] }
               aria-controls={`about-platform-panel-${tab.id}`}
               id={`about-platform-tab-${tab.id}`}
               onClick={() => setActiveId(tab.id)}
-              className={`flex-shrink-0 rounded-full px-4 py-2 text-sm font-medium leading-none tracking-[-0.005em] transition-colors ${
+              className={`flex min-w-0 items-center justify-center rounded-[10px] px-1 py-2 text-center text-[11px] font-medium leading-[1.15] tracking-[-0.005em] transition-colors sm:px-2.5 sm:py-2.5 sm:text-[13px] lg:text-sm ${
                 isActive
-                  ? "bg-[#262626] text-white"
-                  : "bg-white/70 text-[#262626] hover:bg-white"
+                  ? "bg-[#262626] text-white shadow-[0_1px_2px_rgba(0,0,0,0.08)]"
+                  : "text-[#262626]/72 hover:bg-white/55 hover:text-[#262626]"
               }`}
             >
-              {tab.label}
+              <span className="block break-words">{tab.label}</span>
             </button>
           );
         })}
@@ -53,7 +55,7 @@ export default function AboutPlatformTabs({ tabs }: { tabs: AboutPlatformTab[] }
         id={`about-platform-panel-${active.id}`}
         role="tabpanel"
         aria-labelledby={`about-platform-tab-${active.id}`}
-        className="flex flex-col gap-3"
+        className="flex min-w-0 flex-col gap-3"
       >
         <div className="overflow-hidden rounded-[20px] bg-[#262626] p-2 sm:p-3">
           <Image
