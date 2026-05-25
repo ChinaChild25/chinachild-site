@@ -7,6 +7,9 @@ import LeadModal from "@/components/forms/LeadModal";
 import JsonLd from "@/components/seo/JsonLd";
 import Reveal from "@/components/ui/Reveal";
 import YandexLocalSection from "@/components/sections/YandexLocalSection";
+import AboutPlatformTabs, {
+  type AboutPlatformTab,
+} from "@/components/sections/AboutPlatformTabs";
 import { buttonStyles } from "@/components/ui/button";
 import { buildMetadata } from "@/lib/metadata";
 import {
@@ -59,6 +62,49 @@ const principles = [
     body:
       "70% урока — практика речи. В группе на 30 человек ученик молчит и слушает; у нас каждый успевает 5–8 раз произнести фразу, услышать поправку и снова сказать. Параллельно работает индивидуальный формат со скидкой 10% для подростков с 12 лет.",
     card: "card-lime-soft",
+  },
+];
+
+const platformTabs: AboutPlatformTab[] = [
+  {
+    id: "video-calls",
+    label: "Видеоуроки",
+    caption:
+      "Урок идёт прямо в браузере — без Zoom и без установки. Слышно собеседника, видно доску, всё под рукой.",
+    media: "/platform/video-calls.webp",
+    mediaAlt: "Видеоурок китайского языка в личном кабинете ChinaChild",
+  },
+  {
+    id: "schedule",
+    label: "Расписание",
+    caption:
+      "Календарь занятий с напоминаниями за час до урока. Синхронизируется с Google Calendar и iCal.",
+    media: "/platform/schedule.webp",
+    mediaAlt: "Расписание занятий в личном кабинете школы китайского",
+  },
+  {
+    id: "ai-trainer",
+    label: "AI-тренажёр",
+    caption:
+      "Иероглифы по порядку черт, тоны через микрофон, перевод и подсказка — встроенный ассистент на базе ChatGPT.",
+    media: "/platform/ai-trainer.webp",
+    mediaAlt: "AI-тренажёр иероглифов и тонов в кабинете ChinaChild",
+  },
+  {
+    id: "recordings",
+    label: "Записи уроков",
+    caption:
+      "Каждое занятие автоматически попадает в кабинет — пересмотреть тему или догнать пропущенный урок легко.",
+    media: "/platform/recordings.webp",
+    mediaAlt: "Записи уроков китайского языка в личном кабинете",
+  },
+  {
+    id: "progress",
+    label: "Прогресс HSK",
+    caption:
+      "Личный план обучения по HSK 1–6: видно сданные темы и сколько осталось до сертификата.",
+    media: "/platform/progress.webp",
+    mediaAlt: "Трекинг прогресса по HSK в личном кабинете ChinaChild",
   },
 ];
 
@@ -280,21 +326,6 @@ function Mark({ value }: { value: boolean | string }) {
   );
 }
 
-function PlatformShot({ src, alt }: { src: string; alt: string }) {
-  return (
-    <div className="overflow-hidden rounded-[16px] bg-[#262626] p-2">
-      <Image
-        src={src}
-        alt={alt}
-        width={756}
-        height={491}
-        sizes="(min-width: 1024px) 360px, (min-width: 768px) 45vw, 90vw"
-        className="aspect-[756/491] w-full rounded-[10px] object-cover"
-      />
-    </div>
-  );
-}
-
 export default function AboutPage() {
   return (
     <main>
@@ -471,32 +502,9 @@ export default function AboutPage() {
                 Подробнее о методике и платформе →
               </Link>
             </div>
-            <div className="grid gap-3 sm:grid-cols-6">
-              <Reveal className="sm:col-span-4">
-                <PlatformShot
-                  src="/platform/video-calls.webp"
-                  alt="Видеоурок китайского языка в личном кабинете ChinaChild"
-                />
-              </Reveal>
-              <Reveal className="sm:col-span-2">
-                <PlatformShot
-                  src="/platform/schedule.webp"
-                  alt="Расписание занятий в личном кабинете школы китайского"
-                />
-              </Reveal>
-              <Reveal className="sm:col-span-2">
-                <PlatformShot
-                  src="/platform/ai-trainer.webp"
-                  alt="Тренажёр иероглифов и тонов в кабинете ChinaChild"
-                />
-              </Reveal>
-              <Reveal className="sm:col-span-4">
-                <PlatformShot
-                  src="/platform/recordings.webp"
-                  alt="Записи уроков китайского языка в личном кабинете"
-                />
-              </Reveal>
-            </div>
+            <Reveal>
+              <AboutPlatformTabs tabs={platformTabs} />
+            </Reveal>
           </div>
         </div>
       </section>
@@ -554,8 +562,9 @@ export default function AboutPage() {
               лицензия, формат группы, записи, инструменты.
             </p>
           </div>
-          <div className="mt-8 overflow-x-auto">
-            <table className="w-full min-w-[640px] border-separate border-spacing-y-2 text-left text-sm">
+          {/* Desktop: full 5-column table */}
+          <div className="mt-8 hidden md:block">
+            <table className="w-full border-separate border-spacing-y-2 text-left text-sm">
               <thead>
                 <tr className="text-sm font-medium text-[#262626]/55">
                   <th className="py-2 pr-4 font-medium">Что важно</th>
@@ -595,6 +604,46 @@ export default function AboutPage() {
               </tbody>
             </table>
           </div>
+
+          {/* Mobile: each row becomes a card — никакого горизонтального скролла. */}
+          <ul className="mt-7 grid gap-3 md:hidden" role="list">
+            {comparison.map((row) => (
+              <li
+                key={row.feature}
+                className="rounded-[16px] bg-white/75 p-4"
+              >
+                <div className="text-[15px] font-medium leading-[1.3] text-[#262626]">
+                  {row.feature}
+                </div>
+                <dl className="mt-3 grid gap-2 text-sm">
+                  <div className="flex items-center justify-between gap-3 rounded-[10px] bg-[#262626]/[0.04] px-3 py-2">
+                    <dt className="text-[#262626]">ChinaChild</dt>
+                    <dd className="m-0">
+                      <Mark value={row.chinachild} />
+                    </dd>
+                  </div>
+                  <div className="flex items-center justify-between gap-3 px-3 py-1.5">
+                    <dt className="text-[#4b4b4b]">Самоучитель</dt>
+                    <dd className="m-0">
+                      <Mark value={row.selfStudy} />
+                    </dd>
+                  </div>
+                  <div className="flex items-center justify-between gap-3 px-3 py-1.5">
+                    <dt className="text-[#4b4b4b]">Репетитор</dt>
+                    <dd className="m-0">
+                      <Mark value={row.tutor} />
+                    </dd>
+                  </div>
+                  <div className="flex items-center justify-between gap-3 px-3 py-1.5">
+                    <dt className="text-[#4b4b4b]">Массовые курсы</dt>
+                    <dd className="m-0">
+                      <Mark value={row.massCourse} />
+                    </dd>
+                  </div>
+                </dl>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 

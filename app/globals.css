@@ -5430,28 +5430,39 @@ html[data-theme="dark"] {
 }
 
 @media (min-width: 1024px) {
+  /* На десктопе карта живёт в flex-колонке (см. YandexLocalSection.tsx) —
+     `flex: 1` растягивает её до высоты блока отзывов. Снимаем aspect-ratio,
+     иначе ширина диктует высоту и колонки получаются разной длины. */
   .yandex-widget-frame--map {
-    aspect-ratio: 4 / 3;
+    aspect-ratio: auto;
     min-height: 420px;
   }
 }
 
-/* Отзывы — вертикальная карточка, скроллится внутри. */
-.yandex-widget-frame--reviews {
-  height: 560px;
+/* Нативная карточка отзывов (заменяет сломанный Yandex iframe).
+   Светлый фон + мягкий бордер; в dark mode — тёмная поверхность с белым
+   текстом. Тени и радиус согласованы с .yandex-widget-frame, чтобы блок
+   с картой и блок с отзывами читались как пара. */
+.yandex-reviews-card {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
-@media (min-width: 640px) {
-  .yandex-widget-frame--reviews {
-    height: 640px;
-  }
+.yandex-reviews-card__item {
+  background: rgba(38, 38, 38, 0.04);
 }
 
-@media (min-width: 1024px) {
-  .yandex-widget-frame--reviews {
-    height: 100%;
-    min-height: 600px;
-  }
+html[data-theme="dark"] .yandex-reviews-card {
+  background: #1f1c18;
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+html[data-theme="dark"] .yandex-reviews-card__item {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 /* Атрибуция Яндекса — обязательна по ToS виджета, но в дефолтном
@@ -5494,6 +5505,17 @@ html[data-theme="dark"] {
   .yandex-widget-frame iframe {
     touch-action: pan-y;
   }
+}
+
+/* Caption above each Yandex widget (`Карта и контакты`, `Отзывы …`).
+   Theme-aware so it reads on both the light cream card and its dark
+   equivalent. */
+.yandex-widget-caption {
+  color: rgba(38, 38, 38, 0.7);
+}
+
+html[data-theme="dark"] .yandex-widget-caption {
+  color: rgba(245, 240, 230, 0.78);
 }
 
 /* ----------------------------------------------------------------------
