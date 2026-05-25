@@ -73,6 +73,7 @@ export default function Header() {
                 width={28}
                 height={28}
                 className="site-header-mark-image"
+                priority
               />
             </span>
             <span className="site-header-wordmark">ChinaChild</span>

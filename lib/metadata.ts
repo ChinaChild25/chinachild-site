@@ -13,6 +13,7 @@ type MetadataInput = {
   title: string;
   description: string;
   path: string;
+  canonicalPath?: string;
   keywords?: string[];
   /** Override OG image manually (rare). Default: app/opengraph-image.tsx auto-binding. */
   imagePath?: string;
@@ -24,11 +25,12 @@ export function buildMetadata({
   title,
   description,
   path,
+  canonicalPath,
   keywords = [],
   imagePath,
   article,
 }: MetadataInput): Metadata {
-  const canonical = absoluteUrl(path);
+  const canonical = absoluteUrl(canonicalPath ?? path);
 
   // Per-route opengraph-image.tsx files generate the OG/Twitter image automatically.
   // Only fall back to manual image if explicitly provided.

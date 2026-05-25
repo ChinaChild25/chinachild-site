@@ -9,6 +9,7 @@ export const metadata: Metadata = buildMetadata({
   description:
     "Оставьте заявку — менеджер ChinaChild свяжется в течение рабочего дня, подберёт подходящий курс китайского, расскажет о ценах и расписании.",
   path: "/zayavka",
+  canonicalPath: "/free-trial",
   keywords: [
     "записаться на китайский",
     "ChinaChild заявка",

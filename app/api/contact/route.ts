@@ -27,6 +27,7 @@ type LeadPayload = {
   url?: unknown;
   fax?: unknown;
   form_started_at?: unknown;
+  smart_token?: unknown;
   consent?: unknown;
   consent_pd?: unknown;
   consent_marketing?: unknown;
@@ -82,6 +83,35 @@ function getClientIp(request: Request): string {
   );
 }
 
+async function validateSmartCaptcha(
+  token: string,
+  ip: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const secret = process.env.YANDEX_SMARTCAPTCHA_SERVER_KEY;
+  if (!secret) return { ok: true };
+  if (!token) return { ok: false, error: "Подтвердите, что вы не робот" };
+
+  const body = new URLSearchParams({ secret, token, ip });
+
+  try {
+    const response = await fetch("https://smartcaptcha.cloud.yandex.ru/validate", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body,
+    });
+    if (!response.ok) {
+      console.error("[lead] smartcaptcha non-200", response.status, await response.text());
+      return { ok: true };
+    }
+    const data = (await response.json()) as { status?: string; message?: string };
+    if (data.status === "ok") return { ok: true };
+    return { ok: false, error: "Проверка SmartCaptcha не пройдена" };
+  } catch (error) {
+    console.error("[lead] smartcaptcha failed", error);
+    return { ok: true };
+  }
+}
+
 export async function POST(request: Request) {
   let body: LeadPayload;
   try {
@@ -101,7 +131,8 @@ export async function POST(request: Request) {
     return Response.json({ ok: true, accepted: true }, { status: 200 });
   }
 
-  const ipHash = hashIp(getClientIp(request));
+  const clientIp = getClientIp(request);
+  const ipHash = hashIp(clientIp);
   const rateLimit = await checkRateLimit(ipHash);
   if (!rateLimit.allowed) {
     return Response.json(
@@ -127,6 +158,7 @@ export async function POST(request: Request) {
   const sourcePage = sanitize(body.source_page || body.source, 300);
   const referrer = sanitize(body.referrer || request.headers.get("referer"), 500);
   const userAgent = sanitize(request.headers.get("user-agent"), 500);
+  const smartToken = sanitize(body.smart_token, 4000);
   const utm = sanitizeUtm(body.utm);
 
   if (name.length < 2) {
@@ -144,6 +176,14 @@ export async function POST(request: Request) {
   if (email && !EMAIL_REGEX.test(email)) {
     return Response.json(
       { ok: false, field: "email", error: "Email указан некорректно" },
+      { status: 400 },
+    );
+  }
+
+  const captcha = await validateSmartCaptcha(smartToken, clientIp);
+  if (!captcha.ok) {
+    return Response.json(
+      { ok: false, field: "smart-token", error: captcha.error },
       { status: 400 },
     );
   }

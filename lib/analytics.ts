@@ -12,4 +12,9 @@ export function trackEvent(name: string, params?: Params) {
   if (typeof gtag === "function") {
     gtag("event", name, params);
   }
+
+  const dataLayer = (window as { dataLayer?: unknown[] }).dataLayer;
+  if (Array.isArray(dataLayer)) {
+    dataLayer.push({ event: name, ...params });
+  }
 }

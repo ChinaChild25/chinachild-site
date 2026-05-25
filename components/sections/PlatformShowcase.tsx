@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import Image from "next/image";
+
 type PlatformFeature = {
   id: string;
   title: string;
@@ -185,12 +187,12 @@ function FeatureMedia({
   fillContainer?: boolean;
 }) {
   if (media) {
-    // eslint-disable-next-line @next/next/no-img-element
     return (
-      <img
+      <Image
         src={media}
         alt={alt}
-        loading="lazy"
+        width={756}
+        height={491}
         className={
           fillContainer
             ? "h-full w-full rounded-[12px] object-cover"

@@ -17,6 +17,7 @@ const STATIC_ROUTES = [
   "/reviews",
   "/license",
   "/blog",
+  "/repetitor-kitayskogo",
   "/courses",
   "/courses/online-chinese",
   "/courses/hsk-preparation",

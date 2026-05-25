@@ -6,6 +6,7 @@ import {
   LICENSE_REGION,
   LICENSEE,
   PROMO_VIDEO,
+  SAME_AS_URLS,
   SITE_DESCRIPTION,
   SITE_NAME,
   SITE_URL,
@@ -82,6 +83,13 @@ export function createOrganizationNode(): JsonLd {
       "@type": "Country",
       name: "Russia",
     },
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: String(siteFacts.aggregateRating),
+      reviewCount: String(siteFacts.reviewCount),
+      bestRating: "5",
+      worstRating: "1",
+    },
     contactPoint: [
       {
         "@type": "ContactPoint",
@@ -98,7 +106,25 @@ export function createOrganizationNode(): JsonLd {
         areaServed: "RU",
       },
     ],
-    sameAs: [SITE_HOME_URL],
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday",
+        ],
+        opens: "09:00",
+        closes: "22:00",
+      },
+    ],
+    paymentAccepted: ["Банковская карта", "Безналичный расчёт", "СБП"],
+    currenciesAccepted: "RUB",
+    sameAs: [SITE_HOME_URL, ...SAME_AS_URLS],
     hasCredential: {
       "@type": "EducationalOccupationalCredential",
       name: `Образовательная лицензия № ${LICENSE_DETAILS.registrationNumber}`,
@@ -387,6 +413,28 @@ export function createAggregateOfferNode(): JsonLd {
     availability: "https://schema.org/InStock",
     seller: { "@id": ID.organization },
     itemOffered: courses.map((c) => ({ "@id": ID.course(c.slug) })),
+  };
+}
+
+export function createCoursesItemListNode(): JsonLd {
+  return {
+    "@type": "ItemList",
+    "@id": `${SITE_URL}/courses#item-list`,
+    name: "Курсы китайского языка ChinaChild",
+    itemListOrder: "https://schema.org/ItemListOrderAscending",
+    numberOfItems: courses.length,
+    itemListElement: courses.map((course, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "Course",
+        "@id": ID.course(course.slug),
+        name: course.title,
+        description: course.description,
+        url: absoluteUrl(course.href),
+        provider: { "@id": ID.organization },
+      },
+    })),
   };
 }
 
@@ -680,6 +728,9 @@ export function createHowToSchema(): JsonLd {
 }
 export function createServiceSchema(): JsonLd {
   return { "@context": "https://schema.org", ...createServiceNode() };
+}
+export function createCoursesItemListSchema(): JsonLd {
+  return { "@context": "https://schema.org", ...createCoursesItemListNode() };
 }
 export function createHomepageSchemas(): JsonLd[] {
   // Keep returning empty array since the site-wide @graph in layout.tsx

@@ -1,8 +1,16 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import LeadForm from "@/components/forms/LeadForm";
+import FAQSection from "@/components/sections/FAQSection";
 import { buildMetadata } from "@/lib/metadata";
-import { CONTACT_EMAIL, CONTACT_PHONE, CONTACT_PHONE_TEL } from "@/lib/site-config";
+import {
+  CONTACT_EMAIL,
+  CONTACT_PHONE,
+  CONTACT_PHONE_TEL,
+  LICENSE_DETAILS,
+} from "@/lib/site-config";
+import type { FaqItem } from "@/lib/site-data";
 
 export const metadata: Metadata = buildMetadata({
   title: "Бесплатный пробный урок китайского языка — ChinaChild",
@@ -16,6 +24,57 @@ export const metadata: Metadata = buildMetadata({
     "пробное занятие HSK",
   ],
 });
+
+const trialSteps = [
+  {
+    title: "Диагностика цели",
+    body:
+      "Преподаватель уточняет, зачем вам китайский: HSK, работа, переезд, путешествия, школа или разговорная практика. От цели зависит темп и набор материалов.",
+  },
+  {
+    title: "Проверка уровня",
+    body:
+      "Если вы уже учили китайский, смотрим произношение, пиньинь, тоны, чтение и базовую грамматику. Если стартуете с нуля, объясняем маршрут HSK 1–2.",
+  },
+  {
+    title: "Мини-урок",
+    body:
+      "Вы пробуете живой фрагмент занятия: как преподаватель объясняет, как исправляет ошибки и как работает платформа ChinaChild.",
+  },
+  {
+    title: "План на 4 недели",
+    body:
+      "В конце встречи вы получаете понятный первый план: сколько занятий в неделю, какой формат выбрать и когда реалистично выйти на следующий уровень.",
+  },
+];
+
+const trialFaqs: FaqItem[] = [
+  {
+    question: "Пробный урок действительно бесплатный?",
+    answer:
+      "Да. Пробный урок и консультация стоят 0 ₽. После встречи вы сами решаете, продолжать обучение или нет.",
+  },
+  {
+    question: "Сколько длится пробный урок китайского?",
+    answer:
+      "Обычно 45–60 минут. Этого достаточно, чтобы оценить уровень, разобрать цель и показать формат занятий.",
+  },
+  {
+    question: "Можно прийти с нуля?",
+    answer:
+      "Да. Если вы никогда не учили китайский, преподаватель покажет стартовый маршрут: пиньинь, 4 тона, первые фразы и базу HSK 1.",
+  },
+  {
+    question: "Кто проводит пробное занятие?",
+    answer:
+      "Занятие проводит преподаватель или методист ChinaChild. Для произношения и разговорной практики можем подобрать носителя путунхуа.",
+  },
+  {
+    question: "Нужно ли сразу оплачивать курс?",
+    answer:
+      "Нет. После пробного урока менеджер пришлёт варианты расписания и оплаты, а решение остаётся за вами.",
+  },
+];
 
 export default function FreeTrialPage() {
   return (
@@ -35,7 +94,10 @@ export default function FreeTrialPage() {
               Бесплатный пробный урок китайского
             </h1>
             <p className="mt-5 text-base leading-[1.55] text-[#4b4b4b]">
-              За 60 минут с преподавателем-методистом вы:
+              За 60 минут с преподавателем-методистом вы поймёте текущий уровень,
+              увидите формат занятий и получите первый план обучения. Встреча
+              подходит тем, кто стартует с нуля, возвращается после перерыва или
+              хочет готовиться к HSK без хаотичного набора материалов.
             </p>
             <ul className="mt-4 grid gap-2 text-base leading-[1.55] text-[#4b4b4b]">
               <li>— узнаете свой уровень по шкале HSK 1–6;</li>
@@ -61,6 +123,10 @@ export default function FreeTrialPage() {
                 Без обязательств: после пробного занятия вы решаете, продолжать или нет.
                 Никаких автосписаний и подписок.
               </p>
+              <p className="text-xs leading-[1.55] text-[#9a9a9a]">
+                Школа работает по лицензии № {LICENSE_DETAILS.registrationNumber}. После
+                оплаты курса можно оформить налоговый вычет 13%.
+              </p>
             </div>
           </div>
 
@@ -69,6 +135,57 @@ export default function FreeTrialPage() {
           </div>
         </div>
       </section>
+
+      <section className="page-shell-wide section-space">
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+          {trialSteps.map((step, index) => (
+            <article key={step.title} className="card-block card-cream-soft">
+              <span className="tag-pill">Шаг {index + 1}</span>
+              <h2 className="mt-5 text-[1.25rem] font-medium leading-[1.2] tracking-[-0.01em] text-[#262626]">
+                {step.title}
+              </h2>
+              <p className="mt-3 text-sm leading-[1.6] text-[#4b4b4b]">{step.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="page-shell-wide section-space">
+        <div className="card-block card-block-lg card-violet-soft">
+          <h2 className="text-[1.75rem] font-normal leading-[1.15] tracking-[-0.02em] text-[#262626] sm:text-[2rem]">
+            Чем заканчивается пробный урок
+          </h2>
+          <div className="mt-6 grid gap-4 text-base leading-[1.65] text-[#4b4b4b] md:grid-cols-2">
+            <p>
+              Вы уходите не с общими словами, а с конкретным маршрутом: какой курс выбрать,
+              сколько времени закладывать в неделю, какие слабые места закрыть первыми и
+              как отслеживать прогресс. Для новичков это обычно связка пиньинь, тоны,
+              первые 50 слов и базовые конструкции HSK 1.
+            </p>
+            <p>
+              Если цель — экзамен, преподаватель покажет ближайшую ступень HSK и объяснит,
+              какие задания надо тренировать: аудирование, чтение, письмо или устную часть.
+              Если цель рабочая, сразу обсудим лексику под переговоры, переписку и созвоны.
+            </p>
+          </div>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link href="/courses" className="btn-pill btn-ink">
+              Посмотреть курсы
+            </Link>
+            <Link href="/chinese/hsk-test" className="btn-pill btn-white">
+              Пройти тест HSK
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <FAQSection
+        id="free-trial-faq"
+        title="Вопросы о пробном уроке"
+        description="Короткие ответы перед записью."
+        items={trialFaqs}
+        schemaId="free-trial-faq-schema"
+      />
     </main>
   );
 }

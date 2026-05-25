@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import PageHero from "@/components/layout/PageHero";
+import JsonLd from "@/components/seo/JsonLd";
 import { buildMetadata } from "@/lib/metadata";
+import { createCoursesItemListSchema } from "@/lib/schema";
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
@@ -84,6 +86,7 @@ export default function CoursesIndexPage() {
         illustrationWidth={1254}
         illustrationHeight={1254}
       />
+      <JsonLd data={createCoursesItemListSchema()} id="courses-item-list-schema" />
 
       <section className="page-shell-wide section-space">
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">

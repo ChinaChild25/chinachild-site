@@ -698,6 +698,7 @@ export const faqs: FaqItem[] = [
 
 export const footerLinks = [
   { title: "Все курсы", href: "/courses" },
+  { title: "Репетитор китайского", href: "/repetitor-kitayskogo" },
   { title: "Хаб HSK", href: "/learn/hsk" },
   { title: "Тест на уровень HSK", href: "/chinese/hsk-test" },
   { title: "Подготовка к HSK", href: "/courses/hsk-preparation" },

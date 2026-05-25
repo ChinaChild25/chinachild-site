@@ -910,29 +910,17 @@ html[data-theme="dark"] .theme-toggle-thumb {
   transform: translateX(-50%);
   z-index: 900;
   pointer-events: none;
-}
-
-/* Стеклянная плашка-ободок вокруг CTA — Yandex-стиль:
-   видимый белый frosted-halo с blur+saturate, тонкая белая граница. */
-.floating-cta-shell::before {
-  content: "";
-  position: absolute;
-  inset: -10px;
-  border-radius: 16px;
-  background-color: rgba(255, 255, 255, 0.55);
-  -webkit-backdrop-filter: blur(18px) saturate(180%);
-  backdrop-filter: blur(18px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
-  z-index: -1;
-  /* Подсказываем браузеру, что слой композитный — анимация скролла
-     не вызывает paint этого элемента, экономит 50-100ms на mobile. */
-  will-change: transform;
-  transform: translateZ(0);
+  contain: layout;
 }
 
 .floating-cta-glass {
   display: inline-flex;
+  padding: 10px;
+  border-radius: 22px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.54);
+  -webkit-backdrop-filter: blur(16px) saturate(165%);
+  backdrop-filter: blur(16px) saturate(165%);
 }
 
 .floating-cta-btn {
@@ -970,12 +958,10 @@ html[data-theme="dark"] .theme-toggle-thumb {
     transform: none;
     pointer-events: auto;
   }
-  .floating-cta-shell::before {
-    inset: -6px;
-    border-radius: 14px;
-  }
   .floating-cta-glass {
     width: 100%;
+    padding: 6px;
+    border-radius: 18px;
   }
   .floating-cta-btn {
     width: 100%;
@@ -1336,6 +1322,10 @@ textarea.lead-input {
   color: inherit;
   text-decoration: underline;
   text-underline-offset: 2px;
+}
+
+.lead-smart-captcha {
+  min-height: 100px;
 }
 
 .lead-error {
@@ -2214,8 +2204,10 @@ html[data-theme="dark"] {
     background: #2d2d2d;
   }
   .floating-cta-shell::before {
-    background-color: rgba(0, 0, 0, 0.55);
-    border-color: rgba(255, 255, 255, 0.08);
+    background-color: transparent;
+  }
+  .floating-cta-glass {
+    background: rgba(255, 255, 255, 0.2);
   }
 
   /* card-ink тоже инвертируется (тёмные «Готовы начать?» баннеры). */
@@ -2594,6 +2586,7 @@ html[data-theme="dark"] {
   bottom: 16px;
   z-index: 950;
   animation: cookie-banner-slide-in 200ms ease-out both;
+  contain: layout paint;
 }
 
 @media (min-width: 640px) {
@@ -2835,7 +2828,7 @@ html[data-theme="dark"] .cookie-banner-checkbox {
    centred CTA stays visible there. */
 @media (max-width: 639px) {
   .floating-cta-shell--mobile-hidden {
-    display: none;
+    bottom: 148px;
   }
 }
 
@@ -5535,5 +5528,3 @@ html[data-theme="dark"] .yandex-widget-frame {
 html[data-theme="dark"] .yandex-widget-attribution {
   color: rgba(38, 38, 38, 0.55);
 }
-
-

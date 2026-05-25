@@ -6,6 +6,7 @@ import JsonLd from "@/components/seo/JsonLd";
 import CertificateGallery from "@/components/content/CertificateGallery";
 import Avatar from "@/components/ui/Avatar";
 import Reveal from "@/components/ui/Reveal";
+import { getAllPosts } from "@/lib/blog";
 import { buildMetadata } from "@/lib/metadata";
 import { resolveTeacherCertificates } from "@/lib/team-certificates";
 import {
@@ -91,6 +92,8 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
   const profilePageId = `${url}#profile`;
   const article = teacher.profileArticle ?? [teacher.bio ?? teacher.credentials];
   const visibleCertificates = resolveTeacherCertificates(teacher.certificates);
+  const posts = await getAllPosts();
+  const authoredPosts = posts.filter((post) => post.authorSlug === teacher.slug).slice(0, 6);
   const graph: JsonLdType = {
     "@context": "https://schema.org",
     "@graph": [
@@ -242,6 +245,31 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
               <Reveal>
                 <CertificateGallery items={visibleCertificates} />
               </Reveal>
+            </div>
+          </section>
+        ) : null}
+
+        {authoredPosts.length > 0 ? (
+          <section className="page-shell-wide py-8 md:py-10">
+            <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-[#1b1b1b] sm:text-4xl">
+              Статьи преподавателя
+            </h2>
+            <div className="mt-6 grid gap-4 md:grid-cols-2">
+              {authoredPosts.map((post) => (
+                <Link
+                  key={post.slug}
+                  href={`/blog/${post.slug}`}
+                  className="card-block card-cream-soft transition hover:-translate-y-1"
+                >
+                  <span className="tag-pill">{post.category}</span>
+                  <h3 className="mt-5 text-[1.2rem] font-medium leading-[1.25] tracking-[-0.01em] text-[#262626]">
+                    {post.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-[1.6] text-[#4b4b4b]">
+                    {post.excerpt}
+                  </p>
+                </Link>
+              ))}
             </div>
           </section>
         ) : null}

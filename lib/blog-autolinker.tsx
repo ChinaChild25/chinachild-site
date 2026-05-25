@@ -51,14 +51,31 @@ const TERMS: Term[] = [
   // Glossary anchors — informational lane
   { match: /\bпиньинь\b/i, href: "/glossary/pinyin" },
   { match: /\bпутунхуа\b/i, href: "/glossary/putonghua" },
+  { match: /\b(тон[ыа]?|четыре\s+тона)\b/i, href: "/glossary/tony" },
+  { match: /\b(иероглиф[а-я]*|ханьцзы)\b/i, href: "/glossary/ieroglify" },
+  { match: /\b(радикал[а-я]*|ключ\s+иероглифа)\b/i, href: "/glossary/radikaly" },
+  { match: /\bэризац[а-я]*\b/i, href: "/glossary/erhua" },
+  { match: /\bHSKK\b/i, href: "/glossary/hskk" },
+  { match: /\bкаллиграф[а-я]*\b/i, href: "/glossary/kalligrafiya" },
+  {
+    match: /\b(упрощ[её]нн[а-я]*|традиционн[а-я]*)\s+иероглиф/i,
+    href: "/glossary/simplified-vs-traditional",
+  },
+  { match: /\bмандарин\b/i, href: "/glossary/mandarin" },
+  { match: /\bкантонск[а-я]*\b/i, href: "/glossary/cantonese" },
+  { match: /\b(чэнъюй|идиом[а-я]*\s+китайск)/i, href: "/glossary/chengyu" },
+  { match: /\b(система\s+)?палладий|палладиц/i, href: "/glossary/palladiy" },
+  {
+    match: /\bинститут[а-я]*\s+Конфуци/i,
+    href: "/glossary/confucius-institute",
+  },
   // Plain HSK as a defined term — only after specific HSK course/level matches above
   { match: /\bэкзамен[а-я]*\s+HSK\b/i, href: "/glossary/hsk" },
 ];
 
-// Cap raised from 6 → 12 — a 12-minute article reasonably supports
-// ~10 internal links without looking spammy. Industry guidance is roughly
-// 1 link per 200 words; 12 fits a 2400-word piece.
-const MAX_AUTO_LINKS_PER_ARTICLE = 12;
+// Long-form blog posts are 1500-2500 words; 18 keeps link density below
+// roughly one internal link per 100-140 words while covering glossary terms.
+const MAX_AUTO_LINKS_PER_ARTICLE = 18;
 
 type LinkerState = {
   used: Set<string>;

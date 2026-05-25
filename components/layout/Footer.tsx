@@ -1,5 +1,6 @@
 import Link from "next/link";
 import CookieSettingsButton from "@/components/consent/CookieSettingsButton";
+import TrustProfileLogo from "@/components/layout/TrustProfileLogo";
 import { footerLinks } from "@/lib/site-data";
 import {
   CONTACT_EMAIL,
@@ -10,6 +11,7 @@ import {
   LICENSE_REGION_INSTRUMENTAL,
   LICENSEE,
   SITE_URL,
+  TRUST_PROFILE_LINKS,
 } from "@/lib/site-config";
 
 export default function Footer() {
@@ -38,6 +40,25 @@ export default function Footer() {
             <a href={SITE_URL} className="text-white/65 transition hover:text-white">
               {siteHost}
             </a>
+          </div>
+          <div className="mt-7">
+            <div className="text-xs font-medium text-white/45">
+              Площадки и отзывы
+            </div>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {TRUST_PROFILE_LINKS.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={`${link.label} ChinaChild`}
+                  className="inline-flex h-8 items-center justify-center text-white/80 transition duration-150 hover:-translate-y-0.5 hover:text-white hover:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/45"
+                >
+                  <TrustProfileLogo label={link.label} logo={link.logo} surface="dark" />
+                </a>
+              ))}
+            </div>
           </div>
         </div>
 

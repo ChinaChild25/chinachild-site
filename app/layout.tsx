@@ -10,6 +10,7 @@ import ThemeInitScript from "@/components/theme/ThemeInitScript";
 import JsonLd from "@/components/seo/JsonLd";
 import { YandexMetrika } from "@/components/analytics/YandexMetrika";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
+import AnalyticsEvents from "@/components/analytics/AnalyticsEvents";
 import { ConsentProvider } from "@/lib/consent/context";
 import CookieBanner from "@/components/consent/CookieBanner";
 import { buildMetadata } from "@/lib/metadata";
@@ -109,6 +110,7 @@ export default function RootLayout({
               de-opting the whole tree to client rendering. */}
           <Suspense fallback={null}>
             <YandexMetrika />
+            <AnalyticsEvents />
           </Suspense>
           <GoogleAnalytics />
           {/* Site-wide JSON-LD @graph: connected nodes for richer SERP rendering */}

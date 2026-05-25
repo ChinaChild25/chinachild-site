@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import LeadForm from "@/components/forms/LeadForm";
+import { trackEvent } from "@/lib/analytics";
 
 type LeadModalProps = {
   /** Visible label inside the trigger button */
@@ -48,8 +49,12 @@ export default function LeadModal({
     const dialog = dialogRef.current;
     if (!dialog) return;
     if (!dialog.open) dialog.showModal();
+    trackEvent("course_cta_click", {
+      source: source ?? "modal",
+      course: defaultCourse,
+    });
     setOpen(true);
-  }, []);
+  }, [defaultCourse, source]);
 
   useEffect(() => {
     if (!open) return;

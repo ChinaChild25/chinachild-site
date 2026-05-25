@@ -1,5 +1,6 @@
 "use client";
 
+import Script from "next/script";
 import { useEffect, useId, useState } from "react";
 import { CONTACT_EMAIL, CONTACT_PHONE, CONTACT_PHONE_TEL } from "@/lib/site-config";
 
@@ -47,6 +48,10 @@ type AnalyticsWindow = Window & {
   gtag?: (...args: unknown[]) => void;
 };
 
+type IdleWindow = Window & {
+  requestIdleCallback?: (callback: () => void, options?: { timeout?: number }) => number;
+};
+
 function trackLeadSubmitted(meta: { course?: string; source?: string }) {
   if (typeof window === "undefined") return;
   const win = window as AnalyticsWindow;
@@ -85,6 +90,16 @@ function trackLeadSubmitted(meta: { course?: string; source?: string }) {
   } catch {
     /* */
   }
+}
+
+function scheduleLeadSubmitted(meta: { course?: string; source?: string }) {
+  if (typeof window === "undefined") return;
+  const win = window as IdleWindow;
+  if (typeof win.requestIdleCallback === "function") {
+    win.requestIdleCallback(() => trackLeadSubmitted(meta), { timeout: 1500 });
+    return;
+  }
+  window.setTimeout(() => trackLeadSubmitted(meta), 0);
 }
 
 export default function LeadForm({ defaultCourse, source, compact }: LeadFormProps) {
@@ -138,6 +153,7 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
       course: String(formData.get("course") ?? ""),
       call_time: String(formData.get("callTime") ?? ""),
       message: String(formData.get("message") ?? ""),
+      smart_token: String(formData.get("smart-token") ?? ""),
       consent_pd: consentPd,
       consent_marketing: formData.get("consent_marketing") === "on",
       company: String(formData.get("company") ?? ""), // honeypot
@@ -167,7 +183,7 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
         return;
       }
       setStatus("success");
-      trackLeadSubmitted({ course: payload.course, source: payload.source_page });
+      scheduleLeadSubmitted({ course: payload.course, source: payload.source_page });
       form.reset();
       setFormStartedAt(Date.now());
     } catch (err) {
@@ -201,6 +217,7 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
   }
 
   const gap = compact ? "lead-form-compact" : "";
+  const smartCaptchaSiteKey = process.env.NEXT_PUBLIC_YANDEX_SMARTCAPTCHA_SITE_KEY;
 
   return (
     <form
@@ -348,6 +365,16 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
           </a>
         </span>
       </label>
+
+      {smartCaptchaSiteKey ? (
+        <>
+          <Script src="https://smartcaptcha.cloud.yandex.ru/captcha.js" strategy="afterInteractive" />
+          <div
+            className="smart-captcha lead-smart-captcha"
+            data-sitekey={smartCaptchaSiteKey}
+          />
+        </>
+      ) : null}
 
       {error && status === "error" ? (
         <div role="alert" className="lead-error">

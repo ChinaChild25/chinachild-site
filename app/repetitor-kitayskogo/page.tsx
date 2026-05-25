@@ -10,7 +10,7 @@ import Reveal from "@/components/ui/Reveal";
 import { buttonStyles } from "@/components/ui/button";
 import { buildMetadata } from "@/lib/metadata";
 import { createPageGraph } from "@/lib/schema";
-import { absoluteUrl, CONTACT_EMAIL, CONTACT_PHONE, CONTACT_PHONE_TEL } from "@/lib/site-config";
+import { CONTACT_EMAIL, CONTACT_PHONE, CONTACT_PHONE_TEL } from "@/lib/site-config";
 
 export const metadata: Metadata = buildMetadata({
   title: "Репетитор по китайскому языку онлайн — индивидуально с нуля | ChinaChild",

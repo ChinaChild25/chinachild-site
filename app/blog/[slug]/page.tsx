@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import JsonLd from "@/components/seo/JsonLd";
@@ -35,10 +37,45 @@ function renderInline(
   const parts = text.split(/\*\*(.+?)\*\*/g);
   return parts.map((part, i) => {
     if (i % 2 === 1) {
-      return <strong key={i}>{autolink(part)}</strong>;
+      return <strong key={i}>{renderMarkdownLinks(part, autolink, `bold-${i}`)}</strong>;
     }
-    return <span key={i}>{autolink(part)}</span>;
+    return <span key={i}>{renderMarkdownLinks(part, autolink, `text-${i}`)}</span>;
   });
+}
+
+function renderMarkdownLinks(
+  text: string,
+  autolink: (text: string) => React.ReactNode | string,
+  keyPrefix: string,
+): React.ReactNode {
+  const parts: React.ReactNode[] = [];
+  const linkPattern = /\[([^\]]+)\]\(([^)]+)\)/g;
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = linkPattern.exec(text))) {
+    const before = text.slice(lastIndex, match.index);
+    if (before) parts.push(autolink(before));
+
+    const href = match[2];
+    const isExternal = /^https?:\/\//i.test(href);
+    parts.push(
+      <Link
+        key={`${keyPrefix}-${match.index}`}
+        href={href}
+        target={isExternal ? "_blank" : undefined}
+        rel={isExternal ? "noreferrer" : undefined}
+        className="font-semibold text-[#1b1b1b] underline underline-offset-4 decoration-[rgba(0,0,0,0.18)] hover:decoration-[rgba(0,0,0,0.6)]"
+      >
+        {match[1]}
+      </Link>,
+    );
+    lastIndex = match.index + match[0].length;
+  }
+
+  const rest = text.slice(lastIndex);
+  if (rest) parts.push(autolink(rest));
+  return parts.length > 0 ? parts : autolink(text);
 }
 
 function renderBlock(
@@ -88,10 +125,16 @@ function renderBlock(
     );
   }
   if (block.type === "image") {
-    // eslint-disable-next-line @next/next/no-img-element
     return (
       <figure key={`image-${index}`} className="prose-figure">
-        <img src={block.src} alt={block.alt} loading="lazy" />
+        <Image
+          src={block.src}
+          alt={block.alt}
+          width={1200}
+          height={675}
+          className="h-auto w-full"
+          sizes="(max-width: 768px) 100vw, 768px"
+        />
         {block.alt ? <figcaption>{block.alt}</figcaption> : null}
       </figure>
     );
@@ -187,17 +230,23 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-4 border-t border-[rgba(0,0,0,0.06)] pt-6">
-            <Avatar
-              name={author.name}
-              size={48}
-              src={author.image}
-              alt={author.imageAlt}
-              title={author.imageTitle}
-            />
-            <div className="flex flex-col gap-0.5 text-sm">
-              <span className="font-medium text-[#262626]">{author.name}</span>
-              <span className="text-[#6b6b6b]">{author.specialization}</span>
-            </div>
+            <Link
+              href={`/team/${author.slug}`}
+              className="flex items-center gap-4 rounded-[12px] transition hover:opacity-75"
+              aria-label={`Профиль автора: ${author.name}`}
+            >
+              <Avatar
+                name={author.name}
+                size={48}
+                src={author.image}
+                alt={author.imageAlt}
+                title={author.imageTitle}
+              />
+              <div className="flex flex-col gap-0.5 text-sm">
+                <span className="font-medium text-[#262626]">{author.name}</span>
+                <span className="text-[#6b6b6b]">{author.specialization}</span>
+              </div>
+            </Link>
             <div className="ml-auto flex flex-wrap gap-x-5 gap-y-1 text-xs text-[#6b6b6b]">
               <time dateTime={post.date}>Опубликовано {formatPostDate(post.date)}</time>
               {post.dateModified && post.dateModified !== post.date ? (

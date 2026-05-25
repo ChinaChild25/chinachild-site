@@ -2,6 +2,67 @@ export const SITE_NAME = "ChinaChild";
 export const BRAND_NAME = "HSK+";
 const DEFAULT_SITE_URL = "https://chinachild-site.vercel.app";
 
+export const TRUST_PROFILE_LINKS = [
+  {
+    label: "VK",
+    href: "https://vk.com/chinachild",
+    logo: {
+      onDark: "/brand/trust/VK%20Icon%3DColor.svg",
+      onLight: "/brand/trust/VK%20Icon%3DBlack.svg",
+      fallback: "/brand/trust/VK%20Icon%3DColor.svg",
+      width: 100,
+      height: 100,
+    },
+  },
+  {
+    label: "YouTube",
+    href: "https://www.youtube.com/channel/UCJC7nIRlwcf-Hwcqg1l83Zg",
+    logo: {
+      onDark: "/brand/trust/youtube-red-trimmed.svg",
+      onLight: "/brand/trust/youtube-red-trimmed.svg",
+      fallback: "/brand/trust/youtube-red-trimmed.svg",
+      width: 529,
+      height: 371,
+    },
+  },
+  {
+    label: "VC.ru",
+    href: "https://vc.ru/id1581317/633597-shkola-kitaiskogo-yazyka-s-digital-vkusom",
+    logo: {
+      onDark: "/brand/trust/vc%20ru%20logo.svg",
+      onLight: "/brand/trust/vc%20ru%20logo.svg",
+      fallback: "/brand/trust/vc%20ru%20logo.svg",
+      width: 30,
+      height: 32,
+      invertOnDark: true,
+    },
+  },
+  {
+    label: "EduTop",
+    href: "https://edutop.pro/online-school/onlain-skola-kitaiskogo-yazyka-chinachild",
+    logo: {
+      onDark: "/brand/trust/edutop-white.svg",
+      onLight: "/brand/trust/EduTop_logo.png",
+      fallback: "/brand/trust/edutop-white.svg",
+      width: 208,
+      height: 20,
+    },
+  },
+  {
+    label: "Zoon",
+    href: "https://zoon.ru/msk/trainings/onlajn-kursy_kitajskogo_yazyka_chinachild/",
+    logo: {
+      onDark: "/brand/trust/Zoon_logo.svg",
+      onLight: "/brand/trust/Zoon_logo.svg",
+      fallback: "/brand/trust/Zoon_logo.svg",
+      width: 62,
+      height: 16,
+    },
+  },
+] as const;
+
+export const SAME_AS_URLS = TRUST_PROFILE_LINKS.map((link) => link.href);
+
 function normalizeOrigin(value: string | undefined): string {
   const origin = value?.trim() || DEFAULT_SITE_URL;
   return origin.replace(/\/+$/, "");

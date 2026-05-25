@@ -106,6 +106,13 @@ export default function HskPreparationPage() {
         outcome: "Сертификат HSK любого уровня от 1 до 6",
       }}
       related={[
+        { title: "HSK 1: старт с нуля", href: "/hsk/hsk-1" },
+        { title: "HSK 2: разговорная база", href: "/hsk/hsk-2" },
+        { title: "HSK 3: самостоятельный уровень", href: "/hsk/hsk-3" },
+        { title: "HSK 4: для вузов Китая", href: "/hsk/hsk-4" },
+        { title: "HSK 5", href: "/hsk/hsk-5" },
+        { title: "HSK 6", href: "/hsk/hsk-6" },
+        { title: "Где сдать HSK в России", href: "/blog/gde-sdat-hsk-v-rossii-2026" },
         { title: "Курс китайского для взрослых", href: "/courses/chinese-for-adults" },
         { title: "Курс для школьников 12+", href: "/courses/chinese-for-kids" },
         { title: "Уровни HSK подробно", href: "/blog/hsk-levels-explained" },
