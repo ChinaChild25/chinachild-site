@@ -1,6 +1,6 @@
 "use client";
 
-import Script from "next/script";
+import { SmartCaptcha } from "@yandex/smart-captcha";
 import { useEffect, useId, useState } from "react";
 import { CONTACT_EMAIL, CONTACT_PHONE, CONTACT_PHONE_TEL } from "@/lib/site-config";
 
@@ -118,6 +118,8 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
   const [error, setError] = useState<FieldError | null>(null);
   const [pageHref, setPageHref] = useState<string>("");
   const [formStartedAt, setFormStartedAt] = useState<number>(() => Date.now());
+  const [captchaToken, setCaptchaToken] = useState<string>("");
+  const [captchaResetKey, setCaptchaResetKey] = useState<number>(0);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -153,7 +155,7 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
       course: String(formData.get("course") ?? ""),
       call_time: String(formData.get("callTime") ?? ""),
       message: String(formData.get("message") ?? ""),
-      smart_token: String(formData.get("smart-token") ?? ""),
+      smart_token: captchaToken,
       consent_pd: consentPd,
       consent_marketing: formData.get("consent_marketing") === "on",
       company: String(formData.get("company") ?? ""), // honeypot
@@ -186,6 +188,8 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
       scheduleLeadSubmitted({ course: payload.course, source: payload.source_page });
       form.reset();
       setFormStartedAt(Date.now());
+      setCaptchaToken("");
+      setCaptchaResetKey((k) => k + 1);
     } catch (err) {
       setStatus("error");
       setError({
@@ -367,13 +371,14 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
       </label>
 
       {smartCaptchaSiteKey ? (
-        <>
-          <Script src="https://smartcaptcha.cloud.yandex.ru/captcha.js" strategy="afterInteractive" />
-          <div
-            className="smart-captcha lead-smart-captcha"
-            data-sitekey={smartCaptchaSiteKey}
+        <div className="lead-smart-captcha">
+          <SmartCaptcha
+            key={captchaResetKey}
+            sitekey={smartCaptchaSiteKey}
+            onSuccess={setCaptchaToken}
+            onTokenExpired={() => setCaptchaToken("")}
           />
-        </>
+        </div>
       ) : null}
 
       {error && status === "error" ? (
