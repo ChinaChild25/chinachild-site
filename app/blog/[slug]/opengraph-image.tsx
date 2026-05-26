@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getBlogPostBySlug, getBlogPostSlugs } from "@/lib/blog";
+import { getOgImageOptions, Logo, OG_FONT_FAMILY } from "@/lib/og-templates";
 
 export const runtime = "nodejs";
 export const dynamic = "force-static";
@@ -32,34 +33,16 @@ export default async function BlogOgImage({ params }: Params) {
           padding: 80,
           background: "#efeae0",
           color: "#1b1b1b",
-          fontFamily: "Inter, sans-serif",
+          fontFamily: OG_FONT_FAMILY,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <div
-              style={{
-                width: 56,
-                height: 56,
-                borderRadius: 14,
-                background: "#5c5cff",
-                color: "#ffffff",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 30,
-                fontWeight: 700,
-              }}
-            >
-              中
-            </div>
-            <div style={{ fontSize: 28, fontWeight: 600 }}>ChinaChild</div>
-          </div>
+          <Logo />
           <div
             style={{
               padding: "10px 22px",
               background: "#ffffff",
-              borderRadius: 999,
+              borderRadius: 8,
               fontSize: 20,
               fontWeight: 600,
             }}
@@ -93,6 +76,6 @@ export default async function BlogOgImage({ params }: Params) {
         </div>
       </div>
     ),
-    { ...size },
+    getOgImageOptions(size),
   );
 }

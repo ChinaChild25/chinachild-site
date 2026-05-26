@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
+import { getOgImageOptions, Logo, OG_FONT_FAMILY } from "@/lib/og-templates";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export const alt = "ChinaChild — онлайн-школа китайского языка";
@@ -18,28 +19,10 @@ export default async function OgImage() {
           padding: 80,
           background: "#5c5cff",
           color: "#ffffff",
-          fontFamily: "Inter, sans-serif",
+          fontFamily: OG_FONT_FAMILY,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <div
-            style={{
-              width: 64,
-              height: 64,
-              borderRadius: 16,
-              background: "#ffffff",
-              color: "#5c5cff",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 36,
-              fontWeight: 700,
-            }}
-          >
-            中
-          </div>
-          <div style={{ fontSize: 32, fontWeight: 600 }}>ChinaChild</div>
-        </div>
+        <Logo />
 
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
           <div
@@ -78,7 +61,7 @@ export default async function OgImage() {
             style={{
               padding: "10px 18px",
               background: "rgba(255,255,255,0.18)",
-              borderRadius: 999,
+              borderRadius: 8,
             }}
           >
             chinachild.ru
@@ -87,7 +70,7 @@ export default async function OgImage() {
             style={{
               padding: "10px 18px",
               background: "rgba(255,255,255,0.18)",
-              borderRadius: 999,
+              borderRadius: 8,
             }}
           >
             HSK 1–6
@@ -96,7 +79,7 @@ export default async function OgImage() {
             style={{
               padding: "10px 18px",
               background: "rgba(255,255,255,0.18)",
-              borderRadius: 999,
+              borderRadius: 8,
             }}
           >
             Лицензия Москвы
@@ -104,6 +87,6 @@ export default async function OgImage() {
         </div>
       </div>
     ),
-    { ...size },
+    getOgImageOptions(size),
   );
 }

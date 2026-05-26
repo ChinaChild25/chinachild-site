@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import { getOgImageOptions, Logo, OG_FONT_FAMILY } from "@/lib/og-templates";
 
 export const runtime = "nodejs";
 export const dynamic = "force-static";
@@ -26,7 +27,7 @@ export default async function LearnHskOgImage() {
           padding: "56px 80px",
           background: "#d8d3ff",
           color: "#1b1b1b",
-          fontFamily: "Inter, sans-serif",
+          fontFamily: OG_FONT_FAMILY,
         }}
       >
         <div
@@ -36,34 +37,13 @@ export default async function LearnHskOgImage() {
             justifyContent: "space-between",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <div
-              style={{
-                width: 52,
-                height: 52,
-                borderRadius: 14,
-                background: "#1b1b1b",
-                color: "#ffffff",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 22,
-                fontWeight: 700,
-                letterSpacing: "-0.02em",
-              }}
-            >
-              ЧЧ
-            </div>
-            <div style={{ fontSize: 28, fontWeight: 600, color: "#1b1b1b" }}>
-              ChinaChild
-            </div>
-          </div>
+          <Logo />
           <div
             style={{
               padding: "10px 22px",
               background: "rgba(27,27,27,0.08)",
               color: "#1b1b1b",
-              borderRadius: 999,
+              borderRadius: 8,
               fontSize: 22,
               fontWeight: 600,
             }}
@@ -78,13 +58,15 @@ export default async function LearnHskOgImage() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            paddingTop: 18,
+            paddingBottom: 44,
           }}
         >
           <img
             src={heroDataUrl}
             alt=""
-            width={940}
-            height={414}
+            width={880}
+            height={393}
             style={{ objectFit: "contain" }}
           />
         </div>
@@ -106,6 +88,6 @@ export default async function LearnHskOgImage() {
         </div>
       </div>
     ),
-    { ...size },
+    getOgImageOptions(size),
   );
 }

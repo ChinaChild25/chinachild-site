@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { getOgImageOptions, Logo, OG_FONT_FAMILY } from "@/lib/og-templates";
 import { getHskTestLevelBySlug, hskTestLevels } from "@/lib/hsk-test/levels";
 
 // Node.js runtime — required because we export generateStaticParams to
@@ -30,7 +31,7 @@ export default async function HskLevelOgImage({ params }: Params) {
           padding: 72,
           background: meta.color.base,
           color: "#1b1b1b",
-          fontFamily: "Inter, sans-serif",
+          fontFamily: OG_FONT_FAMILY,
         }}
       >
         <div
@@ -41,25 +42,7 @@ export default async function HskLevelOgImage({ params }: Params) {
             flex: 1,
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <div
-              style={{
-                width: 56,
-                height: 56,
-                borderRadius: 14,
-                background: "#1b1b1b",
-                color: "#ffffff",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 32,
-                fontWeight: 700,
-              }}
-            >
-              中
-            </div>
-            <div style={{ fontSize: 28, fontWeight: 600 }}>ChinaChild · HSK+</div>
-          </div>
+          <Logo />
 
           <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
             <div
@@ -116,7 +99,7 @@ export default async function HskLevelOgImage({ params }: Params) {
         </div>
       </div>
     ),
-    { ...size },
+    getOgImageOptions(size),
   );
 }
 
@@ -126,7 +109,7 @@ function Chip({ children }: { children: string }) {
       style={{
         padding: "10px 16px",
         background: "rgba(27,27,27,0.10)",
-        borderRadius: 999,
+        borderRadius: 8,
         color: "#1b1b1b",
       }}
     >

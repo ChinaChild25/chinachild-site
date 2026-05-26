@@ -15,11 +15,54 @@ type MetadataInput = {
   path: string;
   canonicalPath?: string;
   keywords?: string[];
-  /** Override OG image manually (rare). Default: app/opengraph-image.tsx auto-binding. */
+  /** Override OG image manually. Otherwise pages without custom OG routes use the home preview. */
   imagePath?: string;
   /** When set, OG type switches to "article" and emits article:* meta tags */
   article?: ArticleMeta;
 };
+
+const EXACT_CUSTOM_OG_PATHS = new Set([
+  "/about",
+  "/blog",
+  "/chinese/hsk-test",
+  "/cities",
+  "/courses",
+  "/courses/business-chinese",
+  "/courses/chinese-for-adults",
+  "/courses/chinese-for-kids",
+  "/courses/hsk-preparation",
+  "/courses/online-chinese",
+  "/dictionary",
+  "/glossary",
+  "/grammar",
+  "/learn/hsk",
+  "/methodology",
+  "/price",
+  "/results",
+  "/reviews",
+  "/team",
+]);
+
+const DYNAMIC_CUSTOM_OG_PREFIXES = [
+  "/blog/category/",
+  "/blog/",
+  "/chinese/hsk-test/level-",
+  "/cities/",
+  "/glossary/",
+  "/grammar/sections/",
+  "/grammar/tags/",
+  "/grammar/",
+  "/hsk/",
+  "/team/",
+];
+
+function hasCustomOgRoute(path: string) {
+  if (EXACT_CUSTOM_OG_PATHS.has(path)) {
+    return true;
+  }
+
+  return DYNAMIC_CUSTOM_OG_PREFIXES.some((prefix) => path.startsWith(prefix));
+}
 
 export function buildMetadata({
   title,
@@ -31,13 +74,12 @@ export function buildMetadata({
   article,
 }: MetadataInput): Metadata {
   const canonical = absoluteUrl(canonicalPath ?? path);
+  const resolvedImagePath = imagePath ?? (hasCustomOgRoute(path) ? undefined : "/opengraph-image");
 
-  // Per-route opengraph-image.tsx files generate the OG/Twitter image automatically.
-  // Only fall back to manual image if explicitly provided.
-  const manualImages = imagePath
+  const manualImages = resolvedImagePath
     ? [
         {
-          url: absoluteUrl(imagePath),
+          url: absoluteUrl(resolvedImagePath),
           width: 1200,
           height: 630,
           alt: SITE_NAME,

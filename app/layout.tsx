@@ -38,7 +38,7 @@ const maShanZheng = Ma_Shan_Zheng({
 export const metadata: Metadata = {
   ...buildMetadata({
     title:
-      "ChinaChild — Онлайн-школа китайского языка | Курсы HSK 1–6 для подростков 12+ и взрослых",
+      "ChinaChild — онлайн-школа китайского языка HSK 1–6",
     description:
       "Онлайн-школа китайского ChinaChild: программа HSK 1–2, разговорный уровень за 6 месяцев, мини-группы до 5. Налоговый вычет 13%.",
     path: "/",

@@ -25,7 +25,7 @@ const orbitItems: Array<{
   priority?: boolean;
 }> = [
   {
-    src: "/hero/orbit/Asian%20male%20student%20portrait.webp",
+    src: "/hero/orbit/asian%20male%20student%20portrait.webp",
     alt: "Студент ChinaChild",
     icon: "star",
     className: "home-hero-orbit-card--top-left",
@@ -153,9 +153,7 @@ export default function HeroSection() {
 
           <h1 id="home-hero-title" className="home-hero-title">
             <span>Курсы китайского языка</span>
-            <span>
-              онлайн <span className="home-hero-title-dash" aria-hidden />
-            </span>
+            <span>онлайн —</span>
             <span>разговорный уровень</span>
             <span>за 6 месяцев</span>
           </h1>

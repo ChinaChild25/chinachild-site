@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
+import { getOgImageOptions, Logo, OG_FONT_FAMILY } from "@/lib/og-templates";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export const alt = "Тест на уровень HSK онлайн — ChinaChild";
@@ -16,7 +17,7 @@ export default async function HskTestOgImage() {
           padding: 72,
           background: "#d8d3ff",
           color: "#1b1b1b",
-          fontFamily: "Inter, sans-serif",
+          fontFamily: OG_FONT_FAMILY,
         }}
       >
         <div
@@ -27,25 +28,7 @@ export default async function HskTestOgImage() {
             flex: 1,
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <div
-              style={{
-                width: 56,
-                height: 56,
-                borderRadius: 14,
-                background: "#1b1b1b",
-                color: "#ffffff",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 32,
-                fontWeight: 700,
-              }}
-            >
-              中
-            </div>
-            <div style={{ fontSize: 28, fontWeight: 600 }}>ChinaChild · HSK+</div>
-          </div>
+          <Logo />
 
           <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
             <div
@@ -105,7 +88,7 @@ export default async function HskTestOgImage() {
         </div>
       </div>
     ),
-    { ...size },
+    getOgImageOptions(size),
   );
 }
 
@@ -115,7 +98,7 @@ function Chip({ children }: { children: string }) {
       style={{
         padding: "10px 16px",
         background: "rgba(27,27,27,0.08)",
-        borderRadius: 999,
+        borderRadius: 8,
         color: "#1b1b1b",
       }}
     >

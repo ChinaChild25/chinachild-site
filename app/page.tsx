@@ -17,8 +17,7 @@ import { buildMetadata } from "@/lib/metadata";
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
-    title:
-      "ChinaChild — онлайн-школа китайского языка | Курсы HSK 1–6, обучение с нуля",
+    title: "ChinaChild — онлайн-школа китайского языка HSK 1–6",
     description:
       "Онлайн-школа китайского ChinaChild: программа HSK 1–2, разговорный уровень за 6 месяцев, мини-группы. Налоговый вычет 13% — для 12+ и взрослых.",
     path: "/",
