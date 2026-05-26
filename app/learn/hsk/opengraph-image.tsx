@@ -10,9 +10,9 @@ export const alt = "HSK 1–6 — хаб подготовки ChinaChild";
 
 export default async function LearnHskOgImage() {
   const heroBytes = readFileSync(
-    path.join(process.cwd(), "public", "heroes", "hsk.webp"),
+    path.join(process.cwd(), "public", "heroes", "hsk-og.png"),
   );
-  const heroDataUrl = `data:image/webp;base64,${heroBytes.toString("base64")}`;
+  const heroDataUrl = `data:image/png;base64,${heroBytes.toString("base64")}`;
 
   return new ImageResponse(
     (
@@ -80,8 +80,6 @@ export default async function LearnHskOgImage() {
             justifyContent: "center",
           }}
         >
-          {/* 3D-иллюстрация HSK 1134×499 → масштабируем до 940×414 */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={heroDataUrl}
             alt=""
