@@ -12,9 +12,9 @@ export default function Image() {
     title: "Тарифы и оплата",
     subtitle: "Стоимость курсов, помесячная оплата, скидки и налоговый вычет 13%.",
     footer: "chinachild.ru / price",
-    accentColor: "#5c5cff",
     background: "#efeae0",
     imagePath: "/og/price.png",
     imageMime: "image/png",
+    cta: "Смотреть цены",
   });
 }

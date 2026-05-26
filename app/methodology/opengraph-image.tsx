@@ -12,9 +12,9 @@ export default function Image() {
     title: "Платформа, AI и преподаватели",
     subtitle: "Как устроены уроки, тренажеры, записи занятий и прогресс по HSK.",
     footer: "chinachild.ru / methodology",
-    accentColor: "#1b1b1b",
     background: "#e8f1f4",
     imagePath: "/og/methodology.png",
     imageMime: "image/png",
+    cta: "Смотреть методику",
   });
 }

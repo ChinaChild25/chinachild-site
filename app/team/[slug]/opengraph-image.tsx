@@ -18,13 +18,13 @@ export default async function TeacherOgImage({ params }: Params) {
   const teacher = teachers.find((item) => item.slug === slug);
 
   return renderGenericOg({
-    badge: "Преподаватель",
+    badge: "Команда",
     title: teacher?.displayName ?? teacher?.name ?? "Команда ChinaChild",
     subtitle: teacher
       ? `${teacher.specialization} · ${teacher.experience}`
       : "Методисты и носители китайского языка",
     footer: "chinachild.ru / team",
     background: "#fff3dc",
-    accentColor: "#a15b13",
+    cta: "Открыть профиль",
   });
 }

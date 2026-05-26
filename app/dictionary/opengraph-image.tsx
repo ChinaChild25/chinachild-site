@@ -12,7 +12,7 @@ export default function Image() {
     title: "Китайский словарь HSK",
     subtitle: "Слова, пиньинь, перевод, примеры и списки HSK 2.0 / 3.0.",
     footer: "chinachild.ru / dictionary",
-    accentColor: "#1b1b1b",
     background: "#f4f0e8",
+    cta: "Открыть словарь",
   });
 }

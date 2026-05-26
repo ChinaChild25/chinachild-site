@@ -7,11 +7,11 @@ import { renderCourseOg } from "@/lib/og-templates";
 
 export default function Image() {
   return renderCourseOg({
-    badge: "Корпоративно",
+    badge: "Курсы",
     title: "Корпоративный китайский для команд",
     subtitle: "Программа HSK 1–2 · отчётность для HR · закрывающие документы и ЭДО",
     price: "по запросу",
-    accentColor: "#a04020",
     background: "#ffe7d6",
+    cta: "Записаться",
   });
 }

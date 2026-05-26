@@ -12,9 +12,9 @@ export default function Image() {
     title: "Преподаватели ChinaChild",
     subtitle: "Методисты, авторы курсов и носители путунхуа с открытыми профилями.",
     footer: "chinachild.ru / team",
-    accentColor: "#1b1b1b",
     background: "#e7e6ff",
     imagePath: "/og/team.png",
     imageMime: "image/png",
+    cta: "Смотреть команду",
   });
 }

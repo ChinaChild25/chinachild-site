@@ -12,7 +12,7 @@ export default function Image() {
     title: "Грамматика китайского языка",
     subtitle: "Правила, конструкции, частицы и порядок слов с примерами по HSK.",
     footer: "chinachild.ru / grammar",
-    accentColor: "#3a4d12",
     background: "#eef5c8",
+    cta: "Открыть правила",
   });
 }

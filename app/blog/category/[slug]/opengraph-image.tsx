@@ -22,7 +22,7 @@ export default async function BlogCategoryOgImage({ params }: Params) {
     title: hub?.heading ?? "Блог ChinaChild",
     subtitle: hub?.description ?? "Статьи о китайском языке, HSK и методике обучения.",
     footer: hub ? `chinachild.ru / blog / ${hub.slug}` : "chinachild.ru / blog",
-    accentColor: "#3a4d12",
     background: "#eef5c8",
+    cta: "Читать статьи",
   });
 }

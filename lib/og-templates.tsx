@@ -10,7 +10,7 @@ export type CourseOgInput = {
   title: string;
   subtitle: string;
   price: string;
-  accentColor: string;
+  cta?: string;
   /** Background tone — passed through inline style */
   background: string;
 };
@@ -20,8 +20,8 @@ export type GenericOgInput = {
   title: string;
   subtitle: string;
   footer?: string;
-  accentColor?: string;
   background?: string;
+  cta?: string;
 };
 
 export type SectionOgInput = GenericOgInput & {
@@ -31,6 +31,8 @@ export type SectionOgInput = GenericOgInput & {
 
 export const OG_SIZE = { width: 1200, height: 630 } as const;
 export const OG_FONT_FAMILY = "Inter";
+const OG_INK = "#1b1b1b";
+const OG_CTA_TEXT = "#ffffff";
 
 let ogFonts: NonNullable<ConstructorParameters<typeof ImageResponse>[1]>["fonts"] | null = null;
 let logoDataUrl: string | null = null;
@@ -99,6 +101,42 @@ export const Logo = (): ReactElement => (
   </div>
 );
 
+function OgBadge({ children }: { children: string }) {
+  return (
+    <div
+      style={{
+        padding: "12px 24px",
+        background: OG_INK,
+        color: OG_CTA_TEXT,
+        borderRadius: 8,
+        fontSize: 22,
+        fontWeight: 700,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function OgCta({ children }: { children: string }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        borderRadius: 8,
+        padding: "12px 24px",
+        background: OG_INK,
+        color: OG_CTA_TEXT,
+        fontSize: 22,
+        fontWeight: 700,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
 export function renderCourseOg(input: CourseOgInput) {
   return new ImageResponse(
     (
@@ -117,18 +155,7 @@ export function renderCourseOg(input: CourseOgInput) {
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <Logo />
-          <div
-            style={{
-              padding: "12px 24px",
-              background: input.accentColor,
-              color: "#ffffff",
-              borderRadius: 8,
-              fontSize: 22,
-              fontWeight: 700,
-            }}
-          >
-            {input.badge}
-          </div>
+          <OgBadge>{input.badge}</OgBadge>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
@@ -165,18 +192,9 @@ export function renderCourseOg(input: CourseOgInput) {
           }}
         >
           <div style={{ opacity: 0.65 }}>chinachild.ru</div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              borderRadius: 8,
-              padding: "12px 24px",
-              background: "rgba(255,255,255,0.72)",
-              color: "#1b1b1b",
-              fontWeight: 700,
-            }}
-          >
-            {input.price}
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            <div style={{ color: "#1b1b1b", fontWeight: 700 }}>{input.price}</div>
+            <OgCta>{input.cta ?? "Записаться"}</OgCta>
           </div>
         </div>
       </div>
@@ -203,18 +221,7 @@ export function renderGenericOg(input: GenericOgInput) {
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <Logo />
-          <div
-            style={{
-              padding: "12px 24px",
-              background: input.accentColor ?? "#5c5cff",
-              color: "#ffffff",
-              borderRadius: 8,
-              fontSize: 22,
-              fontWeight: 700,
-            }}
-          >
-            {input.badge}
-          </div>
+          <OgBadge>{input.badge}</OgBadge>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
@@ -241,8 +248,18 @@ export function renderGenericOg(input: GenericOgInput) {
           </div>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 22, opacity: 0.65 }}>
-          {input.footer ?? "chinachild.ru"}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 24,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 22, opacity: 0.65 }}>
+            {input.footer ?? "chinachild.ru"}
+          </div>
+          <OgCta>{input.cta ?? "Открыть на сайте"}</OgCta>
         </div>
       </div>
     ),
@@ -270,18 +287,7 @@ export function renderSectionOg(input: SectionOgInput) {
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <Logo />
-          <div
-            style={{
-              padding: "12px 24px",
-              background: input.accentColor ?? "#5c5cff",
-              color: "#ffffff",
-              borderRadius: 8,
-              fontSize: 22,
-              fontWeight: 700,
-            }}
-          >
-            {input.badge}
-          </div>
+          <OgBadge>{input.badge}</OgBadge>
         </div>
 
         <div
@@ -327,8 +333,18 @@ export function renderSectionOg(input: SectionOgInput) {
           />
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 22, opacity: 0.65 }}>
-          {input.footer ?? "chinachild.ru"}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 24,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 22, opacity: 0.65 }}>
+            {input.footer ?? "chinachild.ru"}
+          </div>
+          <OgCta>{input.cta ?? "Открыть раздел"}</OgCta>
         </div>
       </div>
     ),

@@ -52,37 +52,26 @@ export default async function OgImage() {
           style={{
             display: "flex",
             alignItems: "center",
-            gap: 12,
+            justifyContent: "space-between",
+            gap: 24,
             fontSize: 22,
-            opacity: 0.85,
           }}
         >
-          <div
-            style={{
-              padding: "10px 18px",
-              background: "rgba(255,255,255,0.18)",
-              borderRadius: 8,
-            }}
-          >
-            chinachild.ru
+          <div style={{ display: "flex", alignItems: "center", gap: 12, opacity: 0.85 }}>
+            chinachild.ru · HSK 1–6 · Лицензия Москвы
           </div>
           <div
             style={{
-              padding: "10px 18px",
-              background: "rgba(255,255,255,0.18)",
+              display: "flex",
+              alignItems: "center",
               borderRadius: 8,
+              padding: "12px 24px",
+              background: "#1b1b1b",
+              color: "#ffffff",
+              fontWeight: 700,
             }}
           >
-            HSK 1–6
-          </div>
-          <div
-            style={{
-              padding: "10px 18px",
-              background: "rgba(255,255,255,0.18)",
-              borderRadius: 8,
-            }}
-          >
-            Лицензия Москвы
+            Записаться
           </div>
         </div>
       </div>

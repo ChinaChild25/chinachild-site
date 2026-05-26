@@ -12,9 +12,9 @@ export default function Image() {
     title: "О школе ChinaChild",
     subtitle: "Лицензированная онлайн-школа китайского языка с собственной платформой.",
     footer: "chinachild.ru / about",
-    accentColor: "#1b1b1b",
     background: "#efeae0",
     imagePath: "/og/about.png",
     imageMime: "image/png",
+    cta: "Открыть раздел",
   });
 }

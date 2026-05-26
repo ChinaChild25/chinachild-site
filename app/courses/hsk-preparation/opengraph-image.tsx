@@ -7,11 +7,11 @@ import { renderCourseOg } from "@/lib/og-templates";
 
 export default function Image() {
   return renderCourseOg({
-    badge: "HSK 1–6",
+    badge: "Курсы",
     title: "Подготовка к HSK 1–6 онлайн",
     subtitle: "Все уровни международного экзамена · преподаватели ЮФУ и ДГТУ · опыт 10+ лет",
     price: "от 4 999 ₽",
-    accentColor: "#1b1b1b",
     background: "#efeae0",
+    cta: "Записаться",
   });
 }

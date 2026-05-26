@@ -24,6 +24,6 @@ export default async function GlossaryOgImage({ params }: Params) {
     subtitle: term?.shortDefinition ?? "Термины китайского языка простыми словами",
     footer: "chinachild.ru / glossary",
     background: "#e8f3ff",
-    accentColor: "#1f6feb",
+    cta: "Открыть термин",
   });
 }

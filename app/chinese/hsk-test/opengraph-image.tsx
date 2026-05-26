@@ -28,7 +28,21 @@ export default async function HskTestOgImage() {
             flex: 1,
           }}
         >
-          <Logo />
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <Logo />
+            <div
+              style={{
+                padding: "12px 24px",
+                background: "#1b1b1b",
+                color: "#ffffff",
+                borderRadius: 8,
+                fontSize: 22,
+                fontWeight: 700,
+              }}
+            >
+              Тест HSK
+            </div>
+          </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
             <div
@@ -67,6 +81,7 @@ export default async function HskTestOgImage() {
             <Chip>HSK 2 · A2</Chip>
             <Chip>HSK 3 · B1</Chip>
             <Chip>HSK 4 · B2</Chip>
+            <Cta>Пройти тест</Cta>
           </div>
         </div>
 
@@ -97,9 +112,25 @@ function Chip({ children }: { children: string }) {
     <div
       style={{
         padding: "10px 16px",
-        background: "rgba(27,27,27,0.08)",
+        background: "#1b1b1b",
         borderRadius: 8,
-        color: "#1b1b1b",
+        color: "#ffffff",
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function Cta({ children }: { children: string }) {
+  return (
+    <div
+      style={{
+        padding: "10px 18px",
+        background: "#1b1b1b",
+        borderRadius: 8,
+        color: "#ffffff",
+        fontWeight: 700,
       }}
     >
       {children}

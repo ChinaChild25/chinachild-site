@@ -26,7 +26,7 @@ export default async function GrammarArticleOgImage({ params }: Params) {
     title: article?.title ?? "Грамматика китайского",
     subtitle: article?.summary ?? "Разбор правила с примерами для изучающих китайский язык.",
     footer: `chinachild.ru / grammar / ${slug}`,
-    accentColor: "#3a4d12",
     background: "#eef5c8",
+    cta: "Разобрать правило",
   });
 }

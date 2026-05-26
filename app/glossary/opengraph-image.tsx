@@ -12,9 +12,9 @@ export default function Image() {
     title: "Термины китайского языка",
     subtitle: "HSK, пиньинь, путунхуа, тоны и ключевые понятия с разбором.",
     footer: "chinachild.ru / glossary",
-    accentColor: "#3a4d12",
     background: "#f1f5dc",
     imagePath: "/og/glossary.png",
     imageMime: "image/png",
+    cta: "Открыть глоссарий",
   });
 }

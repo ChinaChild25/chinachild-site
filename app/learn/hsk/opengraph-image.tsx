@@ -41,14 +41,14 @@ export default async function LearnHskOgImage() {
           <div
             style={{
               padding: "10px 22px",
-              background: "rgba(27,27,27,0.08)",
-              color: "#1b1b1b",
+              background: "#1b1b1b",
+              color: "#ffffff",
               borderRadius: 8,
               fontSize: 22,
-              fontWeight: 600,
+              fontWeight: 700,
             }}
           >
-            Хаб подготовки к экзамену
+            HSK
           </div>
         </div>
 
@@ -82,8 +82,18 @@ export default async function LearnHskOgImage() {
           <div style={{ color: "#1b1b1b", opacity: 0.78 }}>
             6 уровней · от A1 до C2 · 150 → 5000 слов
           </div>
-          <div style={{ color: "#1b1b1b", fontWeight: 600 }}>
-            chinachild.ru / learn / hsk
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              borderRadius: 8,
+              padding: "12px 24px",
+              background: "#1b1b1b",
+              color: "#ffffff",
+              fontWeight: 700,
+            }}
+          >
+            Открыть хаб HSK
           </div>
         </div>
       </div>

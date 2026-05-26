@@ -18,7 +18,7 @@ export default async function HskOgImage({ params }: Params) {
   const level = getHskLevelBySlug(slug);
 
   return renderGenericOg({
-    badge: level ? `HSK ${level.level}` : "HSK",
+    badge: "HSK",
     title: level
       ? `HSK ${level.level}: слова, иероглифы и экзамен`
       : "HSK: уровни и подготовка",
@@ -27,5 +27,6 @@ export default async function HskOgImage({ params }: Params) {
       : "Подготовка к международному экзамену по китайскому",
     footer: "chinachild.ru / hsk",
     background: "#e7e6ff",
+    cta: "Открыть уровень",
   });
 }

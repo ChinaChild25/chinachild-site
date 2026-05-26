@@ -12,7 +12,7 @@ export default function Image() {
     title: "Отзывы учеников ChinaChild",
     subtitle: "Истории учеников о курсе, преподавателях и прогрессе в китайском.",
     footer: "chinachild.ru / reviews",
-    accentColor: "#1b1b1b",
     background: "#efeae0",
+    cta: "Читать отзывы",
   });
 }

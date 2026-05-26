@@ -19,11 +19,11 @@ export default async function GrammarTagOgImage({ params }: Params) {
   const { tag } = await getPublicGrammarTagBySlug(slug);
 
   return renderGenericOg({
-    badge: "Тег",
+    badge: "Грамматика",
     title: tag?.labelRu ?? "Тег грамматики",
     subtitle: "Подборка статей и правил китайской грамматики по теме.",
     footer: `chinachild.ru / grammar / tags / ${slug}`,
-    accentColor: "#5c5cff",
     background: "#e7e6ff",
+    cta: "Открыть подборку",
   });
 }

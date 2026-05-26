@@ -22,11 +22,11 @@ export default async function GrammarSectionOgImage({ params }: Params) {
   const { section } = await getPublicGrammarSectionBySlug(slug);
 
   return renderGenericOg({
-    badge: "Раздел",
+    badge: "Грамматика",
     title: section?.titleRu ?? "Раздел грамматики",
     subtitle: section?.descriptionRu ?? "Навигация по темам грамматики китайского языка.",
     footer: `chinachild.ru / grammar / sections / ${slug}`,
-    accentColor: "#1b1b1b",
     background: "#f4f0e8",
+    cta: "Открыть раздел",
   });
 }

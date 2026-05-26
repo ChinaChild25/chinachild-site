@@ -18,13 +18,13 @@ export default async function CityOgImage({ params }: Params) {
   const city = getCityBySlug(slug);
 
   return renderGenericOg({
-    badge: city?.licensedRegion ? "Лицензия Москвы" : "Онлайн",
+    badge: "Города",
     title: city ? `Курсы китайского ${city.inCity}` : "Курсы китайского в России",
     subtitle: city
       ? `${city.timezone} · подготовка к HSK · пробный урок 0 ₽`
       : "Онлайн-школа ChinaChild для городов России",
     footer: "chinachild.ru / cities",
     background: "#eff7dd",
-    accentColor: "#2f7d46",
+    cta: "Выбрать курс",
   });
 }

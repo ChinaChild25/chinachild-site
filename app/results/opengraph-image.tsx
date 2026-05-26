@@ -12,7 +12,7 @@ export default function Image() {
     title: "Прогресс учеников ChinaChild",
     subtitle: "Разговорный уровень, подготовка к HSK и реальные учебные кейсы.",
     footer: "chinachild.ru / results",
-    accentColor: "#5c5cff",
     background: "#e7e6ff",
+    cta: "Смотреть кейсы",
   });
 }

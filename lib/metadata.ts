@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { absoluteUrl, SITE_NAME, SITE_URL } from "@/lib/site-config";
 
+const MAX_METADATA_TITLE_LENGTH = 60;
+
 type ArticleMeta = {
   publishedTime: string;
   modifiedTime?: string;
@@ -64,6 +66,26 @@ function hasCustomOgRoute(path: string) {
   return DYNAMIC_CUSTOM_OG_PREFIXES.some((prefix) => path.startsWith(prefix));
 }
 
+function fitMetadataTitle(title: string) {
+  if (title.length <= MAX_METADATA_TITLE_LENGTH) {
+    return title;
+  }
+
+  const hardLimit = title.slice(0, MAX_METADATA_TITLE_LENGTH + 1);
+  const separatorIndex = Math.max(
+    hardLimit.lastIndexOf(" — "),
+    hardLimit.lastIndexOf(" | "),
+    hardLimit.lastIndexOf(": "),
+  );
+
+  if (separatorIndex >= 42) {
+    return title.slice(0, separatorIndex).trim();
+  }
+
+  const wordIndex = title.lastIndexOf(" ", MAX_METADATA_TITLE_LENGTH);
+  return title.slice(0, wordIndex >= 42 ? wordIndex : MAX_METADATA_TITLE_LENGTH).trim();
+}
+
 export function buildMetadata({
   title,
   description,
@@ -74,6 +96,7 @@ export function buildMetadata({
   article,
 }: MetadataInput): Metadata {
   const canonical = absoluteUrl(canonicalPath ?? path);
+  const metadataTitle = fitMetadataTitle(title);
   const resolvedImagePath = imagePath ?? (hasCustomOgRoute(path) ? undefined : "/opengraph-image");
 
   const manualImages = resolvedImagePath
@@ -89,7 +112,7 @@ export function buildMetadata({
 
   return {
     metadataBase: new URL(SITE_URL),
-    title,
+    title: metadataTitle,
     description,
     applicationName: SITE_NAME,
     category: "education",
@@ -108,7 +131,7 @@ export function buildMetadata({
           locale: "ru_RU",
           url: canonical,
           siteName: SITE_NAME,
-          title,
+          title: metadataTitle,
           description,
           publishedTime: article.publishedTime,
           modifiedTime: article.modifiedTime ?? article.publishedTime,
@@ -122,13 +145,13 @@ export function buildMetadata({
           locale: "ru_RU",
           url: canonical,
           siteName: SITE_NAME,
-          title,
+          title: metadataTitle,
           description,
           ...(manualImages ? { images: manualImages } : {}),
         },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: metadataTitle,
       description,
       ...(manualImages ? { images: manualImages.map((i) => i.url) } : {}),
     },

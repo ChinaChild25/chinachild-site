@@ -12,7 +12,7 @@ export default function Image() {
     title: "Китайский онлайн по всей России",
     subtitle: "Москва, Санкт-Петербург, Казань, Екатеринбург, Новосибирск и другие города.",
     footer: "chinachild.ru / cities",
-    accentColor: "#5c5cff",
     background: "#e8f1f4",
+    cta: "Выбрать город",
   });
 }

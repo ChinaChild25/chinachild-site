@@ -12,9 +12,9 @@ export default function Image() {
     title: "Статьи о китайском языке",
     subtitle: "Методика, HSK, советы родителям и разборы для тех, кто учит китайский.",
     footer: "chinachild.ru / blog",
-    accentColor: "#3a4d12",
     background: "#eef5c8",
     imagePath: "/og/blog.png",
     imageMime: "image/png",
+    cta: "Читать блог",
   });
 }
