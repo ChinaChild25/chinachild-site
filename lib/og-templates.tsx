@@ -278,8 +278,7 @@ export function renderSectionOg(input: SectionOgInput) {
           height: "100%",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-between",
-          padding: 72,
+          padding: "72px 76px 68px",
           background: input.background ?? "#f4f0e8",
           color: "#1b1b1b",
           fontFamily: OG_FONT_FAMILY,
@@ -292,10 +291,13 @@ export function renderSectionOg(input: SectionOgInput) {
 
         <div
           style={{
+            flex: 1,
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            gap: 58,
+            gap: 72,
+            paddingTop: 30,
+            paddingBottom: 26,
           }}
         >
           <div style={{ display: "flex", flexDirection: "column", gap: 22, width: 610 }}>
@@ -320,17 +322,27 @@ export function renderSectionOg(input: SectionOgInput) {
             </div>
           </div>
 
-          <img
-            src={imageDataUrl}
-            alt=""
-            width={380}
-            height={380}
+          <div
             style={{
               width: 380,
-              height: 380,
-              objectFit: "contain",
+              height: 328,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
-          />
+          >
+            <img
+              src={imageDataUrl}
+              alt=""
+              width={328}
+              height={328}
+              style={{
+                width: 328,
+                height: 328,
+                objectFit: "contain",
+              }}
+            />
+          </div>
         </div>
 
         <div

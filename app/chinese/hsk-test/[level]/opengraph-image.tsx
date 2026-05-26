@@ -89,10 +89,21 @@ export default async function HskLevelOgImage({ params }: Params) {
             </div>
           </div>
 
-          <div style={{ display: "flex", gap: 12, fontSize: 22 }}>
-            <Chip>{meta.vocabSize}</Chip>
-            <Chip>{meta.hanziCount}</Chip>
-            <Chip>{meta.hours}</Chip>
+          <div style={{ display: "flex", alignItems: "center", gap: 18, fontSize: 22 }}>
+            <div
+              style={{
+                display: "flex",
+                gap: 10,
+                padding: 10,
+                border: "1px solid rgba(255, 255, 255, 0.62)",
+                borderRadius: 16,
+                background: "rgba(255, 255, 255, 0.32)",
+              }}
+            >
+              <StatChip>{meta.vocabSize}</StatChip>
+              <StatChip>{meta.hanziCount}</StatChip>
+              <StatChip>{meta.hours}</StatChip>
+            </div>
             <Cta>Пройти тест</Cta>
           </div>
         </div>
@@ -118,14 +129,15 @@ export default async function HskLevelOgImage({ params }: Params) {
   );
 }
 
-function Chip({ children }: { children: string }) {
+function StatChip({ children }: { children: string }) {
   return (
     <div
       style={{
-        padding: "10px 16px",
-        background: "#1b1b1b",
-        borderRadius: 8,
-        color: "#ffffff",
+        padding: "8px 13px",
+        background: "rgba(255, 255, 255, 0.54)",
+        borderRadius: 9,
+        color: "#1b1b1b",
+        fontWeight: 600,
       }}
     >
       {children}
@@ -137,11 +149,16 @@ function Cta({ children }: { children: string }) {
   return (
     <div
       style={{
-        padding: "10px 18px",
+        width: 168,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "18px 24px",
         background: "#1b1b1b",
         borderRadius: 8,
         color: "#ffffff",
         fontWeight: 700,
+        whiteSpace: "nowrap",
       }}
     >
       {children}

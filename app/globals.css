@@ -1144,6 +1144,12 @@ a:focus-visible {
   padding: 0;
 }
 
+.site-header-nav > li {
+  display: flex;
+  align-items: center;
+  height: 56px;
+}
+
 .site-header-link {
   font-size: 16px;
   line-height: 100%;
@@ -1155,6 +1161,186 @@ a:focus-visible {
 
 .site-header-link:hover {
   opacity: .6;
+}
+
+.site-header-dropdown {
+  position: relative;
+}
+
+.site-header-dropdown-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  font-size: 16px;
+  line-height: 100%;
+  white-space: nowrap;
+  transition: opacity 200ms;
+}
+
+.site-header-dropdown-trigger:hover {
+  opacity: .6;
+}
+
+.site-header-chevron {
+  width: 9px;
+  height: 9px;
+  border: solid currentColor;
+  border-width: 0 2px 2px 0;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform 180ms ease;
+}
+
+.site-header-dropdown-trigger[aria-expanded="true"] .site-header-chevron {
+  transform: translateY(2px) rotate(-135deg);
+}
+
+.site-header-dropdown-panel {
+  /* Panel is portaled to <body>, so coordinates are viewport-relative.
+     top/right are set inline by Header.tsx based on the trigger rect. */
+  position: fixed;
+  z-index: 1002;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 10px;
+  border-radius: 16px;
+  /* Frosted lens — переиспользует токены из FloatingCta, чтобы стекло
+     было один-в-один с нижней кнопкой и автоматически синкалось с
+     dark-режимом (см. --floating-cta-glass-* в :root и в .dark). */
+  border: 1px solid var(--floating-cta-glass-border);
+  background: var(--floating-cta-glass-bg);
+  -webkit-backdrop-filter: var(--floating-cta-glass-filter);
+  backdrop-filter: var(--floating-cta-glass-filter);
+  box-shadow:
+    var(--floating-cta-glass-shadow),
+    0 18px 48px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition:
+    opacity 160ms ease,
+    transform 180ms ease,
+    visibility 0s linear 180ms;
+}
+
+.site-header-dropdown-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: var(--floating-cta-glass-sheen);
+  opacity: var(--floating-cta-glass-sheen-opacity);
+}
+
+.site-header-dropdown-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: var(--floating-cta-glass-edge);
+  filter: blur(12px);
+  opacity: var(--floating-cta-glass-edge-opacity);
+}
+
+.site-header-dropdown-panel.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+  transition:
+    opacity 160ms ease,
+    transform 180ms ease,
+    visibility 0s linear 0s;
+}
+
+.site-header-dropdown-panel--materials {
+  width: 386px;
+}
+
+.site-header-dropdown-panel--learning {
+  width: 488px;
+}
+
+.site-header-dropdown-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.site-header-dropdown-panel--materials .site-header-dropdown-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.site-header-dropdown-card {
+  min-height: 54px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 6px;
+  background: #f0f0f0;
+  color: #1e1e1e;
+  font-size: 16px;
+  line-height: 1.15;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+
+.site-header-dropdown-card:hover {
+  background: #e3e3e3;
+}
+
+.site-header-dropdown-card:active {
+  transform: scale(0.99);
+}
+
+.site-header-dropdown-card--full {
+  grid-column: 1 / -1;
+  align-items: center;
+  text-align: center;
+}
+
+.site-header-dropdown-card--center {
+  align-items: center;
+  text-align: center;
+}
+
+.site-header-dropdown-card--with-description {
+  min-height: 74px;
+}
+
+.site-header-dropdown-card--accent {
+  background: #8b7fe0;
+  color: #ffffff;
+  font-size: 17px;
+}
+
+.site-header-dropdown-card--accent:hover {
+  background: #7b70d7;
+}
+
+.site-header-dropdown-card small {
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 15px;
+  line-height: 1.2;
+  font-weight: 400;
 }
 
 /* CTA в хедере — 1:1 .header-btn (radius 4px) */
@@ -2757,10 +2943,16 @@ html[data-theme="dark"] {
    ========================================================================== */
 
 @media (prefers-reduced-transparency: reduce) {
-  .site-header-wrapper {
+  .site-header-wrapper,
+  .site-header-dropdown-panel {
     background-color: rgba(255, 255, 255, 0.96);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
+  }
+
+  .site-header-dropdown-panel::before,
+  .site-header-dropdown-panel::after {
+    display: none;
   }
 }
 
@@ -2938,6 +3130,33 @@ html[data-theme="dark"] {
   /* Header — инвертируем стекло. */
   .site-header-wrapper {
     border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .site-header-dropdown-panel {
+    /* Glass tokens (--floating-cta-glass-*) уже инвертированы в .dark выше,
+       так что подложка и sheen подхватываются автоматически. Здесь только
+       усиливаем drop-shadow для контраста с тёмным фоном. */
+    box-shadow:
+      var(--floating-cta-glass-shadow),
+      0 18px 48px rgba(0, 0, 0, 0.34);
+  }
+
+  .site-header-dropdown-card {
+    background: #3a3a3a;
+    color: #ededed;
+  }
+
+  .site-header-dropdown-card:hover {
+    background: #454545;
+  }
+
+  .site-header-dropdown-card--accent {
+    background: #8b7fe0;
+    color: #ffffff;
+  }
+
+  .site-header-dropdown-card--accent:hover {
+    background: #7b70d7;
   }
 
   .site-header-cta {

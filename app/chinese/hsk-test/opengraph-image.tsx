@@ -76,11 +76,22 @@ export default async function HskTestOgImage() {
             </div>
           </div>
 
-          <div style={{ display: "flex", gap: 12, fontSize: 22 }}>
-            <Chip>HSK 1 · A1</Chip>
-            <Chip>HSK 2 · A2</Chip>
-            <Chip>HSK 3 · B1</Chip>
-            <Chip>HSK 4 · B2</Chip>
+          <div style={{ display: "flex", alignItems: "center", gap: 18, fontSize: 22 }}>
+            <div
+              style={{
+                display: "flex",
+                gap: 10,
+                padding: 10,
+                border: "1px solid rgba(255, 255, 255, 0.62)",
+                borderRadius: 16,
+                background: "rgba(255, 255, 255, 0.32)",
+              }}
+            >
+              <LevelChip>HSK 1 · A1</LevelChip>
+              <LevelChip>HSK 2 · A2</LevelChip>
+              <LevelChip>HSK 3 · B1</LevelChip>
+              <LevelChip>HSK 4 · B2</LevelChip>
+            </div>
             <Cta>Пройти тест</Cta>
           </div>
         </div>
@@ -107,14 +118,15 @@ export default async function HskTestOgImage() {
   );
 }
 
-function Chip({ children }: { children: string }) {
+function LevelChip({ children }: { children: string }) {
   return (
     <div
       style={{
-        padding: "10px 16px",
-        background: "#1b1b1b",
-        borderRadius: 8,
-        color: "#ffffff",
+        padding: "8px 13px",
+        background: "rgba(255, 255, 255, 0.54)",
+        borderRadius: 9,
+        color: "#1b1b1b",
+        fontWeight: 600,
       }}
     >
       {children}
@@ -126,11 +138,16 @@ function Cta({ children }: { children: string }) {
   return (
     <div
       style={{
-        padding: "10px 18px",
+        width: 168,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "18px 24px",
         background: "#1b1b1b",
         borderRadius: 8,
         color: "#ffffff",
         fontWeight: 700,
+        whiteSpace: "nowrap",
       }}
     >
       {children}
