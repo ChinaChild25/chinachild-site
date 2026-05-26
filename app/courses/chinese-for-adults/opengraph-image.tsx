@@ -10,6 +10,7 @@ export default function Image() {
     badge: "Взрослым",
     title: "Китайский язык для взрослых онлайн с нуля",
     subtitle: "Лицензированный курс HSK 1–2 · разговорный уровень за 6 месяцев",
+    price: "от 4 999 ₽",
     accentColor: "#3a4d12",
     background: "#e9f4b5",
   });

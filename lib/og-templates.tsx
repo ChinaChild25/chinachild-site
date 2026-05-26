@@ -5,6 +5,7 @@ export type CourseOgInput = {
   badge: string;
   title: string;
   subtitle: string;
+  price: string;
   accentColor: string;
   /** Background tone — passed through inline style */
   background: string;
@@ -103,12 +104,25 @@ export function renderCourseOg(input: CourseOgInput) {
           style={{
             display: "flex",
             alignItems: "center",
-            gap: 12,
+            justifyContent: "space-between",
+            gap: 24,
             fontSize: 22,
-            opacity: 0.65,
           }}
         >
-          chinachild.ru
+          <div style={{ opacity: 0.65 }}>chinachild.ru</div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              borderRadius: 999,
+              padding: "12px 24px",
+              background: "rgba(255,255,255,0.72)",
+              color: "#1b1b1b",
+              fontWeight: 700,
+            }}
+          >
+            {input.price}
+          </div>
         </div>
       </div>
     ),

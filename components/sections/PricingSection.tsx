@@ -1,4 +1,5 @@
 import LeadModal from "@/components/forms/LeadModal";
+import VioletSpotlightController from "@/components/effects/VioletSpotlightController";
 import { buttonStyles } from "@/components/ui/button";
 import Reveal from "@/components/ui/Reveal";
 import SectionShell from "@/components/ui/SectionShell";
@@ -19,6 +20,7 @@ export default function PricingSection() {
       description={`Можно оплатить целиком или вернуть 13% через налоговый вычет. По промокоду ${PROMO_CODE} — выгода до 30%.`}
       className="violet-spotlight"
     >
+      <VioletSpotlightController />
       <div className="grid gap-5 md:grid-cols-3">
         {pricingTiers.map((tier, index) => {
           const tone = palette[index] ?? palette[0];

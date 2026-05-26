@@ -10,6 +10,7 @@ export default function Image() {
     badge: "Корпоративно",
     title: "Корпоративный китайский для команд",
     subtitle: "Программа HSK 1–2 · отчётность для HR · закрывающие документы и ЭДО",
+    price: "по запросу",
     accentColor: "#a04020",
     background: "#ffe7d6",
   });

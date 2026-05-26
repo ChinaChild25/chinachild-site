@@ -46,7 +46,7 @@ export async function generateMetadata({
 
   return buildMetadata({
     title: `Тест HSK ${meta.level} онлайн бесплатно — проверь уровень китайского`,
-    description: `Бесплатный тест HSK ${meta.level} (CEFR ${meta.cefr}): ${meta.vocabSize}, ${meta.hanziCount}. 10–20 вопросов на лексику, грамматику и чтение, без регистрации, с разбором результата.`,
+    description: `Бесплатный тест HSK ${meta.level}: ${meta.vocabSize}, ${meta.hanziCount}. 10–20 вопросов, результат без регистрации и рекомендации по подготовке.`,
     path: `/chinese/hsk-test/${meta.slug}`,
     keywords: [
       `тест HSK ${meta.level}`,

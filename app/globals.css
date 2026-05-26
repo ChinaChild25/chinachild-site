@@ -34,28 +34,29 @@
      Keep these tokens together: this is the approved Practicum-like lens.
      The glass must mostly inherit the page color through backdrop-filter,
      not paint a white plate over it. */
-  --floating-cta-glass-padding: 12px;
+  --floating-cta-glass-padding: 13px;
   --floating-cta-glass-radius: 18px;
-  --floating-cta-glass-border: rgba(255, 255, 255, 0.16);
-  --floating-cta-glass-bg: rgba(255, 255, 255, 0.055);
-  --floating-cta-glass-filter: blur(26px) saturate(170%) contrast(112%) brightness(108%);
+  --floating-cta-glass-border: rgba(255, 255, 255, 0.11);
+  --floating-cta-glass-bg: rgba(255, 255, 255, 0.052);
+  --floating-cta-glass-filter: blur(24px) saturate(155%) contrast(108%) brightness(104%);
   --floating-cta-glass-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.22),
-    inset 0 -1px 1px rgba(255, 255, 255, 0.1),
-    inset 0 0 26px rgba(255, 255, 255, 0.06);
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.08),
+    inset 18px 0 26px rgba(255, 255, 255, 0.055),
+    inset -18px 0 26px rgba(255, 255, 255, 0.05);
   --floating-cta-glass-sheen:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.035) 20%, transparent 42%, transparent 58%, rgba(255, 255, 255, 0.035) 80%, rgba(255, 255, 255, 0.16)),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.11), transparent 34%, transparent 66%, rgba(255, 255, 255, 0.055));
-  --floating-cta-glass-sheen-opacity: 0.72;
+    linear-gradient(90deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.035) 16%, transparent 34%, transparent 66%, rgba(255, 255, 255, 0.035) 84%, rgba(255, 255, 255, 0.14)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.075), transparent 36%, transparent 70%, rgba(255, 255, 255, 0.04));
+  --floating-cta-glass-sheen-opacity: 0.44;
   --floating-cta-glass-edge:
-    radial-gradient(ellipse 115px 82% at 0% 50%, rgba(255, 255, 255, 0.18), transparent 72%),
-    radial-gradient(ellipse 115px 82% at 100% 50%, rgba(255, 255, 255, 0.16), transparent 72%);
-  --floating-cta-glass-edge-opacity: 0.58;
-  --floating-cta-btn-width: min(208px, calc(100vw - 40px));
-  --floating-cta-btn-height: 42px;
-  --floating-cta-btn-padding-x: 18px;
-  --floating-cta-btn-radius: 4px;
-  --floating-cta-btn-font-size: 18px;
+    radial-gradient(ellipse 96px 78% at 0% 50%, rgba(255, 255, 255, 0.13), transparent 74%),
+    radial-gradient(ellipse 96px 78% at 100% 50%, rgba(255, 255, 255, 0.12), transparent 74%);
+  --floating-cta-glass-edge-opacity: 0.36;
+  --floating-cta-btn-width: min(298px, calc(100vw - 64px));
+  --floating-cta-btn-height: 60px;
+  --floating-cta-btn-padding-x: 28px;
+  --floating-cta-btn-radius: 6px;
+  --floating-cta-btn-font-size: 20px;
 
   /* Pastel cards — точные HEX из blueprint */
   --violet: #d8d3ff;
@@ -348,6 +349,456 @@ a:focus-visible {
 
 .muted-text {
   color: var(--muted);
+}
+
+/* ==========================================================================
+   Home Hero — orbit portraits.
+   Exact reference portraits are not in the repo yet. Current slots use
+   existing /public/team photos; replace src values in HeroSection after
+   adding final portraits to /public/hero/orbit/.
+   ========================================================================== */
+
+.home-hero {
+  position: relative;
+  min-height: calc(100svh - 72px);
+  padding: 26px 0 48px;
+}
+
+.home-hero-stage {
+  position: relative;
+  min-height: calc(100svh - 146px);
+  display: grid;
+  place-items: center;
+}
+
+.home-hero-content {
+  position: relative;
+  z-index: 2;
+  width: min(920px, 100%);
+  margin: 0 auto;
+  text-align: center;
+}
+
+.home-hero-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1;
+  transition: opacity var(--t-base);
+}
+
+.home-hero-rating:hover {
+  opacity: 0.7;
+}
+
+.home-hero-rating-star {
+  color: #ffb800;
+  line-height: 1;
+}
+
+.home-hero-rating-value {
+  font-weight: 600;
+}
+
+.home-hero-rating-copy {
+  color: var(--muted);
+}
+
+.home-hero-rating-info {
+  width: 16px;
+  height: 16px;
+  color: rgba(38, 38, 38, 0.32);
+}
+
+.home-hero-license {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: max-content;
+  max-width: 100%;
+  margin-inline: auto;
+  min-height: 42px;
+  margin-top: 22px;
+  padding: 0 28px;
+  border-radius: 999px;
+  background: rgba(216, 211, 255, 0.44);
+  color: #5b55d7;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.home-hero-title {
+  display: grid;
+  gap: 4px;
+  margin: 32px auto 0;
+  color: #111111;
+  font-size: 60px;
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: 0;
+}
+
+.home-hero-title span {
+  display: block;
+}
+
+.home-hero-title-dash {
+  display: inline-block !important;
+  width: 74px;
+  height: 6px;
+  margin-left: 18px;
+  border-radius: 999px;
+  vertical-align: 0.13em;
+  background: #111111;
+}
+
+.home-hero-description {
+  width: min(680px, 100%);
+  margin: 28px auto 0;
+  color: #4b4b4b;
+  font-size: 18px;
+  line-height: 1.58;
+  letter-spacing: 0;
+}
+
+.home-hero-actions {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 34px;
+}
+
+.home-hero-primary-cta {
+  min-width: 286px;
+  gap: 16px;
+}
+
+.home-hero-secondary-cta {
+  min-width: 190px;
+  background: rgba(255, 255, 255, 0.74);
+  box-shadow: 0 14px 34px rgba(29, 29, 29, 0.08);
+}
+
+.home-hero-cta-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.home-hero-orbit {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(calc(100% - 80px), 1700px);
+  aspect-ratio: 2.15 / 1;
+  max-height: calc(100% - 60px);
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.home-hero-mobile-avatars {
+  display: none;
+}
+
+.home-hero-orbit-line {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: none;
+  stroke: rgba(117, 108, 255, 0.28);
+  stroke-width: 1.1;
+  stroke-dasharray: 0.01 2.4;
+  stroke-linecap: round;
+}
+
+.home-hero-orbit-line path {
+  vector-effect: non-scaling-stroke;
+}
+
+.home-hero-orbit-dots {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.home-hero-orbit-dot {
+  position: absolute;
+  z-index: 1;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: #b6a7ff;
+  box-shadow: 0 0 0 8px rgba(182, 167, 255, 0.12);
+  transform: translate(-50%, -50%);
+}
+
+.home-hero-orbit-dot--one {
+  left: 7.25%;
+  top: 28.875%;
+}
+
+.home-hero-orbit-dot--two {
+  left: 92.625%;
+  top: 28.25%;
+  background: #c6afd0;
+}
+
+.home-hero-orbit-dot--three {
+  left: 7.375%;
+  top: 68%;
+}
+
+.home-hero-orbit-dot--four {
+  left: 92.625%;
+  top: 68.5%;
+  background: #a99bff;
+}
+
+.home-hero-orbit-dot--five {
+  left: 50%;
+  top: 92.5%;
+  background: #aa98ff;
+}
+
+.home-hero-orbit-card {
+  --hero-orbit-size: 132px;
+  --hero-icon-top: 72%;
+  position: absolute;
+  z-index: 2;
+  width: var(--hero-orbit-size);
+  height: var(--hero-orbit-size);
+  border-radius: 999px;
+  border: 0;
+  background: transparent;
+  box-shadow:
+    0 24px 60px rgba(86, 80, 128, 0.11),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+}
+
+.home-hero-orbit-image {
+  border-radius: inherit;
+  object-fit: cover;
+}
+
+.home-hero-orbit-icon {
+  position: absolute;
+  z-index: 3;
+  top: var(--hero-icon-top);
+  display: grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--hero-orbit-icon-color);
+  box-shadow:
+    0 16px 34px rgba(41, 37, 76, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.82);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  transform: translateY(-50%);
+}
+
+.home-hero-orbit-icon--left {
+  left: -23px;
+}
+
+.home-hero-orbit-icon--right {
+  right: -23px;
+}
+
+.home-hero-orbit-icon-svg {
+  width: 22px;
+  height: 22px;
+}
+
+.home-hero-orbit-card--top-left {
+  --hero-orbit-size: 132px;
+  --hero-icon-top: 70%;
+  left: 15%;
+  top: 15%;
+}
+
+.home-hero-orbit-card--top-right {
+  --hero-orbit-size: 142px;
+  --hero-icon-top: 74%;
+  left: 84%;
+  top: 12%;
+}
+
+.home-hero-orbit-card--left {
+  --hero-orbit-size: 148px;
+  --hero-icon-top: 70%;
+  left: 7%;
+  top: 48%;
+}
+
+.home-hero-orbit-card--right {
+  --hero-orbit-size: 150px;
+  --hero-icon-top: 74%;
+  left: 93%;
+  top: 49%;
+}
+
+.home-hero-orbit-card--bottom-left {
+  --hero-orbit-size: 132px;
+  --hero-icon-top: 74%;
+  left: 16%;
+  top: 82%;
+}
+
+.home-hero-orbit-card--bottom-right {
+  --hero-orbit-size: 136px;
+  --hero-icon-top: 72%;
+  left: 84%;
+  top: 82%;
+}
+
+@media (max-width: 1279px) {
+  .home-hero-title {
+    font-size: 52px;
+  }
+
+  .home-hero-orbit {
+    width: min(calc(100% - 40px), 1200px);
+  }
+
+  .home-hero-orbit-card {
+    --hero-orbit-size: 112px;
+  }
+
+  .home-hero-orbit-card--left,
+  .home-hero-orbit-card--right {
+    --hero-orbit-size: 124px;
+  }
+}
+
+@media (max-width: 1023px) {
+  .home-hero {
+    min-height: auto;
+    padding: 28px 0 54px;
+  }
+
+  .home-hero-stage {
+    min-height: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .home-hero-orbit {
+    display: none;
+  }
+
+  .home-hero-mobile-avatars {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 26px auto 0;
+    padding: 6px 6px;
+    isolation: isolate;
+  }
+
+  .home-hero-mobile-avatar {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border-radius: 999px;
+    overflow: hidden;
+    margin-left: -14px;
+    border: 3px solid #ffffff;
+    box-sizing: content-box;
+    box-shadow: 0 6px 16px rgba(29, 29, 29, 0.18);
+  }
+
+  .home-hero-mobile-avatar:nth-child(1) { z-index: 6; margin-left: 0; }
+  .home-hero-mobile-avatar:nth-child(2) { z-index: 5; }
+  .home-hero-mobile-avatar:nth-child(3) { z-index: 4; }
+  .home-hero-mobile-avatar:nth-child(4) { z-index: 3; }
+  .home-hero-mobile-avatar:nth-child(5) { z-index: 2; }
+  .home-hero-mobile-avatar:nth-child(6) { z-index: 1; }
+
+  .home-hero-mobile-avatar-image {
+    object-fit: cover;
+  }
+
+  .home-hero-title {
+    margin-top: 26px;
+    font-size: 46px;
+  }
+
+  .home-hero-description {
+    font-size: 17px;
+  }
+}
+
+@media (max-width: 767px) {
+  .home-hero-rating {
+    max-width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 6px;
+    font-size: 13px;
+  }
+
+  .home-hero-license {
+    min-height: 38px;
+    padding: 0 18px;
+    font-size: 14px;
+  }
+
+  .home-hero-title {
+    gap: 3px;
+    font-size: 38px;
+    line-height: 1.1;
+  }
+
+  .home-hero-title-dash {
+    width: 48px;
+    height: 5px;
+    margin-left: 10px;
+  }
+
+  .home-hero-description {
+    margin-top: 22px;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+
+  .home-hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-top: 28px;
+  }
+
+  .home-hero-primary-cta,
+  .home-hero-secondary-cta {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 420px) {
+  .home-hero-orbit-card,
+  .home-hero-orbit-card--top-left,
+  .home-hero-orbit-card--top-right,
+  .home-hero-orbit-card--left,
+  .home-hero-orbit-card--right,
+  .home-hero-orbit-card--bottom-left,
+  .home-hero-orbit-card--bottom-right {
+    width: 62px;
+    height: 62px;
+  }
+
+  .home-hero-title {
+    font-size: 34px;
+  }
 }
 
 /* ==========================================================================
@@ -939,6 +1390,13 @@ html[data-theme="dark"] .theme-toggle-thumb {
   z-index: 900;
   pointer-events: none;
   contain: layout paint;
+  opacity: 1;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.floating-cta-shell--hidden {
+  opacity: 0;
+  transform: translate(-50%, 12px);
 }
 
 .floating-cta-glass {
@@ -2129,20 +2587,21 @@ html[data-theme="dark"] {
   --glass-white-06: rgba(255, 255, 255, 0.08);
   --glass-white-05: rgba(255, 255, 255, 0.04);
 
-  --floating-cta-glass-border: rgba(255, 255, 255, 0.14);
-  --floating-cta-glass-bg: rgba(255, 255, 255, 0.05);
+  --floating-cta-glass-border: rgba(255, 255, 255, 0.1);
+  --floating-cta-glass-bg: rgba(255, 255, 255, 0.048);
   --floating-cta-glass-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.18),
-    inset 0 -1px 1px rgba(255, 255, 255, 0.08),
-    inset 0 0 26px rgba(255, 255, 255, 0.05);
+    inset 0 1px 0 rgba(255, 255, 255, 0.13),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.065),
+    inset 18px 0 26px rgba(255, 255, 255, 0.045),
+    inset -18px 0 26px rgba(255, 255, 255, 0.04);
   --floating-cta-glass-sheen:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.03) 20%, transparent 42%, transparent 58%, rgba(255, 255, 255, 0.03) 80%, rgba(255, 255, 255, 0.14)),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.09), transparent 34%, transparent 66%, rgba(255, 255, 255, 0.045));
-  --floating-cta-glass-sheen-opacity: 0.68;
+    linear-gradient(90deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.03) 16%, transparent 34%, transparent 66%, rgba(255, 255, 255, 0.03) 84%, rgba(255, 255, 255, 0.12)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), transparent 36%, transparent 70%, rgba(255, 255, 255, 0.035));
+  --floating-cta-glass-sheen-opacity: 0.4;
   --floating-cta-glass-edge:
-    radial-gradient(ellipse 115px 82% at 0% 50%, rgba(255, 255, 255, 0.16), transparent 72%),
-    radial-gradient(ellipse 115px 82% at 100% 50%, rgba(255, 255, 255, 0.14), transparent 72%);
-  --floating-cta-glass-edge-opacity: 0.54;
+    radial-gradient(ellipse 96px 78% at 0% 50%, rgba(255, 255, 255, 0.105), transparent 74%),
+    radial-gradient(ellipse 96px 78% at 100% 50%, rgba(255, 255, 255, 0.095), transparent 74%);
+  --floating-cta-glass-edge-opacity: 0.32;
 
   /* Пастели приглушаем — оставляем цвет-маркеры разделов. */
   --violet: #2a2740;
@@ -2296,6 +2755,56 @@ html[data-theme="dark"] {
   }
   .btn-white:hover {
     background: #353535;
+  }
+
+  .home-hero-title {
+    color: #f5f5f5;
+  }
+
+  .home-hero-title-dash {
+    background: #f5f5f5;
+  }
+
+  .home-hero-description,
+  .home-hero-rating-copy {
+    color: var(--muted-strong);
+  }
+
+  .home-hero-rating-info {
+    color: rgba(245, 245, 245, 0.38);
+  }
+
+  .home-hero-license {
+    background: rgba(216, 211, 255, 0.14);
+    color: #d8d3ff;
+  }
+
+  .home-hero-secondary-cta {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ededed;
+    box-shadow: none;
+  }
+
+  .home-hero-secondary-cta:hover {
+    background: rgba(255, 255, 255, 0.14);
+  }
+
+  .home-hero-orbit-line {
+    stroke: rgba(216, 211, 255, 0.22);
+  }
+
+  .home-hero-orbit-card {
+    box-shadow:
+      0 24px 60px rgba(0, 0, 0, 0.28),
+      0 0 0 1px rgba(255, 255, 255, 0.16);
+  }
+
+  .home-hero-orbit-icon {
+    background: rgba(28, 28, 28, 0.74);
+    color: #d8d3ff;
+    box-shadow:
+      0 16px 34px rgba(0, 0, 0, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.14);
   }
 
   /* Mobile drawer */
@@ -2512,29 +3021,37 @@ html[data-theme="dark"] {
 }
 
 /* ==========================================================================
-   VIOLET SPOTLIGHT — Yandex-приём «акцентная подсветка при скролле».
-   Когда секция оказывается в активной зоне viewport, целый viewport сразу
-   заливается фиолетовой плёнкой (position: fixed, z-index -1 — поверх body bg,
-   но под контентом). Включение/выключение намеренно резкое, без градиентного
-   разгорания по краям.
-
-   Реализация: named view-timeline на секции + animation-timeline у
-   ::before-overlay и текстовых элементов. Чистый CSS, zero JS.
-   В браузерах без поддержки animation-timeline (Safari/Firefox)
-   плёнка просто не появляется — graceful fallback.
+   VIOLET SPOTLIGHT — scroll-zone highlight like the Practicum reference.
+   The section is taller than the viewport, so the accent behaves as a passing
+   scroll object: transparent -> violet -> violet -> transparent on both
+   downward and upward scroll. Keep the 0%/100% transparent states; otherwise
+   the background can look stuck after the active zone has passed.
    ========================================================================== */
 
 .violet-spotlight {
+  --violet-spotlight-progress: 0;
   position: relative;
   isolation: isolate;
-  /* Скругление как у подвала — секция читается как отдельная плашка,
-     а не «полоса до края экрана». */
+  min-block-size: 165svh;
+  display: grid;
+  align-items: center;
+  padding-block: clamp(96px, 18vh, 180px);
   border-radius: 60px;
   overflow: hidden;
-  /* Фон секции, без position:fixed — иначе на iOS при горизонтальном
-     скролле проступает фиолетовая «подложка» за всей страницей. */
+  background-color: rgb(114 107 255 / var(--violet-spotlight-progress));
+  transition: background-color 80ms linear;
   view-timeline-name: --violet-spotlight;
   view-timeline-axis: block;
+}
+
+.violet-spotlight .section-title,
+.violet-spotlight .section-description {
+  transition: color 180ms ease;
+}
+
+.violet-spotlight.is-violet-active .section-title,
+.violet-spotlight.is-violet-active .section-description {
+  color: #ffffff;
 }
 
 @media (max-width: 767px) {
@@ -2544,42 +3061,42 @@ html[data-theme="dark"] {
 }
 
 @supports (animation-timeline: view()) {
-  .violet-spotlight {
-    animation: violet-spotlight-bg linear both;
+  .violet-spotlight:not(.violet-spotlight--js) {
+    animation: violet-spotlight-bg linear;
     animation-timeline: --violet-spotlight;
-    animation-range: cover 0% cover 100%;
+    animation-range: entry 0% exit 100%;
   }
 
-  .violet-spotlight .section-title,
-  .violet-spotlight .section-description {
-    animation: violet-spotlight-text linear both;
+  .violet-spotlight:not(.violet-spotlight--js) .section-title,
+  .violet-spotlight:not(.violet-spotlight--js) .section-description {
+    animation: violet-spotlight-text linear;
     animation-timeline: --violet-spotlight;
-    animation-range: cover 0% cover 100%;
+    animation-range: entry 0% exit 100%;
   }
 }
 
 @keyframes violet-spotlight-bg {
   0%,
-  24.99%,
-  75.01%,
+  17.99%,
+  86.01%,
   100% {
     background-color: transparent;
   }
-  25%,
-  75% {
+  28%,
+  76% {
     background-color: #726bff;
   }
 }
 
 @keyframes violet-spotlight-text {
   0%,
-  24.99%,
-  75.01%,
+  17.99%,
+  86.01%,
   100% {
     color: inherit;
   }
-  25%,
-  75% {
+  28%,
+  76% {
     color: #ffffff;
   }
 }

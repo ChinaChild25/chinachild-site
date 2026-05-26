@@ -10,6 +10,7 @@ export default function Image() {
     badge: "С нуля",
     title: "Онлайн-курсы китайского языка с нуля",
     subtitle: "HSK 1–2 за 6 месяцев · мини-группы до 5 человек · налоговый вычет 13%",
+    price: "от 4 999 ₽",
     accentColor: "#5c5cff",
     background: "#e7e6ff",
   });

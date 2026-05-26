@@ -1,6 +1,10 @@
 import Reveal from "@/components/ui/Reveal";
 import { buttonStyles } from "@/components/ui/button";
 import { reviews } from "@/lib/site-data";
+import {
+  YANDEX_BUSINESS_PROFILE_URL,
+  YANDEX_BUSINESS_REVIEWS_URL,
+} from "@/lib/site-config";
 
 const YANDEX_RATING = "4,4";
 const YANDEX_RATING_NUMERIC = 4.4;
@@ -14,8 +18,6 @@ const YANDEX_REVIEW_COUNT = 7;
  * CSS-обёртку (см. .yandex-widget-frame в globals.css).
  */
 
-const YANDEX_ORG_URL =
-  "https://yandex.ru/maps/org/kursy_kitayskogo_yazyka_onlayn/129397906214/?utm_medium=mapframe&utm_source=maps";
 const YANDEX_SHORT_URL = "https://yandex.ru/maps/-/CPDQBLKT";
 
 // Center on Moscow (Red Square — long, lat in Yandex order) at city zoom.
@@ -30,9 +32,6 @@ const MAP_IFRAME_SRC =
 // rating-header card and a huge empty area. We render a native card instead:
 // the Yandex rating + a few curated review excerpts + a CTA back to the
 // public Yandex Maps profile.
-const YANDEX_REVIEWS_URL =
-  "https://yandex.ru/maps/org/kursy_kitayskogo_yazyka_onlayn/129397906214/reviews/";
-
 export default function YandexLocalSection() {
   return (
     <section
@@ -64,7 +63,7 @@ export default function YandexLocalSection() {
               Открыть в Яндекс.Картах
             </a>
             <a
-              href={`${YANDEX_ORG_URL.replace("utm_medium=mapframe", "utm_medium=reviewslink")}#reviews`}
+              href={`${YANDEX_BUSINESS_REVIEWS_URL}`}
               target="_blank"
               rel="noopener noreferrer nofollow"
               className={buttonStyles({ variant: "secondary" })}
@@ -91,7 +90,7 @@ export default function YandexLocalSection() {
                 />
                 <a
                   className="yandex-widget-attribution"
-                  href={YANDEX_ORG_URL}
+                  href={YANDEX_BUSINESS_PROFILE_URL}
                   target="_blank"
                   rel="noopener noreferrer nofollow"
                 >
@@ -160,7 +159,7 @@ function YandexReviewsCard() {
       </ul>
 
       <a
-        href={YANDEX_REVIEWS_URL}
+        href={YANDEX_BUSINESS_REVIEWS_URL}
         target="_blank"
         rel="noopener noreferrer nofollow"
         className={`${buttonStyles({ variant: "secondary", size: "compact" })} mt-auto self-start`}

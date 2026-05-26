@@ -61,7 +61,16 @@ export const TRUST_PROFILE_LINKS = [
   },
 ] as const;
 
-export const SAME_AS_URLS = TRUST_PROFILE_LINKS.map((link) => link.href);
+export const YANDEX_BUSINESS_PROFILE_URL =
+  "https://yandex.ru/maps/org/kursy_kitayskogo_yazyka_onlayn/129397906214/";
+
+export const YANDEX_BUSINESS_REVIEWS_URL =
+  "https://yandex.ru/maps/org/kursy_kitayskogo_yazyka_onlayn/129397906214/reviews/";
+
+export const SAME_AS_URLS = [
+  ...TRUST_PROFILE_LINKS.map((link) => link.href),
+  YANDEX_BUSINESS_PROFILE_URL,
+];
 
 function normalizeOrigin(value: string | undefined): string {
   const origin = value?.trim() || DEFAULT_SITE_URL;

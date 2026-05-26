@@ -36,7 +36,7 @@ export async function generateMetadata({
 
   return buildMetadata({
     title: `HSK ${level.level}: всё об уровне — слова, иероглифы, экзамен, подготовка | ChinaChild`,
-    description: `HSK ${level.level}: ${formatWords(level)} слов, ${level.hanziCount} иероглифов, CEFR ${level.cefrEquivalent}, экзамен ${level.examDuration}. Подготовка онлайн к HSK ${level.level} в ChinaChild.`,
+    description: `HSK ${level.level}: ${formatWords(level)} слов, ${level.hanziCount} иероглифов, CEFR ${level.cefrEquivalent}. Темы экзамена и план подготовки ChinaChild.`,
     path: `/hsk/${level.slug}`,
     keywords: [
       `HSK ${level.level}`,
