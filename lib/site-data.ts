@@ -612,6 +612,30 @@ export const reviews: Review[] = [
       "Все очень хорошо! Высокое качество образования, удобный интерфейс в личном кабинете. Рекомендую!",
     image: "",
   },
+  {
+    author: "Алина Толкачева",
+    result: "Доступная цена и удобное приложение",
+    body:
+      "Обучение проходит замечательно! Материал легко усваивается. Приложение очень удобное, а преподаватели весёлые и урок проходит не скучно, а главное доступная цена за такое качество.",
+    image: "",
+    date: "2022-11-08",
+    source: "yandex-maps",
+    rating: 5,
+    verifyUrl:
+      "https://yandex.com/maps/org/129397906214/reviews?reviews%5BpublicId%5D=gze1d7ybb6v9w4c53wyp0211bw",
+  },
+  {
+    author: "Ирина Толкачева",
+    result: "Дочь занимается с удовольствием",
+    body:
+      "Спасибо огромное! Дочь очень довольна. Очень нравятся преподаватели, хорошая подача материала, позитивные, креативные, находят общий язык с детьми. Молодцы!",
+    image: "",
+    date: "2022-11-01",
+    source: "yandex-maps",
+    rating: 5,
+    verifyUrl:
+      "https://yandex.com/maps/org/129397906214/reviews?reviews%5BpublicId%5D=3p58h3xbxngf5h4xbw9j838w5g",
+  },
 ];
 
 export const results = [
@@ -765,7 +789,7 @@ export const footerLinks = [
 
 export const siteFacts = {
   aggregateRating: 4.9,
-  reviewCount: 4,
+  reviewCount: 6,
   contactEmail: CONTACT_EMAIL,
   logoUrl: absoluteUrl("/brand-mark.svg"),
   freeTrialUrl: absoluteUrl("/zayavka"),
