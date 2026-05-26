@@ -6650,43 +6650,16 @@ html[data-theme="dark"] .yandex-widget-attribution {
 }
 
 /* ==========================================================================
-   Tax deduction calculator — компонент TaxDeductionCalculator на /price.
-   Скромный inline-styling: радио-карточки и нативный range slider.
+   Tax deduction calculator — нативный range slider в системной палитре.
+   Радио-карточки и результаты переиспользуют card-block / card-ink — здесь
+   стилизуется только thumb/track, потому что нативный range slider
+   браузеры рендерят сильно по-разному.
    ========================================================================== */
 
-.tax-calc-radio {
-  cursor: pointer;
-  display: block;
-  padding: 18px 20px;
-  border-radius: var(--radius-card);
-  background: rgba(255, 255, 255, 0.55);
-  transition: background 200ms ease, transform 200ms ease;
-}
-
-.tax-calc-radio:hover {
-  background: rgba(255, 255, 255, 0.85);
-}
-
-.tax-calc-radio--active {
-  background: #1b1b1b;
-  color: #ffffff;
-}
-
-.tax-calc-radio--active * {
-  color: inherit !important;
-}
-
-.tax-calc-radio--active .text-\[\#1b1b1b\],
-.tax-calc-radio--active .text-\[\#262626\]\/72,
-.tax-calc-radio--active .text-\[\#262626\]\/55 {
-  color: #ffffff !important;
-}
-
-/* Native range slider — minimal styling, цельная фиолетовая дорожка */
 .tax-calc-range {
   -webkit-appearance: none;
   appearance: none;
-  height: 8px;
+  height: 6px;
   border-radius: 999px;
   background: rgba(27, 27, 27, 0.12);
   outline: none;
@@ -6698,9 +6671,7 @@ html[data-theme="dark"] .yandex-widget-attribution {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #1b1b1b;
-  border: 3px solid #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+  background: var(--ink);
   cursor: pointer;
 }
 
@@ -6708,20 +6679,16 @@ html[data-theme="dark"] .yandex-widget-attribution {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #1b1b1b;
-  border: 3px solid #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+  background: var(--ink);
   cursor: pointer;
+  border: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  .tax-calc-radio {
-    background: rgba(255, 255, 255, 0.06);
-  }
-  .tax-calc-radio:hover {
-    background: rgba(255, 255, 255, 0.12);
-  }
-  .tax-calc-range {
-    background: rgba(255, 255, 255, 0.12);
-  }
+.tax-calc-range:focus-visible {
+  outline: 2px solid var(--violet);
+  outline-offset: 4px;
+}
+
+html[data-theme="dark"] .tax-calc-range {
+  background: rgba(255, 255, 255, 0.18);
 }
