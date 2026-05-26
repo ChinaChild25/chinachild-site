@@ -3,6 +3,7 @@ import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import PageHero from "@/components/layout/PageHero";
 import PricingSection from "@/components/sections/PricingSection";
 import FAQSection from "@/components/sections/FAQSection";
+import TaxDeductionCalculator from "@/components/calculators/TaxDeductionCalculator";
 import { buildMetadata } from "@/lib/metadata";
 import { faqs } from "@/lib/site-data";
 
@@ -46,6 +47,10 @@ export default function PricePage() {
       />
 
       <PricingSection />
+
+      <section className="page-shell-wide section-space">
+        <TaxDeductionCalculator />
+      </section>
 
       <FAQSection
         id="price-faq"

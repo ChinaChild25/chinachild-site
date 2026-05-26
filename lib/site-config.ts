@@ -102,7 +102,32 @@ export const CONTACT_EMAIL = "info@chinachild.ru";
 export const CONTACT_PHONE = "+7 (495) 005-25-82";
 export const CONTACT_PHONE_TEL = "+74950052582";
 export const PROMO_CODE = "КИТАПР26";
+/**
+ * Маркетинговая копия — фигурирует на ~15 страницах и в блоге.
+ * Если будете обновлять до актуального лимита (19 500 ₽), нужно пройтись
+ * по всем местам с хардкодом «15 600 ₽» (grep по проекту).
+ */
 export const TAX_DEDUCTION_MAX = "до 15 600 ₽ в год";
+
+/**
+ * Реальные параметры социального вычета за обучение по ст. 219 НК РФ.
+ * Используются калькулятором TaxDeductionCalculator и могут быть применены
+ * в маркетинговой копии после ручного обновления текстов.
+ *
+ * Лимиты с 2024 г. (Закон 248-ФЗ от 24.07.2023):
+ *  • Общий лимит социальных вычетов (себя/брат/сестра): 150 000 ₽/год → 19 500 ₽ к возврату.
+ *  • Отдельный лимит за ребёнка до 24 лет (очная форма): 110 000 ₽/год → 14 300 ₽ к возврату.
+ * До 2024 г. — 120 000 ₽ (15 600 ₽) и 50 000 ₽ (6 500 ₽) соответственно.
+ */
+export const TAX_DEDUCTION_RATE = 0.13;
+export const TAX_DEDUCTION_LIMIT_SELF_RUB = 150_000;
+export const TAX_DEDUCTION_LIMIT_CHILD_RUB = 110_000;
+export const TAX_DEDUCTION_MAX_SELF_RUB = Math.round(
+  TAX_DEDUCTION_LIMIT_SELF_RUB * TAX_DEDUCTION_RATE,
+);
+export const TAX_DEDUCTION_MAX_CHILD_RUB = Math.round(
+  TAX_DEDUCTION_LIMIT_CHILD_RUB * TAX_DEDUCTION_RATE,
+);
 export const LICENSE_REGION = "Департамент образования и науки города Москвы";
 /** Творительный падеж — «выдана …» / «выданной …». */
 export const LICENSE_REGION_INSTRUMENTAL =
