@@ -10,7 +10,7 @@ import { buttonStyles } from "@/components/ui/button";
 import { buildMetadata } from "@/lib/metadata";
 import { createReviewSchemas } from "@/lib/schema";
 import { absoluteUrl } from "@/lib/site-config";
-import { reviews, siteFacts } from "@/lib/site-data";
+import { REVIEW_SOURCE_LABELS, reviews, siteFacts } from "@/lib/site-data";
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
@@ -47,23 +47,54 @@ export default function ReviewsPage() {
 
       <section className="page-shell-wide section-space">
         <div className="grid gap-5 md:grid-cols-2">
-          {reviews.map((review) => (
-            <article key={review.author} className="card-block card-cream-soft h-full">
-              <div className="flex items-center gap-4">
-                <Avatar name={review.author} size={64} />
-                <div>
-                  <h2 className="text-[1.125rem] font-medium tracking-[-0.005em] text-[#262626] leading-[1.2]">
-                    {review.author}
-                  </h2>
-                  <p className="mt-1 text-sm text-[#6b6b6b]">{review.result}</p>
+          {reviews.map((review) => {
+            const rating = review.rating ?? 5;
+            const stars = "★★★★★".slice(0, rating) + "☆☆☆☆☆".slice(0, 5 - rating);
+            return (
+              <article key={review.author} className="card-block card-cream-soft h-full">
+                <div className="flex items-center gap-4">
+                  <Avatar name={review.author} size={64} />
+                  <div>
+                    <h2 className="text-[1.125rem] font-medium tracking-[-0.005em] text-[#262626] leading-[1.2]">
+                      {review.author}
+                    </h2>
+                    <p className="mt-1 text-sm text-[#6b6b6b]">{review.result}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="mt-4 text-base text-[#FFB400]" aria-hidden>
-                ★★★★★
-              </div>
-              <p className="mt-4 text-base leading-[1.55] text-[#4b4b4b]">«{review.body}»</p>
-            </article>
-          ))}
+                <div className="mt-4 text-base text-[#FFB400]" aria-hidden>
+                  {stars}
+                </div>
+                <p className="mt-4 text-base leading-[1.55] text-[#4b4b4b]">«{review.body}»</p>
+                {(review.date || review.source) && (
+                  <p className="mt-3 text-xs text-[#262626]/55">
+                    {review.date && (
+                      <time dateTime={review.date}>
+                        {new Date(review.date).toLocaleDateString("ru-RU", {
+                          year: "numeric",
+                          month: "long",
+                        })}
+                      </time>
+                    )}
+                    {review.date && review.source && " · "}
+                    {review.source && (
+                      review.verifyUrl ? (
+                        <a
+                          href={review.verifyUrl}
+                          target="_blank"
+                          rel="noreferrer nofollow"
+                          className="underline underline-offset-2 hover:text-[#262626]"
+                        >
+                          источник
+                        </a>
+                      ) : (
+                        <span>источник: {REVIEW_SOURCE_LABELS[review.source]}</span>
+                      )
+                    )}
+                  </p>
+                )}
+              </article>
+            );
+          })}
         </div>
       </section>
 

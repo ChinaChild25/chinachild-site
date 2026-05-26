@@ -5,6 +5,11 @@ import { notFound } from "next/navigation";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import JsonLd from "@/components/seo/JsonLd";
 import Avatar from "@/components/ui/Avatar";
+import ArticleFaq from "@/components/content/article-blocks/ArticleFaq";
+import Callout from "@/components/content/article-blocks/Callout";
+import MistakesBlock from "@/components/content/article-blocks/MistakesBlock";
+import StatsStrip from "@/components/content/article-blocks/StatsStrip";
+import TLDRBox from "@/components/content/article-blocks/TLDRBox";
 import {
   formatPostDate,
   getBlogPostBySlug,
@@ -137,6 +142,44 @@ function renderBlock(
         />
         {block.alt ? <figcaption>{block.alt}</figcaption> : null}
       </figure>
+    );
+  }
+  if (block.type === "tldr") {
+    return <TLDRBox key={`tldr-${index}`} points={block.points} />;
+  }
+  if (block.type === "callout") {
+    return (
+      <Callout
+        key={`callout-${index}`}
+        variant={block.variant}
+        title={block.title}
+        body={block.body}
+      />
+    );
+  }
+  if (block.type === "mistakes") {
+    return (
+      <MistakesBlock
+        key={`mistakes-${index}`}
+        heading={block.heading}
+        intro={block.intro}
+        items={block.items}
+      />
+    );
+  }
+  if (block.type === "stats") {
+    return <StatsStrip key={`stats-${index}`} items={block.items} />;
+  }
+  if (block.type === "faq") {
+    return (
+      <ArticleFaq
+        key={`faq-${index}`}
+        items={block.items}
+        title={block.title}
+        description={block.description}
+        jsonLd={block.jsonLd}
+        schemaId={`faq-block-${index}`}
+      />
     );
   }
   return <p key={`paragraph-${index}`}>{renderInline(block.text, autolink)}</p>;

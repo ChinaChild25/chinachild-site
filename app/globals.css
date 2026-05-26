@@ -2385,6 +2385,337 @@ html[data-theme="dark"] {
 }
 
 /* ==========================================================================
+   Article content blocks — :::tldr, :::callout, :::mistakes, :::stats, :::faq
+
+   Praktikum-style: цельные пастельные подложки из палитры сайта (--cream
+   / --sky-soft / --lime / --peach), без обводок, без uppercase-лейблов,
+   без иконочных бейджей. Радиусы — большие (--radius-card), типографика
+   — крупная, body 17–18px.
+   ========================================================================== */
+
+/* ----- :::tldr — «Коротко» в начале статьи -------------------------------
+   Цельная cream-подложка, заголовок жирным в нижнем регистре. Маркер
+   списка — мягкий чёрный диск, без чёрточек.                              */
+.article-tldr {
+  margin: 12px 0;
+  padding: 28px 32px;
+  background: var(--cream-soft);
+  border-radius: var(--radius-card);
+}
+
+.article-tldr__label {
+  margin: 0 0 12px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: var(--tracking-body);
+}
+
+.article-tldr__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.article-tldr__item {
+  position: relative;
+  padding-left: 20px;
+  color: var(--ink);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+}
+
+.article-tldr__item::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 0.72em;
+  width: 6px;
+  height: 6px;
+  background: var(--ink);
+  border-radius: 50%;
+}
+
+@media (min-width: 768px) {
+  .article-tldr {
+    padding: 32px 40px;
+  }
+  .article-tldr__item {
+    font-size: 1.125rem;
+  }
+}
+
+/* ----- :::callout — note / tip / info / warning ---------------------------
+   Цельная пастельная подложка из палитры сайта. Без обводок и иконок.
+   Заголовок встроен жирным в первое предложение body.                     */
+.article-callout {
+  margin: 12px 0;
+  padding: 22px 28px;
+  border-radius: var(--radius-card);
+  background: var(--background-2);
+}
+
+.article-callout__body {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+.article-callout__title {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.article-callout--tip     { background: var(--lime-soft);   }
+.article-callout--info    { background: var(--sky-soft);    }
+.article-callout--warning { background: var(--peach-soft);  }
+.article-callout--note    { background: var(--cream-soft);  }
+
+@media (min-width: 768px) {
+  .article-callout {
+    padding: 26px 32px;
+  }
+  .article-callout__body {
+    font-size: 1.125rem;
+  }
+}
+
+/* ----- :::mistakes — пронумерованный run-in список ------------------------
+   Praktikum-формат: «1. Заголовок. Описание идёт сразу после жирного
+   заголовка в том же абзаце». Без карточек, без обводок, без бейджей.    */
+.article-mistakes {
+  margin: 12px 0;
+  display: grid;
+  gap: 20px;
+}
+
+.article-mistakes__head {
+  display: grid;
+  gap: 8px;
+}
+
+.article-mistakes__title {
+  margin: 0;
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: var(--tracking-h2);
+  color: var(--ink);
+}
+
+.article-mistakes__intro {
+  margin: 0;
+  color: var(--muted-strong);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  max-width: 640px;
+}
+
+.article-mistakes__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 14px;
+  counter-reset: mistake;
+}
+
+.article-mistakes__item {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.article-mistakes__num {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--ink);
+  font-feature-settings: "tnum" on;
+  text-align: right;
+}
+
+.article-mistakes__text {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+}
+
+.article-mistakes__item-title {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+@media (min-width: 768px) {
+  .article-mistakes__item {
+    grid-template-columns: 32px 1fr;
+    gap: 12px;
+  }
+  .article-mistakes__num,
+  .article-mistakes__text {
+    font-size: 1.125rem;
+  }
+}
+
+/* ----- :::stats — strip больших цифр --------------------------------------
+   Цельная cream-подложка. Без обводок и без вертикальных разделителей —
+   разделение цифр идёт только через сетку и воздух.                       */
+.article-stats {
+  margin: 16px 0;
+  padding: 28px 32px;
+  border-radius: var(--radius-card);
+  background: var(--cream-soft);
+}
+
+.article-stats__grid {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 24px 16px;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (min-width: 768px) {
+  .article-stats__grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .article-stats[data-count="3"] .article-stats__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .article-stats[data-count="5"] .article-stats__grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.article-stats__item {
+  display: grid;
+  gap: 6px;
+}
+
+.article-stats__value {
+  margin: 0;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.article-stats__number {
+  font-size: clamp(2.6rem, 1.8rem + 3vw, 3.75rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.article-stats__unit {
+  font-size: 0.95rem;
+  color: var(--muted);
+  font-weight: 500;
+  letter-spacing: var(--tracking-body);
+}
+
+.article-stats__label {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--muted-strong);
+  line-height: 1.4;
+  letter-spacing: var(--tracking-body);
+}
+
+@media (min-width: 768px) {
+  .article-stats {
+    padding: 32px 40px;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ----- :::faq — встроенный FAQ внутри статьи -----------------------------*/
+.article-faq {
+  margin: 16px 0;
+  display: grid;
+  gap: 18px;
+}
+
+.article-faq__head {
+  display: grid;
+  gap: 6px;
+}
+
+.article-faq__title {
+  margin: 0;
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: var(--tracking-h2);
+  color: var(--ink);
+}
+
+.article-faq__description {
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+}
+
+.article-faq__card {
+  max-width: none;
+  margin: 0;
+}
+
+.prose-article > .article-tldr,
+.prose-article > .article-callout,
+.prose-article > .article-mistakes,
+.prose-article > .article-stats,
+.prose-article > .article-faq {
+  margin-top: 8px;
+}
+
+/* Dark theme — приглушаем пастель, сохраняем смысловые акценты. */
+html[data-theme="dark"] {
+  .article-tldr,
+  .article-stats {
+    background: rgba(255, 255, 255, 0.04);
+  }
+  .article-tldr__item,
+  .article-tldr__label,
+  .article-mistakes__num,
+  .article-mistakes__text,
+  .article-mistakes__item-title,
+  .article-stats__number,
+  .article-callout__body,
+  .article-callout__title {
+    color: var(--foreground);
+  }
+  .article-tldr__item::before { background: var(--foreground); }
+  .article-callout--note { background: rgba(255, 255, 255, 0.04); }
+  .article-callout--tip {
+    background: rgba(184, 210, 100, 0.18);
+  }
+  .article-callout--info {
+    background: rgba(120, 160, 210, 0.18);
+  }
+  .article-callout--warning {
+    background: rgba(220, 150, 110, 0.18);
+  }
+}
+
+/* ==========================================================================
    Yandex pulse overrides для секций.
    Снижают агрессивность font-bold/letter-spacing tailwind utility-классов
    изнутри карточек. Селекторы достаточно специфичны, чтобы перебить

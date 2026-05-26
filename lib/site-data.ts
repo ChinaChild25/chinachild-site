@@ -80,11 +80,44 @@ export type Teacher = {
   alumniOf?: string;
 };
 
+export type ReviewSource =
+  | "site-form"
+  | "yandex-maps"
+  | "2gis"
+  | "telegram"
+  | "vk"
+  | "email"
+  | "google-business"
+  | "zoon"
+  | "other";
+
+export const REVIEW_SOURCE_LABELS: Record<ReviewSource, string> = {
+  "site-form": "Форма обратной связи на сайте",
+  "yandex-maps": "Яндекс.Карты",
+  "2gis": "2GIS",
+  telegram: "Telegram",
+  vk: "ВКонтакте",
+  email: "Email",
+  "google-business": "Google Business Profile",
+  zoon: "Zoon",
+  other: "Сторонний источник",
+};
+
 export type Review = {
   author: string;
   result: string;
   body: string;
   image: string;
+  /** ISO 8601, например "2026-03-15". Передаётся в schema.org Review#datePublished. */
+  date?: string;
+  /** Откуда получен отзыв. Влияет на schema.org publisher и подпись в UI. */
+  source?: ReviewSource;
+  /** Рейтинг 1–5 (по умолчанию 5). Передаётся в reviewRating.ratingValue. */
+  rating?: 1 | 2 | 3 | 4 | 5;
+  /** Прямой URL первичного отзыва, если опубликован на стороннем ресурсе. */
+  verifyUrl?: string;
+  /** Slug курса, на котором учился ученик (для фильтрации /reviews по курсам). */
+  course?: string;
 };
 
 export type PricingTier = {

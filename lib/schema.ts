@@ -14,6 +14,7 @@ import {
 import {
   courses,
   processSteps,
+  REVIEW_SOURCE_LABELS,
   reviews,
   siteFacts,
   teachers,
@@ -191,18 +192,34 @@ export function createAggregateRatingNode(): JsonLd {
 }
 
 export function createReviewNode(review: Review): JsonLd {
-  return {
+  const node: JsonLd = {
     "@type": "Review",
     reviewBody: review.body,
     author: { "@type": "Person", name: review.author },
     reviewRating: {
       "@type": "Rating",
-      ratingValue: "5",
+      ratingValue: String(review.rating ?? 5),
       bestRating: "5",
+      worstRating: "1",
     },
     itemReviewed: { "@id": ID.organization },
   };
+  if (review.date) {
+    node.datePublished = review.date;
+  }
+  if (review.verifyUrl) {
+    node.url = review.verifyUrl;
+  }
+  if (review.source) {
+    // schema.org publisher node helps search engines weigh review provenance.
+    node.publisher = {
+      "@type": "Organization",
+      name: REVIEW_SOURCE_LABELS[review.source],
+    };
+  }
+  return node;
 }
+
 
 export function createTeacherNode(
   teacher: Teacher,

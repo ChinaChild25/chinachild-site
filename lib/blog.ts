@@ -15,12 +15,38 @@ export type BlogPost = {
   content: string;
 };
 
+export type MistakeItem = { title: string; description: string };
+export type StatItem = { value: string; unit?: string; label: string };
+export type CalloutVariant = "tip" | "info" | "warning" | "note";
+export type FaqEntry = { question: string; answer: string };
+
 export type ArticleBlock =
   | { type: "heading"; level: 2 | 3; text: string }
   | { type: "paragraph"; text: string }
   | { type: "list"; items: string[] }
   | { type: "table"; headers: string[]; rows: string[][] }
-  | { type: "image"; src: string; alt: string };
+  | { type: "image"; src: string; alt: string }
+  | { type: "tldr"; points: string[] }
+  | {
+      type: "callout";
+      variant: CalloutVariant;
+      title?: string;
+      body: string;
+    }
+  | {
+      type: "mistakes";
+      heading?: string;
+      intro?: string;
+      items: MistakeItem[];
+    }
+  | { type: "stats"; items: StatItem[] }
+  | {
+      type: "faq";
+      title?: string;
+      description?: string;
+      items: FaqEntry[];
+      jsonLd?: boolean;
+    };
 
 const BLOG_DIRECTORY = path.join(process.cwd(), "content", "blog");
 
@@ -150,6 +176,106 @@ function isTableSeparator(line: string): boolean {
   return cells.every((c) => /^:?-{3,}:?$/.test(c));
 }
 
+const CALLOUT_VARIANTS: CalloutVariant[] = ["tip", "info", "warning", "note"];
+
+function parseDirective(name: string, payload: string): ArticleBlock | null {
+  const trimmed = payload.trim();
+  if (!trimmed) return null;
+  let data: unknown;
+  try {
+    data = JSON.parse(trimmed);
+  } catch {
+    return null;
+  }
+  if (!data || typeof data !== "object") return null;
+  const d = data as Record<string, unknown>;
+
+  if (name === "tldr") {
+    const points = Array.isArray(d.points) ? (d.points as unknown[]) : [];
+    const filtered = points.filter((p): p is string => typeof p === "string");
+    if (filtered.length === 0) return null;
+    return { type: "tldr", points: filtered };
+  }
+
+  if (name === "callout") {
+    const variant = CALLOUT_VARIANTS.includes(d.variant as CalloutVariant)
+      ? (d.variant as CalloutVariant)
+      : "note";
+    const body = typeof d.body === "string" ? d.body : "";
+    if (!body) return null;
+    return {
+      type: "callout",
+      variant,
+      title: typeof d.title === "string" ? d.title : undefined,
+      body,
+    };
+  }
+
+  if (name === "mistakes") {
+    const rawItems = Array.isArray(d.items) ? d.items : [];
+    const items: MistakeItem[] = rawItems
+      .filter(
+        (it): it is { title: string; description: string } =>
+          !!it &&
+          typeof it === "object" &&
+          typeof (it as Record<string, unknown>).title === "string" &&
+          typeof (it as Record<string, unknown>).description === "string",
+      )
+      .map((it) => ({ title: it.title, description: it.description }));
+    if (items.length === 0) return null;
+    return {
+      type: "mistakes",
+      heading: typeof d.heading === "string" ? d.heading : undefined,
+      intro: typeof d.intro === "string" ? d.intro : undefined,
+      items,
+    };
+  }
+
+  if (name === "stats") {
+    const rawItems = Array.isArray(d.items) ? d.items : [];
+    const items: StatItem[] = rawItems
+      .filter(
+        (it): it is { value: string; label: string; unit?: string } =>
+          !!it &&
+          typeof it === "object" &&
+          typeof (it as Record<string, unknown>).value === "string" &&
+          typeof (it as Record<string, unknown>).label === "string",
+      )
+      .map((it) => ({
+        value: it.value,
+        label: it.label,
+        unit: typeof (it as Record<string, unknown>).unit === "string"
+          ? (it as { unit: string }).unit
+          : undefined,
+      }));
+    if (items.length === 0) return null;
+    return { type: "stats", items };
+  }
+
+  if (name === "faq") {
+    const rawItems = Array.isArray(d.items) ? d.items : [];
+    const items: FaqEntry[] = rawItems
+      .filter(
+        (it): it is { question: string; answer: string } =>
+          !!it &&
+          typeof it === "object" &&
+          typeof (it as Record<string, unknown>).question === "string" &&
+          typeof (it as Record<string, unknown>).answer === "string",
+      )
+      .map((it) => ({ question: it.question, answer: it.answer }));
+    if (items.length === 0) return null;
+    return {
+      type: "faq",
+      title: typeof d.title === "string" ? d.title : undefined,
+      description: typeof d.description === "string" ? d.description : undefined,
+      items,
+      jsonLd: d.jsonLd === false ? false : true,
+    };
+  }
+
+  return null;
+}
+
 export function parseArticleBlocks(content: string): ArticleBlock[] {
   const lines = content.split("\n");
   const blocks: ArticleBlock[] = [];
@@ -187,6 +313,35 @@ export function parseArticleBlocks(content: string): ArticleBlock[] {
     if (!line) {
       flushParagraph();
       flushList();
+      continue;
+    }
+
+    // ::: directive block. Format:
+    //   :::<name>
+    //   { ...JSON payload... }
+    //   :::
+    // Unknown / malformed directives are skipped silently — the raw fence
+    // disappears but content authors don't crash the build.
+    if (line.startsWith(":::") && line.length > 3) {
+      flushParagraph();
+      flushList();
+      const name = line.slice(3).trim();
+      const payloadLines: string[] = [];
+      i++;
+      let closed = false;
+      while (i < lines.length) {
+        const inner = lines[i];
+        if (inner.trim() === ":::") {
+          closed = true;
+          break;
+        }
+        payloadLines.push(inner);
+        i++;
+      }
+      if (closed) {
+        const directive = parseDirective(name, payloadLines.join("\n"));
+        if (directive) blocks.push(directive);
+      }
       continue;
     }
 
