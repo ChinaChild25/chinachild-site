@@ -29,6 +29,8 @@ const STATIC_ROUTES = [
   "/zayavka",
   "/team",
   "/learn/hsk",
+  "/learn/beginners",
+  "/corporate",
   "/price",
   "/free-trial",
   "/compare/mini-group-vs-individual",

@@ -32,6 +32,10 @@ const TERMS: Term[] = [
   { match: /отзыв[ыи]\s+учеников/i, href: "/reviews" },
   { match: /цен[аыу]|стоимост[ьи]|тариф/i, href: "/price" },
   { match: /мини-групп[аеу]\s+vs|мини-групп[аеу]\s+или\s+индивидуально|групп[аеу]\s+или\s+индивидуально/i, href: "/compare/mini-group-vs-individual" },
+  // Pillar hubs
+  { match: /китайск(ий|ого)\s+с\s+нуля|для\s+начинающих/i, href: "/learn/beginners" },
+  { match: /корпоративн[а-я]+\s+(обучени[ея]|курс[а-я]*|программ[а-я]*)\s+китайск/i, href: "/corporate" },
+  { match: /репетитор[а-я]*\s+китайского/i, href: "/repetitor-kitayskogo" },
   // City pages
   { match: /курс[ы]?\s+(?:в\s+)?Москв[еы]/i, href: "/cities/moscow" },
   { match: /Санкт-Петербург[а-я]*|СПб|Питер[а-я]*/i, href: "/cities/saint-petersburg" },
@@ -63,7 +67,26 @@ const TERMS: Term[] = [
   },
   { match: /\bмандарин\b/i, href: "/glossary/mandarin" },
   { match: /\bкантонск[а-я]*\b/i, href: "/glossary/cantonese" },
+  { match: /\b(тайваньск[а-я]*\s+(путунхуа|мандарин|китайск)|G(uó|uo)y(ǔ|u))\b/i, href: "/glossary/taiwan-mandarin" },
   { match: /\b(чэнъюй|идиом[а-я]*\s+китайск)/i, href: "/glossary/chengyu" },
+  // Modern China platforms & culture (new glossary terms)
+  { match: /\bWeChat\b|\b(вичат|вэйсинь|微信)/i, href: "/glossary/wechat" },
+  { match: /\bхунбао\b|\bкрасн[а-я]+\s+конверт/i, href: "/glossary/hong-bao" },
+  { match: /\b(чуньцзе|китайск[а-я]+\s+нов[а-я]+\s+год|春节)\b/i, href: "/glossary/chun-jie" },
+  // Grammar & writing (new glossary terms)
+  { match: /\bчаст[ия]ц[аеу]\s+了\b/i, href: "/glossary/le-particle" },
+  { match: /\bконструкци[а-я]+\s+с\s+把\b|\b把-конструкци/i, href: "/glossary/ba-construction" },
+  { match: /\bконструкци[а-я]+\s+是…?的\b|\bвыделительн[а-я]+\s+конструкци/i, href: "/glossary/shi-de" },
+  { match: /\bсч[её]тн[а-я]+\s+слов/i, href: "/glossary/liangci" },
+  { match: /\bграфем[а-я]*\s+канси|\bграфем[а-я]+\s+иероглиф/i, href: "/glossary/bushou" },
+  { match: /\b(черт[а-я]+\s+иероглиф|笔画|порядок\s+написани[а-я]+\s+иероглиф)/i, href: "/glossary/bihua" },
+  { match: /\b(инициал[а-я]+\s+и\s+финал[а-я]+|声母|韵母)/i, href: "/glossary/shengmu-yunmu" },
+  { match: /\b(шесть\s+категори[а-я]+\s+иероглиф|六书|liushu)/i, href: "/glossary/liushu" },
+  // Tools (new glossary terms)
+  { match: /\bPleco\b/, href: "/glossary/pleco" },
+  { match: /\b[AА]nki\b/, href: "/glossary/anki-chinese" },
+  // HSK 3.0 — the new test version
+  { match: /\bHSK\s*3\.0|нов[а-я]+\s+HSK|HSK\s+(?:3\.0|3-0)/i, href: "/glossary/hsk-3-0" },
   { match: /\b(система\s+)?палладий|палладиц/i, href: "/glossary/palladiy" },
   {
     match: /\bинститут[а-я]*\s+Конфуци/i,

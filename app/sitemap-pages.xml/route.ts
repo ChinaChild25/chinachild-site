@@ -56,6 +56,8 @@ export async function GET() {
     cityTemplateMtime,
     hskTemplateMtime,
     learnHubMtime,
+    learnBeginnersMtime,
+    corporateMtime,
     priceMtime,
     freeTrialMtime,
     compareMtime,
@@ -84,6 +86,8 @@ export async function GET() {
     fileMtime("app/cities/[slug]/page.tsx", now),
     fileMtime("app/hsk/[slug]/page.tsx", now),
     fileMtime("app/learn/hsk/page.tsx", now),
+    fileMtime("app/learn/beginners/page.tsx", now),
+    fileMtime("app/corporate/page.tsx", now),
     fileMtime("app/price/page.tsx", now),
     fileMtime("app/free-trial/page.tsx", now),
     fileMtime("app/compare/mini-group-vs-individual/page.tsx", now),
@@ -118,8 +122,10 @@ export async function GET() {
     { loc: absoluteUrl("/free-trial"), lastmod: freeTrialMtime, changefreq: "monthly", priority: 0.88 },
     { loc: absoluteUrl("/zayavka"), lastmod: zayavkaMtime, changefreq: "monthly", priority: 0.86 },
 
-    // HSK level cluster
+    // Learning hubs — pillar pages
     { loc: absoluteUrl("/learn/hsk"), lastmod: learnHubMtime, changefreq: "weekly", priority: 0.92 },
+    { loc: absoluteUrl("/learn/beginners"), lastmod: learnBeginnersMtime, changefreq: "weekly", priority: 0.9 },
+    { loc: absoluteUrl("/corporate"), lastmod: corporateMtime, changefreq: "weekly", priority: 0.88 },
     ...hskLevels.map<UrlEntry>((l) => ({
       loc: absoluteUrl(`/hsk/${l.slug}`),
       lastmod: hskTemplateMtime,
