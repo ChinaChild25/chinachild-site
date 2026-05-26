@@ -10,7 +10,7 @@ export default function Image() {
     badge: "Курсы",
     title: "Подготовка к HSK 1–6 онлайн",
     subtitle: "Все уровни международного экзамена · преподаватели ЮФУ и ДГТУ · опыт 10+ лет",
-    price: "от 4 999 ₽",
+    price: "от 17 990 ₽",
     background: "#efeae0",
     cta: "Записаться",
   });

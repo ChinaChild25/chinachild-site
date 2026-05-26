@@ -30,21 +30,25 @@ const trialSteps = [
     title: "Диагностика цели",
     body:
       "Преподаватель уточняет, зачем вам китайский: HSK, работа, переезд, путешествия, школа или разговорная практика. От цели зависит темп и набор материалов.",
+    tone: "card-cream-soft" as const,
   },
   {
     title: "Проверка уровня",
     body:
       "Если вы уже учили китайский, смотрим произношение, пиньинь, тоны, чтение и базовую грамматику. Если стартуете с нуля, объясняем маршрут HSK 1–2.",
+    tone: "card-sky-soft" as const,
   },
   {
     title: "Мини-урок",
     body:
       "Вы пробуете живой фрагмент занятия: как преподаватель объясняет, как исправляет ошибки и как работает платформа ChinaChild.",
+    tone: "card-lime-soft" as const,
   },
   {
     title: "План на 4 недели",
     body:
       "В конце встречи вы получаете понятный первый план: сколько занятий в неделю, какой формат выбрать и когда реалистично выйти на следующий уровень.",
+    tone: "card-peach-soft" as const,
   },
 ];
 
@@ -86,8 +90,9 @@ export default function FreeTrialPage() {
         ]}
       />
 
+      {/* ===== HERO: intro on the left, light-gray form card on the right ===== */}
       <section className="page-shell-wide section-space">
-        <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
           <div className="max-w-xl">
             <span className="tag-pill">Бесплатное занятие</span>
             <h1 className="mt-6 text-[2.25rem] font-medium leading-[1.08] tracking-[-0.025em] text-[#262626] sm:text-[3rem]">
@@ -130,26 +135,50 @@ export default function FreeTrialPage() {
             </div>
           </div>
 
-          <div className="card-block lead-form-wrap">
-            <LeadForm source="free-trial-page" />
-          </div>
+          <aside className="lg:sticky lg:top-24">
+            <div className="card-block card-block-lg lead-form-wrap lead-form-wrap--gray">
+              <header className="mb-6">
+                <p className="text-[1.15rem] font-medium leading-[1.25] text-[#1b1b1b]">
+                  Запишитесь на пробный урок
+                </p>
+                <p className="mt-1 text-sm leading-[1.45] text-[#4b4b4b]">
+                  Перезвоним в течение рабочего дня, чтобы согласовать удобное время.
+                </p>
+              </header>
+              <LeadForm source="free-trial-page" />
+            </div>
+          </aside>
         </div>
       </section>
 
+      {/* ===== 4 STEPS ============================================== */}
       <section className="page-shell-wide section-space">
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+        <div className="max-w-2xl">
+          <span className="tag-pill">Как пройдёт встреча</span>
+          <h2 className="mt-4 text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-[#1b1b1b] sm:text-[2rem]">
+            Четыре шага за один пробный урок
+          </h2>
+          <p className="mt-3 text-base leading-[1.55] text-[#4b4b4b]">
+            Никакой обязательной программы и продажи курса — встреча задумана как полезная
+            короткая консультация, после которой понятно, что делать дальше.
+          </p>
+        </div>
+        <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {trialSteps.map((step, index) => (
-            <article key={step.title} className="card-block card-cream-soft">
-              <span className="tag-pill">Шаг {index + 1}</span>
-              <h2 className="mt-5 text-[1.25rem] font-medium leading-[1.2] tracking-[-0.01em] text-[#262626]">
+            <article key={step.title} className={`card-block h-full ${step.tone}`}>
+              <span className="text-[2rem] font-medium leading-none tracking-[-0.02em] text-[#262626]/30">
+                0{index + 1}
+              </span>
+              <h3 className="mt-5 text-[1.15rem] font-medium leading-[1.25] tracking-[-0.01em] text-[#262626]">
                 {step.title}
-              </h2>
+              </h3>
               <p className="mt-3 text-sm leading-[1.6] text-[#4b4b4b]">{step.body}</p>
             </article>
           ))}
         </div>
       </section>
 
+      {/* ===== TAKEAWAY CARD ========================================== */}
       <section className="page-shell-wide section-space">
         <div className="card-block card-block-lg card-violet-soft">
           <h2 className="text-[1.75rem] font-normal leading-[1.15] tracking-[-0.02em] text-[#262626] sm:text-[2rem]">

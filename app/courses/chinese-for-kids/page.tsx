@@ -93,8 +93,8 @@ export default function ChineseForKidsPage() {
         level: "HSK 1–2",
         duration: "От 2 месяцев",
         format: "Один на один с преподавателем",
-        price: "от 28 990 ₽",
-        priceValue: "28990",
+        price: "от 17 990 ₽",
+        priceValue: "17990",
         description:
           "Лицензированный курс китайского языка для подростков с 12 лет. Программа HSK 1–2, разговорный уровень за 6 месяцев.",
         audience: "Школьники 12+",

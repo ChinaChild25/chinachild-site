@@ -22,13 +22,18 @@ const securityHeaders = [
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://mc.yandex.ru https://mc.yandex.com https://mc.webvisor.org https://mc.webvisor.com https://yastatic.net https://www.googletagmanager.com https://*.googletagmanager.com https://www.google-analytics.com https://*.vercel-insights.com https://va.vercel-scripts.com",
+      // Yandex SmartCaptcha widget loads from TWO different domains:
+      //   - smartcaptcha.cloud.yandex.ru     — captcha.js loader + iframe + AJAX
+      //   - smartcaptcha.yandexcloud.net     — challenge assets / fallback
+      // Wildcard `*.yandex.ru` НЕ покрывает smartcaptcha.cloud.yandex.ru —
+      // CSP-маски однокомпонентные, а здесь два уровня поддоменов.
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://mc.yandex.ru https://mc.yandex.com https://mc.webvisor.org https://mc.webvisor.com https://yastatic.net https://smartcaptcha.yandexcloud.net https://smartcaptcha.cloud.yandex.ru https://www.googletagmanager.com https://*.googletagmanager.com https://www.google-analytics.com https://*.vercel-insights.com https://va.vercel-scripts.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' data: https://fonts.gstatic.com",
-      "img-src 'self' data: blob: https://mc.yandex.ru https://mc.yandex.com https://yandex.ru https://*.yandex.ru https://*.yandex.com https://mc.webvisor.org https://mc.webvisor.com https://www.google-analytics.com https://*.google-analytics.com https://stats.g.doubleclick.net https://*.vercel.app",
-      "connect-src 'self' https://mc.yandex.ru https://mc.yandex.com https://*.yandex.ru https://*.mc.yandex.ru https://yandex.ru https://mc.webvisor.org https://mc.webvisor.com wss://mc.yandex.ru wss://mc.yandex.com wss://*.yandex.ru wss://mc.webvisor.org wss://mc.webvisor.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://stats.g.doubleclick.net https://*.vercel-insights.com https://vitals.vercel-insights.com https://*.supabase.co https://cdn.jsdelivr.net",
+      "img-src 'self' data: blob: https://mc.yandex.ru https://mc.yandex.com https://yandex.ru https://*.yandex.ru https://*.yandex.com https://mc.webvisor.org https://mc.webvisor.com https://smartcaptcha.yandexcloud.net https://smartcaptcha.cloud.yandex.ru https://www.google-analytics.com https://*.google-analytics.com https://stats.g.doubleclick.net https://*.vercel.app",
+      "connect-src 'self' https://mc.yandex.ru https://mc.yandex.com https://*.yandex.ru https://*.mc.yandex.ru https://yandex.ru https://mc.webvisor.org https://mc.webvisor.com https://smartcaptcha.yandexcloud.net https://smartcaptcha.cloud.yandex.ru wss://mc.yandex.ru wss://mc.yandex.com wss://*.yandex.ru wss://mc.webvisor.org wss://mc.webvisor.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://stats.g.doubleclick.net https://*.vercel-insights.com https://vitals.vercel-insights.com https://*.supabase.co https://cdn.jsdelivr.net",
       "media-src 'self' blob: data: https://*.supabase.co",
-      "frame-src https://mc.yandex.ru https://mc.yandex.com https://mc.webvisor.org https://mc.webvisor.com https://yandex.ru https://*.yandex.ru",
+      "frame-src https://mc.yandex.ru https://mc.yandex.com https://mc.webvisor.org https://mc.webvisor.com https://yandex.ru https://*.yandex.ru https://smartcaptcha.yandexcloud.net https://smartcaptcha.cloud.yandex.ru",
       "frame-ancestors 'self'",
       "base-uri 'self'",
       "form-action 'self'",

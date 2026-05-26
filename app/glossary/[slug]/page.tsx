@@ -115,11 +115,13 @@ export default async function GlossaryTermPage({ params }: GlossaryTermPageProps
           </p>
         </header>
 
-        <div className="prose-article mx-auto mt-12 max-w-3xl">
-          {term.body.split(/\n\n+/).map((paragraph, idx) => (
-            <p key={idx}>{paragraph}</p>
-          ))}
-        </div>
+        <div
+          className="prose-article mx-auto mt-12 max-w-3xl"
+          // bodyHtml уже отрендерен из доверенного локального .mdx (parses
+          // только то, что мы сами авторим в /content/glossary). XSS-вектор
+          // отсутствует — пользовательский контент сюда не попадает.
+          dangerouslySetInnerHTML={{ __html: term.bodyHtml }}
+        />
 
         {related.length > 0 ? (
           <aside className="mx-auto mt-16 max-w-3xl">

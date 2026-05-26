@@ -1,11 +1,20 @@
 import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
+import { marked } from "marked";
+
+// GFM enabled by default (tables, autolinks, line breaks etc.).
+// `gfm: true` keeps pipe-tables working; `breaks: false` preserves standard
+// markdown paragraph behavior so authors can use blank lines as separators.
+marked.setOptions({ gfm: true, breaks: false });
 
 export type GlossaryTerm = {
   slug: string;
   term: string;
   shortDefinition: string;
+  /** Raw markdown body (без frontmatter). */
   body: string;
+  /** Pre-rendered HTML — готов к `dangerouslySetInnerHTML`. */
+  bodyHtml: string;
   related: string[];
   updatedAt: string;
 };
@@ -35,11 +44,16 @@ function parseFrontmatter(source: string): { fm: Record<string, string>; content
 
 function build(slug: string, source: string): GlossaryTerm {
   const { fm, content } = parseFrontmatter(source);
+  // Контент в .mdx-файлах — обычный GFM-markdown. Парсим его в HTML здесь,
+  // чтобы на странице не приходилось тащить markdown-парсер в клиентский бандл
+  // и не было соблазна вывести raw-маркдаун `<p>`-параграфами (как было раньше).
+  const bodyHtml = marked.parse(content, { async: false }) as string;
   return {
     slug,
     term: fm.term ?? slug,
     shortDefinition: fm.shortDefinition ?? "",
     body: content,
+    bodyHtml,
     related: (fm.related ?? "")
       .split(",")
       .map((s) => s.trim())

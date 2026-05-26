@@ -4,6 +4,25 @@ import { SmartCaptcha } from "@yandex/smart-captcha";
 import { useEffect, useId, useState } from "react";
 import { CONTACT_EMAIL, CONTACT_PHONE, CONTACT_PHONE_TEL } from "@/lib/site-config";
 
+// Reads the current theme from `<html data-theme="…">` and subscribes to
+// changes so the captcha widget re-renders with the matching colour scheme
+// when the user toggles the site theme.
+function useSiteTheme(): "light" | "dark" {
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const read = () =>
+      setTheme(root.getAttribute("data-theme") === "dark" ? "dark" : "light");
+    read();
+    const observer = new MutationObserver(read);
+    observer.observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+    return () => observer.disconnect();
+  }, []);
+
+  return theme;
+}
+
 const COURSE_OPTIONS = [
   { value: "", label: "—" },
   { value: "online-chinese", label: "Онлайн-курс с нуля (HSK 1–2)" },
@@ -120,6 +139,7 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
   const [formStartedAt, setFormStartedAt] = useState<number>(() => Date.now());
   const [captchaToken, setCaptchaToken] = useState<string>("");
   const [captchaResetKey, setCaptchaResetKey] = useState<number>(0);
+  const captchaTheme = useSiteTheme();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -373,10 +393,14 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
       {smartCaptchaSiteKey ? (
         <div className="lead-smart-captcha">
           <SmartCaptcha
-            key={captchaResetKey}
+            // Re-key on theme change so the iframe reloads with the new colour
+            // scheme (Yandex applies `theme` only on initial mount).
+            key={`${captchaResetKey}-${captchaTheme}`}
             sitekey={smartCaptchaSiteKey}
             onSuccess={setCaptchaToken}
             onTokenExpired={() => setCaptchaToken("")}
+            theme={captchaTheme}
+            language="ru"
           />
         </div>
       ) : null}

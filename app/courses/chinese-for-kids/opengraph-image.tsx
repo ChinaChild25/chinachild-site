@@ -10,7 +10,7 @@ export default function Image() {
     badge: "Курсы",
     title: "Китайский для школьников 12+ онлайн",
     subtitle: "Индивидуальный курс HSK 1–2 · скидка 10% при оплате за 2 месяца",
-    price: "от 28 990 ₽",
+    price: "от 17 990 ₽",
     background: "#cfe0f4",
     cta: "Записаться",
   });

@@ -98,8 +98,8 @@ export default function HskPreparationPage() {
         level: "HSK 1–6",
         duration: "От 6 месяцев",
         format: "Онлайн, мини-группа или индивидуально",
-        price: "от 4 999 ₽",
-        priceValue: "4999",
+        price: "от 17 990 ₽",
+        priceValue: "17990",
         description:
           "Лицензированная программа подготовки к международному экзамену HSK всех уровней — от HSK 1 до HSK 6.",
         audience: "Подростки 12+ и взрослые",

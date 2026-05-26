@@ -17,6 +17,7 @@
     "hanzi-writer": "^3.7.3",
     "html-to-image": "^1.11.13",
     "lucide-react": "^1.11.0",
+    "marked": "^18.0.4",
     "next": "^15.5.15",
     "nodemailer": "^8.0.7",
     "react": "^19.2.5",

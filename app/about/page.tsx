@@ -465,10 +465,12 @@ export default function AboutPage() {
       {/* === PLATFORM SHOWCASE (text + real screenshots mosaic) ============ */}
       <section className="page-shell-wide section-space">
         <div className="card-block card-block-lg card-violet-soft">
-          <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
+          {/* Eyebrow lives above both columns so the heading on the left lines
+              up vertically with the segmented control on the right. */}
+          <span className="tag-pill">Собственная платформа</span>
+          <div className="mt-6 grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
             <div>
-              <span className="tag-pill">Собственная платформа</span>
-              <h2 className="mt-5 text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-[#1b1b1b] sm:text-[2.25rem]">
+              <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-[#1b1b1b] sm:text-[2.25rem]">
                 Урок, чат, домашка и записи — в одном кабинете
               </h2>
               <p className="mt-5 text-base leading-[1.65] text-[#4b4b4b]">
