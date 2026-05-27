@@ -693,7 +693,7 @@ export default function AboutPage() {
               <article className="card-block card-violet-soft">
                 <div className="tag-pill">Носитель путунхуа</div>
                 <p className="mt-4 text-sm leading-[1.6] text-[#4b4b4b]">
-                  Преподаватель из Китая с сертификатом HSK 6 даёт живую речь,
+                  Преподаватель-носитель из Китая даёт живую речь,
                   культурный контекст и разговорную скорость, к которой не
                   привыкаешь по учебнику.
                 </p>
