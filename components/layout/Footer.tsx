@@ -86,7 +86,7 @@ export default function Footer() {
           <div>
             Образовательная лицензия № {LICENSE_DETAILS.registrationNumber} от 18.12.2025,
             выдана {LICENSE_REGION_INSTRUMENTAL}. Программа «{LICENSE_PROGRAM}».
-            Налоговый вычет 13% — до 15 600 ₽ в год.{" "}
+            Налоговый вычет 13% — до 19 500 ₽ в год.{" "}
             <Link href="/license" className="underline underline-offset-4 hover:text-white">
               Подробнее о лицензии
             </Link>

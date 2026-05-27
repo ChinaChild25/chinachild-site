@@ -19,7 +19,7 @@ import {
 
 export const metadata: Metadata = buildMetadata({
   title: "Образовательная лицензия ChinaChild — Москва, программа HSK 1–2",
-  description: `Лицензия № ${LICENSE_DETAILS.registrationNumber} от Департамента образования Москвы. Право на налоговый вычет 13% — до 15 600 ₽ в год.`,
+  description: `Лицензия № ${LICENSE_DETAILS.registrationNumber} от Департамента образования Москвы. Право на налоговый вычет 13% — до 19 500 ₽ в год.`,
   path: "/license",
   keywords: [
     "лицензия школы китайского",
@@ -111,7 +111,7 @@ export default function LicensePage() {
       <PageHero
         eyebrow="Документы"
         title="Образовательная лицензия ChinaChild"
-        description={`Лицензия № ${LICENSE_DETAILS.registrationNumber} выдана ${LICENSE_REGION_INSTRUMENTAL} от ${LICENSE_DETAILS.issueDate}. Программа дополнительного профессионального образования «${LICENSE_PROGRAM}». Даёт ученикам право на налоговый вычет 13% — до 15 600 ₽ в год.`}
+        description={`Лицензия № ${LICENSE_DETAILS.registrationNumber} выдана ${LICENSE_REGION_INSTRUMENTAL} от ${LICENSE_DETAILS.issueDate}. Программа дополнительного профессионального образования «${LICENSE_PROGRAM}». Даёт ученикам право на налоговый вычет 13% — до 19 500 ₽ в год.`}
         primaryCta={{ label: "Записаться на пробное", modal: true }}
         secondaryCta={{ label: "О школе", href: "/about" }}
       />
@@ -130,7 +130,7 @@ export default function LicensePage() {
               </li>
               <li>
                 <strong className="text-[#262626]">Налоговый вычет 13%.</strong> Возвращаете
-                до 15 600 ₽ в год через личный кабинет ФНС или работодателя — социальный
+                до 19 500 ₽ в год через личный кабинет ФНС или работодателя — социальный
                 налоговый вычет за обучение, ст. 219 НК РФ.
               </li>
               <li>
@@ -255,7 +255,7 @@ export default function LicensePage() {
             </li>
             <li>
               <strong className="text-[#262626]">3. Получите возврат.</strong>{" "}
-              13% от стоимости обучения, до 15 600 ₽ в год — поступают на ваш счёт.
+              13% от стоимости обучения, до 19 500 ₽ в год — поступают на ваш счёт.
             </li>
           </ol>
           <div className="mt-8 flex flex-wrap gap-3">
