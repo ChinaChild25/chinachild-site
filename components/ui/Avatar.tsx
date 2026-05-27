@@ -1,8 +1,12 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
+// Каждый тон — пара «светлый фон + достаточно тёмный текст». --violet и
+// --violet-soft в палитре сейчас один цвет (#d8d3ff), поэтому fg для
+// фиолетового тона задаём явным тёмным фиолетовым, иначе инициалы сливаются
+// с фоном и кружок выглядит пустым.
 const tones = [
-  { bg: "var(--violet-soft)", fg: "var(--violet)" },
+  { bg: "var(--violet-soft)", fg: "#473a8a" },
   { bg: "#d8e9ff", fg: "#2a4a6e" },
   { bg: "var(--lime-soft)", fg: "#3a4d12" },
   { bg: "var(--sky)", fg: "#2a4a6e" },
