@@ -1,8 +1,17 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import LeadForm from "@/components/forms/LeadForm";
+import dynamic from "next/dynamic";
 import { trackEvent } from "@/lib/analytics";
+
+// LeadForm подтягивает SmartCaptcha (~2 МБ) сразу при монтировании.
+// На блог-страницах форма открывается у ~3% посетителей — нет смысла
+// тащить эти 2 МБ в initial bundle. Динамический импорт грузит чанк
+// только после первого открытия модалки.
+const LeadForm = dynamic(() => import("@/components/forms/LeadForm"), {
+  ssr: false,
+  loading: () => null,
+});
 
 type LeadModalProps = {
   /** Visible label inside the trigger button */
@@ -37,6 +46,9 @@ export default function LeadModal({
 }: LeadModalProps) {
   const dialogRef = useRef<HTMLDialogElement | null>(null);
   const [open, setOpen] = useState(false);
+  // Монтируем LeadForm (и тянем SmartCaptcha) только после первого
+  // открытия. После закрытия не размонтируем — state формы сохраняется.
+  const [hasOpenedOnce, setHasOpenedOnce] = useState(false);
 
   const closeDialog = useCallback(() => {
     const dialog = dialogRef.current;
@@ -53,6 +65,7 @@ export default function LeadModal({
       source: source ?? "modal",
       course: defaultCourse,
     });
+    setHasOpenedOnce(true);
     setOpen(true);
   }, [defaultCourse, source]);
 
@@ -125,7 +138,9 @@ export default function LeadModal({
             <p className="lead-dialog-description">{description}</p>
           ) : null}
           <div className="lead-dialog-form">
-            <LeadForm compact source={source ?? "modal"} defaultCourse={defaultCourse} />
+            {hasOpenedOnce ? (
+              <LeadForm compact source={source ?? "modal"} defaultCourse={defaultCourse} />
+            ) : null}
           </div>
         </div>
       </dialog>

@@ -42,7 +42,7 @@ export default function Footer() {
             </a>
           </div>
           <div className="mt-7">
-            <div className="text-xs font-medium text-white/45">
+            <div className="text-xs font-medium text-white/65">
               Площадки и отзывы
             </div>
             <div className="mt-3 flex flex-wrap gap-4">
@@ -80,7 +80,7 @@ export default function Footer() {
           <div>
             {LICENSEE.legalName} · ИНН {LICENSEE.inn}
           </div>
-          <div className="text-white/45">
+          <div className="text-white/65">
             ОГРНИП {LICENSEE.ogrnip} · Юридический адрес: {LICENSEE.address}
           </div>
           <div>
@@ -94,7 +94,7 @@ export default function Footer() {
           <div className="mt-1">
             <CookieSettingsButton />
           </div>
-          <div className="mt-4 text-white/35">
+          <div className="mt-4 text-white/60">
             © {new Date().getFullYear()} ChinaChild. Все права защищены.
           </div>
         </div>

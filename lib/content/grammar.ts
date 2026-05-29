@@ -122,26 +122,72 @@ type SectionRow = {
 type ArticleTagRow = { article_id: string; tag_id: string };
 type ArticleSectionRow = { article_id: string; section_id: string };
 type VocabTermSlugRow = { slug: string };
+type SupabaseErrorLike = { message: string };
+type RangeQuery<T> = {
+  range: (
+    from: number,
+    to: number,
+  ) => PromiseLike<{ data: T[] | null; error: SupabaseErrorLike | null }>;
+};
+type QueryResult<T> = { data: T | null; error: SupabaseErrorLike | null };
 
 type GrammarSnapshot = {
   articles: ArticleRow[];
-  blocks: BlockRow[];
   tags: TagRow[];
   sections: SectionRow[];
   articleTags: ArticleTagRow[];
   articleSections: ArticleSectionRow[];
-  vocabTermSlugs: string[];
 };
 
 const EMPTY_SNAPSHOT: GrammarSnapshot = {
   articles: [],
-  blocks: [],
   tags: [],
   sections: [],
   articleTags: [],
   articleSections: [],
-  vocabTermSlugs: [],
 };
+
+const SUPABASE_PAGE_SIZE = 1000;
+
+async function fetchAllRows<T>(
+  label: string,
+  makeQuery: () => RangeQuery<T>,
+): Promise<QueryResult<T[]>> {
+  const rows: T[] = [];
+  for (let from = 0; ; from += SUPABASE_PAGE_SIZE) {
+    const to = from + SUPABASE_PAGE_SIZE - 1;
+    const { data, error } = await makeQuery().range(from, to);
+    if (error) {
+      console.warn(`[public-content/grammar] ${label} supabase error:`, error.message);
+      return { data: null, error };
+    }
+    const page = data ?? [];
+    rows.push(...page);
+    if (page.length < SUPABASE_PAGE_SIZE) {
+      return { data: rows, error: null };
+    }
+  }
+}
+
+async function fetchKnownVocabSlugs(slugs: string[]): Promise<Set<string>> {
+  const supabase = getPublicSupabaseClient();
+  if (!supabase) return new Set();
+  const uniqueSlugs = Array.from(new Set(slugs.filter(Boolean)));
+  if (uniqueSlugs.length === 0) return new Set();
+
+  const rows: VocabTermSlugRow[] = [];
+  const chunkSize = 100;
+  for (let index = 0; index < uniqueSlugs.length; index += chunkSize) {
+    const chunk = uniqueSlugs.slice(index, index + chunkSize);
+    const { data, error } = await supabase.from("vocab_terms").select("slug").in("slug", chunk);
+    if (error) {
+      console.warn("[public-content/grammar] vocab_terms supabase error:", error.message);
+      return new Set();
+    }
+    rows.push(...((data ?? []) as VocabTermSlugRow[]));
+  }
+  return new Set(rows.map((row) => row.slug));
+}
 
 async function loadSnapshot(): Promise<GrammarSnapshot> {
   const supabase = getPublicSupabaseClient();
@@ -149,13 +195,12 @@ async function loadSnapshot(): Promise<GrammarSnapshot> {
 
   const [
     articlesRes,
-    blocksRes,
     tagsRes,
     sectionsRes,
     articleTagsRes,
     articleSectionsRes,
-    vocabTermsRes,
   ] = await Promise.all([
+    fetchAllRows<ArticleRow>("grammar_articles", () =>
       supabase
         .from("grammar_articles")
         .select(
@@ -163,50 +208,49 @@ async function loadSnapshot(): Promise<GrammarSnapshot> {
         )
         .eq("status", "published")
         .order("created_at", { ascending: true }),
-      supabase
-        .from("grammar_blocks")
-        .select("id, article_id, block_type, content, order_index")
-        .order("order_index", { ascending: true }),
+    ),
+    fetchAllRows<TagRow>("grammar_tags", () =>
       supabase
         .from("grammar_tags")
         .select("id, slug, label_ru, label_en, group_key, order_index")
         .order("group_key", { ascending: true })
         .order("order_index", { ascending: true }),
+    ),
+    fetchAllRows<SectionRow>("grammar_sections", () =>
       supabase
         .from("grammar_sections")
         .select(
           "id, slug, title_ru, title_en, description_ru, description_en, section_type, group_key, order_index",
         )
         .order("order_index", { ascending: true }),
+    ),
+    fetchAllRows<ArticleTagRow>("grammar_article_tags", () =>
       supabase.from("grammar_article_tags").select("article_id, tag_id"),
+    ),
+    fetchAllRows<ArticleSectionRow>("grammar_article_sections", () =>
       supabase.from("grammar_article_sections").select("article_id, section_id"),
-      supabase.from("vocab_terms").select("slug"),
-    ]);
+    ),
+  ]);
 
   for (const res of [
     articlesRes,
-    blocksRes,
     tagsRes,
     sectionsRes,
     articleTagsRes,
     articleSectionsRes,
-    vocabTermsRes,
   ]) {
     if (res.error) {
       // RLS / network errors should not crash the public site — degrade gracefully.
-      console.warn("[public-content/grammar] supabase error:", res.error.message);
       return EMPTY_SNAPSHOT;
     }
   }
 
   return {
     articles: (articlesRes.data ?? []) as ArticleRow[],
-    blocks: (blocksRes.data ?? []) as BlockRow[],
     tags: (tagsRes.data ?? []) as TagRow[],
     sections: (sectionsRes.data ?? []) as SectionRow[],
     articleTags: (articleTagsRes.data ?? []) as ArticleTagRow[],
     articleSections: (articleSectionsRes.data ?? []) as ArticleSectionRow[],
-    vocabTermSlugs: ((vocabTermsRes.data ?? []) as VocabTermSlugRow[]).map((row) => row.slug),
   };
 }
 
@@ -215,6 +259,56 @@ const getCachedSnapshot = nextCache(loadSnapshot, ["public-grammar-snapshot-v2"]
   revalidate: 300,
   tags: ["public-grammar"],
 });
+
+async function loadArticleBlocks(articleId: string): Promise<BlockRow[]> {
+  const supabase = getPublicSupabaseClient();
+  if (!supabase) return [];
+  const res = await fetchAllRows<BlockRow>("grammar_blocks", () =>
+    supabase
+      .from("grammar_blocks")
+      .select("id, article_id, block_type, content, order_index")
+      .eq("article_id", articleId)
+      .order("order_index", { ascending: true }),
+  );
+  return (res.data ?? []) as BlockRow[];
+}
+
+async function loadPublishedArticleBlocks(articleIds: string[]): Promise<BlockRow[]> {
+  const supabase = getPublicSupabaseClient();
+  if (!supabase) return [];
+  const uniqueIds = Array.from(new Set(articleIds.filter(Boolean)));
+  if (uniqueIds.length === 0) return [];
+
+  const blocks: BlockRow[] = [];
+  const chunkSize = 100;
+  for (let index = 0; index < uniqueIds.length; index += chunkSize) {
+    const chunk = uniqueIds.slice(index, index + chunkSize);
+    const res = await fetchAllRows<BlockRow>("grammar_blocks", () =>
+      supabase
+        .from("grammar_blocks")
+        .select("id, article_id, block_type, content, order_index")
+        .in("article_id", chunk)
+        .order("article_id", { ascending: true })
+        .order("order_index", { ascending: true }),
+    );
+    blocks.push(...((res.data ?? []) as BlockRow[]));
+  }
+  return blocks;
+}
+
+const getCachedArticleBlocks = nextCache(loadArticleBlocks, ["public-grammar-article-blocks-v1"], {
+  revalidate: 300,
+  tags: ["public-grammar"],
+});
+
+const getCachedPublishedArticleBlocks = nextCache(
+  loadPublishedArticleBlocks,
+  ["public-grammar-published-blocks-v1"],
+  {
+    revalidate: 300,
+    tags: ["public-grammar"],
+  },
+);
 
 function readMetadata(article: ArticleRow): Record<string, unknown> {
   if (!article.metadata || typeof article.metadata !== "object" || Array.isArray(article.metadata)) {
@@ -505,6 +599,21 @@ function vocabSlugFromItem(value: unknown): string | null {
   return stringValue(value.slug) ?? stringValue(value.term_slug);
 }
 
+function vocabSlugsFromBlockContent(content: unknown): string[] {
+  if (!looksLikeRecord(content)) return [];
+  const items = Array.isArray(content.terms)
+    ? content.terms
+    : Array.isArray(content.items)
+      ? content.items
+      : Array.isArray(content.links)
+        ? content.links
+        : [];
+  return items.flatMap((item) => {
+    const slug = vocabSlugFromItem(item);
+    return slug ? [slug] : [];
+  });
+}
+
 function filterVocabularyLinksBlockContent(
   content: unknown,
   knownVocabSlugs: ReadonlySet<string>,
@@ -533,9 +642,9 @@ export async function getPublicGrammarArticleBySlug(
   if (!article) return null;
   const card = mapArticleCard(article, snap);
 
-  const articleBlocks = snap.blocks
-    .filter((block) => block.article_id === article.id)
-    .sort((a, b) => a.order_index - b.order_index);
+  const articleBlocks = (await getCachedArticleBlocks(article.id)).sort(
+    (a, b) => a.order_index - b.order_index,
+  );
 
   // Compute stable owner ids for every grammar example item in this article
   // and look up cached audio URLs in one round-trip.
@@ -562,7 +671,10 @@ export async function getPublicGrammarArticleBySlug(
     if (url) audioByBlockIndex.set(`${entry.blockId}|${entry.index}`, url);
   }
   const publishedSlugs = new Set(snap.articles.map((candidate) => candidate.slug));
-  const knownVocabSlugs = new Set(snap.vocabTermSlugs);
+  const vocabSlugs = articleBlocks.flatMap((block) =>
+    block.block_type === "vocabulary_links" ? vocabSlugsFromBlockContent(block.content) : [],
+  );
+  const knownVocabSlugs = await fetchKnownVocabSlugs(vocabSlugs);
 
   return {
     ...card,
@@ -644,8 +756,11 @@ export async function getPublicGrammarRelatedForTerm(
     .map((value) => value.toLowerCase());
   if (needles.length === 0 || snap.articles.length === 0) return [];
 
+  const publishedBlocks = await getCachedPublishedArticleBlocks(
+    snap.articles.map((article) => article.id),
+  );
   const blocksByArticle = new Map<string, string[]>();
-  for (const block of snap.blocks) {
+  for (const block of publishedBlocks) {
     const serialised = JSON.stringify(block.content).toLowerCase();
     const list = blocksByArticle.get(block.article_id) ?? [];
     list.push(serialised);

@@ -22,7 +22,7 @@ export async function generateMetadata({ searchParams }: GrammarPageProps): Prom
   const metadata = buildMetadata({
     title: "Грамматика китайского языка — справочник и правила | ChinaChild",
     description:
-      "Бесплатный справочник по грамматике китайского: схемы, конструкции, примеры с пиньинем и переводом. HSK 1–6 и Новый HSK.",
+      "Бесплатный справочник по грамматике китайского: схемы, конструкции, исключения, примеры с пиньинем и переводом. Уровни HSK 1–6 и Новый HSK 3.0.",
     path: "/grammar",
     keywords: [
       "грамматика китайского",

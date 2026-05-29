@@ -477,6 +477,37 @@ export function createHowToNode(): JsonLd {
   };
 }
 
+/**
+ * Per-article HowTo node — different from createHowToNode (which describes how
+ * to join the school). Used on step-format blog posts to surface SERP HowTo
+ * widgets like "How to learn pinyin in 7 days".
+ */
+export function createBlogHowToNode(input: {
+  url: string;
+  name: string;
+  description: string;
+  totalTime?: string;
+  steps: { name: string; text: string }[];
+}): JsonLd {
+  const node: JsonLd = {
+    "@type": "HowTo",
+    "@id": `${input.url}#howto`,
+    name: input.name,
+    description: input.description,
+    inLanguage: "ru-RU",
+    step: input.steps.map((step, index) => ({
+      "@type": "HowToStep",
+      position: index + 1,
+      name: step.name,
+      text: step.text,
+    })),
+  };
+  if (input.totalTime) {
+    node.totalTime = input.totalTime;
+  }
+  return node;
+}
+
 export function createFaqNode(items: FaqItem[]): JsonLd {
   return {
     "@type": "FAQPage",
@@ -552,7 +583,19 @@ export function createSiteGraph(): JsonLd {
   const speakable: JsonLd = {
     "@type": "SpeakableSpecification",
     "@id": `${SITE_URL}/#speakable`,
-    cssSelector: ["h1", "[data-speakable]", ".faq-question", ".faq-answer"],
+    // Голосовые ассистенты (Алиса, Google Assistant) читают первый совпавший
+    // селектор: сначала H1, затем подзаголовок/lead на главной и внутренних,
+    // затем TLDR-пункты в блоге, затем FAQ. Любой узел с data-speakable —
+    // ручной opt-in.
+    cssSelector: [
+      "h1",
+      ".home-hero-description",
+      ".page-hero-description",
+      ".article-tldr__item",
+      "[data-speakable]",
+      ".faq-question",
+      ".faq-answer",
+    ],
     xpath: ["/html/head/title"],
   };
 
@@ -615,7 +658,15 @@ export function createPageGraph(input: {
   if (input.speakable) {
     webPage.speakable = {
       "@type": "SpeakableSpecification",
-      cssSelector: ["h1", "[data-speakable]", ".faq-question", ".faq-answer"],
+      cssSelector: [
+        "h1",
+        ".home-hero-description",
+        ".page-hero-description",
+        ".article-tldr__item",
+        "[data-speakable]",
+        ".faq-question",
+        ".faq-answer",
+      ],
     };
   }
 

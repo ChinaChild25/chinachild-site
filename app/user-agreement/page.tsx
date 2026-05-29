@@ -48,7 +48,7 @@ export default function UserAgreementPage() {
       <section className="page-shell section-space pt-10">
         <div className="mx-auto max-w-3xl">
           <span className="tag-pill">Legal</span>
-          <h1 className="mt-6 text-[2rem] font-bold leading-[1.08] tracking-[-0.035em] text-[#1b1b1b] sm:text-[2.6rem]">
+          <h1 className="mt-6 text-[2rem] font-semibold leading-[1.08] tracking-[-0.035em] text-[#1b1b1b] sm:text-[2.6rem]">
             Пользовательское соглашение
           </h1>
           <div className="prose-article mt-8">

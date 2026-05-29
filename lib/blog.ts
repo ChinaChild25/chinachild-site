@@ -25,7 +25,31 @@ export type ArticleBlock =
   | { type: "paragraph"; text: string }
   | { type: "list"; items: string[] }
   | { type: "table"; headers: string[]; rows: string[][] }
-  | { type: "image"; src: string; alt: string }
+  | {
+      type: "image";
+      src: string;
+      alt: string;
+      caption?: string;
+      width?: number;
+      height?: number;
+      /** Free-text prompt for the generation script. Not rendered in UI. */
+      prompt?: string;
+    }
+  | {
+      type: "audio";
+      /** Public path to the MP3 (e.g. /audio/blog/<slug>/tone-1-ma.mp3). */
+      src: string;
+      /** Chinese characters shown alongside the play button. */
+      hanzi: string;
+      /** Pinyin transcription with tone marks. */
+      pinyin: string;
+      /** Russian translation (short). */
+      translation?: string;
+      /** What to feed OpenAI TTS when running the generation script. */
+      ttsText?: string;
+      /** TTS voice override. Defaults from env OPENAI_TTS_VOICE / "nova". */
+      voice?: string;
+    }
   | { type: "tldr"; points: string[] }
   | {
       type: "callout";
@@ -157,6 +181,35 @@ export function formatPostDate(date: string): string {
   }).format(new Date(date));
 }
 
+/**
+ * Slugifies a heading text for use as an anchor ID.
+ *
+ * Russian and Chinese characters are stripped via transliteration table for
+ * the most common ones; anything else falls back to URL-encoded chars. The
+ * result is stable across server renders (no Math.random, no Date.now), so
+ * TOC links match the H2/H3 ids emitted by the blog renderer.
+ */
+const TRANSLIT_TABLE: Record<string, string> = {
+  а: "a", б: "b", в: "v", г: "g", д: "d", е: "e", ё: "yo", ж: "zh",
+  з: "z", и: "i", й: "y", к: "k", л: "l", м: "m", н: "n", о: "o",
+  п: "p", р: "r", с: "s", т: "t", у: "u", ф: "f", х: "h", ц: "ts",
+  ч: "ch", ш: "sh", щ: "sch", ъ: "", ы: "y", ь: "", э: "e", ю: "yu",
+  я: "ya",
+};
+
+export function slugifyHeading(text: string): string {
+  return text
+    .toLowerCase()
+    .split("")
+    .map((char) => TRANSLIT_TABLE[char] ?? char)
+    .join("")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .slice(0, 80);
+}
+
 /** Распарсивает строку формата `| cell1 | cell2 |` в массив ячеек.
  *  Trailing/leading pipe + whitespace отбрасываются. */
 function parseTableRow(line: string): string[] {
@@ -250,6 +303,39 @@ function parseDirective(name: string, payload: string): ArticleBlock | null {
       }));
     if (items.length === 0) return null;
     return { type: "stats", items };
+  }
+
+  if (name === "image") {
+    const src = typeof d.src === "string" ? d.src : "";
+    const alt = typeof d.alt === "string" ? d.alt : "";
+    // src может быть пустым (генератор ещё не отработал) — рендерим скрытно,
+    // чтобы не ломать вёрстку. Парсер ничего не теряет.
+    if (!alt) return null;
+    return {
+      type: "image",
+      src,
+      alt,
+      caption: typeof d.caption === "string" ? d.caption : undefined,
+      width: typeof d.width === "number" ? d.width : undefined,
+      height: typeof d.height === "number" ? d.height : undefined,
+      prompt: typeof d.prompt === "string" ? d.prompt : undefined,
+    };
+  }
+
+  if (name === "audio") {
+    const src = typeof d.src === "string" ? d.src : "";
+    const hanzi = typeof d.hanzi === "string" ? d.hanzi : "";
+    const pinyin = typeof d.pinyin === "string" ? d.pinyin : "";
+    if (!hanzi || !pinyin) return null;
+    return {
+      type: "audio",
+      src,
+      hanzi,
+      pinyin,
+      translation: typeof d.translation === "string" ? d.translation : undefined,
+      ttsText: typeof d.ttsText === "string" ? d.ttsText : undefined,
+      voice: typeof d.voice === "string" ? d.voice : undefined,
+    };
   }
 
   if (name === "faq") {

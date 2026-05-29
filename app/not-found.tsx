@@ -16,7 +16,7 @@ export default function NotFound() {
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#9a9a9a]">
           404
         </p>
-        <h1 className="mt-4 text-[2.4rem] font-bold leading-[1.04] tracking-[-0.04em] text-[#1b1b1b] sm:text-[3rem]">
+        <h1 className="mt-4 text-[2.4rem] font-semibold leading-[1.04] tracking-[-0.04em] text-[#1b1b1b] sm:text-[3rem]">
           Эта страница не найдена
         </h1>
         <p className="mt-5 text-base leading-7 text-[#4b4b4b] sm:text-lg">

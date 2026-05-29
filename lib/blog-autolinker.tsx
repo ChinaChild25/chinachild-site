@@ -94,6 +94,56 @@ const TERMS: Term[] = [
   },
   // Plain HSK as a defined term — only after specific HSK course/level matches above
   { match: /\bэкзамен[а-я]*\s+HSK\b/i, href: "/glossary/hsk" },
+
+  // ----- Blog cross-links (topical cluster) -----
+  // Связываем статьи между собой, чтобы Яндекс/Google видели плотный кластер
+  // по теме «китайский для начинающих». Каждая статья линкуется на 1-2 другие
+  // через характерные для неё формулировки. Идём ПОСЛЕ glossary/landing —
+  // если в тексте уже найден более коммерчески ценный матч, он выиграет.
+  {
+    match: /\b(пиньинь\s+за\s+7\s+дней|выучить\s+пиньинь\s+за\s+неделю|пиньинь\s+с\s+нуля)\b/i,
+    href: "/blog/pinyin-uchim-za-7-dney",
+  },
+  {
+    match: /\b(подготовк[аеи]\s+к\s+HSK\s*1\s+за\s+3\s+мес|план\s+на\s+12\s+недел|HSK\s*1\s+за\s+три\s+месяца)/i,
+    href: "/blog/podgotovka-k-hsk-1-za-3-mesyatsa",
+  },
+  {
+    match: /\b(как\s+поставить\s+(тоны|произношение)|постановк[аеи]\s+произношения)\b/i,
+    href: "/blog/how-to-set-chinese-pronunciation-tones",
+  },
+  {
+    match: /\b(уровн[ия]\s+HSK\s+(?:1[-–]6|от\s+1\s+до\s+6|объяснени|сравнени))/i,
+    href: "/blog/hsk-levels-explained",
+  },
+  {
+    match: /\b(основы\s+грамматик[аи]\s+китайского|грамматик[аи]\s+китайского\s+с\s+нуля)\b/i,
+    href: "/blog/chinese-grammar-basics",
+  },
+  {
+    match: /\b(где\s+сдать\s+HSK|центр[ыа]?\s+сдач[аи]\s+HSK)\b/i,
+    href: "/blog/gde-sdat-hsk-v-rossii-2026",
+  },
+  {
+    match: /\b(сколько\s+времени\s+(нужно\s+)?учить\s+китайский|за\s+сколько\s+можно\s+выучить\s+китайский)\b/i,
+    href: "/blog/how-long-to-learn-chinese",
+  },
+  {
+    match: /\b(с\s+какого\s+возраста\s+учить\s+китайский|во\s+сколько\s+лет\s+начинать\s+китайский|китайский\s+для\s+детей\s+с\s+какого\s+возраста)\b/i,
+    href: "/blog/s-kakogo-vozrasta-uchit-kitayskiy",
+  },
+  {
+    match: /\b(как\s+(выучить|изучать)\s+китайский\s+с\s+нуля|с\s+чего\s+начать\s+учить\s+китайский)\b/i,
+    href: "/blog/how-to-learn-chinese-from-scratch",
+  },
+  {
+    match: /\b(китайский\s+для\s+начинающих\s+(гид|руководство|с\s+нуля))\b/i,
+    href: "/blog/chinese-for-beginners-guide",
+  },
+  {
+    match: /\b(налогов[а-я]+\s+вычет|13%\s+вычет|лицензированн[а-я]+\s+школ[аеу]\s+китайск)/i,
+    href: "/blog/license-tax-deduction-chinese-school",
+  },
 ];
 
 // Long-form blog posts are 1500-2500 words; 18 keeps link density below
@@ -103,6 +153,7 @@ const MAX_AUTO_LINKS_PER_ARTICLE = 18;
 type LinkerState = {
   used: Set<string>;
   total: number;
+  selfHref?: string;
 };
 
 function autolinkOne(text: string, state: LinkerState): ReactNode[] | string {
@@ -110,6 +161,7 @@ function autolinkOne(text: string, state: LinkerState): ReactNode[] | string {
 
   for (const term of TERMS) {
     if (state.used.has(term.href)) continue;
+    if (state.selfHref && term.href === state.selfHref) continue;
     const m = text.match(term.match);
     if (!m || m.index === undefined) continue;
 
@@ -137,8 +189,9 @@ function autolinkOne(text: string, state: LinkerState): ReactNode[] | string {
   return text;
 }
 
-export function makeAutolinker() {
-  const state: LinkerState = { used: new Set(), total: 0 };
+export function makeAutolinker(currentSlug?: string) {
+  const selfHref = currentSlug ? `/blog/${currentSlug}` : undefined;
+  const state: LinkerState = { used: new Set(), total: 0, selfHref };
   return (text: string): ReactNode | string => {
     const result = autolinkOne(text, state);
     return result;

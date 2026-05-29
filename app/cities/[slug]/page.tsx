@@ -43,11 +43,7 @@ export async function generateMetadata({
   }
   return buildMetadata({
     title: `Курсы китайского языка ${city.inCity} онлайн — школа ChinaChild`,
-    description: `Онлайн-курсы китайского ${city.inCity}: программа HSK 1–2, мини-группы до 5 человек, индивидуальные занятия. ${
-      city.licensedRegion
-        ? "Налоговый вычет 13%."
-        : "Преподаватели ЮФУ, ДГТУ и носитель путунхуа."
-    }`,
+    description: city.metaDescription,
     path: `/cities/${city.slug}`,
     keywords: [
       `курсы китайского ${city.inCity}`,

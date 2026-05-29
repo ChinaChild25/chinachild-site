@@ -19,6 +19,10 @@ export type CityData = {
   licensedRegion: boolean;
   /** Optional unique selling point for this city */
   hook?: string;
+  /** Unique meta description per city (140-158 chars). Keeps each city page
+   *  distinguishable in SERP — avoids near-duplicate description signal that
+   *  hurts Яндекс ranking for geo-clusters. */
+  metaDescription: string;
 };
 
 export const cities: CityData[] = [
@@ -36,6 +40,8 @@ export const cities: CityData[] = [
     licensedRegion: true,
     hook:
       "Образовательная лицензия выдана Департаментом образования и науки города Москвы — налоговый вычет 13% (до 19 500 ₽ в год) для жителей города и Подмосковья.",
+    metaDescription:
+      "Онлайн-курсы китайского в Москве: лицензия Москвы, HSK 1–2 за 6 месяцев, мини-группы до 5, налоговый вычет до 19 500 ₽. Подготовка к HSK в МГУ и КФУ.",
   },
   {
     slug: "saint-petersburg",
@@ -48,6 +54,8 @@ export const cities: CityData[] = [
     hskCenter: "Институт Конфуция при СПбГУ",
     suburbs: "Кудрово, Мурино, Девяткино, Шушары, Колпино",
     licensedRegion: false,
+    metaDescription:
+      "Онлайн-курсы китайского в Санкт-Петербурге: HSK 1–2 за 6 месяцев, мини-группы до 5, носитель путунхуа Чжао Ли. Подготовка к HSK в Институте Конфуция СПбГУ.",
   },
   {
     slug: "kazan",
@@ -60,6 +68,8 @@ export const cities: CityData[] = [
     hskCenter: "Институт Конфуция при Казанском федеральном университете",
     suburbs: "Зеленодольске, Иннополисе, Высокогорском районе",
     licensedRegion: false,
+    metaDescription:
+      "Онлайн-курсы китайского в Казани: HSK 1–2 за 6 месяцев, мини-группы до 5, носитель путунхуа. Удобный МСК-часовой пояс. Подготовка к HSK в КФУ.",
   },
   {
     slug: "ekaterinburg",
@@ -72,6 +82,8 @@ export const cities: CityData[] = [
     hskCenter: "Институт Конфуция при Уральском федеральном университете",
     suburbs: "Верхней Пышме, Берёзовском, Среднеуральске",
     licensedRegion: false,
+    metaDescription:
+      "Онлайн-курсы китайского в Екатеринбурге: HSK 1–2 за 6 месяцев, мини-группы до 5, носитель путунхуа. Расписание под UTC+5. Подготовка к HSK в УрФУ.",
   },
   {
     slug: "novosibirsk",
@@ -87,6 +99,8 @@ export const cities: CityData[] = [
     licensedRegion: false,
     hook:
       "Сибирский регион — один из самых активных рынков для китайского языка благодаря приграничной торговле и научному сотрудничеству.",
+    metaDescription:
+      "Онлайн-курсы китайского в Новосибирске: HSK 1–2 за 6 месяцев, мини-группы до 5, носитель путунхуа. Расписание под UTC+7. Подготовка к HSK в НГТУ.",
   },
   {
     slug: "krasnodar",
@@ -99,6 +113,8 @@ export const cities: CityData[] = [
     hskCenter: "Институт Конфуция при Кубанском государственном университете",
     suburbs: "Динской, Северском, Тимашёвске, Новороссийске, Сочи",
     licensedRegion: false,
+    metaDescription:
+      "Онлайн-курсы китайского в Краснодаре: HSK 1–2 за 6 месяцев, мини-группы до 5, носитель путунхуа. Подготовка к HSK в Институте Конфуция КубГУ.",
   },
   {
     slug: "rostov-on-don",
@@ -114,6 +130,8 @@ export const cities: CityData[] = [
     licensedRegion: false,
     hook:
       "Часть нашей преподавательской команды — выпускники ЮФУ и ДГТУ, поэтому методика курса во многом сформирована южнороссийской школой востоковедения.",
+    metaDescription:
+      "Онлайн-курсы китайского в Ростове-на-Дону: HSK 1–2 за 6 месяцев, мини-группы до 5, методика преподавателей ЮФУ и ДГТУ. Подготовка к HSK в Институте Конфуция.",
   },
   {
     slug: "vladivostok",
@@ -128,6 +146,8 @@ export const cities: CityData[] = [
     licensedRegion: false,
     hook:
       "Дальневосточный регион — один из ключевых для китайского языка: близость к Китаю, прямые транспортные коридоры и активное деловое сотрудничество с КНР.",
+    metaDescription:
+      "Онлайн-курсы китайского во Владивостоке: HSK 1–2 за 6 месяцев, мини-группы до 5, носитель путунхуа. Расписание под UTC+10. Подготовка к HSK в ДВФУ.",
   },
 ];
 
