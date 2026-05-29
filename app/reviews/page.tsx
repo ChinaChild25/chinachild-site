@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
     title: "Отзывы учеников школы китайского ChinaChild",
     description:
-      "Отзывы учеников ChinaChild. Средняя оценка 4.9 из 5: реальные истории — от первых слов до разговорного уровня HSK 2.",
+      "Отзывы учеников ChinaChild — средняя оценка 4.9/5 на Яндекс.Картах. Реальные истории: от первых слов до сертификата HSK 2 и разговорного уровня.",
     path: "/reviews",
     keywords: [
       "отзывы chinachild",

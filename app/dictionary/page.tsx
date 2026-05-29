@@ -38,7 +38,7 @@ export async function generateMetadata({
       : "Китайский словарь — HSK списки слов, пиньинь, переводы | ChinaChild",
     description: query
       ? `Результаты поиска по китайскому словарю ChinaChild: «${query}». Иероглифы, пиньинь, переводы и примеры.`
-      : "Бесплатный китайский словарь ChinaChild: HSK-уровни, пиньинь, значения, примеры и карточки слов. Новый HSK 3.0 и классический HSK 2.0.",
+      : "Бесплатный китайский словарь ChinaChild: HSK 1–6 и Новый HSK 3.0, пиньинь, значения, примеры, аудио и карточки слов. Поиск по иероглифу и переводу.",
     path: query ? `/dictionary?q=${encodeURIComponent(query)}` : "/dictionary",
     keywords: query
       ? [query, "поиск китайский словарь", "китайские слова"]

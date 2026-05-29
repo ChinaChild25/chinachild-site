@@ -1924,7 +1924,7 @@ html[data-theme="dark"] .theme-toggle-thumb {
 .lead-required {
   color: #e23b30;
   margin-right: 2px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .lead-input {
@@ -2541,15 +2541,16 @@ textarea.lead-input {
   color: var(--muted-strong);
 }
 
-/* GFM tables — лёгкий стиль, без обводок и градиентов, в стилистике сайта. */
+/* GFM tables — лёгкий стиль, без обводок и градиентов, в стилистике сайта.
+   display: table (не block) — иначе колонки сжимаются по контенту и слева
+   остаётся пустота при width: 100%. Горизонтальный скролл на мобиле даёт
+   обёртка .prose-table-wrap. */
 .prose-article table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   font-size: 0.95rem;
   margin: 0;
-  display: block;
-  overflow-x: auto;
 }
 
 .prose-article table thead {
@@ -2698,6 +2699,172 @@ html[data-theme="dark"] {
    без иконочных бейджей. Радиусы — большие (--radius-card), типографика
    — крупная, body 17–18px.
    ========================================================================== */
+
+/* ----- Inline audio sample внутри статьи -------------------------------- */
+.article-audio {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 14px 0;
+  padding: 14px 18px;
+  background: rgba(0, 0, 0, 0.025);
+  border-radius: var(--radius-card-md);
+}
+
+.article-audio__text {
+  display: grid;
+  gap: 2px;
+}
+
+.article-audio__hanzi {
+  font-size: 1.5rem;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.article-audio__pinyin {
+  font-size: 0.95rem;
+  color: var(--muted-strong);
+  font-variant: tabular-nums;
+}
+
+.article-audio__translation {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* Pending image — пока генератор не создал картинку, оставляем placeholder. */
+.article-image-pending {
+  margin: 14px 0;
+  padding: 18px 22px;
+  border: 1px dashed rgba(0, 0, 0, 0.18);
+  border-radius: var(--radius-card-md);
+  color: var(--muted);
+  font-size: 0.92rem;
+  text-align: center;
+  font-style: italic;
+}
+
+/* ----- TOC (содержание) — навигатор по длинным статьям -------------------
+   Светлая компактная карточка перед TLDR. На мобиле <details> позволяет
+   свернуть и сэкономить экран; на десктопе по умолчанию раскрыт.          */
+.article-toc {
+  margin: 0 0 8px;
+}
+
+.article-toc__details {
+  background: rgba(0, 0, 0, 0.025);
+  border-radius: var(--radius-card-md);
+  padding: 14px 20px;
+}
+
+.article-toc__summary {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.article-toc__summary::-webkit-details-marker {
+  display: none;
+}
+
+.article-toc__label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: var(--tracking-body);
+}
+
+.article-toc__count {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* Селектор с .article-toc обыгрывает по специфичности `.prose-article ol`
+   (который ставит list-style: decimal на все ol внутри статьи) — иначе TOC
+   получает двойную нумерацию: дефолтные маркеры браузера + наш counter(). */
+.article-toc .article-toc__list {
+  margin: 14px 0 4px;
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+  counter-reset: toc-counter;
+}
+
+/* Flex с align-items: baseline сажает номер на одну линию с текстом
+   ссылки. Раньше position: absolute + top: 0 ставил номер у верха <li>,
+   а ссылка имеет padding: 6px 0 (для touch-target) — из-за этого цифры
+   зависали выше текста и выглядели как надстрочные. */
+.article-toc__item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.article-toc__item--level-2 {
+  counter-increment: toc-counter;
+}
+
+.article-toc__item--level-2::before {
+  content: counter(toc-counter) ".";
+  /* flex-basis 22px вмещает «12.» с табулярными цифрами; text-align: right
+     ставит точку во всех номерах строго на одну вертикаль. */
+  flex: 0 0 22px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.article-toc__item--level-3 {
+  padding-left: 30px;
+  font-size: 0.9rem;
+  color: var(--muted-strong);
+}
+
+.article-toc__item--level-3::before {
+  content: "—";
+  flex: 0 0 16px;
+  color: var(--muted);
+}
+
+.article-toc__link {
+  color: var(--ink);
+  text-decoration: none;
+  transition: color 160ms ease, text-decoration-color 160ms ease;
+  text-underline-offset: 4px;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  /* WCAG минимум 24×24px (на мобиле проще пальцем попасть). Достигаем через
+     вертикальный padding, а не height — иначе перенос текста ломается. */
+  display: inline-block;
+  padding: 6px 0;
+  min-height: 24px;
+}
+
+.article-toc__link:hover {
+  text-decoration-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Smooth-scroll к якорю — чтобы клик по TOC не дёргал страницу. */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Offset под header при переходе по якорю. */
+.prose-article h2,
+.prose-article h3 {
+  scroll-margin-top: 96px;
+}
 
 /* ----- :::tldr — «Коротко» в начале статьи -------------------------------
    Цельная cream-подложка, заголовок жирным в нижнем регистре. Маркер
@@ -2920,7 +3087,9 @@ html[data-theme="dark"] {
 
 .article-stats__unit {
   font-size: 0.95rem;
-  color: var(--muted);
+  /* --muted (#6d6d6d) на --cream-soft (#e8e3d8) даёт 3.7:1 — фейл WCAG AA.
+     --muted-strong (#4e4e4e) даёт 6.0:1 — проходит. */
+  color: var(--muted-strong);
   font-weight: 500;
   letter-spacing: var(--tracking-body);
 }
@@ -4432,7 +4601,7 @@ html[data-theme="dark"] .d-btn-ghost:hover {
 
 .d-feature-mark {
   display: inline-block;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--d-muted);
   line-height: 1;
 }
@@ -6331,7 +6500,7 @@ html[data-theme="dark"] .hsk-test-share-btn-ghost:hover {
 .hsk-test-printable-cert-level {
   font-size: 180px;
   line-height: 1;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.04em;
   color: #1b1b1b;
   display: flex;

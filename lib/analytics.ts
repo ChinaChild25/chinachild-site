@@ -21,6 +21,11 @@ export const Goals = {
   PRICING_VIEW: "pricing_view",
   FREE_TRIAL_VIEW: "free_trial_view",
 
+  // — Engagement —
+  // Шлётся с params { depth: 25|50|75|100, slug }. В Я.Метрике одна цель
+  // `scroll_depth` — в отчёте сегментируем по параметрам.
+  SCROLL_DEPTH: "scroll_depth",
+
   // — Lead form —
   LEAD_SUBMITTED: "lead_submitted",
 

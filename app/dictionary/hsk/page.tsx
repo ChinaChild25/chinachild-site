@@ -15,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
     title: "HSK словарь — Новый HSK 3.0 и HSK 2.0 | ChinaChild",
     description:
-      "Списки слов HSK по обеим шкалам: Новый HSK 3.0 (уровни 1–6 и 7–9) и классический HSK 2.0 (уровни 1–6).",
+      "Списки слов HSK по обеим шкалам: Новый HSK 3.0 (уровни 1–6 и 7–9) и классический HSK 2.0 (HSK 1–6). Бесплатные карточки с пиньинем и переводом.",
     path: "/dictionary/hsk",
   });
 }

@@ -16,7 +16,7 @@ export const revalidate = 86400;
 export const metadata: Metadata = buildMetadata({
   title: "HSK — все уровни экзамена и подготовка | Хаб ChinaChild",
   description:
-    "Гид по HSK: 6 уровней, программа подготовки, словарный запас и центры сдачи в России. Курсы, статьи и глоссарий — в одном месте.",
+    "Гид по HSK от ChinaChild: 6 уровней, программа подготовки, словарный запас, центры сдачи в РФ. Курсы, статьи блога и глоссарий — в одном месте.",
   path: "/learn/hsk",
   keywords: [
     "HSK",

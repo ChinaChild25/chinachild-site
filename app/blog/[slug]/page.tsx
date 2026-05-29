@@ -10,16 +10,22 @@ import Callout from "@/components/content/article-blocks/Callout";
 import MistakesBlock from "@/components/content/article-blocks/MistakesBlock";
 import StatsStrip from "@/components/content/article-blocks/StatsStrip";
 import TLDRBox from "@/components/content/article-blocks/TLDRBox";
+import ArticleToc, { type TocItem } from "@/components/content/article-blocks/ArticleToc";
+import InlineAudio from "@/components/content/article-blocks/InlineAudio";
+import ScrollDepthTracker from "@/components/analytics/ScrollDepthTracker";
 import {
   formatPostDate,
   getBlogPostBySlug,
   getBlogPostSlugs,
   parseArticleBlocks,
+  slugifyHeading,
   type ArticleBlock,
 } from "@/lib/blog";
 import { makeAutolinker } from "@/lib/blog-autolinker";
+import { getBlogHowTo } from "@/lib/blog-howto";
 import { buildMetadata } from "@/lib/metadata";
-import { createArticleGraph } from "@/lib/schema";
+import { createArticleGraph, createBlogHowToNode } from "@/lib/schema";
+import { absoluteUrl } from "@/lib/site-config";
 import { teachers } from "@/lib/site-data";
 
 type BlogPostPageProps = {
@@ -30,21 +36,35 @@ type BlogPostPageProps = {
 // dateModified bumps and content edits surface within 24h.
 export const revalidate = 86400;
 
-/** Разбирает inline-markdown: **жирный** + autolink, возвращает массив
- *  React-узлов. Bold обрабатывается раньше autolink, чтобы внутри
- *  выделенного текста ссылки тоже работали. */
+/** Разбирает inline-markdown: `code` + **жирный** + autolink, возвращает
+ *  массив React-узлов. `code` режется первым и не участвует в bold/links —
+ *  иначе бектики из таблиц рендерились бы как литеральные символы. */
 function renderInline(
   text: string,
   autolink: (text: string) => React.ReactNode | string,
 ): React.ReactNode {
-  // Split на сегменты вокруг **bold**. Чётные индексы — обычный текст,
-  // нечётные — то, что было между **...**.
-  const parts = text.split(/\*\*(.+?)\*\*/g);
-  return parts.map((part, i) => {
-    if (i % 2 === 1) {
-      return <strong key={i}>{renderMarkdownLinks(part, autolink, `bold-${i}`)}</strong>;
+  // Outer split вокруг `inline code` — нечётные сегменты остаются как есть.
+  const codeParts = text.split(/`([^`]+)`/g);
+  return codeParts.flatMap((segment, codeIdx) => {
+    if (codeIdx % 2 === 1) {
+      return <code key={`code-${codeIdx}`}>{segment}</code>;
     }
-    return <span key={i}>{renderMarkdownLinks(part, autolink, `text-${i}`)}</span>;
+    // Внутри не-code сегментов — bold и links как раньше.
+    const parts = segment.split(/\*\*(.+?)\*\*/g);
+    return parts.map((part, i) => {
+      if (i % 2 === 1) {
+        return (
+          <strong key={`bold-${codeIdx}-${i}`}>
+            {renderMarkdownLinks(part, autolink, `bold-${codeIdx}-${i}`)}
+          </strong>
+        );
+      }
+      return (
+        <span key={`text-${codeIdx}-${i}`}>
+          {renderMarkdownLinks(part, autolink, `text-${codeIdx}-${i}`)}
+        </span>
+      );
+    });
   });
 }
 
@@ -87,12 +107,21 @@ function renderBlock(
   block: ArticleBlock,
   index: number,
   autolink: (text: string) => React.ReactNode | string,
+  firstImageIndex: number,
 ): React.ReactNode {
   if (block.type === "heading" && block.level === 2) {
-    return <h2 key={`heading2-${index}`}>{block.text}</h2>;
+    return (
+      <h2 key={`heading2-${index}`} id={slugifyHeading(block.text)}>
+        {block.text}
+      </h2>
+    );
   }
   if (block.type === "heading" && block.level === 3) {
-    return <h3 key={`heading3-${index}`}>{block.text}</h3>;
+    return (
+      <h3 key={`heading3-${index}`} id={slugifyHeading(block.text)}>
+        {block.text}
+      </h3>
+    );
   }
   if (block.type === "list") {
     return (
@@ -130,18 +159,51 @@ function renderBlock(
     );
   }
   if (block.type === "image") {
+    // src может быть пустым на этапе scaffolding — генератор заполнит после
+    // первого прогона. Не показываем сломанный <img>, оставляем подпись как
+    // подсказку для следующего билда.
+    if (!block.src) {
+      return (
+        <div
+          key={`image-pending-${index}`}
+          className="article-image-pending"
+          aria-label="Иллюстрация будет добавлена"
+        >
+          {block.caption ?? block.alt}
+        </div>
+      );
+    }
+    // Первое изображение статьи — кандидат на LCP. priority + fetchPriority high
+    // дают браузеру шанс начать загрузку до того, как React-гидратация дошла
+    // до дальних блоков. Остальные картинки лениво — экономим начальный байт.
+    const isFirstImage = index === firstImageIndex;
     return (
       <figure key={`image-${index}`} className="prose-figure">
         <Image
           src={block.src}
           alt={block.alt}
-          width={1200}
-          height={675}
+          width={block.width ?? 1536}
+          height={block.height ?? 1024}
           className="h-auto w-full"
           sizes="(max-width: 768px) 100vw, 768px"
+          priority={isFirstImage}
+          fetchPriority={isFirstImage ? "high" : undefined}
         />
-        {block.alt ? <figcaption>{block.alt}</figcaption> : null}
+        {(block.caption ?? block.alt) ? (
+          <figcaption>{block.caption ?? block.alt}</figcaption>
+        ) : null}
       </figure>
+    );
+  }
+  if (block.type === "audio") {
+    return (
+      <InlineAudio
+        key={`audio-${index}`}
+        src={block.src}
+        hanzi={block.hanzi}
+        pinyin={block.pinyin}
+        translation={block.translation}
+      />
     );
   }
   if (block.type === "tldr") {
@@ -231,7 +293,24 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   const author = teachers.find((t) => t.slug === post.authorSlug) ?? teachers[0];
   const blocks = parseArticleBlocks(post.content);
-  const autolink = makeAutolinker();
+  const autolink = makeAutolinker(post.slug);
+  const howto = getBlogHowTo(post.slug);
+  const articleUrl = absoluteUrl(`/blog/${post.slug}`);
+
+  // Собираем TOC из H2/H3 блоков. Показываем TOC только когда статья
+  // достаточно структурирована (≥4 H2) — иначе компонент даёт шума больше,
+  // чем пользы. Это эвристика для «длинных» статей; точный word-count в
+  // парсере не считаем, чтобы не усложнять.
+  const tocItems: TocItem[] = blocks
+    .filter(
+      (block): block is Extract<ArticleBlock, { type: "heading" }> =>
+        block.type === "heading",
+    )
+    .map((block) => ({ level: block.level, text: block.text }));
+  const h2Count = tocItems.filter((item) => item.level === 2).length;
+  const showToc = h2Count >= 4;
+
+  const firstImageIndex = blocks.findIndex((b) => b.type === "image" && Boolean(b.src));
 
   return (
     <main>
@@ -261,6 +340,21 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         })}
         id={`article-${post.slug}-graph`}
       />
+      {howto ? (
+        <JsonLd
+          data={{
+            "@context": "https://schema.org",
+            ...createBlogHowToNode({
+              url: articleUrl,
+              name: howto.name,
+              description: howto.description,
+              totalTime: howto.totalTime,
+              steps: howto.steps,
+            }),
+          }}
+          id={`article-${post.slug}-howto`}
+        />
+      ) : null}
 
       <article className="page-shell section-space pt-10">
         <header className="mx-auto max-w-3xl">
@@ -303,9 +397,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </header>
 
         <div className="prose-article mx-auto mt-14 max-w-3xl">
-          {blocks.map((block, index) => renderBlock(block, index, autolink))}
+          {showToc ? <ArticleToc items={tocItems} /> : null}
+          {blocks.map((block, index) => renderBlock(block, index, autolink, firstImageIndex))}
         </div>
       </article>
+      <ScrollDepthTracker slug={post.slug} />
     </main>
   );
 }

@@ -590,6 +590,7 @@ export const reviews: Review[] = [
     body:
       "Специалисты заинтересованы дать ученикам как можно больше материала в довольно короткий срок! Остаюсь довольной и продолжаю обучение.",
     image: "",
+    course: "online-chinese",
   },
   {
     author: "Оксана Маврина",
@@ -597,6 +598,7 @@ export const reviews: Review[] = [
     body:
       "Замечательная программа подготовки и высокий уровень преподавания, обучение проходит с интересом, увлечённо! Очень удобный Личный кабинет.",
     image: "",
+    course: "hsk-preparation",
   },
   {
     author: "Дмитрий Куликов",
@@ -604,6 +606,7 @@ export const reviews: Review[] = [
     body:
       "Все понравилось, удобный интерфейс! Прошёл входное тестирование, подал заявку на курс, быстро отреагировали! Прошёл курс для начинающих, понравился.",
     image: "",
+    course: "online-chinese",
   },
   {
     author: "Геннадий В.",
@@ -611,6 +614,7 @@ export const reviews: Review[] = [
     body:
       "Все очень хорошо! Высокое качество образования, удобный интерфейс в личном кабинете. Рекомендую!",
     image: "",
+    course: "business-chinese",
   },
   {
     author: "Алина Толкачева",
@@ -623,6 +627,7 @@ export const reviews: Review[] = [
     rating: 5,
     verifyUrl:
       "https://yandex.com/maps/org/129397906214/reviews?reviews%5BpublicId%5D=gze1d7ybb6v9w4c53wyp0211bw",
+    course: "chinese-for-adults",
   },
   {
     author: "Ирина В.",
@@ -635,8 +640,25 @@ export const reviews: Review[] = [
     rating: 5,
     verifyUrl:
       "https://yandex.com/maps/org/129397906214/reviews?reviews%5BpublicId%5D=3p58h3xbxngf5h4xbw9j838w5g",
+    course: "chinese-for-kids",
   },
 ];
+
+/**
+ * Returns the reviews relevant to a specific course landing. The first match
+ * is course-specific; the next falls back to a generic verified Yandex.Maps
+ * review so every course page emits at least one Review JSON-LD node.
+ */
+export function getReviewsForCourse(courseSlug: string, limit = 2): Review[] {
+  const direct = reviews.filter((r) => r.course === courseSlug).slice(0, limit);
+  if (direct.length >= limit) return direct;
+  // Top up with verified (Yandex.Maps) reviews so even courses without a
+  // dedicated alumnus get social proof + Review schema.
+  const fallback = reviews.filter(
+    (r) => r.source === "yandex-maps" && r.course !== courseSlug,
+  );
+  return [...direct, ...fallback].slice(0, limit);
+}
 
 export const results = [
   {

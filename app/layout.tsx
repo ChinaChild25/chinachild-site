@@ -17,11 +17,16 @@ import { buildMetadata } from "@/lib/metadata";
 import { createSiteGraph } from "@/lib/schema";
 import { SITE_URL } from "@/lib/site-config";
 
+// Порядок weight: первый элемент Next.js префетчит в HTML <link rel=preload>.
+// LCP-элемент на блоге (H1) — font-medium (500), поэтому 500 идёт первым.
+// 700 удалили: только legal-страницы (privacy/docs/user-agreement) и
+// .lead-required использовали — заменены на 600. Минус один woff2 = -25%
+// шрифтового трафика.
 const inter = Inter({
   subsets: ["latin", "cyrillic"],
   display: "swap",
   variable: "--font-inter",
-  weight: ["400", "500", "600", "700"],
+  weight: ["500", "400", "600"],
 });
 
 // Ma Shan Zheng — brush-calligraphy Chinese display font. Used for accent

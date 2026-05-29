@@ -1,6 +1,7 @@
 import { dispatchLead, type LeadInput } from "@/lib/lead-dispatch";
 import { checkRateLimit, hashIp } from "@/lib/leads/rate-limit";
 import { markLeadDelivered, storeLead, type LeadInsert } from "@/lib/leads/store";
+import { trackServerLead } from "@/lib/analytics/yandex-metrika-server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -229,6 +230,15 @@ export async function POST(request: Request) {
   const result = await dispatchLead(lead);
   const emailResult = result.delivered.find((item) => item.channel === "email");
   await markLeadDelivered(stored.id, emailResult?.ok === true, emailResult?.ok ? undefined : emailResult?.detail);
+
+  // Server-side Я.Метрика — дубль конверсии для AdBlock-юзеров и ПФ.
+  // Fire-and-forget, не блокируем ответ.
+  void trackServerLead({
+    sourceUrl: sourcePage || referrer || undefined,
+    cookieHeader: request.headers.get("cookie"),
+    userAgent: userAgent || null,
+    clientIp,
+  });
 
   return Response.json(
     {

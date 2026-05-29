@@ -5,8 +5,17 @@ import FAQSection from "@/components/sections/FAQSection";
 import PageHero from "@/components/layout/PageHero";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import { buttonStyles } from "@/components/ui/button";
-import { createCourseSchema, type JsonLd as JsonLdType } from "@/lib/schema";
-import type { Course, FaqItem } from "@/lib/site-data";
+import {
+  createCourseSchema,
+  createReviewNode,
+  type JsonLd as JsonLdType,
+} from "@/lib/schema";
+import {
+  getReviewsForCourse,
+  REVIEW_SOURCE_LABELS,
+  type Course,
+  type FaqItem,
+} from "@/lib/site-data";
 
 type Bullet = { title: string; body: string; tone: "violet-soft" | "cream" | "lime-soft" | "sky" | "peach-soft" | "cream-soft" };
 
@@ -43,6 +52,17 @@ export default function CourseLanding({
   schemaCourse,
   related,
 }: CourseLandingProps) {
+  // Курс-специфичные отзывы — рендерим Review schema + UI-блок, чтобы получить
+  // звёзды в SERP и социальное доказательство на странице покупки.
+  const courseReviews = getReviewsForCourse(schemaCourse.slug);
+  const reviewGraph: JsonLdType | null =
+    courseReviews.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@graph": courseReviews.map((r) => createReviewNode(r)),
+        }
+      : null;
+
   return (
     <main>
       <Breadcrumbs
@@ -53,6 +73,9 @@ export default function CourseLanding({
         ]}
       />
       <JsonLd data={createCourseSchema(schemaCourse) as JsonLdType} id={`course-${schemaCourse.slug}-schema`} />
+      {reviewGraph ? (
+        <JsonLd data={reviewGraph} id={`course-${schemaCourse.slug}-reviews-schema`} />
+      ) : null}
 
       <PageHero
         variant={pageHero.variant ?? "violet"}
@@ -86,6 +109,48 @@ export default function CourseLanding({
           </div>
         </div>
       </section>
+
+      {courseReviews.length > 0 ? (
+        <section className="page-shell-wide section-space">
+          <div className="max-w-2xl">
+            <span className="tag-pill">Отзывы выпускников</span>
+            <h2 className="mt-4 text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-[#1b1b1b] sm:text-[2rem]">
+              Что говорят выпускники курса
+            </h2>
+          </div>
+          <div className="mt-8 grid gap-4 md:grid-cols-2">
+            {courseReviews.map((review) => {
+              const sourceLabel = review.source ? REVIEW_SOURCE_LABELS[review.source] : null;
+              return (
+                <article key={review.author} className="card-block card-cream-soft">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="text-sm font-medium text-[#262626]">{review.author}</div>
+                    <div className="text-xs text-[#1b1b1b]/60">★ {review.rating ?? 5} / 5</div>
+                  </div>
+                  <p className="mt-4 text-sm leading-[1.6] text-[#4b4b4b]">{review.body}</p>
+                  <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#6b6b6b]">
+                    {review.result ? <span>{review.result}</span> : null}
+                    {sourceLabel ? (
+                      review.verifyUrl ? (
+                        <a
+                          href={review.verifyUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="underline underline-offset-4 hover:text-[#262626]"
+                        >
+                          {sourceLabel} →
+                        </a>
+                      ) : (
+                        <span>{sourceLabel}</span>
+                      )
+                    ) : null}
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      ) : null}
 
       <FAQSection
         title="Вопросы и ответы"

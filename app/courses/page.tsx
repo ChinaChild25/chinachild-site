@@ -10,7 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
     title: "Курсы китайского языка онлайн — все программы школы ChinaChild",
     description:
-      "Все курсы китайского онлайн в ChinaChild: HSK 1–6, для детей 12+, взрослых и бизнеса. Мини-группы до 5, налоговый вычет 13%.",
+      "Все курсы китайского онлайн в ChinaChild: HSK 1–6, для детей 12+, взрослых и бизнеса. Мини-группы до 5, лицензия Москвы, налоговый вычет до 19 500 ₽.",
     path: "/courses",
     keywords: [
       "курсы китайского языка онлайн",
