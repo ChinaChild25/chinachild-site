@@ -1,6 +1,6 @@
 # Production Readiness Results
 
-Generated: 2026-06-02T09:29:04.167Z
+Generated: 2026-06-02T09:54:32.141Z
 Base URL: https://chinachild-site.vercel.app
 Expected metadata origin: https://chinachild-site.vercel.app
 Result: FAIL

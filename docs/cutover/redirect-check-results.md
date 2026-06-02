@@ -1,6 +1,6 @@
 # Redirect Check Results
 
-Generated: 2026-06-02T09:37:32.405Z
+Generated: 2026-06-02T09:55:05.957Z
 Base URL: https://chinachild-site.vercel.app
 Redirects checked: 246
 Passed: 7
@@ -149,8 +149,8 @@ Failed: 239
 | FAIL | /cookie-agreement | 404 |  | 200 | expected 301/308, got 404; Location mismatch; expected /privacy-policy |
 | FAIL | /error-404 | 404 |  | 200 | expected 301/308, got 404; Location mismatch; expected / |
 | FAIL | /footer | 404 |  | 200 | expected 301/308, got 404; Location mismatch; expected / |
-| FAIL | /members-footer | 404 |  | 200 | expected 301/308, got 404; Location mismatch; expected https://my.chinachild.ru |
-| FAIL | /members-header | 404 |  | 200 | expected 301/308, got 404; Location mismatch; expected https://my.chinachild.ru |
+| FAIL | /members-footer | 404 |  |  | expected 301/308, got 404; Location mismatch; expected https://go.chinachild.ru/members-footer; fetch failed |
+| FAIL | /members-header | 404 |  |  | expected 301/308, got 404; Location mismatch; expected https://go.chinachild.ru/members-header; fetch failed |
 | FAIL | /books | 404 |  | 200 | expected 301/308, got 404; Location mismatch; expected /blog |
 | FAIL | /tests | 404 |  | 200 | expected 301/308, got 404; Location mismatch; expected /chinese/hsk-test |
 | FAIL | /achievements | 404 |  | 200 | expected 301/308, got 404; Location mismatch; expected /results |
@@ -199,7 +199,7 @@ Failed: 239
 | FAIL | /page31828542.html | 404 |  | 200 | expected 301/308, got 404; Location mismatch; expected /public-treaty |
 | FAIL | /page31050516.html | 404 |  | 200 | expected 301/308, got 404; Location mismatch; expected / |
 | FAIL | /page31242561.html | 404 |  | 200 | expected 301/308, got 404; Location mismatch; expected / |
-| FAIL | /page130259076.html | 404 |  | 200 | expected 301/308, got 404; Location mismatch; expected https://my.chinachild.ru |
+| FAIL | /page130259076.html | 404 |  |  | expected 301/308, got 404; Location mismatch; expected https://go.chinachild.ru/page130259076.html; fetch failed |
 | FAIL | /page72525489.html | 404 |  | 200 | expected 301/308, got 404; Location mismatch; expected /hsk/hsk-1 |
 | FAIL | /page72653591.html | 404 |  | 200 | expected 301/308, got 404; Location mismatch; expected /hsk/hsk-1 |
 | FAIL | /page72765771.html | 404 |  | 200 | expected 301/308, got 404; Location mismatch; expected /hsk/hsk-1 |
@@ -242,7 +242,7 @@ Failed: 239
 | FAIL | /page73929851.html | 404 |  | 200 | expected 301/308, got 404; Location mismatch; expected /hsk/hsk-2 |
 | FAIL | /page73930207.html | 404 |  | 200 | expected 301/308, got 404; Location mismatch; expected /hsk/hsk-2 |
 | FAIL | /page73930439.html | 404 |  | 200 | expected 301/308, got 404; Location mismatch; expected /hsk/hsk-2 |
-| FAIL | /page131818866.html | 404 |  | 200 | expected 301/308, got 404; Location mismatch; expected https://my.chinachild.ru |
+| FAIL | /page131818866.html | 404 |  |  | expected 301/308, got 404; Location mismatch; expected https://go.chinachild.ru/page131818866.html; fetch failed |
 | PASS | /kursy | 308 | /courses | 200 | ok |
 | FAIL | /kursy-kitayskogo | 404 |  | 200 | expected 301/308, got 404; Location mismatch; expected /courses |
 | PASS | /onlajn-kursy | 308 | /courses/online-chinese | 200 | ok |

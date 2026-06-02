@@ -27,6 +27,8 @@ NEXT_PUBLIC_APP_URL=https://my.chinachild.ru
 
 This keeps current production canonical/OG/sitemap aligned with the technical host while the old Tilda site still owns `chinachild.ru`.
 
+`NEXT_PUBLIC_APP_URL` is only for links to the personal account/platform. It is not used to preserve the old Tilda site; old Tilda remains under `https://go.chinachild.ru`.
+
 ## At Cutover
 
 Set Vercel Production env:
@@ -36,6 +38,8 @@ NEXT_PUBLIC_SITE_URL=https://chinachild.ru
 NEXT_PUBLIC_APP_URL=https://my.chinachild.ru
 ```
 
+For the SEO site, `NEXT_PUBLIC_SITE_URL` is the canonical domain switch. `NEXT_PUBLIC_APP_URL` is needed only because the SEO site contains platform/deep links; it is unrelated to the legacy Tilda site.
+
 Then redeploy production. `NEXT_PUBLIC_*` values are baked into client/server output at build time, so changing them without redeploy is not enough.
 
 ## Remove Or Replace
@@ -43,6 +47,7 @@ Then redeploy production. `NEXT_PUBLIC_*` values are baked into client/server ou
 - Replace any `NEXT_PUBLIC_APP_URL=https://app.chinachild.ru` with `https://my.chinachild.ru`.
 - Replace any `NEXT_PUBLIC_APP_URL=https://chinachild-sandbox.vercel.app` with `https://my.chinachild.ru`.
 - Do not use `chinachild-site.vercel.app` as final canonical production env after DNS cutover.
+- Do not use `my.chinachild.ru` as the legacy Tilda destination. The old Tilda site belongs on `go.chinachild.ru`.
 - Do not leave localhost values in Production env.
 
 ## Where To Change
@@ -51,9 +56,10 @@ Vercel dashboard:
 
 1. Open the Vercel project for `chinachild-site`.
 2. Go to Settings -> Environment Variables.
-3. Edit Production values for `NEXT_PUBLIC_SITE_URL` and `NEXT_PUBLIC_APP_URL`.
-4. Save.
-5. Redeploy the production branch.
+3. Edit Production value for `NEXT_PUBLIC_SITE_URL`.
+4. Keep or set `NEXT_PUBLIC_APP_URL` only for personal-account/platform links.
+5. Save.
+6. Redeploy the production branch.
 
 ## Verification Commands
 

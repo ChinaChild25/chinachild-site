@@ -5,9 +5,9 @@ Generated: 2026-06-02
 ## Domain Plan
 
 ```txt
-https://chinachild.ru         -> SEO site from repo chinachild-site
-https://school.chinachild.ru  -> old Tilda site
-https://my.chinachild.ru      -> platform / personal account
+https://chinachild.ru      -> SEO site from repo chinachild-site
+https://go.chinachild.ru   -> old Tilda site
+https://my.chinachild.ru   -> platform / personal account
 ```
 
 ## Current Domains
@@ -15,13 +15,14 @@ https://my.chinachild.ru      -> platform / personal account
 - `https://chinachild.ru`: live old Tilda site. Direct checks on 2026-06-02 returned Tilda `robots.txt` and `sitemap.xml`.
 - `https://chinachild-site.vercel.app`: current production URL for this Next.js SEO site on Vercel.
 - `https://my.chinachild.ru`: platform host. Direct `HEAD` check on 2026-06-02 returned HTTP 200.
-- `https://school.chinachild.ru`: not configured yet. Direct DNS check on 2026-06-02 failed to resolve.
+- `https://go.chinachild.ru`: not configured yet. Direct DNS check on 2026-06-02 failed to resolve.
 
 ## Target After Cutover
 
 - Apex domain `chinachild.ru` points to Vercel project for this repo.
-- Old Tilda site remains available at `school.chinachild.ru`.
-- Platform/account traffic uses `my.chinachild.ru`; `app.chinachild.ru` must not be used.
+- Old Tilda site remains available at `go.chinachild.ru`.
+- Platform/account traffic uses `my.chinachild.ru`; it is separate from the Tilda migration and must not be used as a fallback for ordinary old Tilda pages.
+- `app.chinachild.ru` must not be used.
 
 ## Next.js Documentation Note
 
@@ -54,6 +55,8 @@ NEXT_PUBLIC_SITE_URL=https://chinachild.ru
 NEXT_PUBLIC_APP_URL=https://my.chinachild.ru
 ```
 
+`NEXT_PUBLIC_APP_URL` is needed only for links to the personal account/platform. It is not the old Tilda site URL.
+
 Local pulled env files currently have empty values for `NEXT_PUBLIC_SITE_URL` and `NEXT_PUBLIC_APP_URL`, so production must be set manually in Vercel and redeployed.
 
 ## Site URL Configuration
@@ -68,6 +71,7 @@ Local pulled env files currently have empty values for `NEXT_PUBLIC_SITE_URL` an
 - Platform deep links are centralized in [lib/content/platform-links.ts](/Users/denisgasencenko/Dev/projects/chinachild-site/lib/content/platform-links.ts:1).
 - `NEXT_PUBLIC_APP_URL` is the override.
 - Fallback is now `https://my.chinachild.ru`.
+- This variable is only for platform/account links, not for preserving old Tilda content.
 - Existing platform links are used from grammar and dictionary pages:
   - `platformLinks.grammarArticle()`
   - `platformLinks.vocabularyWord()`
