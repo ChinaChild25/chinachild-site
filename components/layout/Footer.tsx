@@ -58,6 +58,23 @@ export default function Footer() {
                   <TrustProfileLogo label={link.label} logo={link.logo} surface="dark" />
                 </a>
               ))}
+              <a
+                href="https://webmaster.yandex.ru/siteinfo/?site=go.chinachild.ru"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="ИКС go.chinachild.ru в Яндекс.Вебмастере"
+                className="yandex-iks-badge focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/45"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="https://yandex.ru/cycounter?go.chinachild.ru&theme=light&lang=ru"
+                  width={88}
+                  height={31}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+              </a>
             </div>
           </div>
         </div>

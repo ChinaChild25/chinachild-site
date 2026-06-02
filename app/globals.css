@@ -4042,7 +4042,8 @@ html[data-theme="dark"] {
   bottom: 16px;
   z-index: 950;
   animation: cookie-banner-slide-in 200ms ease-out both;
-  contain: layout paint;
+  border-radius: 22px;
+  contain: layout;
 }
 
 @media (min-width: 640px) {
@@ -4053,7 +4054,8 @@ html[data-theme="dark"] {
 }
 
 .cookie-banner-card {
-  border-radius: 16px;
+  overflow: hidden;
+  border-radius: 22px;
   border: 1px solid rgba(0, 0, 0, 0.08);
   background: #ffffff;
   color: #262626;
@@ -4277,6 +4279,33 @@ html[data-theme="dark"] .cookie-banner-row-title {
 
 html[data-theme="dark"] .cookie-banner-checkbox {
   accent-color: #ededed;
+}
+
+.yandex-iks-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 88px;
+  height: 31px;
+  overflow: hidden;
+  align-self: center;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14);
+  transition: opacity var(--t-base), transform var(--t-base);
+}
+
+.yandex-iks-badge:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.yandex-iks-badge img {
+  display: block;
+  width: 88px;
+  height: 31px;
+  border: 0;
+  border-radius: inherit;
 }
 
 /* Hide FloatingCta on phones while the cookie banner occupies the
