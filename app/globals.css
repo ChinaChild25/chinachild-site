@@ -1271,6 +1271,12 @@ a:focus-visible {
   width: 488px;
 }
 
+@media (max-width: 1179px) {
+  .site-header-dropdown-panel {
+    display: none;
+  }
+}
+
 .site-header-dropdown-grid {
   position: relative;
   z-index: 1;
