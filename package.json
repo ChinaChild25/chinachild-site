@@ -12,7 +12,9 @@
     "gen:images:dry": "DRY_RUN=1 node --env-file=.env.local scripts/generate-blog-images.mjs",
     "gen:audio:dry": "DRY_RUN=1 node --env-file=.env.local scripts/generate-blog-audio.mjs",
     "publish:scheduled": "node scripts/publish-scheduled-blog.mjs",
-    "publish:scheduled:2": "PUBLISH_COUNT=2 node scripts/publish-scheduled-blog.mjs"
+    "publish:scheduled:2": "PUBLISH_COUNT=2 node scripts/publish-scheduled-blog.mjs",
+    "audit:redirects": "node scripts/audit-redirects.mjs",
+    "audit:production": "node scripts/audit-production-readiness.mjs"
   },
   "dependencies": {
     "@next/third-parties": "^16.2.6",
