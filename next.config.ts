@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import type { NextConfig } from "next";
 
 const securityHeaders = [
@@ -47,6 +49,80 @@ const sitemapHeaders = [
   { key: "Cache-Control", value: "public, max-age=3600, must-revalidate" },
 ];
 
+type RedirectRule = {
+  source: string;
+  destination: string;
+  permanent: true;
+};
+
+function parseCsvLine(line: string): string[] {
+  const cells: string[] = [];
+  let cell = "";
+  let quoted = false;
+
+  for (let i = 0; i < line.length; i += 1) {
+    const char = line[i];
+
+    if (char === '"') {
+      if (quoted && line[i + 1] === '"') {
+        cell += '"';
+        i += 1;
+      } else {
+        quoted = !quoted;
+      }
+      continue;
+    }
+
+    if (char === "," && !quoted) {
+      cells.push(cell);
+      cell = "";
+      continue;
+    }
+
+    cell += char;
+  }
+
+  cells.push(cell);
+  return cells;
+}
+
+function destinationFromCsv(newPath: string, newUrl: string): string {
+  if (newUrl) {
+    try {
+      const url = new URL(newUrl);
+      if (url.hostname !== "chinachild.ru" && url.hostname !== "www.chinachild.ru") {
+        return newUrl;
+      }
+    } catch {
+      // Fall back to newPath for malformed URLs so build validation catches it.
+    }
+  }
+
+  return newPath || "/";
+}
+
+function loadLegacyRedirects(): RedirectRule[] {
+  const file = path.join(process.cwd(), "docs/cutover/redirect-map.csv");
+  const csv = readFileSync(file, "utf8");
+  const [, ...lines] = csv.split(/\r?\n/);
+
+  return lines
+    .filter((line) => line.trim())
+    .map((line) => {
+      const [oldPath, , newPath, newUrl, status] = parseCsvLine(line);
+
+      if (status !== "301") {
+        throw new Error(`Unsupported redirect status in ${file}: ${status}`);
+      }
+
+      return {
+        source: oldPath,
+        destination: destinationFromCsv(newPath, newUrl),
+        permanent: true,
+      };
+    });
+}
+
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   trailingSlash: false,
@@ -62,34 +138,7 @@ const nextConfig: NextConfig = {
     ];
   },
   async redirects() {
-    return [
-      // Old Russian-slug routes → new English-slug structure (permanent 308 ≡ 301)
-      { source: "/kursy", destination: "/courses", permanent: true },
-      { source: "/onlajn-kursy", destination: "/courses/online-chinese", permanent: true },
-      { source: "/hsk", destination: "/courses/hsk-preparation", permanent: true },
-      { source: "/dlya-detej", destination: "/courses/chinese-for-kids", permanent: true },
-      { source: "/dlya-podrostkov", destination: "/courses/chinese-for-kids", permanent: true },
-      { source: "/dlya-vzroslyh", destination: "/courses/chinese-for-adults", permanent: true },
-      { source: "/dlya-biznesa", destination: "/courses/business-chinese", permanent: true },
-      { source: "/test-hsk", destination: "/courses/hsk-preparation", permanent: true },
-      { source: "/prepodavateli", destination: "/about", permanent: true },
-      // Legacy blog slugs → new English slugs
-      {
-        source: "/blog/kak-podgotovitsya-k-hsk-1",
-        destination: "/blog/hsk-levels-explained",
-        permanent: true,
-      },
-      {
-        source: "/blog/kitajskij-dlya-detej-s-chego-nachat",
-        destination: "/blog/chinese-for-beginners-guide",
-        permanent: true,
-      },
-      {
-        source: "/blog/zachem-biznesu-kitajskij-yazyk",
-        destination: "/blog/how-long-to-learn-chinese",
-        permanent: true,
-      },
-    ];
+    return loadLegacyRedirects();
   },
 };
 
