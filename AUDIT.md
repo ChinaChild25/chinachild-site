@@ -54,7 +54,7 @@
 
 | Пункт | Статус | Что есть сейчас | Что не так | Приоритет | Как фиксить |
 |---|---:|---|---|---:|---|
-| `sitemap.xml` | ⚠️ частично | `app/sitemap.xml/route.ts` делает sitemap index; `app/sitemap-pages.xml/route.ts`, `app/sitemap-blog.xml/route.ts`, `app/sitemap-images.xml/route.ts` генерируют URL через `absoluteUrl()` | Если `NEXT_PUBLIC_SITE_URL` не задан, все sitemap URL становятся `https://chinachild-site.vercel.app`; в `.env.local` переменной нет, в `.env.example` дефолт Vercel | P0 | На production задать `NEXT_PUBLIC_SITE_URL=https://chinachild.ru`, поменять дефолт в `lib/site-config.ts`/`.env.example`, пересобрать и проверить XML |
+| `sitemap.xml` | ⚠️ частично | `app/sitemap.xml/route.ts` делает sitemap index; `app/sitemap-pages.xml/route.ts`, `app/sitemap-blog.xml/route.ts`, `app/sitemap-images.xml/route.ts` генерируют URL через `absoluteUrl()` | Если `NEXT_PUBLIC_SITE_URL` не задан, все sitemap URL становятся техническим fallback-доменом; `.env.example` уже указывает cutover-домен | P0 | На production задать `NEXT_PUBLIC_SITE_URL=https://chinachild.ru`, пересобрать и проверить XML |
 | `robots.txt` | ⚠️ частично | `app/robots.txt/route.ts`: Allow all, Disallow `/api/`, Yandex Clean-param, Host, Sitemap | Host и Sitemap зависят от `SITE_URL`, сейчас риск Vercel host; нет запрета индексации preview-домена на уровне production/preview окружений | P0 | После смены env проверить `/robots.txt`; для preview-доменов добавить защиту от индексации или отдельный robots |
 | Canonical URL | ⚠️ частично | `lib/metadata.ts` ставит абсолютный canonical через `absoluteUrl(path)`; root canonical в `app/layout.tsx` | Готово архитектурно, но ломается на дефолтном `SITE_URL`; часть страниц без своего metadata наследует root/общие значения или static metadata | P0 | Исправить env/default URL; пройти страницы без `generateMetadata`: `/cities`, `/compare/*`, `/learn/hsk`, `/license`, `/price`, `/team`, `/zayavka`, `/free-trial` уже имеют static metadata, но проверить canonical в HTML |
 | Title/description | ⚠️ частично | Большинство страниц имеют `generateMetadata` или `metadata` через `buildMetadata`: `app/about/page.tsx`, `app/blog/**`, `app/courses/**`, `app/grammar/**`, legal pages | Не у всех маршрутов есть `generateMetadata`; часть использует static `metadata`, а часть, вероятно, наследует root metadata (`/cities`, `/compare/*`, `/learn/hsk`, `/license`, `/price`) | P1 | Добавить/проверить уникальные metadata для всех commercial/trust страниц; особенно `/price`, `/license`, `/cities`, `/learn/hsk` |
@@ -197,12 +197,12 @@ Route (app)                                                      Size  First Loa
 
 | Пункт | Статус | Что есть сейчас | Что не так | Приоритет | Как фиксить |
 |---|---:|---|---|---:|---|
-| Hardcoded `chinachild-site.vercel.app` | ❌ нет | Найдено в `lib/site-config.ts`, `.env.example`, `urls-for-indexing.txt` | Это главный риск: canonical/sitemap/robots/feed/legal links могут уйти на Vercel-домен при неправильном env | P0 | Заменить дефолт на `https://chinachild.ru`, обновить `.env.example`, пересоздать `urls-for-indexing.txt` |
+| Hardcoded `chinachild-site.vercel.app` | ⚠️ частично | Оставлен только как текущий технический fallback в `lib/site-config.ts` и в cutover/audit документации | canonical/sitemap/robots/feed/legal links зависят от production env | P0 | На cutover поставить `NEXT_PUBLIC_SITE_URL=https://chinachild.ru` и redeploy |
 | `NEXT_PUBLIC_SITE_URL` | ⚠️ частично | Есть в `.env.example`; `SITE_URL` читает env в `lib/site-config.ts` | В `.env.local` переменная не найдена; build использовал default Vercel URL | P0 | Задать `NEXT_PUBLIC_SITE_URL=https://chinachild.ru` во всех production env и локально для проверки |
 | Canonical generation | ⚠️ частично | `absoluteUrl()` используется в `lib/metadata.ts`, sitemap, robots, legal pages | Абсолютно зависит от `SITE_URL`; fallback опасный | P0 | Сделать fallback production-safe или fail-fast при production build без `NEXT_PUBLIC_SITE_URL` |
 | Sitemap absolute URLs | ⚠️ частично | Все через `absoluteUrl()` | При неверном env будут Vercel absolute URLs | P0 | Проверить curl/браузером `/sitemap.xml` и вложенные sitemap после деплоя |
 | Open Graph URLs | ⚠️ частично | `metadataBase: new URL(SITE_URL)` и `openGraph.url` | При неверном env OG URL на Vercel; `twitter-image` warning | P1 | Проверить rendered meta tags на `chinachild.ru`; исправить twitter image export |
-| Hardcoded URL в meta/текстах | ⚠️ частично | В текстах есть `chinachild.ru` как брендовый домен; platform default `https://app.chinachild.ru` | Есть `urls-for-indexing.txt` полностью на Vercel; `.env.example` Vercel; `lib/site-config.ts` Vercel fallback | P0 | Не отправлять текущий `urls-for-indexing.txt`; пересобрать список после домена |
+| Hardcoded URL в meta/текстах | ⚠️ частично | В текстах есть `chinachild.ru` как брендовый домен; platform fallback обновлён на `https://my.chinachild.ru` | `lib/site-config.ts` всё ещё имеет технический fallback для текущего Vercel production | P0 | Не полагаться на fallback после cutover; поставить production env и проверить rendered metadata |
 
 ## Общий summary
 
@@ -214,11 +214,11 @@ Route (app)                                                      Size  First Loa
 
 ### Топ-5 P0 блокеров
 
-1. **`SITE_URL` fallback на `https://chinachild-site.vercel.app`**  
-   Файлы: `lib/site-config.ts`, `.env.example`; локальный build показал отсутствие `NEXT_PUBLIC_SITE_URL` в `.env.local`. Риск: canonical, sitemap, robots Host, OG, feed, legal links уйдут на Vercel.
+1. **`SITE_URL` production env must be set before cutover**  
+   Файл: `lib/site-config.ts`; локальный build показал отсутствие `NEXT_PUBLIC_SITE_URL` в `.env.local`. Риск: canonical, sitemap, robots Host, OG, feed, legal links уйдут на fallback-домен.
 
-2. **Нет полного redirect map со старого Tilda-сайта**  
-   Файл: `next.config.ts` содержит только ограниченный набор redirects. Риск: потеря SEO-веса и рост 404 после замены сайта.
+2. **Redirect map must be deployed and audited**  
+   Файл: `docs/cutover/redirect-map.csv`; `next.config.ts` загружает карту редиректов. Риск остаётся до production redeploy и `npm run audit:redirects`.
 
 3. **Нет cookie banner / consent gate при включенных Яндекс.Метрике и GA4**  
    Файлы: `app/layout.tsx`, `components/analytics/YandexMetrika.tsx`, `components/analytics/GoogleAnalytics.tsx`; policy есть, баннера нет. Риск: юридический и репутационный для РФ/ЕЭЗ-трафика.

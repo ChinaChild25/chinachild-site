@@ -38,7 +38,7 @@ See `.env.example`. Required for production:
 | `NEXT_PUBLIC_SUPABASE_URL`        | Same project as `chinachild-sandbox`                     |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY`   | Anon key — RLS limits it to public content               |
 | `NEXT_PUBLIC_SITE_URL`            | Canonical origin (`https://chinachild.ru`)               |
-| `NEXT_PUBLIC_APP_URL`             | Platform origin used for CTAs (`https://app.chinachild.ru`) |
+| `NEXT_PUBLIC_APP_URL`             | Platform origin used for CTAs (`https://my.chinachild.ru`) |
 
 **Never** put `SUPABASE_SERVICE_ROLE_KEY` here. The anon key is enough — the
 RLS policies guarantee only published grammar articles, system/imported HSK
