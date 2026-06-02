@@ -2,6 +2,47 @@ import { absoluteUrl, SITE_URL } from "@/lib/site-config";
 
 export const dynamic = "force-static";
 
+const ROBOTS_CACHE_SECONDS = 300;
+
+const indexableAllowPaths = [
+  "/courses",
+  "/courses/",
+  "/price",
+  "/free-trial",
+  "/zayavka",
+  "/learn/",
+  "/hsk/",
+  "/chinese/hsk-test",
+  "/cities",
+  "/cities/",
+  "/corporate",
+  "/about",
+  "/methodology",
+  "/results",
+  "/reviews",
+  "/license",
+  "/team",
+  "/team/",
+  "/blog",
+  "/blog/",
+  "/grammar",
+  "/grammar/",
+  "/dictionary",
+  "/dictionary/",
+  "/glossary",
+  "/glossary/",
+];
+
+function robotGroup(userAgent: string, extraLines: string[] = []) {
+  return [
+    `User-Agent: ${userAgent}`,
+    "Allow: /",
+    ...indexableAllowPaths.map((path) => `Allow: ${path}`),
+    "Disallow: /api/",
+    ...extraLines,
+  ];
+}
+
 export async function GET() {
   // Clean-param is a Yandex-specific directive that strips tracking params
   // (utm_*, fbclid, gclid, ya_session etc.) so they don't dilute crawl budget
@@ -24,22 +65,15 @@ export async function GET() {
   const host = new URL(SITE_URL).host;
 
   const lines = [
-    "User-Agent: *",
-    "Allow: /",
-    "Disallow: /api/",
+    ...robotGroup("*"),
     "",
-    "User-Agent: Yandex",
-    "Allow: /",
-    "Disallow: /api/",
-    `Clean-param: ${cleanParams}`,
+    ...robotGroup("Yandex", [`Clean-param: ${cleanParams}`]),
     "",
-    "User-Agent: Googlebot",
-    "Allow: /",
-    "Disallow: /api/",
+    ...robotGroup("Googlebot"),
     "",
-    "User-Agent: Bingbot",
-    "Allow: /",
-    "Disallow: /api/",
+    ...robotGroup("Google-InspectionTool"),
+    "",
+    ...robotGroup("Bingbot"),
     "",
     `Host: ${host}`,
     "",
@@ -50,7 +84,7 @@ export async function GET() {
   return new Response(lines.join("\n"), {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",
-      "Cache-Control": "public, max-age=3600, must-revalidate",
+      "Cache-Control": `public, max-age=${ROBOTS_CACHE_SECONDS}, must-revalidate`,
     },
   });
 }
