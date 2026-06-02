@@ -59,15 +59,15 @@ export default function Footer() {
                 </a>
               ))}
               <a
-                href="https://webmaster.yandex.ru/siteinfo/?site=go.chinachild.ru"
+                href="https://webmaster.yandex.ru/siteinfo/?site=https://chinachild.ru"
                 target="_blank"
                 rel="noreferrer"
-                aria-label="ИКС go.chinachild.ru в Яндекс.Вебмастере"
+                aria-label="ИКС chinachild.ru в Яндекс.Вебмастере"
                 className="yandex-iks-badge focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/45"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="https://yandex.ru/cycounter?go.chinachild.ru&theme=light&lang=ru"
+                  src="https://yandex.ru/cycounter?https://chinachild.ru&theme=light&lang=ru"
                   width={88}
                   height={31}
                   alt=""
