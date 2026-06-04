@@ -225,6 +225,7 @@ export default async function CityLandingPage({ params }: CityPageProps) {
                   className: "mt-4 w-fit",
                 })}
                 source={`city-${city.slug}-contact-card`}
+                suppressFloatingCta
               >
                 Записаться на пробное
               </LeadModal>

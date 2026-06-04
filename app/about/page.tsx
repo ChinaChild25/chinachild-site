@@ -841,6 +841,7 @@ export default function AboutPage() {
                     size: "large",
                   })}
                   source="about-contact-card"
+                  suppressFloatingCta
                 >
                   Записаться на пробное
                 </LeadModal>

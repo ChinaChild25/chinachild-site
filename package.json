@@ -5,8 +5,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "postbuild": "node scripts/audit-built-jsonld.mjs",
     "start": "next start",
     "lint": "eslint",
+    "audit:jsonld": "node scripts/audit-built-jsonld.mjs",
     "gen:images": "node --env-file=.env.local scripts/generate-blog-images.mjs",
     "gen:audio": "node --env-file=.env.local scripts/generate-blog-audio.mjs",
     "gen:images:dry": "DRY_RUN=1 node --env-file=.env.local scripts/generate-blog-images.mjs",

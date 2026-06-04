@@ -3748,10 +3748,6 @@ html[data-theme="dark"] {
     border: 1px solid rgba(255, 255, 255, 0.08);
   }
 
-  .card-block {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
   .grammar-callout--info {
     border-left-color: #6b8fc4;
     background: #1a2638;
@@ -4284,14 +4280,19 @@ html[data-theme="dark"] .cookie-banner-checkbox {
 .yandex-iks-badge {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 88px;
-  height: 31px;
+  justify-content: flex-start;
+  gap: 14px;
+  width: 112px;
+  height: 40px;
   overflow: hidden;
   align-self: center;
   border-radius: 8px;
-  background: #ffffff;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14);
+  background: #565656;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 4px 14px 4px 4px;
   transition: opacity var(--t-base), transform var(--t-base);
 }
 
@@ -4300,12 +4301,23 @@ html[data-theme="dark"] .cookie-banner-checkbox {
   transform: translateY(-2px);
 }
 
-.yandex-iks-badge img {
-  display: block;
-  width: 88px;
-  height: 31px;
-  border: 0;
-  border-radius: inherit;
+.yandex-iks-badge-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #fc3f1d;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.yandex-iks-badge-value {
+  color: #ffffff;
 }
 
 /* Hide FloatingCta on phones while the cookie banner occupies the

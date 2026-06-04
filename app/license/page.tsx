@@ -262,6 +262,7 @@ export default function LicensePage() {
             <LeadModal
               triggerClassName={buttonStyles({ size: "large" })}
               source="license-cta"
+              suppressFloatingCta
             >
               Записаться на пробное
             </LeadModal>

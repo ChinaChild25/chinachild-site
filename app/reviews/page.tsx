@@ -113,6 +113,7 @@ export default function ReviewsPage() {
             <LeadModal
               triggerClassName={buttonStyles({ variant: "secondary", size: "large" })}
               source="reviews-cta"
+              suppressFloatingCta
             >
               Записаться
             </LeadModal>

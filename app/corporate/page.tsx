@@ -309,6 +309,7 @@ export default async function CorporateHub() {
               })}
               source="corporate-hub-cta"
               defaultCourse="business-chinese"
+              suppressFloatingCta
             >
               Заявка для команды
             </LeadModal>

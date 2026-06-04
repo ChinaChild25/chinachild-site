@@ -49,6 +49,13 @@ const sitemapHeaders = [
   { key: "Cache-Control", value: "public, max-age=3600, must-revalidate" },
 ];
 
+const middlewareHandledRedirectSources = new Set([
+  "/members",
+  "/members/",
+  "/members/login",
+  "/members/signup",
+]);
+
 type RedirectRule = {
   source: string;
   destination: string;
@@ -108,24 +115,29 @@ function loadLegacyRedirects(): RedirectRule[] {
 
   return lines
     .filter((line) => line.trim())
-    .map((line) => {
+    .flatMap((line) => {
       const [oldPath, , newPath, newUrl, status] = parseCsvLine(line);
 
       if (status !== "301") {
         throw new Error(`Unsupported redirect status in ${file}: ${status}`);
       }
 
-      return {
+      if (middlewareHandledRedirectSources.has(oldPath)) {
+        return [];
+      }
+
+      return [{
         source: oldPath,
         destination: destinationFromCsv(newPath, newUrl),
         permanent: true,
-      };
+      }];
     });
 }
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   trailingSlash: false,
+  skipTrailingSlashRedirect: true,
   compress: true,
   images: {
     formats: ["image/avif", "image/webp"],
@@ -134,6 +146,8 @@ const nextConfig: NextConfig = {
     return [
       { source: "/:path*", headers: securityHeaders },
       { source: "/sitemap.xml", headers: sitemapHeaders },
+      { source: "/sitemap-feeds.xml", headers: sitemapHeaders },
+      { source: "/sitemap-store.xml", headers: sitemapHeaders },
       { source: "/feed.xml", headers: sitemapHeaders },
     ];
   },

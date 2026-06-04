@@ -28,6 +28,8 @@ type LeadModalProps = {
   ariaLabel?: string;
   /** Pre-select a course in the form (e.g. on a course landing page) */
   defaultCourse?: string;
+  /** Hide the global floating CTA while this trigger is visible in the viewport */
+  suppressFloatingCta?: boolean;
 };
 
 /**
@@ -43,6 +45,7 @@ export default function LeadModal({
   source,
   ariaLabel,
   defaultCourse,
+  suppressFloatingCta = false,
 }: LeadModalProps) {
   const dialogRef = useRef<HTMLDialogElement | null>(null);
   const [open, setOpen] = useState(false);
@@ -101,6 +104,7 @@ export default function LeadModal({
         className={triggerClassName}
         aria-haspopup="dialog"
         aria-label={ariaLabel}
+        data-floating-cta-suppress={suppressFloatingCta ? "true" : undefined}
       >
         {children}
       </button>

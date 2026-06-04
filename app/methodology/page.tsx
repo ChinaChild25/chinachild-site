@@ -391,6 +391,7 @@ export default function MethodologyPage() {
                 triggerClassName={buttonStyles({ variant: "secondary", size: "large" })}
                 source="methodology-cta"
                 defaultCourse="hsk-preparation"
+                suppressFloatingCta
               >
                 Записаться на пробное
               </LeadModal>

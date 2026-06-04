@@ -1,0 +1,2023 @@
+/* Заголовки секций — глобальные .section-title / .section-description (как SectionShell) */
+
+.audienceGrid,
+.whyGrid {
+  display: grid;
+  gap: 28px;
+}
+
+.audienceGrid > :global(.reveal),
+.whyGrid > :global(.reveal) {
+  display: flex;
+}
+
+.audienceGrid > :global(.reveal) > .card,
+.whyGrid > :global(.reveal) > .card {
+  width: 100%;
+  height: 100%;
+}
+
+.card {
+  position: relative;
+  display: block;
+  min-height: 400px;
+  overflow: hidden;
+  border-radius: 28px;
+  color: #292929;
+  background: var(--card-bg);
+  isolation: isolate;
+}
+
+.audienceCard {
+  min-height: 420px;
+  transition:
+    background-color 180ms ease,
+    transform 180ms ease;
+}
+
+.audienceCard:hover {
+  background: var(--card-hover);
+  transform: translateY(-2px);
+}
+
+.audienceCard:focus-visible {
+  outline: 2px solid rgba(38, 38, 38, 0.55);
+  outline-offset: 4px;
+}
+
+.copy {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: clamp(30px, 2.7vw, 50px);
+}
+
+.copy h3 {
+  max-width: 15ch;
+  margin: 0;
+  color: #2c2c2c;
+  font-size: clamp(1.95rem, 2.35vw, 2.75rem);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: 0;
+  hyphens: none;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.subtitle {
+  max-width: 16em;
+  margin: 20px 0 0;
+  color: rgba(44, 44, 44, 0.56);
+  font-size: clamp(1.08rem, 1.25vw, 1.42rem);
+  font-weight: 400;
+  line-height: 1.28;
+  letter-spacing: 0;
+  hyphens: none;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.copy ul {
+  display: grid;
+  gap: 10px;
+  margin: 30px 0 0;
+  padding: 0;
+  list-style: none;
+  color: #292929;
+  font-size: clamp(1rem, 1vw, 1.2rem);
+  font-weight: 400;
+  line-height: 1.28;
+  letter-spacing: 0;
+  hyphens: none;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.audienceCard .copy ul {
+  gap: 7px;
+  margin-top: 28px;
+}
+
+.audienceCard .copy li {
+  padding-left: 0;
+}
+
+.audienceCard .copy li::before {
+  display: none;
+}
+
+.copy li {
+  position: relative;
+  margin: 0;
+  padding-left: 1.25em;
+}
+
+.copy li::before {
+  position: absolute;
+  top: 0.62em;
+  left: 0;
+  width: 0.58em;
+  height: 1px;
+  background: rgba(41, 41, 41, 0.42);
+  content: "";
+}
+
+.more {
+  display: inline-block;
+  margin-top: 46px;
+  color: #292929;
+  font-size: clamp(1.02rem, 1.02vw, 1.18rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.cardImage {
+  position: absolute;
+  z-index: 1;
+  display: block;
+  top: var(--asset-top, auto);
+  right: var(--asset-right, auto);
+  bottom: var(--asset-bottom, auto);
+  left: var(--asset-left, auto);
+  width: var(--asset-width, auto);
+  height: var(--asset-height, auto);
+  object-position: var(--asset-position, center);
+  pointer-events: none;
+  transform: translate(var(--asset-move-x, 0), var(--asset-move-y, 0))
+    scale(var(--asset-scale, 1));
+  transform-origin: var(--asset-origin, center);
+}
+
+.assetImage {
+  object-fit: contain;
+  object-position: inherit;
+}
+
+/*
+  Пульт картинки: меняй только эти значения у нужной картинки.
+  --asset-left/right/top/bottom — положение слоя в карточке.
+  --asset-width/height — размер области картинки.
+  --asset-move-x/y — точный сдвиг после привязки.
+  --asset-scale — дополнительное увеличение без пересчета размеров.
+  --asset-position — фокус внутри слоя: center, right bottom, bottom center.
+*/
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.toneSand {
+  --card-bg: #eee9df;
+  --card-hover: #e7dfd1;
+}
+
+.toneRose {
+  --card-bg: #f1e0e7;
+  --card-hover: #ead5df;
+}
+
+.toneBlue {
+  --card-bg: #dfe6f2;
+  --card-hover: #d5deec;
+}
+
+.toneLime {
+  --card-bg: #edf3d4;
+  --card-hover: #e4edc5;
+}
+
+.toneGray {
+  --card-bg: #efefef;
+}
+
+.tonePaleLime {
+  --card-bg: #f0f3dc;
+}
+
+.tonePaleBlue {
+  --card-bg: #e4eef9;
+}
+
+.toneWarmWhite {
+  --card-bg: #efefef;
+}
+
+.toneBrightBlue {
+  --card-bg: #bfe3fb;
+}
+
+:global(html[data-theme="dark"]) .toneSand {
+  --card-bg: #2b2722;
+  --card-hover: #342f28;
+}
+
+:global(html[data-theme="dark"]) .toneRose {
+  --card-bg: #32252b;
+  --card-hover: #3a2b32;
+}
+
+:global(html[data-theme="dark"]) .toneBlue {
+  --card-bg: #1e2832;
+  --card-hover: #25313d;
+}
+
+:global(html[data-theme="dark"]) .toneLime,
+:global(html[data-theme="dark"]) .tonePaleLime {
+  --card-bg: #2a2e1c;
+  --card-hover: #323821;
+}
+
+:global(html[data-theme="dark"]) .toneGray,
+:global(html[data-theme="dark"]) .toneWarmWhite {
+  --card-bg: #262626;
+}
+
+:global(html[data-theme="dark"]) .tonePaleBlue {
+  --card-bg: #1e2832;
+}
+
+:global(html[data-theme="dark"]) .toneBrightBlue {
+  --card-bg: #183245;
+}
+
+:global(html[data-theme="dark"]) .copy h3,
+:global(html[data-theme="dark"]) .more {
+  color: #ededed;
+}
+
+:global(html[data-theme="dark"]) .subtitle,
+:global(html[data-theme="dark"]) .whyCard .subtitle {
+  color: rgba(237, 237, 237, 0.58);
+}
+
+:global(html[data-theme="dark"]) .copy ul {
+  color: rgba(237, 237, 237, 0.86);
+}
+
+:global(html[data-theme="dark"]) .copy li::before {
+  background: rgba(237, 237, 237, 0.38);
+}
+
+.audienceSchool {
+  min-height: 760px;
+}
+
+.audienceSchool .card {
+  height: 100%;
+}
+
+.audienceSchoolStudent {
+  --asset-left: 39%;
+  --asset-right: auto;
+  --asset-bottom: -1%;
+  --asset-width: 162%;
+  --asset-height: 72%;
+  --asset-position: bottom center;
+  --asset-move-x: -50%;
+}
+
+.audienceAdultStudent {
+  --asset-right: -7%;
+  --asset-bottom: -2%;
+  --asset-width: 90%;
+  --asset-height: 74%;
+  --asset-position: right bottom;
+}
+
+.audienceHskFolders {
+  --asset-right: -6%;
+  --asset-bottom: -1%;
+  --asset-width: 64%;
+  --asset-height: 56%;
+  --asset-position: right bottom;
+}
+
+.audienceBusinessGroup {
+  --asset-top: 17%;
+  --asset-right: 16%;
+  --asset-width: 31%;
+  --asset-height: 22%;
+  --asset-position: center;
+}
+
+.audienceBusinessFolder {
+  --asset-right: 0%;
+  --asset-bottom: 0;
+  --asset-width: 98%;
+  --asset-height: 82%;
+  --asset-position: right bottom;
+}
+
+.audienceBusinessProgress {
+  --asset-right: 33%;
+  --asset-bottom: 21%;
+  --asset-width: 31%;
+  --asset-height: 21%;
+  --asset-position: center;
+}
+
+.audienceBusiness .copy h3 {
+  max-width: 22ch;
+  font-size: clamp(1.85rem, 2.1vw, 2.45rem);
+}
+
+.audienceSchool .copy h3 {
+  max-width: 12ch;
+}
+
+.audienceAdults .copy h3 {
+  max-width: 12ch;
+}
+
+.audienceHsk .copy h3 {
+  max-width: 21ch;
+  font-size: clamp(1.85rem, 2.1vw, 2.45rem);
+}
+
+.audienceAdults .copy,
+.audienceHsk .copy {
+  max-width: 63%;
+}
+
+.audienceBusiness .copy {
+  max-width: 52%;
+}
+
+.whyCard {
+  min-height: 400px;
+}
+
+.whyCard .copy {
+  padding: clamp(30px, 2.5vw, 42px);
+}
+
+.whyCard .copy h3 {
+  max-width: 15.5ch;
+  font-size: clamp(1.75rem, 2vw, 2.45rem);
+}
+
+.whyCard .subtitle {
+  max-width: 15.5em;
+  color: rgba(44, 44, 44, 0.46);
+  font-size: clamp(1rem, 1.1vw, 1.3rem);
+  line-height: 1.36;
+}
+
+.whyLicenseImage {
+  --asset-right: 0%;
+  --asset-bottom: -1%;
+  --asset-width: 74%;
+  --asset-height: 58%;
+  --asset-position: right bottom;
+}
+
+.whySpeakingProgress {
+  --asset-left: 6%;
+  --asset-right: 6%;
+  --asset-bottom: 5%;
+  --asset-height: 29%;
+  --asset-position: center bottom;
+}
+
+.whyGroupsFive {
+  --asset-right: 1%;
+  --asset-bottom: 5%;
+  --asset-width: 58%;
+  --asset-height: 61%;
+  --asset-position: center;
+}
+
+.whyGroupsStudentOne {
+  --asset-left: 40%;
+  --asset-top: 49%;
+  --asset-width: 18%;
+  --asset-height: 18%;
+  --asset-position: center;
+}
+
+.whyGroupsStudentTwo {
+  --asset-right: 8%;
+  --asset-top: 32%;
+  --asset-width: 18%;
+  --asset-height: 18%;
+  --asset-position: center;
+}
+
+.whyGroupsStudentThree {
+  --asset-left: 50%;
+  --asset-bottom: 7%;
+  --asset-width: 15%;
+  --asset-height: 15%;
+  --asset-position: center;
+}
+
+.whyGroupsStudentFour {
+  --asset-right: 1%;
+  --asset-bottom: 18%;
+  --asset-width: 19%;
+  --asset-height: 19%;
+  --asset-position: center;
+}
+
+.whyGroups .copy {
+  max-width: 78%;
+}
+
+.whyGroups .subtitle {
+  max-width: 17em;
+}
+
+.whyLicense .copy h3 {
+  max-width: 17ch;
+}
+
+.whyTeachers .card::before {
+  position: absolute;
+  z-index: 0;
+  right: 13%;
+  bottom: 9%;
+  width: 37%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(199, 221, 244, 0.72);
+  content: "";
+}
+
+.whyTeachersOne {
+  --asset-left: 55%;
+  --asset-top: 32%;
+  --asset-width: 24%;
+  --asset-height: 24%;
+  --asset-position: center;
+}
+
+.whyTeachersTwo {
+  --asset-left: 38%;
+  --asset-bottom: 10%;
+  --asset-width: 18.5%;
+  --asset-height: 18.5%;
+  --asset-position: center;
+}
+
+.whyTeachersThree {
+  --asset-right: 5%;
+  --asset-bottom: 7%;
+  --asset-width: 22%;
+  --asset-height: 22%;
+  --asset-position: center;
+}
+
+.whyTeachers .subtitle {
+  max-width: 13.5em;
+}
+
+.whyCabinetImage {
+  --asset-right: 5%;
+  --asset-bottom: 3%;
+  --asset-width: 68%;
+  --asset-height: 43%;
+  --asset-position: right bottom;
+}
+
+.whyCabinet .subtitle {
+  max-width: 18em;
+}
+
+.whyCashbackImage {
+  --asset-right: -2%;
+  --asset-bottom: 5%;
+  --asset-width: 82%;
+  --asset-height: 50%;
+  --asset-position: right bottom;
+}
+
+.whyCashback .copy h3 {
+  max-width: 100%;
+  font-size: clamp(1.7rem, 1.85vw, 2.2rem);
+}
+
+.whyCashback .subtitle {
+  max-width: 15em;
+}
+
+/* Промежуточный экран: планшет горизонтально / маленький ноутбук. */
+@media (min-width: 900px) and (max-width: 1179px) {
+  .audienceGrid,
+  .whyGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .audienceSchool {
+    min-height: 620px;
+  }
+
+  .audienceBusiness,
+  .whyGroups {
+    grid-column: span 2;
+  }
+
+  .audienceBusiness {
+    min-height: 430px;
+  }
+
+  .audienceBusinessFolder {
+    --asset-right: 0%;
+    --asset-bottom: 0;
+    --asset-width: 98%;
+    --asset-height: 80%;
+  }
+
+  .audienceBusinessProgress {
+    --asset-right: 34%;
+    --asset-bottom: 21%;
+    --asset-width: 31%;
+    --asset-height: 20%;
+  }
+
+  .whyCard .copy h3 {
+    max-width: 16ch;
+    font-size: clamp(1.9rem, 3vw, 2.55rem);
+  }
+
+  .whySpeakingProgress {
+    --asset-left: 7%;
+    --asset-right: 7%;
+    --asset-bottom: 5%;
+    --asset-height: 26%;
+  }
+}
+
+/* Desktop: текущая выверенная композиция, не менять без проверки 1180+. */
+@media (min-width: 1180px) {
+  .section :global(.page-shell-wide) {
+    width: min(calc(100% - 108px), 1404px);
+    max-width: none;
+  }
+
+  .audienceGrid,
+  .whyGrid {
+    gap: 24px;
+  }
+
+  .copy {
+    padding: 38px;
+  }
+
+  .audienceAdults .copy {
+    max-width: 82%;
+  }
+
+  .audienceHsk .copy {
+    max-width: 100%;
+  }
+
+  .audienceCard {
+    min-height: 0;
+  }
+
+  .whyCard {
+    min-height: 0;
+  }
+
+  .audienceGrid {
+    grid-template-columns: minmax(0, 427fr) minmax(0, 478fr) minmax(0, 445fr);
+    grid-template-rows: 434px 395px;
+    align-items: stretch;
+  }
+
+  .audienceSchool {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    min-height: 0;
+  }
+
+  .audienceAdults {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .audienceHsk {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .audienceBusiness {
+    grid-column: 2 / 4;
+    grid-row: 2;
+    min-height: 0;
+  }
+
+  .whyGrid {
+    position: relative;
+    display: block;
+    aspect-ratio: 1404 / 896;
+  }
+
+  .whyGrid > :global(.reveal) {
+    position: absolute;
+    display: flex;
+  }
+
+  .whyGrid > :global(.reveal) > .card {
+    width: 100%;
+    height: 100%;
+  }
+
+  .whyLicense {
+    top: 0;
+    left: 0;
+    width: 36.11%;
+    height: 51.56%;
+  }
+
+  .whySpeaking {
+    top: 0;
+    left: 37.39%;
+    width: 24.64%;
+    height: 51.56%;
+  }
+
+  .whyGroups {
+    top: 0;
+    left: 63.75%;
+    width: 36.25%;
+    height: 51.56%;
+  }
+
+  .whyTeachers {
+    top: 53.57%;
+    left: 0;
+    width: 36.11%;
+    height: 46.43%;
+  }
+
+  .whyCabinet {
+    top: 53.57%;
+    left: 36.97%;
+    width: 36.11%;
+    height: 46.43%;
+  }
+
+  .whyCashback {
+    top: 53.57%;
+    left: 74%;
+    width: 26%;
+    height: 46.43%;
+  }
+
+  .audienceSchoolStudent {
+    --asset-left: 30%;
+    --asset-bottom: 0;
+    --asset-width: 170%;
+    --asset-height: 76%;
+  }
+
+  .audienceAdultStudent {
+    --asset-right: -5%;
+    --asset-bottom: 0;
+    --asset-width: 80%;
+    --asset-height: 64%;
+  }
+
+  .audienceHskFolders {
+    --asset-right: 0%;
+    --asset-bottom: 0;
+    --asset-width: 66%;
+    --asset-height: 56%;
+  }
+
+  .audienceBusinessGroup {
+    --asset-top: 17%;
+    --asset-right: 25%;
+    --asset-width: 25%;
+    --asset-height: 18%;
+  }
+
+  .audienceBusinessProgress {
+    --asset-right: 30%;
+    --asset-bottom: 15%;
+    --asset-width: 31%;
+    --asset-height: 18%;
+  }
+}
+
+/* Общие правила для планшета и мобильных до desktop. */
+@media (max-width: 1179px) {
+  .card {
+    border-radius: 24px;
+  }
+
+  .audienceCard,
+  .whyCard {
+    min-height: 390px;
+  }
+
+  .audienceSchool {
+    min-height: 690px;
+  }
+
+  .more {
+    margin-top: 40px;
+  }
+
+  .audienceAdultStudent {
+    --asset-right: -7%;
+    --asset-bottom: -2%;
+    --asset-width: 86%;
+    --asset-height: 72%;
+  }
+
+  .audienceBusinessFolder {
+    --asset-right: 20%;
+    --asset-bottom: 0;
+    --asset-width: 98%;
+    --asset-height: 80%;
+  }
+}
+
+/* Mobile: текущая выверенная композиция для карточек в горизонтальном скролле. */
+@media (max-width: 899px) {
+  .section :global(.page-shell-wide) {
+    width: 100%;
+  }
+
+  .section :global(.section-head-center) {
+    width: min(100% - 28px, 365px);
+  }
+
+  .whyGrid {
+    gap: 14px;
+  }
+
+  .audienceGrid {
+    display: flex;
+    gap: 21px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    padding: 0 14px 8px 10px;
+    scrollbar-width: none;
+    scroll-padding-left: 10px;
+    scroll-padding-right: 14px;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .audienceGrid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .audienceGrid > :global(.reveal) {
+    flex: 0 0 320px;
+    height: 450px;
+    min-height: 0;
+    scroll-snap-align: start;
+  }
+
+  .audienceGrid > :global(.reveal) > .card {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .copy {
+    padding: 24px;
+  }
+
+  .copy h3 {
+    max-width: 100%;
+    font-size: 1.875rem;
+    line-height: 1.08;
+  }
+
+  .subtitle {
+    margin-top: 16px;
+    font-size: 1.12rem;
+    line-height: 1.28;
+  }
+
+  .copy ul {
+    gap: 6px;
+    margin-top: 24px;
+    font-size: 1rem;
+    line-height: 1.28;
+  }
+
+  .more {
+    margin-top: 34px;
+    font-size: 1.1rem;
+  }
+
+  .audienceSchoolStudent {
+    --asset-left: 47%;
+    --asset-right: auto;
+    --asset-bottom: -7%;
+    --asset-width: 146%;
+    --asset-height: 58%;
+    --asset-move-x: -50%;
+  }
+
+  .audienceAdultStudent {
+    --asset-right: -8%;
+    --asset-bottom: 0;
+    --asset-width: 92%;
+    --asset-height: 58%;
+  }
+
+  .audienceHskFolders {
+    --asset-right: -6%;
+    --asset-bottom: -10%;
+    --asset-width: 86%;
+    --asset-height: 56%;
+  }
+
+  .audienceBusiness {
+    min-height: 0;
+  }
+
+  .audienceBusiness .copy,
+  .audienceAdults .copy,
+  .audienceHsk .copy,
+  .whyGroups .copy {
+    max-width: 100%;
+  }
+
+  .audienceBusinessGroup {
+    --asset-top: auto;
+    --asset-right: 15%;
+    --asset-bottom: 30%;
+    --asset-width: 32%;
+    --asset-height: 17%;
+  }
+
+  .audienceBusinessFolder {
+    --asset-right: -20%;
+    --asset-bottom: -10%;
+    --asset-width: 112%;
+    --asset-height: 52%;
+  }
+
+  .audienceBusinessProgress {
+    --asset-right: 45%;
+    --asset-bottom: 4%;
+    --asset-width: 50%;
+    --asset-height: 16%;
+  }
+
+  .whyGrid {
+    display: grid;
+    gap: 20px;
+    padding: 0 14px;
+  }
+
+  .whyCard {
+    min-height: 0;
+  }
+
+  .whyCard .copy {
+    padding: 24px;
+  }
+
+  .whyCard .copy h3 {
+    max-width: 100%;
+    font-size: 1.875rem;
+    line-height: 1.08;
+  }
+
+  .whyGroups .copy h3 {
+    max-width: 12ch;
+  }
+
+  .whyGroups .subtitle {
+    max-width: 13.5em;
+  }
+
+  .whyCard .subtitle {
+    margin-top: 16px;
+    font-size: 0.98rem;
+    line-height: 1.28;
+  }
+
+  .whyLicense {
+    height: 333px;
+  }
+
+  .whySpeaking {
+    height: 486px;
+  }
+
+  .whyGroups {
+    height: 430px;
+  }
+
+  .whyTeachers,
+  .whyCabinet {
+    height: 302px;
+  }
+
+  .whyCashback {
+    height: 420px;
+  }
+
+  .whyLicenseImage,
+  .whyCashbackImage {
+    --asset-width: 80%;
+    --asset-height: 64%;
+  }
+
+  .whyCabinetImage {
+    --asset-width: 60%;
+    --asset-height: 54%;
+  }
+
+  .whySpeakingProgress {
+    --asset-height: 44%;
+  }
+
+  .whyGroupsFive {
+    --asset-right: 2%;
+    --asset-bottom: 4%;
+    --asset-width: 62%;
+    --asset-height: 72%;
+  }
+
+  .whyGroupsStudentOne {
+    --asset-left: 40%;
+    --asset-top: 55%;
+  }
+
+  .whyGroupsStudentTwo {
+    --asset-right: 20%;
+    --asset-top: 40%;
+  }
+
+  .whyTeachersOne {
+    --asset-left: 55%;
+    --asset-top: 48%;
+    --asset-width: 24%;
+    --asset-height: 24%;
+  }
+
+  .whyTeachers .card::before {
+    right: 13%;
+    bottom: 9%;
+    width: 28%;
+  }
+
+  .whyTeachersTwo {
+    --asset-left: 38%;
+    --asset-bottom: 10%;
+    --asset-width: 18.5%;
+    --asset-height: 18.5%;
+  }
+
+  .whyTeachersThree {
+    --asset-right: 5%;
+    --asset-bottom: 7%;
+    --asset-width: 22%;
+    --asset-height: 22%;
+  }
+}
+
+/* Точная калибровка: iPhone 5/SE и самые узкие экраны. */
+@media (max-width: 359px) {
+  .audienceSchoolStudent {
+    --asset-left: 47%;
+    --asset-bottom: -7%;
+    --asset-width: 146%;
+    --asset-height: 58%;
+  }
+
+  .audienceAdultStudent {
+    --asset-right: -8%;
+    --asset-bottom: 0;
+    --asset-width: 92%;
+    --asset-height: 58%;
+  }
+
+  .audienceHskFolders {
+    --asset-right: -6%;
+    --asset-bottom: -10%;
+    --asset-width: 86%;
+    --asset-height: 56%;
+  }
+
+  .audienceBusinessGroup {
+    --asset-top: auto;
+    --asset-right: 15%;
+    --asset-bottom: 30%;
+    --asset-width: 32%;
+    --asset-height: 17%;
+  }
+
+  .audienceBusinessFolder {
+    --asset-right: -20%;
+    --asset-bottom: -10%;
+    --asset-width: 112%;
+    --asset-height: 52%;
+  }
+
+  .audienceBusinessProgress {
+    --asset-right: 45%;
+    --asset-bottom: 14%;
+    --asset-width: 50%;
+    --asset-height: 16%;
+  }
+
+  .whyLicenseImage {
+    --asset-right: 0%;
+    --asset-bottom: -1%;
+    --asset-width: 80%;
+    --asset-height: 64%;
+  }
+
+  .whySpeakingProgress {
+    --asset-left: 6%;
+    --asset-right: 6%;
+    --asset-bottom: 5%;
+    --asset-height: 44%;
+  }
+
+  .whyGroupsFive {
+    --asset-right: 2%;
+    --asset-bottom: 4%;
+    --asset-width: 62%;
+    --asset-height: 52%;
+  }
+
+  .whyGroupsStudentOne {
+    --asset-left: 40%;
+    --asset-top: 55%;
+    --asset-width: 18%;
+    --asset-height: 18%;
+  }
+
+  .whyGroupsStudentTwo {
+    --asset-right: 20%;
+    --asset-top: 40%;
+    --asset-width: 18%;
+    --asset-height: 18%;
+  }
+
+  .whyGroupsStudentThree {
+    --asset-left: 50%;
+    --asset-bottom: 7%;
+    --asset-width: 15%;
+    --asset-height: 15%;
+  }
+
+  .whyGroupsStudentFour {
+    --asset-right: 1%;
+    --asset-bottom: 18%;
+    --asset-width: 19%;
+    --asset-height: 19%;
+  }
+
+  .whyTeachersOne {
+    --asset-left: 55%;
+    --asset-top: 48%;
+    --asset-width: 24%;
+    --asset-height: 24%;
+  }
+
+  .whyTeachersTwo {
+    --asset-left: 38%;
+    --asset-bottom: 10%;
+    --asset-width: 18.5%;
+    --asset-height: 18.5%;
+  }
+
+  .whyTeachersThree {
+    --asset-right: 5%;
+    --asset-bottom: 7%;
+    --asset-width: 22%;
+    --asset-height: 22%;
+  }
+
+  .whyCabinetImage {
+    --asset-right: 5%;
+    --asset-bottom: 3%;
+    --asset-width: 60%;
+    --asset-height: 54%;
+  }
+
+  .whyCashbackImage {
+    --asset-right: -2%;
+    --asset-bottom: 5%;
+    --asset-width: 80%;
+    --asset-height: 64%;
+  }
+}
+
+/* Точная калибровка: обычные компактные телефоны 360-389px. */
+@media (min-width: 360px) and (max-width: 389px) {
+  .audienceSchoolStudent {
+    --asset-left: 47%;
+    --asset-bottom: -7%;
+    --asset-width: 146%;
+    --asset-height: 58%;
+  }
+
+  .audienceAdultStudent {
+    --asset-right: -8%;
+    --asset-bottom: 0;
+    --asset-width: 92%;
+    --asset-height: 58%;
+  }
+
+  .audienceHskFolders {
+    --asset-right: -6%;
+    --asset-bottom: -10%;
+    --asset-width: 86%;
+    --asset-height: 56%;
+  }
+
+  .audienceBusinessGroup {
+    --asset-top: auto;
+    --asset-right: 15%;
+    --asset-bottom: 30%;
+    --asset-width: 32%;
+    --asset-height: 17%;
+  }
+
+  .audienceBusinessFolder {
+    --asset-right: -20%;
+    --asset-bottom: -10%;
+    --asset-width: 112%;
+    --asset-height: 52%;
+  }
+
+  .audienceBusinessProgress {
+    --asset-right: 45%;
+    --asset-bottom: 14%;
+    --asset-width: 50%;
+    --asset-height: 16%;
+  }
+
+  .whyLicenseImage {
+    --asset-right: 0%;
+    --asset-bottom: -1%;
+    --asset-width: 80%;
+    --asset-height: 64%;
+  }
+
+  .whySpeakingProgress {
+    --asset-left: 6%;
+    --asset-right: 6%;
+    --asset-bottom: 5%;
+    --asset-height: 44%;
+  }
+
+  .whyGroupsFive {
+    --asset-right: 2%;
+    --asset-bottom: 4%;
+    --asset-width: 62%;
+    --asset-height: 52%;
+  }
+
+  .whyGroupsStudentOne {
+    --asset-left: 40%;
+    --asset-top: 55%;
+    --asset-width: 18%;
+    --asset-height: 18%;
+  }
+
+  .whyGroupsStudentTwo {
+    --asset-right: 20%;
+    --asset-top: 40%;
+    --asset-width: 18%;
+    --asset-height: 18%;
+  }
+
+  .whyGroupsStudentThree {
+    --asset-left: 50%;
+    --asset-bottom: 7%;
+    --asset-width: 15%;
+    --asset-height: 15%;
+  }
+
+  .whyGroupsStudentFour {
+    --asset-right: 1%;
+    --asset-bottom: 18%;
+    --asset-width: 19%;
+    --asset-height: 19%;
+  }
+
+  .whyTeachersOne {
+    --asset-left: 55%;
+    --asset-top: 48%;
+    --asset-width: 24%;
+    --asset-height: 24%;
+  }
+
+  .whyTeachersTwo {
+    --asset-left: 38%;
+    --asset-bottom: 10%;
+    --asset-width: 18.5%;
+    --asset-height: 18.5%;
+  }
+
+  .whyTeachersThree {
+    --asset-right: 5%;
+    --asset-bottom: 7%;
+    --asset-width: 22%;
+    --asset-height: 22%;
+  }
+
+  .whyCabinetImage {
+    --asset-right: 5%;
+    --asset-bottom: 3%;
+    --asset-width: 60%;
+    --asset-height: 54%;
+  }
+
+  .whyCashbackImage {
+    --asset-right: -2%;
+    --asset-bottom: 5%;
+    --asset-width: 80%;
+    --asset-height: 64%;
+  }
+}
+
+/* Точная калибровка: современные телефоны 390-479px. */
+@media (min-width: 390px) and (max-width: 479px) {
+  .audienceSchoolStudent {
+    --asset-left: 47%;
+    --asset-bottom: -7%;
+    --asset-width: 146%;
+    --asset-height: 58%;
+  }
+
+  .audienceAdultStudent {
+    --asset-right: -8%;
+    --asset-bottom: 0;
+    --asset-width: 92%;
+    --asset-height: 58%;
+  }
+
+  .audienceHskFolders {
+    --asset-right: -6%;
+    --asset-bottom: -10%;
+    --asset-width: 86%;
+    --asset-height: 56%;
+  }
+
+  .audienceBusinessGroup {
+    --asset-top: auto;
+    --asset-right: 15%;
+    --asset-bottom: 30%;
+    --asset-width: 32%;
+    --asset-height: 17%;
+  }
+
+  .audienceBusinessFolder {
+    --asset-right: -20%;
+    --asset-bottom: -10%;
+    --asset-width: 112%;
+    --asset-height: 52%;
+  }
+
+  .audienceBusinessProgress {
+    --asset-right: 45%;
+    --asset-bottom: 14%;
+    --asset-width: 50%;
+    --asset-height: 16%;
+  }
+
+  .whyLicenseImage {
+    --asset-right: 0%;
+    --asset-bottom: -1%;
+    --asset-width: 80%;
+    --asset-height: 64%;
+  }
+
+  .whySpeakingProgress {
+    --asset-left: 6%;
+    --asset-right: 6%;
+    --asset-bottom: 5%;
+    --asset-height: 44%;
+  }
+
+  .whyGroupsFive {
+    --asset-right: 2%;
+    --asset-bottom: 4%;
+    --asset-width: 62%;
+    --asset-height: 52%;
+  }
+
+  .whyGroupsStudentOne {
+    --asset-left: 40%;
+    --asset-top: 55%;
+    --asset-width: 18%;
+    --asset-height: 18%;
+  }
+
+  .whyGroupsStudentTwo {
+    --asset-right: 20%;
+    --asset-top: 40%;
+    --asset-width: 18%;
+    --asset-height: 18%;
+  }
+
+  .whyGroupsStudentThree {
+    --asset-left: 50%;
+    --asset-bottom: 7%;
+    --asset-width: 15%;
+    --asset-height: 15%;
+  }
+
+  .whyGroupsStudentFour {
+    --asset-right: 1%;
+    --asset-bottom: 18%;
+    --asset-width: 19%;
+    --asset-height: 19%;
+  }
+
+  .whyTeachersOne {
+    --asset-left: 55%;
+    --asset-top: 48%;
+    --asset-width: 24%;
+    --asset-height: 24%;
+  }
+
+  .whyTeachersTwo {
+    --asset-left: 38%;
+    --asset-bottom: 10%;
+    --asset-width: 18.5%;
+    --asset-height: 18.5%;
+  }
+
+  .whyTeachersThree {
+    --asset-right: 5%;
+    --asset-bottom: 7%;
+    --asset-width: 22%;
+    --asset-height: 22%;
+  }
+
+  .whyCabinetImage {
+    --asset-right: 5%;
+    --asset-bottom: 3%;
+    --asset-width: 60%;
+    --asset-height: 54%;
+  }
+
+  .whyCashbackImage {
+    --asset-right: -2%;
+    --asset-bottom: 5%;
+    --asset-width: 80%;
+    --asset-height: 64%;
+  }
+}
+
+/* Точная калибровка: крупный телефон / маленький планшет 480-639px. */
+@media (min-width: 480px) and (max-width: 639px) {
+  .audienceSchoolStudent {
+    --asset-left: 47%;
+    --asset-bottom: -7%;
+    --asset-width: 146%;
+    --asset-height: 58%;
+  }
+
+  .audienceAdultStudent {
+    --asset-right: -8%;
+    --asset-bottom: 0;
+    --asset-width: 92%;
+    --asset-height: 58%;
+  }
+
+  .audienceHskFolders {
+    --asset-right: -6%;
+    --asset-bottom: -10%;
+    --asset-width: 86%;
+    --asset-height: 56%;
+  }
+
+  .audienceBusinessGroup {
+    --asset-top: auto;
+    --asset-right: 15%;
+    --asset-bottom: 30%;
+    --asset-width: 32%;
+    --asset-height: 17%;
+  }
+
+  .audienceBusinessFolder {
+    --asset-right: -20%;
+    --asset-bottom: -10%;
+    --asset-width: 112%;
+    --asset-height: 52%;
+  }
+
+  .audienceBusinessProgress {
+    --asset-right: 45%;
+    --asset-bottom: 4%;
+    --asset-width: 50%;
+    --asset-height: 16%;
+  }
+
+  .whyLicenseImage {
+    --asset-right: 0%;
+    --asset-bottom: -1%;
+    --asset-width: 80%;
+    --asset-height: 94%;
+  }
+
+  .whySpeakingProgress {
+    --asset-left: 6%;
+    --asset-right: 6%;
+    --asset-bottom: 5%;
+    --asset-height: 44%;
+  }
+
+  .whyGroupsFive {
+    --asset-right: 2%;
+    --asset-bottom: 4%;
+    --asset-width: 62%;
+    --asset-height: 70%;
+  }
+
+  .whyGroupsStudentOne {
+    --asset-left: 35%;
+    --asset-top: 45%;
+    --asset-width: 18%;
+    --asset-height: 28%;
+  }
+
+  .whyGroupsStudentTwo {
+    --asset-right: 20%;
+    --asset-top: 15%;
+    --asset-width: 18%;
+    --asset-height: 28%;
+  }
+
+  .whyGroupsStudentThree {
+    --asset-left: 55%;
+    --asset-bottom: 1%;
+    --asset-width: 15%;
+    --asset-height: 25%;
+  }
+
+  .whyGroupsStudentFour {
+    --asset-right: 5%;
+    --asset-bottom: 18%;
+    --asset-width: 19%;
+    --asset-height: 23%;
+  }
+
+  .whyTeachersOne {
+    --asset-left: 60%;
+    --asset-top: 28%;
+    --asset-width: 24%;
+    --asset-height: 34%;
+  }
+
+  .whyTeachersTwo {
+    --asset-left: 48%;
+    --asset-bottom: 10%;
+    --asset-width: 18.5%;
+    --asset-height: 25%;
+  }
+
+  .whyTeachersThree {
+    --asset-right: 5%;
+    --asset-bottom: 7%;
+    --asset-width: 22%;
+    --asset-height: 32%;
+  }
+
+  .whyCabinetImage {
+    --asset-right: 5%;
+    --asset-bottom: 3%;
+    --asset-width: 60%;
+    --asset-height: 64%;
+  }
+
+  .whyCashbackImage {
+    --asset-right: -2%;
+    --asset-bottom: 5%;
+    --asset-width: 80%;
+    --asset-height: 64%;
+  }
+}
+
+/* Точная калибровка: планшет вертикально 640-767px. */
+@media (min-width: 640px) and (max-width: 767px) {
+  .audienceSchoolStudent {
+    --asset-left: 47%;
+    --asset-bottom: -7%;
+    --asset-width: 146%;
+    --asset-height: 58%;
+  }
+
+  .audienceAdultStudent {
+    --asset-right: -8%;
+    --asset-bottom: 0;
+    --asset-width: 92%;
+    --asset-height: 58%;
+  }
+
+  .audienceHskFolders {
+    --asset-right: -6%;
+    --asset-bottom: -10%;
+    --asset-width: 86%;
+    --asset-height: 56%;
+  }
+
+  .audienceBusinessGroup {
+    --asset-top: auto;
+    --asset-right: 15%;
+    --asset-bottom: 30%;
+    --asset-width: 32%;
+    --asset-height: 17%;
+  }
+
+  .audienceBusinessFolder {
+    --asset-right: -20%;
+    --asset-bottom: -10%;
+    --asset-width: 112%;
+    --asset-height: 52%;
+  }
+
+  .audienceBusinessProgress {
+    --asset-right: 25%;
+    --asset-bottom: 4%;
+    --asset-width: 80%;
+    --asset-height: 14%;
+  }
+
+  .whyLicenseImage {
+    --asset-right: 0%;
+    --asset-bottom: -1%;
+    --asset-width: 80%;
+    --asset-height: 90%;
+  }
+
+  .whySpeakingProgress {
+    --asset-left: 6%;
+    --asset-right: 6%;
+    --asset-bottom: 5%;
+    --asset-height: 44%;
+  }
+
+  .whyGroupsFive {
+    --asset-right: 2%;
+    --asset-bottom: 4%;
+    --asset-width: 62%;
+    --asset-height: 82%;
+  }
+
+  .whyGroupsStudentOne {
+    --asset-left: 33%;
+    --asset-top: 45%;
+    --asset-width: 18%;
+    --asset-height: 28%;
+  }
+
+  .whyGroupsStudentTwo {
+    --asset-right: 20%;
+    --asset-top: 1%;
+    --asset-width: 18%;
+    --asset-height: 38%;
+  }
+
+  .whyGroupsStudentThree {
+    --asset-left: 60%;
+    --asset-bottom: 1%;
+    --asset-width: 15%;
+    --asset-height: 25%;
+  }
+
+  .whyGroupsStudentFour {
+    --asset-right: 1%;
+    --asset-bottom: 25%;
+    --asset-width: 19%;
+    --asset-height: 29%;
+  }
+
+  .whyTeachersOne {
+    --asset-left: 55%;
+    --asset-top: 18%;
+    --asset-width: 24%;
+    --asset-height: 44%;
+  }
+
+  .whyTeachersTwo {
+    --asset-left: 38%;
+    --asset-bottom: 10%;
+    --asset-width: 18.5%;
+    --asset-height: 35%;
+  }
+
+  .whyTeachersThree {
+    --asset-right: 5%;
+    --asset-bottom: 7%;
+    --asset-width: 22%;
+    --asset-height: 25%;
+  }
+
+  .whyCabinetImage {
+    --asset-right: 5%;
+    --asset-bottom: 3%;
+    --asset-width: 60%;
+    --asset-height: 64%;
+  }
+
+  .whyCashbackImage {
+    --asset-right: -2%;
+    --asset-bottom: 5%;
+    --asset-width: 80%;
+    --asset-height: 75%;
+  }
+}
+
+/* Точная калибровка: планшет горизонтально 768-899px. */
+@media (min-width: 768px) and (max-width: 899px) {
+  .audienceSchoolStudent {
+    --asset-left: 47%;
+    --asset-bottom: -7%;
+    --asset-width: 146%;
+    --asset-height: 58%;
+  }
+
+  .audienceAdultStudent {
+    --asset-right: -8%;
+    --asset-bottom: 0;
+    --asset-width: 92%;
+    --asset-height: 58%;
+  }
+
+  .audienceHskFolders {
+    --asset-right: -6%;
+    --asset-bottom: -10%;
+    --asset-width: 86%;
+    --asset-height: 56%;
+  }
+
+  .audienceBusinessGroup {
+    --asset-top: auto;
+    --asset-right: 15%;
+    --asset-bottom: 30%;
+    --asset-width: 32%;
+    --asset-height: 17%;
+  }
+
+  .audienceBusinessFolder {
+    --asset-right: -20%;
+    --asset-bottom: -10%;
+    --asset-width: 112%;
+    --asset-height: 52%;
+  }
+
+  .audienceBusinessProgress {
+    --asset-right: 45%;
+    --asset-bottom: 4%;
+    --asset-width: 50%;
+    --asset-height: 16%;
+  }
+
+  .whyLicenseImage {
+    --asset-right: 0%;
+    --asset-bottom: -1%;
+    --asset-width: 80%;
+    --asset-height: 100%;
+  }
+
+  .whySpeakingProgress {
+    --asset-left: 6%;
+    --asset-right: 6%;
+    --asset-bottom: 5%;
+    --asset-height: 55%;
+  }
+
+  .whyGroupsFive {
+    --asset-right: 2%;
+    --asset-bottom: 4%;
+    --asset-width: 62%;
+    --asset-height: 85%;
+  }
+
+  .whyGroupsStudentOne {
+    --asset-left: 40%;
+    --asset-top: 35%;
+    --asset-width: 18%;
+    --asset-height: 28%;
+  }
+
+  .whyGroupsStudentTwo {
+    --asset-right: 20%;
+    --asset-top: 2%;
+    --asset-width: 18%;
+    --asset-height: 28%;
+  }
+
+  .whyGroupsStudentThree {
+    --asset-left: 55%;
+    --asset-bottom: 2%;
+    --asset-width: 15%;
+    --asset-height: 25%;
+  }
+
+  .whyGroupsStudentFour {
+    --asset-right: 5%;
+    --asset-bottom: 18%;
+    --asset-width: 19%;
+    --asset-height: 25%;
+  }
+
+  .whyTeachersOne {
+    --asset-left: 60%;
+    --asset-top: 12%;
+    --asset-width: 24%;
+    --asset-height: 44%;
+  }
+
+  .whyTeachersTwo {
+    --asset-left: 48%;
+    --asset-bottom: 10%;
+    --asset-width: 18.5%;
+    --asset-height: 35%;
+  }
+
+  .whyTeachersThree {
+    --asset-right: 5%;
+    --asset-bottom: 7%;
+    --asset-width: 22%;
+    --asset-height: 35%;
+  }
+
+  .whyCabinetImage {
+    --asset-right: 5%;
+    --asset-bottom: 3%;
+    --asset-width: 60%;
+    --asset-height: 74%;
+  }
+
+  .whyCashbackImage {
+    --asset-right: -2%;
+    --asset-bottom: 5%;
+    --asset-width: 80%;
+    --asset-height: 74%;
+  }
+}
+
+/* Точная калибровка: 900-1023px, место для правки промежутка между mobile и desktop. */
+@media (min-width: 900px) and (max-width: 1023px) {
+  .audienceSchoolStudent {
+    --asset-left: 39%;
+    --asset-right: auto;
+    --asset-bottom: -1%;
+    --asset-width: 162%;
+    --asset-height: 72%;
+  }
+
+  .audienceAdultStudent {
+    --asset-right: -7%;
+    --asset-bottom: -2%;
+    --asset-width: 86%;
+    --asset-height: 72%;
+  }
+
+  .audienceHskFolders {
+    --asset-right: -6%;
+    --asset-bottom: -1%;
+    --asset-width: 64%;
+    --asset-height: 56%;
+  }
+
+  .audienceBusinessGroup {
+    --asset-top: 10%;
+    --asset-right: 16%;
+    --asset-width: 31%;
+    --asset-height: 22%;
+  }
+
+  .audienceBusinessFolder {
+    --asset-right: 0%;
+    --asset-bottom: 0;
+    --asset-width: 98%;
+    --asset-height: 80%;
+  }
+
+  .audienceBusinessProgress {
+    --asset-right: 34%;
+    --asset-bottom: 5%;
+    --asset-width: 31%;
+    --asset-height: 50%;
+  }
+
+  .whySpeakingProgress {
+    --asset-left: 7%;
+    --asset-right: 7%;
+    --asset-bottom: 2%;
+    --asset-height: 32%;
+  }
+
+  .whyLicenseImage {
+    --asset-right: 0%;
+    --asset-bottom: -1%;
+    --asset-width: 74%;
+    --asset-height: 58%;
+  }
+
+  .whyGroupsFive {
+    --asset-right: 1%;
+    --asset-bottom: 5%;
+    --asset-width: 58%;
+    --asset-height: 80%;
+  }
+
+  .whyGroupsStudentOne {
+    --asset-left: 45%;
+    --asset-top: 39%;
+    --asset-width: 18%;
+    --asset-height: 28%;
+  }
+
+  .whyGroupsStudentTwo {
+    --asset-right: 22%;
+    --asset-top: 6%;
+    --asset-width: 18%;
+    --asset-height: 28%;
+  }
+
+  .whyGroupsStudentThree {
+    --asset-left: 60%;
+    --asset-bottom: 2%;
+    --asset-width: 15%;
+    --asset-height: 25%;
+  }
+
+  .whyGroupsStudentFour {
+    --asset-right: 7%;
+    --asset-bottom: 18%;
+    --asset-width: 19%;
+    --asset-height: 29%;
+  }
+
+  .whyTeachersOne {
+    --asset-left: 55%;
+    --asset-top: 32%;
+    --asset-width: 24%;
+    --asset-height: 24%;
+  }
+
+  .whyTeachersTwo {
+    --asset-left: 38%;
+    --asset-bottom: 10%;
+    --asset-width: 18.5%;
+    --asset-height: 37%;
+  }
+
+  .whyTeachersThree {
+    --asset-right: 5%;
+    --asset-bottom: 7%;
+    --asset-width: 22%;
+    --asset-height: 32%;
+  }
+
+  .whyCabinetImage {
+    --asset-right: 5%;
+    --asset-bottom: 3%;
+    --asset-width: 68%;
+    --asset-height: 43%;
+  }
+
+  .whyCashbackImage {
+    --asset-right: -2%;
+    --asset-bottom: 5%;
+    --asset-width: 82%;
+    --asset-height: 50%;
+  }
+}
+
+/* Точная калибровка: 1024-1179px, последний промежуток перед desktop. */
+@media (min-width: 1024px) and (max-width: 1179px) {
+  .audienceSchoolStudent {
+    --asset-left: 39%;
+    --asset-right: auto;
+    --asset-bottom: -1%;
+    --asset-width: 162%;
+    --asset-height: 72%;
+  }
+
+  .audienceAdultStudent {
+    --asset-right: 0%;
+    --asset-bottom: 0%;
+    --asset-width: 90%;
+    --asset-height: 82%;
+  }
+
+  .audienceHskFolders {
+    --asset-right: 0%;
+    --asset-bottom: 0%;
+    --asset-width: 64%;
+    --asset-height: 76%;
+  }
+
+  .audienceBusinessGroup {
+    --asset-top: 17%;
+    --asset-right: 16%;
+    --asset-width: 31%;
+    --asset-height: 22%;
+  }
+
+  .audienceBusinessFolder {
+    --asset-right: 0%;
+    --asset-bottom: 0;
+    --asset-width: 98%;
+    --asset-height: 80%;
+  }
+
+  .audienceBusinessProgress {
+    --asset-right: 34%;
+    --asset-bottom: 21%;
+    --asset-width: 31%;
+    --asset-height: 30%;
+  }
+
+  .whySpeakingProgress {
+    --asset-left: 40%;
+    --asset-right: 0%;
+    --asset-bottom: 2%;
+    --asset-height: 40%;
+  }
+
+  .whyLicenseImage {
+    --asset-right: 0%;
+    --asset-bottom: -1%;
+    --asset-width: 74%;
+    --asset-height: 78%;
+  }
+
+  .whyGroupsFive {
+    --asset-right: 1%;
+    --asset-bottom: 5%;
+    --asset-width: 58%;
+    --asset-height: 81%;
+  }
+
+  .whyGroupsStudentOne {
+    --asset-left: 47%;
+    --asset-top: 40%;
+    --asset-width: 18%;
+    --asset-height: 28%;
+  }
+
+  .whyGroupsStudentTwo {
+    --asset-right: 20%;
+    --asset-top: 2%;
+    --asset-width: 18%;
+    --asset-height: 28%;
+  }
+
+  .whyGroupsStudentThree {
+    --asset-left: 60%;
+    --asset-bottom: 2%;
+    --asset-width: 15%;
+    --asset-height: 25%;
+  }
+
+  .whyGroupsStudentFour {
+    --asset-right: 8%;
+    --asset-bottom: 18%;
+    --asset-width: 19%;
+    --asset-height: 29%;
+  }
+
+  .whyTeachersOne {
+    --asset-left: 55%;
+    --asset-top: 22%;
+    --asset-width: 24%;
+    --asset-height: 34%;
+  }
+
+  .whyTeachersTwo {
+    --asset-left: 38%;
+    --asset-bottom: 10%;
+    --asset-width: 18.5%;
+    --asset-height: 25%;
+  }
+
+  .whyTeachersThree {
+    --asset-right: 5%;
+    --asset-bottom: 7%;
+    --asset-width: 22%;
+    --asset-height: 32%;
+  }
+
+  .whyCabinetImage {
+    --asset-right: 5%;
+    --asset-bottom: 3%;
+    --asset-width: 68%;
+    --asset-height: 53%;
+  }
+
+  .whyCashbackImage {
+    --asset-right: -2%;
+    --asset-bottom: 5%;
+    --asset-width: 82%;
+    --asset-height: 65%;
+  }
+}

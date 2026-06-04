@@ -161,6 +161,7 @@ export default async function GrammarArticlePage({ params }: Props) {
               <Link
                 href="/free-trial"
                 className="btn-pill"
+                data-floating-cta-suppress="true"
                 style={{
                   background: "rgba(255,255,255,0.15)",
                   color: "#ffffff",

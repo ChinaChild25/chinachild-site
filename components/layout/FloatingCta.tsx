@@ -2,6 +2,7 @@
 
 import LeadModal from "@/components/forms/LeadModal";
 import { useConsent } from "@/lib/consent/context";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 /**
@@ -17,7 +18,9 @@ import { useEffect, useState } from "react";
  */
 export default function FloatingCta() {
   const { isBannerOpen } = useConsent();
+  const pathname = usePathname();
   const [isPastHero, setIsPastHero] = useState(false);
+  const [hasVisiblePageCta, setHasVisiblePageCta] = useState(false);
 
   useEffect(() => {
     const update = () => {
@@ -34,9 +37,45 @@ export default function FloatingCta() {
     };
   }, []);
 
+  useEffect(() => {
+    const selector = "[data-floating-cta-suppress='true']";
+    const targets = Array.from(document.querySelectorAll<HTMLElement>(selector));
+
+    if (!targets.length || !("IntersectionObserver" in window)) {
+      setHasVisiblePageCta(false);
+      return;
+    }
+
+    const visibleTargets = new Set<Element>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.15) {
+            visibleTargets.add(entry.target);
+          } else {
+            visibleTargets.delete(entry.target);
+          }
+        }
+        setHasVisiblePageCta(visibleTargets.size > 0);
+      },
+      {
+        root: null,
+        rootMargin: "0px 0px -8% 0px",
+        threshold: [0, 0.15, 0.5, 1],
+      },
+    );
+
+    targets.forEach((target) => observer.observe(target));
+
+    return () => {
+      observer.disconnect();
+      visibleTargets.clear();
+    };
+  }, [pathname]);
+
   const shellClassName = [
     "floating-cta-shell",
-    !isPastHero && "floating-cta-shell--hidden",
+    (!isPastHero || hasVisiblePageCta) && "floating-cta-shell--hidden",
     isBannerOpen && "floating-cta-shell--mobile-hidden",
   ]
     .filter(Boolean)

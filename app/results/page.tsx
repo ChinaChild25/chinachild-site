@@ -130,6 +130,7 @@ export default function ResultsPage() {
             <LeadModal
               triggerClassName={buttonStyles({ variant: "secondary", size: "large" })}
               source="results-cta"
+              suppressFloatingCta
             >
               Записаться на пробное
             </LeadModal>

@@ -152,6 +152,7 @@ export default function CompareFormatsPage() {
             <LeadModal
               triggerClassName={buttonStyles({ variant: "secondary", size: "large" })}
               source="compare-formats-cta"
+              suppressFloatingCta
             >
               Записаться на пробное
             </LeadModal>

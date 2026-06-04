@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
-import AudienceSection from "@/components/sections/AudienceSection";
 import BlogPreviewSection from "@/components/sections/BlogPreviewSection";
 import CoursesSection from "@/components/sections/CoursesSection";
 import FAQSection from "@/components/sections/FAQSection";
 import HeroSection from "@/components/sections/HeroSection";
+import {
+  AudienceRedesignDraftSection,
+  WhyRedesignDraftSection,
+} from "@/components/sections/home-redesign/HomeRedesignDraftSections";
 import PlatformShowcase from "@/components/sections/PlatformShowcase";
 import PricingSection from "@/components/sections/PricingSection";
 import ProcessSection from "@/components/sections/ProcessSection";
@@ -11,7 +14,6 @@ import RelatedLinks from "@/components/sections/RelatedLinks";
 import ResultsSection from "@/components/sections/ResultsSection";
 import ReviewsSection from "@/components/sections/ReviewsSection";
 import TeachersSection from "@/components/sections/TeachersSection";
-import WhySection from "@/components/sections/WhySection";
 import { getLatestPosts } from "@/lib/blog";
 import { buildMetadata } from "@/lib/metadata";
 
@@ -42,8 +44,8 @@ export default async function HomePage() {
   return (
     <main>
       <HeroSection />
-      <AudienceSection />
-      <WhySection />
+      <AudienceRedesignDraftSection />
+      <WhyRedesignDraftSection />
       <CoursesSection />
       <ProcessSection />
       <PlatformShowcase />

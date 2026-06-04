@@ -89,6 +89,7 @@ export default function PageHero({
                     triggerClassName={buttonStyles({ size: "large" })}
                     source="page-hero"
                     defaultCourse={primaryCta.defaultCourse}
+                    suppressFloatingCta
                   >
                     {primaryCta.label}
                   </LeadModal>
@@ -112,6 +113,7 @@ export default function PageHero({
                     })}
                     source="page-hero-secondary"
                     defaultCourse={secondaryCta.defaultCourse}
+                    suppressFloatingCta
                   >
                     {secondaryCta.label}
                   </LeadModal>

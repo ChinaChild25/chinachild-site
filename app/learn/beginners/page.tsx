@@ -272,6 +272,7 @@ export default async function LearnBeginnersHub() {
               })}
               source="learn-beginners-hub-cta"
               defaultCourse="online-chinese"
+              suppressFloatingCta
             >
               Записаться на пробное
             </LeadModal>

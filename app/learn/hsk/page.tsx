@@ -176,6 +176,7 @@ export default async function LearnHskHub() {
               triggerClassName={buttonStyles({ variant: "secondary", size: "large" })}
               source="learn-hsk-hub-cta"
               defaultCourse="hsk-preparation"
+              suppressFloatingCta
             >
               Записаться на пробное
             </LeadModal>

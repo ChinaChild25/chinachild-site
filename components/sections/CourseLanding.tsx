@@ -168,11 +168,12 @@ export default function CourseLanding({
             поставит цель и подберёт подходящий курс.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <LeadModal
-              triggerClassName={buttonStyles({ variant: "secondary", size: "large" })}
-              source={`course-landing-${schemaCourse.slug}`}
-              defaultCourse={schemaCourse.slug}
-            >
+              <LeadModal
+                triggerClassName={buttonStyles({ variant: "secondary", size: "large" })}
+                source={`course-landing-${schemaCourse.slug}`}
+                defaultCourse={schemaCourse.slug}
+                suppressFloatingCta
+              >
               Записаться на пробное
             </LeadModal>
             <Link href="/courses" className={buttonStyles({ size: "large", className: "bg-white/15 text-white hover:bg-white/25" })}>

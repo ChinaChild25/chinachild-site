@@ -45,36 +45,34 @@ export default function Footer() {
             <div className="text-xs font-medium text-white/65">
               Площадки и отзывы
             </div>
-            <div className="mt-3 flex flex-wrap gap-4">
-              {TRUST_PROFILE_LINKS.map((link) => (
+            <div className="mt-3 grid gap-4">
+              <div className="flex flex-wrap gap-4">
+                {TRUST_PROFILE_LINKS.map((link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={`${link.label} ChinaChild`}
+                    className="inline-flex h-10 items-center justify-center text-white/80 transition duration-150 hover:-translate-y-0.5 hover:text-white hover:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/45"
+                  >
+                    <TrustProfileLogo label={link.label} logo={link.logo} surface="dark" />
+                  </a>
+                ))}
+              </div>
+              <div className="grid gap-2">
+                <div className="text-xs font-medium text-white/65">Рейтинг сайта</div>
                 <a
-                  key={link.href}
-                  href={link.href}
+                  href="https://webmaster.yandex.ru/siteinfo/?site=https://chinachild.ru"
                   target="_blank"
                   rel="noreferrer"
-                  aria-label={`${link.label} ChinaChild`}
-                  className="inline-flex h-10 items-center justify-center text-white/80 transition duration-150 hover:-translate-y-0.5 hover:text-white hover:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/45"
+                  aria-label="ИКС chinachild.ru в Яндекс.Вебмастере"
+                  className="yandex-iks-badge focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/45"
                 >
-                  <TrustProfileLogo label={link.label} logo={link.logo} surface="dark" />
+                  <span className="yandex-iks-badge-mark" aria-hidden="true">Я</span>
+                  <span className="yandex-iks-badge-value">20</span>
                 </a>
-              ))}
-              <a
-                href="https://webmaster.yandex.ru/siteinfo/?site=https://chinachild.ru"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="ИКС chinachild.ru в Яндекс.Вебмастере"
-                className="yandex-iks-badge focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/45"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="https://yandex.ru/cycounter?https://chinachild.ru&theme=light&lang=ru"
-                  width={88}
-                  height={31}
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                />
-              </a>
+              </div>
             </div>
           </div>
         </div>

@@ -407,6 +407,7 @@ export default function RepetitorPage() {
         items={faqs}
         title="Частые вопросы о репетиторе"
         description="Если не нашли свой вопрос — напишите, ответим в течение рабочего дня."
+        schema={false}
         schemaId="repetitor-faq"
       />
 
@@ -445,6 +446,7 @@ export default function RepetitorPage() {
                     size: "large",
                   })}
                   source="repetitor-cta"
+                  suppressFloatingCta
                 >
                   Записаться
                 </LeadModal>

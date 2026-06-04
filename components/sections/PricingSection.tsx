@@ -60,6 +60,7 @@ export default function PricingSection() {
                       className: "w-full",
                     })}
                     source={`pricing-${tier.title}`}
+                    suppressFloatingCta
                   >
                     Оставить заявку
                   </LeadModal>

@@ -323,6 +323,7 @@ export default async function HskTestLevelPage({ params }: LevelPageProps) {
           title={`Частые вопросы про HSK ${meta.level}`}
           description="Если не нашли ответа — напишите, и куратор подскажет, какой уровень подойдёт именно вам."
           items={hskTestFaq}
+          schema={false}
           schemaId={`hsk-test-${meta.slug}-faq`}
         />
       </section>
@@ -343,6 +344,7 @@ export default async function HskTestLevelPage({ params }: LevelPageProps) {
               <Link
                 href="/zayavka"
                 className={buttonStyles({ variant: "secondary", size: "large" })}
+                data-floating-cta-suppress="true"
               >
                 Записаться на пробное
               </Link>

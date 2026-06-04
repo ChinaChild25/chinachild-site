@@ -440,6 +440,7 @@ export default async function HskLevelPage({ params }: HskPageProps) {
               triggerClassName={buttonStyles({ variant: "secondary", size: "large" })}
               source={`hsk-${level.slug}-cta`}
               defaultCourse="hsk-preparation"
+              suppressFloatingCta
             >
               Записаться на подготовку
             </LeadModal>

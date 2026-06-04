@@ -213,7 +213,12 @@ export default async function HskLevelPage({ params, searchParams }: Props) {
             >
               Открыть уровень в платформе
             </a>
-            <Link href="/free-trial" className="btn-pill" style={{ background: "rgba(255,255,255,0.15)", color: "#fff" }}>
+            <Link
+              href="/free-trial"
+              className="btn-pill"
+              data-floating-cta-suppress="true"
+              style={{ background: "rgba(255,255,255,0.15)", color: "#fff" }}
+            >
               Записаться на пробный урок
             </Link>
           </div>

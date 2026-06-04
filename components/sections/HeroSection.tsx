@@ -185,6 +185,7 @@ export default function HeroSection() {
                 className: "home-hero-primary-cta",
               })}
               source="hero"
+              suppressFloatingCta
             >
               <span>Записаться на пробный урок</span>
               <ArrowRight aria-hidden className="home-hero-cta-icon" strokeWidth={1.8} />

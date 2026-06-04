@@ -173,7 +173,7 @@ export default function ResultPage() {
           <Link href="/diagnostic/tutor" className="d-btn d-btn-accent">
             Поговорить с AI-тьютором →
           </Link>
-          <Link href="/free-trial" className="d-btn d-btn-secondary">
+          <Link href="/free-trial" className="d-btn d-btn-secondary" data-floating-cta-suppress="true">
             Записаться на бесплатный пробный с методистом
           </Link>
         </section>
@@ -214,6 +214,7 @@ function CourseRecommendation({ result }: { result: DiagnosticResult }) {
         <button
           type="button"
           className="d-btn"
+          data-floating-cta-suppress="true"
           onClick={() => {
             track({ name: "course_cta_clicked" });
             router.push("/free-trial");

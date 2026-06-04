@@ -168,6 +168,7 @@ export default function HskTestResultPage() {
                 source={`hsk-test-result-level-${result.recommendedLevel}`}
                 defaultCourse="hsk-preparation"
                 ariaLabel="Записаться на курс"
+                suppressFloatingCta
               >
                 Записаться на курс
               </LeadModal>

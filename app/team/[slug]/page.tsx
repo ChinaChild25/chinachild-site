@@ -285,7 +285,11 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
             формат, уровень и ближайшее окно для пробного занятия.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/zayavka" className="btn-pill btn-white btn-pill-large">
+            <Link
+              href="/zayavka"
+              className="btn-pill btn-white btn-pill-large"
+              data-floating-cta-suppress="true"
+            >
               Оставить заявку
             </Link>
             <Link

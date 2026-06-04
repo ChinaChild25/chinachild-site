@@ -9,8 +9,10 @@ const PAGES = [
   { path: "/", label: "home" },
   { path: "/courses", label: "courses" },
   { path: "/price", label: "price" },
+  { path: "/repetitor-kitayskogo", label: "repetitor" },
   { path: "/learn/hsk", label: "hsk hub" },
   { path: "/chinese/hsk-test", label: "hsk test" },
+  { path: "/chinese/hsk-test/level-1", label: "hsk test level" },
   { path: "/grammar", label: "grammar" },
   { path: "/dictionary", label: "dictionary" },
   { path: "/dictionary/hsk/new-hsk/1", label: "dictionary hsk level" },
@@ -81,6 +83,32 @@ function findJsonLd(html) {
     scripts.push(match[2].trim());
   }
   return scripts;
+}
+
+function asArray(value) {
+  return Array.isArray(value) ? value : [value];
+}
+
+function hasType(node, type) {
+  if (!node || typeof node !== "object") return false;
+  return asArray(node["@type"]).includes(type);
+}
+
+function collectJsonLdNodes(value) {
+  if (Array.isArray(value)) {
+    return value.flatMap((item) => collectJsonLdNodes(item));
+  }
+
+  if (!value || typeof value !== "object") {
+    return [];
+  }
+
+  const nodes = [value];
+  if (Array.isArray(value["@graph"])) {
+    nodes.push(...value["@graph"].flatMap((item) => collectJsonLdNodes(item)));
+  }
+
+  return nodes;
 }
 
 function collectLinks(html) {
@@ -190,12 +218,14 @@ async function auditPage(page, internalLinks) {
       notes.push("missing JSON-LD");
     }
 
+    const jsonLdNodes = [];
     for (const [index, raw] of jsonLdScripts.entries()) {
       if (/undefined|\[object Object\]|:\s*null\b/i.test(raw)) {
         notes.push(`bad JSON-LD sentinel in script ${index + 1}`);
       }
       try {
         const parsed = JSON.parse(raw);
+        jsonLdNodes.push(...collectJsonLdNodes(parsed));
         const serialized = JSON.stringify(parsed);
         if (/"@type":"FAQPage"/.test(serialized) && !/Частые вопросы|FAQ/i.test(html)) {
           notes.push("FAQPage JSON-LD found without visible FAQ text");
@@ -203,6 +233,11 @@ async function auditPage(page, internalLinks) {
       } catch {
         notes.push(`invalid JSON-LD in script ${index + 1}`);
       }
+    }
+
+    const faqNodes = jsonLdNodes.filter((node) => hasType(node, "FAQPage"));
+    if (faqNodes.length > 1) {
+      notes.push(`duplicate FAQPage JSON-LD nodes: ${faqNodes.length}`);
     }
 
     if (isBadDomain(html)) {
@@ -263,19 +298,29 @@ async function auditInternalLinks(internalLinks) {
 
 async function auditSitemapAndRobots() {
   const rows = [];
-  const sitemap = await fetchUrl(`${BASE_URL}/sitemap.xml`);
-  const sitemapText = await sitemap.text();
-  rows.push({
-    item: "/sitemap.xml",
-    status: sitemap.status,
-    result:
-      sitemap.status === 200 && sitemapText.includes(EXPECTED_SITE_URL)
-        ? "PASS"
-        : "FAIL",
-    notes: sitemapText.includes(EXPECTED_SITE_URL)
-      ? "contains expected site URLs"
-      : `does not contain ${EXPECTED_SITE_URL}`,
-  });
+
+  for (const sitemapPath of ["/sitemap.xml", "/sitemap-feeds.xml", "/sitemap-store.xml"]) {
+    const sitemap = await fetchUrl(`${BASE_URL}${sitemapPath}`);
+    const sitemapText = await sitemap.text();
+    const contentType = sitemap.headers.get("content-type") ?? "";
+    const hasExpectedUrls = sitemapText.includes(EXPECTED_SITE_URL);
+    const isXml = /application\/xml|text\/xml/i.test(contentType);
+    rows.push({
+      item: sitemapPath,
+      status: sitemap.status,
+      result:
+        sitemap.status === 200 && hasExpectedUrls && isXml
+          ? "PASS"
+          : "FAIL",
+      notes:
+        sitemap.status === 200 && hasExpectedUrls && isXml
+          ? "contains expected site URLs"
+          : [
+              !hasExpectedUrls ? `does not contain ${EXPECTED_SITE_URL}` : "",
+              !isXml ? `content-type is ${contentType || "(missing)"}` : "",
+            ].filter(Boolean).join("; "),
+    });
+  }
 
   const robots = await fetchUrl(`${BASE_URL}/robots.txt`);
   const robotsText = await robots.text();

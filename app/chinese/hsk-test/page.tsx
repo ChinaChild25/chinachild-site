@@ -189,6 +189,7 @@ export default function HskTestLandingPage() {
           title="Частые вопросы про HSK и тест уровня"
           description="Если не нашли ответа — напишите, и куратор подскажет, какой уровень подойдёт именно вам."
           items={hskTestFaq}
+          schema={false}
           schemaId="hsk-test-faq"
         />
       </section>
@@ -210,6 +211,7 @@ export default function HskTestLandingPage() {
                 triggerClassName={buttonStyles({ variant: "secondary", size: "large" })}
                 source="hsk-test-landing"
                 defaultCourse="hsk-preparation"
+                suppressFloatingCta
               >
                 Оставить заявку
               </LeadModal>
