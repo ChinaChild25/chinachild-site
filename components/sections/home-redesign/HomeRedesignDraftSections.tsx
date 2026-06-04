@@ -57,7 +57,7 @@ const audienceCards: readonly AudienceCard[] = [
     className: styles.audienceSchool,
     images: [
       {
-        file: "kitayskiy-dlya-shkolnikov-podrostok-s-noutbukom.png",
+        file: "kitayskiy-dlya-shkolnikov-podrostok-s-noutbukom.webp",
         className: styles.audienceSchoolStudent,
         alt: "Курс китайского языка для школьников и подростков онлайн",
         sizes: "(min-width: 900px) 32vw, 92vw",
@@ -78,7 +78,7 @@ const audienceCards: readonly AudienceCard[] = [
     className: styles.audienceAdults,
     images: [
       {
-        file: "kitayskiy-dlya-vzroslyh-studentka-s-noutbukom.png",
+        file: "kitayskiy-dlya-vzroslyh-studentka-s-noutbukom.webp",
         className: styles.audienceAdultStudent,
         alt: "Китайский язык онлайн для взрослых с нуля",
         sizes: "(min-width: 900px) 30vw, 84vw",
@@ -99,7 +99,7 @@ const audienceCards: readonly AudienceCard[] = [
     className: styles.audienceHsk,
     images: [
       {
-        file: "podgotovka-hsk-papki-dokumenty.png",
+        file: "podgotovka-hsk-papki-dokumenty.webp",
         className: styles.audienceHskFolders,
         alt: "Подготовка к экзамену HSK 1-6 и документы",
         sizes: "(min-width: 900px) 18vw, 70vw",
@@ -120,13 +120,13 @@ const audienceCards: readonly AudienceCard[] = [
     className: styles.audienceBusiness,
     images: [
       {
-        file: "korporativnyy-kitajskiy-gruppa-sotrudnikov.png",
+        file: "korporativnyy-kitajskiy-gruppa-sotrudnikov.webp",
         className: styles.audienceBusinessGroup,
         alt: "Корпоративное обучение китайскому языку для сотрудников",
         sizes: "(min-width: 900px) 24vw, 72vw",
       },
       {
-        file: "korporativnyy-kitajskiy-papka-dokumenty.png",
+        file: "korporativnyy-kitajskiy-papka-dokumenty.webp",
         className: styles.audienceBusinessFolder,
         alt: "Документы для корпоративного курса китайского языка",
         sizes: "(min-width: 900px) 40vw, 86vw",
@@ -150,7 +150,7 @@ const whyCards: readonly WhyCard[] = [
     className: styles.whyLicense,
     images: [
       {
-        file: "litsenzirovannaya-programma-hsk-1-2.png",
+        file: "litsenzirovannaya-programma-hsk-1-2.webp",
         className: styles.whyLicenseImage,
         alt: "Лицензированная программа китайского языка HSK 1-2",
         sizes: "(min-width: 900px) 30vw, 86vw",
@@ -180,28 +180,28 @@ const whyCards: readonly WhyCard[] = [
     className: styles.whyGroups,
     images: [
       {
-        file: "mini-gruppy-do-5-chelovek-3d.png",
+        file: "mini-gruppy-do-5-chelovek-3d.webp",
         className: styles.whyGroupsFive,
         alt: "Мини-группы по китайскому языку до 5 человек",
         sizes: "(min-width: 900px) 22vw, 72vw",
       },
       {
-        file: "mini-gruppa-studentka-1.png",
+        file: "mini-gruppa-studentka-1.webp",
         className: styles.whyGroupsStudentOne,
         alt: "Студентка мини-группы китайского языка",
       },
       {
-        file: "mini-gruppa-studentka-2.png",
+        file: "mini-gruppa-studentka-2.webp",
         className: styles.whyGroupsStudentTwo,
         alt: "Участница мини-группы китайского языка онлайн",
       },
       {
-        file: "mini-gruppa-student-3.png",
+        file: "mini-gruppa-student-3.webp",
         className: styles.whyGroupsStudentThree,
         alt: "Студент мини-группы китайского языка",
       },
       {
-        file: "mini-gruppa-studentka-4.png",
+        file: "mini-gruppa-studentka-4.webp",
         className: styles.whyGroupsStudentFour,
         alt: "Ученица мини-группы китайского языка",
       },
@@ -215,17 +215,17 @@ const whyCards: readonly WhyCard[] = [
     className: styles.whyTeachers,
     images: [
       {
-        file: "prepodavatel-yufu-dgtu-1.png",
+        file: "prepodavatel-yufu-dgtu-1.webp",
         className: styles.whyTeachersOne,
         alt: "Преподаватель китайского языка ЮФУ и ДГТУ",
       },
       {
-        file: "prepodavatel-yufu-dgtu-2.png",
+        file: "prepodavatel-yufu-dgtu-2.webp",
         className: styles.whyTeachersTwo,
         alt: "Опытный преподаватель китайского языка онлайн",
       },
       {
-        file: "prepodavatel-yufu-dgtu-3.png",
+        file: "prepodavatel-yufu-dgtu-3.webp",
         className: styles.whyTeachersThree,
         alt: "Преподаватель онлайн-школы китайского языка ChinaChild",
       },
@@ -239,7 +239,7 @@ const whyCards: readonly WhyCard[] = [
     className: styles.whyCabinet,
     images: [
       {
-        file: "lichnyy-kabinet-chinachild-zapisi-urokov.png",
+        file: "lichnyy-kabinet-chinachild-zapisi-urokov.webp",
         className: styles.whyCabinetImage,
         alt: "Личный кабинет ChinaChild с записями уроков китайского языка",
         sizes: "(min-width: 900px) 34vw, 86vw",
@@ -254,7 +254,7 @@ const whyCards: readonly WhyCard[] = [
     className: styles.whyCashback,
     images: [
       {
-        file: "keshbek-za-obuchenie-kitayskomu-5-10.png",
+        file: "keshbek-za-obuchenie-kitayskomu-5-10.webp",
         className: styles.whyCashbackImage,
         alt: "Кэшбэк 5-10 процентов за обучение китайскому языку",
         sizes: "(min-width: 900px) 30vw, 86vw",
