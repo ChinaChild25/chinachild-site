@@ -1,31 +1,176 @@
+import Image from "next/image";
 import Reveal from "@/components/ui/Reveal";
-import SectionShell from "@/components/ui/SectionShell";
-import { results } from "@/lib/site-data";
+import styles from "./HomeProcessResults.module.css";
 
-const palette = ["card-violet-soft", "card-cream", "card-lime-soft"] as const;
+const assetPath = "/home-redesign/";
+
+const resultCards = [
+  {
+    key: "level",
+    title: (
+      <>
+        Достигайте
+        <br />
+        <span className={styles.resultNowrap}>разговорного уровня</span>
+      </>
+    ),
+    subtitle: (
+      <>
+        Открывайте доступ к аутентичным
+        <br />
+        текстам.
+      </>
+    ),
+    value: "6 мес.",
+    text: (
+      <>
+        Программа выстроена так, чтобы
+        <br />
+        за полгода вы вышли
+        <br />
+        на уровень HSK 2
+      </>
+    ),
+    tone: styles.resultBlue,
+    revealClassName: styles.resultLeadReveal,
+    cardClassName: styles.resultLead,
+    imageClassName: styles.resultPeople,
+    image: "dialog-men-and-girl-on-blue.webp",
+    imageAlt: "Ученики ChinaChild достигают разговорного уровня китайского языка",
+    sizes: "(min-width: 1180px) 460px, (min-width: 768px) 760px, 390px",
+    info:
+      "Срок 6 месяцев рассчитан для учебного ритма 3 занятия в неделю и регулярной практики между уроками. Точный темп зависит от стартового уровня и выполнения домашних заданий.",
+  },
+  {
+    key: "groups",
+    title: (
+      <>
+        <span className={styles.resultNowrap}>Проходите занятия в</span>
+        <br />
+        мини-группах
+      </>
+    ),
+    subtitle: (
+      <>
+        Открывайте доступ к аутентичным
+        <br />
+        текстам
+      </>
+    ),
+    value: "До 5",
+    text: (
+      <>
+        В мини-группе у каждого хватает
+        <br />
+        времени на речь,
+        <br />
+        обратную связь и разбор ошибок
+      </>
+    ),
+    tone: styles.resultPhoto,
+    revealClassName: "",
+    cardClassName: "",
+    imageClassName: styles.resultGroups,
+    image: "mini-groups.webp",
+    imageAlt: "Занятия китайским языком в мини-группе до пяти человек",
+    sizes: "(min-width: 1180px) 430px, (min-width: 768px) 46vw, 390px",
+    info: null,
+  },
+  {
+    key: "cashback",
+    title: (
+      <>
+        <span className={styles.resultNowrap}>Возвращайте деньги</span>
+        <br />
+        за себя и близких
+      </>
+    ),
+    subtitle: (
+      <>
+        Поможем с оформлением всех
+        <br />
+        документов об обучении
+      </>
+    ),
+    value: "13%",
+    text: (
+      <>
+        Сможете вернуть 13% от
+        <br />
+        стоимости обучения — до
+        <br />
+        15600 ₽ в год
+      </>
+    ),
+    tone: styles.resultWarm,
+    revealClassName: "",
+    cardClassName: "",
+    imageClassName: styles.resultRuble,
+    image: "ruble-3d.webp",
+    imageAlt: "Налоговый вычет 13 процентов за обучение китайскому языку",
+    sizes: "(min-width: 1180px) 230px, (min-width: 768px) 240px, 230px",
+    info: null,
+  },
+] as const;
 
 export default function ResultsSection() {
   return (
-    <SectionShell
+    <section
       id="rezultaty"
-      title="Что вы получаете в ChinaChild"
-      description="Конкретные результаты программы: разговорный уровень за полгода, мини-группы и налоговый вычет 13%."
+      className={`section-space ${styles.resultsSection}`}
+      aria-labelledby="results-section-title"
     >
-      <div className="grid gap-5 md:grid-cols-3">
-        {results.map((item, index) => (
-          <Reveal key={item.title}>
-            <article className={`card-block h-full ${palette[index % palette.length]}`}>
-              <div className="text-[3rem] font-medium tracking-[-0.02em] text-[#262626] leading-[1.05] sm:text-[3.5rem]">
-                {item.value}
-              </div>
-              <h3 className="mt-6 text-[1.125rem] font-medium tracking-[-0.01em] text-[#262626] leading-[1.2]">
-                {item.title}
-              </h3>
-              <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">{item.description}</p>
-            </article>
-          </Reveal>
-        ))}
+      <div className={styles.resultsShell}>
+        <div className={`${styles.sectionHeader} section-head-center mx-auto max-w-3xl`}>
+          <h2 id="results-section-title" className="section-title">
+            Что вы получаете в ChinaChild
+          </h2>
+          <p className="section-description">
+            Конкретные результаты программы: разговорный уровень за полгода,
+            мини-группы и налоговый вычет 13%.
+          </p>
+        </div>
+        <div className={styles.resultsGrid}>
+          {resultCards.map((card) => (
+            <Reveal key={card.key} className={card.revealClassName}>
+              <article className={`${styles.resultCard} ${card.tone} ${card.cardClassName ?? ""}`}>
+                <div className={styles.resultCopy}>
+                  <h3>{card.title}</h3>
+                  <p>{card.subtitle}</p>
+                </div>
+                <span className={`${styles.resultImage} ${card.imageClassName}`}>
+                  <Image
+                    src={`${assetPath}${card.image}`}
+                    alt={card.imageAlt}
+                    fill
+                    sizes={card.sizes}
+                    className={styles.artImage}
+                  />
+                </span>
+                <div className={styles.resultGlass}>
+                  {card.info ? (
+                    <span className={styles.resultInfoWrap}>
+                      <button
+                        type="button"
+                        className={styles.resultInfo}
+                        aria-label="Подробнее о сроке обучения"
+                        aria-describedby={`${card.key}-info`}
+                      >
+                        i
+                      </button>
+                      <span id={`${card.key}-info`} role="tooltip" className={styles.resultTooltip}>
+                        {card.info}
+                      </span>
+                    </span>
+                  ) : null}
+                  <div className={styles.resultValue}>{card.value}</div>
+                  <p className={styles.resultText}>{card.text}</p>
+                </div>
+              </article>
+            </Reveal>
+          ))}
+        </div>
       </div>
-    </SectionShell>
+    </section>
   );
 }

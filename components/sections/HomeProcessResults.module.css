@@ -1,0 +1,1114 @@
+.processSection,
+.resultsSection {
+  color: #242424;
+}
+
+.processShell {
+  width: min(calc(100% - 28px), 365px);
+  margin: 0 auto;
+}
+
+.sectionHeader {
+  margin-bottom: clamp(30px, 4vw, 56px);
+}
+
+.processGrid {
+  display: grid;
+  gap: 20px;
+}
+
+.processGrid > :global(.reveal),
+.resultsGrid > :global(.reveal) {
+  display: flex;
+  min-width: 0;
+}
+
+.processGrid > :global(.reveal) > *,
+.resultsGrid > :global(.reveal) > * {
+  width: 100%;
+}
+
+.stepCard {
+  position: relative;
+  aspect-ratio: 365 / 247;
+  overflow: visible;
+  border-radius: 14px;
+  background: var(--step-bg);
+}
+
+.stepCopy {
+  position: relative;
+  z-index: 2;
+  padding: 24px 30px 0;
+}
+
+.stepBadge {
+  display: grid;
+  width: 88px;
+  height: 31px;
+  margin-left: 23px;
+  place-items: center;
+  border-radius: 999px;
+  color: #ffffff;
+  background: var(--step-badge);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.stepTitle {
+  max-width: 100%;
+  margin: 25px auto 0;
+  color: #242424;
+  font-size: 25px;
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: 0;
+  text-align: center;
+  overflow-wrap: normal;
+  white-space: nowrap;
+}
+
+.stepThreeTitle {
+  max-width: 100%;
+}
+
+.stepPurple {
+  --step-bg: #d8d3ff;
+}
+
+.stepCream {
+  --step-bg: #eeeae4;
+}
+
+.stepLime {
+  --step-bg: #dcefa1;
+}
+
+.stepSky {
+  --step-bg: #c8e2fa;
+}
+
+.stepBadgePurple {
+  --step-badge: #aba4f2;
+}
+
+.stepBadgeCream {
+  --step-badge: #c9c5bc;
+}
+
+.stepBadgeLime {
+  --step-badge: #9fca77;
+}
+
+.stepBadgeSky {
+  --step-badge: #70b8f7;
+}
+
+.stepArt,
+.resultImage {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.artImage {
+  object-fit: contain;
+  object-position: inherit;
+}
+
+.darkArtImage {
+  display: none;
+}
+
+.stepOneArt {
+  right: -6%;
+  bottom: -1px;
+  left: -6%;
+  height: 46%;
+  object-position: bottom center;
+}
+
+.stepTwoArt {
+  right: -2%;
+  bottom: -1px;
+  width: 78%;
+  height: 58%;
+  object-position: bottom center;
+}
+
+.stepThreeArt {
+  bottom: -1px;
+  left: 20px;
+  width: 52%;
+  height: 50%;
+  object-position: bottom left;
+}
+
+.stepFourArt {
+  right: 17%;
+  bottom: -1px;
+  width: 46%;
+  height: 55%;
+  object-position: bottom center;
+}
+
+.resultsShell {
+  width: min(calc(100% - 50px), 342px);
+  margin: 0 auto;
+}
+
+.resultsGrid {
+  display: grid;
+  gap: 20px;
+}
+
+.resultCard {
+  position: relative;
+  aspect-ratio: 342 / 472;
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--result-bg);
+  box-shadow: 0 14px 28px rgba(36, 36, 36, 0.06);
+}
+
+.resultBlue {
+  --result-bg: #c8e2fa;
+}
+
+.resultPhoto {
+  --result-bg: #d9d8d3;
+}
+
+.resultWarm {
+  --result-bg: #f1eee8;
+}
+
+.resultCopy {
+  position: relative;
+  z-index: 3;
+  padding: 34px 37px 0;
+}
+
+.resultCopy h3 {
+  margin: 0;
+  color: #242424;
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: 0;
+  overflow-wrap: normal;
+  white-space: nowrap;
+}
+
+.resultNowrap {
+  white-space: nowrap;
+}
+
+.resultBlue .resultCopy h3,
+.resultBlue .resultCopy p {
+  color: #ffffff;
+}
+
+.resultCopy p {
+  margin: 18px 0 0;
+  color: rgba(36, 36, 36, 0.62);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.resultPeople {
+  right: -9%;
+  bottom: -4%;
+  left: -10%;
+  height: 66%;
+  object-position: bottom center;
+}
+
+.resultPeople .artImage {
+  clip-path: inset(0 7% 0 1%);
+}
+
+.resultGroups {
+  inset: 0;
+  object-position: center bottom;
+}
+
+.resultGroups .artImage {
+  object-fit: cover;
+}
+
+.resultRuble {
+  top: 33.5%;
+  left: 50%;
+  width: 48%;
+  aspect-ratio: 804 / 828;
+  transform: translateX(-50%);
+  object-position: center;
+}
+
+.resultGlass {
+  position: absolute;
+  z-index: 4;
+  box-sizing: border-box;
+  right: 15px;
+  bottom: 15px;
+  left: 15px;
+  min-height: 136px;
+  padding: 16px 20px 14px;
+  overflow: visible;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.64);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.66),
+    0 18px 30px rgba(35, 35, 35, 0.08);
+  -webkit-backdrop-filter: blur(22px) saturate(128%);
+  backdrop-filter: blur(22px) saturate(128%);
+}
+
+.resultValue {
+  color: #1f1f1f;
+  font-size: 46px;
+  font-weight: 400;
+  line-height: 0.96;
+  letter-spacing: 0;
+}
+
+.resultText {
+  margin: 20px 0 0;
+  color: rgba(36, 36, 36, 0.68);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.resultInfoWrap {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 5;
+}
+
+.resultInfo {
+  display: grid;
+  width: 14px;
+  height: 14px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  color: #777777;
+  background: #ffffff;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  cursor: help;
+}
+
+.resultInfo:focus-visible {
+  outline: 2px solid rgba(112, 184, 247, 0.75);
+  outline-offset: 3px;
+}
+
+.resultTooltip {
+  position: absolute;
+  right: -4px;
+  bottom: calc(100% + 10px);
+  visibility: hidden;
+  width: min(260px, calc(100vw - 52px));
+  padding: 12px 14px;
+  border: 0;
+  border-radius: 10px;
+  color: #4b4b4b;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 14px 34px rgba(35, 35, 35, 0.16);
+  -webkit-backdrop-filter: blur(18px) saturate(128%);
+  backdrop-filter: blur(18px) saturate(128%);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: 0;
+  text-align: left;
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity var(--t-base),
+    transform var(--t-base),
+    visibility var(--t-base);
+  pointer-events: none;
+}
+
+.resultInfoWrap:hover .resultTooltip,
+.resultInfo:focus-visible + .resultTooltip {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (min-width: 768px) {
+  .processShell {
+    width: min(calc(100% - 28px), 812px);
+  }
+
+  .processGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .stepCard {
+    aspect-ratio: auto;
+    height: clamp(304px, 40.5vw, 338px);
+    border-radius: 20px;
+  }
+
+  .stepCopy {
+    padding: 34px 34px 0;
+  }
+
+  .stepBadge {
+    width: 116px;
+    height: 39px;
+    margin-left: 9px;
+    font-size: 20px;
+  }
+
+  .stepTitle {
+    margin-top: 36px;
+    font-size: 29px;
+    line-height: 0.98;
+  }
+
+  .stepThreeTitle {
+    max-width: 100%;
+  }
+
+  .stepOneArt {
+    right: -8%;
+    left: -8%;
+    height: 43%;
+  }
+
+  .stepTwoArt {
+    right: 0;
+    width: 72%;
+    height: 61%;
+  }
+
+  .stepThreeArt {
+    left: 14px;
+    width: 43%;
+    height: 50%;
+  }
+
+  .stepFourArt {
+    right: 21%;
+    width: 40%;
+    height: 53%;
+  }
+
+  .resultsShell {
+    width: min(calc(100% - 78px), 1060px);
+  }
+
+  .resultsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .resultCard {
+    aspect-ratio: auto;
+    height: 502px;
+    border-radius: 18px;
+  }
+
+  .resultLeadReveal {
+    grid-column: 1 / -1;
+  }
+
+  .resultLead {
+    aspect-ratio: 746 / 514;
+    height: auto;
+  }
+
+  .resultCopy {
+    padding: 40px 40px 0;
+  }
+
+  .resultCopy h3 {
+    font-size: 37px;
+    line-height: 1.08;
+  }
+
+  .resultCopy p {
+    margin-top: 20px;
+    font-size: 20px;
+  }
+
+  .resultLead .resultPeople {
+    right: 0;
+    bottom: -8%;
+    left: 0;
+    height: 80%;
+  }
+
+  .resultLead .resultPeople .artImage {
+    object-fit: cover;
+    object-position: top center;
+    clip-path: none;
+  }
+
+  .resultPeople {
+    right: -9%;
+    left: -10%;
+    height: 62%;
+  }
+
+  .resultRuble {
+    top: 31%;
+    width: 45%;
+  }
+
+  .resultGlass {
+    right: 13px;
+    bottom: 16px;
+    left: 13px;
+    height: 159px;
+    min-height: 0;
+    padding: 18px 20px 16px;
+  }
+
+  .resultLead .resultGlass {
+    right: auto;
+    width: calc((100% - 32px) / 2 - 20px);
+  }
+
+  .resultValue {
+    font-size: 48px;
+  }
+
+  .resultText {
+    margin-top: 18px;
+    font-size: 18px;
+    line-height: 1.1;
+  }
+
+  .resultCard:not(.resultLead) .resultCopy {
+    padding: 40px 28px 0 31px;
+  }
+
+  .resultCard:not(.resultLead) .resultCopy h3 {
+    font-size: 30px;
+  }
+
+  .resultCard:not(.resultLead) .resultCopy p {
+    font-size: 18px;
+    line-height: 1.08;
+  }
+
+  .resultCard:not(.resultLead) .resultGlass {
+    right: 10px;
+    left: 10px;
+    height: 159px;
+    min-height: 0;
+    padding: 18px 20px 16px;
+  }
+
+  .resultCard:not(.resultLead) .resultText {
+    margin-top: 16px;
+    font-size: 16px;
+  }
+
+  .resultInfo {
+    width: 16px;
+    height: 16px;
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 819px) {
+  .stepCopy {
+    padding: 32px 24px 0;
+  }
+
+  .stepTitle {
+    margin-top: 34px;
+    font-size: 26px;
+  }
+
+  .resultsShell {
+    width: min(calc(100% - 48px), 728px);
+  }
+
+  .resultsGrid {
+    gap: 20px;
+  }
+
+  .resultCopy {
+    padding: 36px 34px 0;
+  }
+
+  .resultCopy h3 {
+    font-size: 34px;
+  }
+
+  .resultCopy p {
+    margin-top: 16px;
+    font-size: 18px;
+  }
+
+  .resultLead .resultGlass {
+    width: min(350px, calc(100% - 28px));
+  }
+
+  .resultValue {
+    font-size: 46px;
+  }
+
+  .resultText {
+    margin-top: 14px;
+    font-size: 16px;
+    line-height: 1.1;
+  }
+
+  .resultCard:not(.resultLead) .resultCopy {
+    padding: 36px 18px 0 22px;
+  }
+
+  .resultCard:not(.resultLead) .resultCopy h3 {
+    font-size: 27px;
+  }
+
+  .resultCard:not(.resultLead) .resultCopy p {
+    font-size: 16px;
+  }
+
+  .resultCard:not(.resultLead) .resultGlass {
+    right: 10px;
+    left: 10px;
+    padding: 16px 18px 14px;
+  }
+
+  .resultCard:not(.resultLead) .resultText {
+    margin-top: 14px;
+    font-size: 15.5px;
+  }
+}
+
+@media (min-width: 900px) and (max-width: 1179px) {
+  .processShell {
+    width: min(calc(100% - 44px), 980px);
+  }
+
+  .processGrid {
+    gap: 20px;
+  }
+
+  .stepCard {
+    height: clamp(320px, 35vw, 360px);
+  }
+
+  .stepTitle {
+    font-size: 31px;
+  }
+
+  .stepThreeTitle {
+    max-width: 100%;
+  }
+
+  .resultsShell {
+    width: min(calc(100% - 72px), 980px);
+  }
+
+  .resultLead {
+    aspect-ratio: 746 / 514;
+  }
+
+  .resultCard:not(.resultLead) .resultCopy {
+    padding: 40px 20px 0 30px;
+  }
+
+  .resultCard:not(.resultLead) .resultCopy h3 {
+    font-size: 31px;
+  }
+
+  .resultCard:not(.resultLead) .resultCopy p {
+    font-size: 18px;
+  }
+
+  .resultRuble {
+    top: 36%;
+    width: 42%;
+  }
+}
+
+@media (min-width: 1180px) {
+  .processShell {
+    width: min(calc(100% - 120px), 1240px);
+  }
+
+  .processGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .stepCard {
+    aspect-ratio: 590 / 398;
+    height: auto;
+    border-radius: 20px;
+  }
+
+  .stepCopy {
+    padding: 34px 38px 0;
+  }
+
+  .stepBadge {
+    width: 132px;
+    height: 40px;
+    margin-left: 8px;
+    font-size: 22px;
+  }
+
+  .stepTitle {
+    margin-top: 38px;
+    font-size: clamp(29px, 2.35vw, 32px);
+    line-height: 0.98;
+  }
+
+  .stepThreeTitle {
+    max-width: 100%;
+  }
+
+  .stepOneArt {
+    right: -8%;
+    left: -8%;
+    height: 36%;
+  }
+
+  .stepTwoArt {
+    right: 5%;
+    width: 64%;
+    height: 52%;
+  }
+
+  .stepThreeArt {
+    left: 34px;
+    width: 35%;
+    height: 40%;
+  }
+
+  .stepFourArt {
+    right: 24%;
+    width: 32%;
+    height: 42%;
+  }
+
+  .resultsShell {
+    width: min(calc(100% - 80px), 1350px);
+  }
+
+  .resultsGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .resultLeadReveal {
+    grid-column: auto;
+  }
+
+  .resultCard,
+  .resultLead {
+    aspect-ratio: 429 / 584;
+    height: auto;
+    border-radius: 18px;
+  }
+
+  .resultCopy {
+    padding: 34px 26px 0;
+  }
+
+  .resultCopy h3 {
+    font-size: clamp(28px, 2.35vw, 32px);
+    line-height: 1.08;
+  }
+
+  .resultCard:not(.resultLead) .resultCopy h3 {
+    font-size: clamp(28px, 2.35vw, 32px);
+  }
+
+  .resultCopy p {
+    margin-top: 18px;
+    font-size: clamp(16px, 1.45vw, 18px);
+    line-height: 1.05;
+  }
+
+  .resultCard:not(.resultLead) .resultCopy p {
+    font-size: clamp(16px, 1.45vw, 18px);
+    line-height: 1.05;
+  }
+
+  .resultLead .resultPeople,
+  .resultPeople {
+    right: -12%;
+    bottom: -3%;
+    left: -10%;
+    height: 69%;
+  }
+
+  .resultLead .resultPeople .artImage {
+    object-fit: contain;
+    object-position: bottom center;
+    clip-path: inset(0 7% 0 1%);
+  }
+
+  .resultRuble {
+    top: 33%;
+    width: 42%;
+  }
+
+  .resultGlass {
+    right: 12px;
+    bottom: 14px;
+    left: 12px;
+    height: 160px;
+    min-height: 0;
+    padding: 18px 20px 16px;
+    border-radius: 9px;
+  }
+
+  .resultLead .resultGlass {
+    right: 12px;
+    width: auto;
+  }
+
+  .resultCard:not(.resultLead) .resultGlass {
+    right: 12px;
+    left: 12px;
+    height: 160px;
+    min-height: 0;
+    padding: 18px 20px 16px;
+  }
+
+  .resultValue {
+    font-size: 46px;
+  }
+
+  .resultText {
+    margin-top: 17px;
+    font-size: clamp(16px, 1.45vw, 18px);
+    line-height: 1.12;
+  }
+
+  .resultCard:not(.resultLead) .resultText {
+    margin-top: 17px;
+    font-size: clamp(16px, 1.45vw, 18px);
+    line-height: 1.12;
+  }
+}
+
+@media (min-width: 1400px) {
+  .processShell {
+    width: min(calc(100% - 208px), 1292px);
+  }
+
+  .processGrid {
+    gap: 20px;
+  }
+
+  .stepCopy {
+    padding: 42px 45px 0;
+  }
+
+  .stepBadge {
+    width: 147px;
+    height: 44px;
+    font-size: 24px;
+  }
+
+  .stepTitle {
+    margin-top: 54px;
+    font-size: 35px;
+  }
+
+  .stepOneArt {
+    height: 43%;
+  }
+
+  .stepTwoArt {
+    right: 5%;
+    width: 68%;
+    height: 65%;
+  }
+
+  .stepThreeArt {
+    left: 36px;
+    width: 42%;
+    height: 51%;
+  }
+
+  .stepFourArt {
+    right: 23%;
+    width: 37%;
+    height: 55%;
+  }
+
+  .resultsShell {
+    width: min(calc(100% - 84px), 1428px);
+  }
+
+  .resultsGrid {
+    gap: 20px;
+  }
+
+  .resultCopy {
+    padding: 39px 39px 0;
+  }
+
+  .resultCopy h3 {
+    font-size: 37px;
+  }
+
+  .resultCard:not(.resultLead) .resultCopy h3 {
+    font-size: 37px;
+  }
+
+  .resultCopy p {
+    margin-top: 21px;
+    font-size: 20px;
+  }
+
+  .resultCard:not(.resultLead) .resultCopy p {
+    margin-top: 21px;
+    font-size: 20px;
+  }
+
+  .resultGlass {
+    right: 15px;
+    bottom: 16px;
+    left: 15px;
+    height: 184px;
+    padding: 22px 24px 18px;
+  }
+
+  .resultLead .resultGlass {
+    right: 15px;
+  }
+
+  .resultCard:not(.resultLead) .resultGlass {
+    right: 15px;
+    left: 15px;
+    height: 184px;
+    padding: 22px 24px 18px;
+  }
+
+  .resultValue {
+    font-size: 50px;
+  }
+
+  .resultText {
+    margin-top: 24px;
+    font-size: 20px;
+  }
+
+  .resultCard:not(.resultLead) .resultText {
+    margin-top: 24px;
+    font-size: 20px;
+  }
+
+  .resultRuble {
+    top: 31%;
+    width: 45%;
+  }
+}
+
+:global(html[data-theme="dark"]) .stepPurple {
+  --step-bg: #2a2740;
+}
+
+:global(html[data-theme="dark"]) .stepCream {
+  --step-bg: #2b2722;
+}
+
+:global(html[data-theme="dark"]) .stepLime {
+  --step-bg: #2a2e1c;
+}
+
+:global(html[data-theme="dark"]) .stepSky {
+  --step-bg: #1e2832;
+}
+
+:global(html[data-theme="dark"]) .stepBadgePurple {
+  --step-badge: #776ee0;
+}
+
+:global(html[data-theme="dark"]) .stepBadgeCream {
+  --step-badge: #777267;
+}
+
+:global(html[data-theme="dark"]) .stepBadgeLime {
+  --step-badge: #6f8f4f;
+}
+
+:global(html[data-theme="dark"]) .stepBadgeSky {
+  --step-badge: #3d8bd6;
+}
+
+:global(html[data-theme="dark"]) .stepTitle,
+:global(html[data-theme="dark"]) .resultCopy h3,
+:global(html[data-theme="dark"]) .resultValue {
+  color: #ededed;
+}
+
+:global(html[data-theme="dark"]) .resultCopy p,
+:global(html[data-theme="dark"]) .resultText {
+  color: rgba(237, 237, 237, 0.66);
+}
+
+:global(html[data-theme="dark"]) .resultBlue {
+  --result-bg: #183245;
+}
+
+:global(html[data-theme="dark"]) .resultPhoto {
+  --result-bg: #2a2a2a;
+}
+
+:global(html[data-theme="dark"]) .resultPhoto::before {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background: rgba(0, 0, 0, 0.52);
+}
+
+:global(html[data-theme="dark"]) .lightArtImage {
+  display: none;
+}
+
+:global(html[data-theme="dark"]) .darkArtImage {
+  display: block;
+}
+
+:global(html[data-theme="dark"]) .resultWarm {
+  --result-bg: #2b2722;
+}
+
+:global(html[data-theme="dark"]) .resultGlass {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(28, 28, 28, 0.62);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 18px 34px rgba(0, 0, 0, 0.24);
+}
+
+:global(html[data-theme="dark"]) .resultInfo {
+  color: #262626;
+  background: #ededed;
+}
+
+:global(html[data-theme="dark"]) .resultTooltip {
+  border: 0;
+  color: #ededed;
+  background: rgba(28, 28, 28, 0.94);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.38);
+}
+
+@media (max-width: 389px) {
+  .stepTitle {
+    font-size: 23px;
+  }
+
+  .resultCopy {
+    padding-inline: 28px;
+  }
+
+  .resultCopy h3 {
+    font-size: 28px;
+  }
+
+  .resultCopy p,
+  .resultText {
+    font-size: 17px;
+  }
+
+  .resultValue {
+    font-size: 40px;
+  }
+}
+
+@media (max-width: 767px) {
+  .stepThreeTitle {
+    max-width: 100%;
+  }
+
+  .resultCopy {
+    padding: 32px 18px 0 30px;
+  }
+
+  .resultCopy h3 {
+    font-size: 29px;
+  }
+
+  .resultCopy p {
+    font-size: 18px;
+  }
+
+  .resultGlass {
+    right: 10px;
+    bottom: 15px;
+    left: 10px;
+    min-height: 136px;
+    padding: 14px 17px 12px;
+  }
+
+  .resultValue {
+    font-size: 42px;
+  }
+
+  .resultText {
+    margin-top: 14px;
+    font-size: 16px;
+    line-height: 1.08;
+  }
+
+  .processGrid > :global(.reveal):nth-child(1) {
+    order: 1;
+  }
+
+  .processGrid > :global(.reveal):nth-child(2) {
+    order: 3;
+  }
+
+  .processGrid > :global(.reveal):nth-child(3) {
+    order: 2;
+  }
+
+  .processGrid > :global(.reveal):nth-child(4) {
+    order: 4;
+  }
+
+  .stepThreeReveal {
+    order: 2;
+  }
+}
+
+@media (max-width: 389px) {
+  .resultCopy h3 {
+    font-size: 27px;
+  }
+
+  .resultValue {
+    font-size: 40px;
+  }
+
+  .resultCopy p,
+  .resultText {
+    font-size: 16px;
+  }
+}

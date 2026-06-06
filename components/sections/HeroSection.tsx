@@ -78,6 +78,25 @@ const orbitItems: Array<{
 
 type OrbitIconName = "star" | "chat" | "mic" | "headphones" | "heart" | "trophy";
 
+const heroStats = [
+  {
+    value: "HSK 1–6",
+    label: "Все уровни международного экзамена",
+  },
+  {
+    value: "6 мес.",
+    label: "До разговорного уровня по программе HSK 2",
+  },
+  {
+    value: "до 5",
+    label: "Человек в мини-группе",
+  },
+  {
+    value: "13%",
+    label: "Налоговый вычет — лицензия Москвы",
+  },
+] as const;
+
 function HeroOrbitIcon({ name }: { name: OrbitIconName }) {
   const className = "home-hero-orbit-icon-svg";
   switch (name) {
@@ -200,6 +219,15 @@ export default function HeroSection() {
             >
               Смотреть курсы
             </Link>
+          </div>
+
+          <div className="home-hero-stats" aria-label="Ключевые параметры программы">
+            {heroStats.map((stat) => (
+              <div key={stat.value} className="home-hero-stat">
+                <div className="home-hero-stat-value">{stat.value}</div>
+                <div className="home-hero-stat-label">{stat.label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
