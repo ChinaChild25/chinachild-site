@@ -1219,6 +1219,12 @@ a:focus-visible {
   opacity: .6;
 }
 
+.site-header-account {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
 .site-header-dropdown {
   position: relative;
 }
@@ -1579,6 +1585,12 @@ html[data-theme="dark"] .theme-toggle-thumb {
 
 .mobile-drawer-link:active {
   background: rgba(0, 0, 0, 0.04);
+}
+
+.mobile-drawer-link--account {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .mobile-drawer-cta {

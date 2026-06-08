@@ -2,10 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { CircleUser } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import LeadModal from "@/components/forms/LeadModal";
 import ThemeToggle from "@/components/theme/ThemeToggle";
+import { platformBaseUrl } from "@/lib/content/platform-links";
 /**
  * Header navigation is split into three tiers:
  *
@@ -97,6 +99,9 @@ const drawerOnly = [
 ];
 
 const drawerNav = [...mobilePrimaryNav, ...drawerOnly];
+
+// Личный кабинет живёт на отдельном хосте платформы (my.chinachild.ru).
+const accountUrl = platformBaseUrl();
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -233,6 +238,15 @@ export default function Header() {
                   </li>
                 );
               })}
+              <li>
+                <a
+                  href={accountUrl}
+                  className="site-header-link site-header-account"
+                >
+                  <CircleUser size={18} strokeWidth={1.75} aria-hidden />
+                  <span>Личный кабинет</span>
+                </a>
+              </li>
             </ul>
 
             <ThemeToggle />
@@ -333,6 +347,16 @@ export default function Header() {
                 </Link>
               </li>
             ))}
+            <li>
+              <a
+                href={accountUrl}
+                className="mobile-drawer-link mobile-drawer-link--account"
+                onClick={() => setMenuOpen(false)}
+              >
+                <CircleUser size={20} strokeWidth={1.75} aria-hidden />
+                Личный кабинет
+              </a>
+            </li>
           </ul>
 
           <LeadModal
