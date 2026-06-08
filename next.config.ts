@@ -49,13 +49,6 @@ const sitemapHeaders = [
   { key: "Cache-Control", value: "public, max-age=3600, must-revalidate" },
 ];
 
-const middlewareHandledRedirectSources = new Set([
-  "/members",
-  "/members/",
-  "/members/login",
-  "/members/signup",
-]);
-
 type RedirectRule = {
   source: string;
   destination: string;
@@ -120,10 +113,6 @@ function loadLegacyRedirects(): RedirectRule[] {
 
       if (status !== "301") {
         throw new Error(`Unsupported redirect status in ${file}: ${status}`);
-      }
-
-      if (middlewareHandledRedirectSources.has(oldPath)) {
-        return [];
       }
 
       return [{

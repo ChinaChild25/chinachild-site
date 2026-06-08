@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
   return buildMetadata({
-    title: `${tag.labelRu} — грамматика китайского | ChinaChild`,
+    title: `Тег «${tag.labelRu}» — грамматика китайского | ChinaChild`,
     description: `Подборка статей грамматики по тегу «${tag.labelRu}». Группа: ${tagGroupLabel(tag.groupKey)}.`,
     path: `/grammar/tags/${tag.slug}`,
   });

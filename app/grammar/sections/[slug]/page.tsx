@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
   return buildMetadata({
-    title: `${section.titleRu} — грамматика китайского | ChinaChild`,
+    title: `Раздел «${section.titleRu}» — грамматика китайского | ChinaChild`,
     description:
       section.descriptionRu ??
       `Подборка статей грамматики раздела «${section.titleRu}». Бесплатно, на русском, с примерами.`,
