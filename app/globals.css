@@ -897,6 +897,152 @@ a:focus-visible {
 }
 
 /* ==========================================================================
+   Teachers carousel — крупные карточки с портретом (референс Я.Практикум).
+   ≥1180px: четыре карточки в ряд, скролл не нужен. Уже — горизонтальный
+   scroll-snap, где вторая карточка выглядывает справа и намекает, что блок
+   можно листать. Превью карточек уменьшается вместе с экраном. Фото — фикс.
+   пропорция, текст обрезается line-clamp'ом, поэтому карточка целиком
+   помещается по высоте на любом устройстве (вертикально скроллить не надо).
+   ========================================================================== */
+.teacher-carousel {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.teacher-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.teacher-carousel > * {
+  flex: 0 0 auto;
+  width: 82%; /* мобайл: одна карточка + peek второй */
+  scroll-snap-align: start;
+}
+
+@media (min-width: 560px) {
+  .teacher-carousel {
+    gap: 20px;
+  }
+
+  .teacher-carousel > * {
+    width: 46%; /* две в ряд + peek */
+  }
+}
+
+@media (min-width: 880px) {
+  .teacher-carousel > * {
+    width: 31.5%; /* три в ряд + peek */
+  }
+}
+
+@media (min-width: 1180px) {
+  .teacher-carousel {
+    overflow-x: visible; /* всё помещается — скролл не нужен */
+  }
+
+  .teacher-carousel > * {
+    flex: 1 1 0;
+    width: auto; /* четыре равные карточки */
+  }
+}
+
+/* Фото вписано в шейп карточки без отступов: верхние углы скругляет сама
+   карточка (overflow:hidden + radius), поэтому у .teacher-card убираем
+   padding, а текст уводим в .teacher-card-body. Компаунд-селектор —
+   чтобы перебить мобильный .card-block { padding } ниже по файлу.
+   Единый цвет шейпа для всех карточек: светлая тема #f5f5f5, тёмная — один тон. */
+.teacher-card.card-block {
+  height: 100%;
+  padding: 0;
+  background: #f5f5f5;
+  color: var(--foreground);
+}
+
+html[data-theme="dark"] .teacher-card.card-block {
+  background: #1c1c1c;
+}
+
+.teacher-card-photo {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  /* Фото скруглено со всех сторон: нижние углы режутся самим .teacher-card-photo,
+     верхние совпадают со скруглением карточки — фото читается как цельный шейп. */
+  overflow: hidden;
+  border-radius: var(--radius-card);
+}
+
+/* Нарисованная подложка под фото. Сами фото прозрачные (свой фон не несут),
+   поэтому цвет задаём в UI — его легко поменять, не трогая изображения.
+   Тон закреплён за преподавателем (lib/teacher-tone.ts) и совпадает на
+   главной, в «Команде» и в профиле. Тёмная тема — приглушённые варианты. */
+.teacher-photo--peach {
+  background: #fae3d6;
+}
+.teacher-photo--sky {
+  background: #e0eaf5;
+}
+.teacher-photo--violet {
+  background: #e8e4ff;
+}
+.teacher-photo--lime {
+  background: #ebf2cf;
+}
+
+html[data-theme="dark"] .teacher-photo--peach {
+  background: #3d322b;
+}
+html[data-theme="dark"] .teacher-photo--sky {
+  background: #2a323d;
+}
+html[data-theme="dark"] .teacher-photo--violet {
+  background: #322e45;
+}
+html[data-theme="dark"] .teacher-photo--lime {
+  background: #333823;
+}
+
+/* Низ — больше воздуха: грей-шейп под текстом вытянут вниз, чтобы карточка
+   читалась крупнее, а не как маленькое превью. */
+.teacher-card-body {
+  padding: 20px 20px 38px;
+}
+
+@media (min-width: 768px) {
+  .teacher-card-body {
+    padding: 24px 24px 52px;
+  }
+}
+
+/* Кружок со стрелкой в правом верхнем углу фото (вместо текстовой кнопки) —
+   как на референсе: крупный, толстая обводка, без внутренней заливки.
+   Тонкий drop-shadow держит контраст белой стрелки на светлых фото, не
+   создавая «фона». При ховере стрелка опускается в правый нижний угол. */
+.teacher-card-icon {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  color: #ffffff;
+  filter: drop-shadow(0 1px 6px rgba(0, 0, 0, 0.35));
+}
+
+.teacher-card-icon svg {
+  width: 25px;
+  height: 25px;
+}
+
+/* ==========================================================================
    BUTTONS — 1:1 Yandex
    .btn-pill / .btn-ink — основной CTA (тёмный, radius 6, 16px / weight 500)
    .btn-rounded — пилюля

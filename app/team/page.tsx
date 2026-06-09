@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import PageHero from "@/components/layout/PageHero";
-import Avatar from "@/components/ui/Avatar";
 import Reveal from "@/components/ui/Reveal";
+import TeacherCard from "@/components/ui/TeacherCard";
 import { buildMetadata } from "@/lib/metadata";
 import { teachers } from "@/lib/site-data";
 
@@ -19,8 +18,6 @@ export const metadata: Metadata = buildMetadata({
     "репетитор китайского",
   ],
 });
-
-const palette = ["card-violet-soft", "card-cream", "card-lime-soft"];
 
 export default function TeamPage() {
   return (
@@ -44,43 +41,10 @@ export default function TeamPage() {
       />
 
       <section className="page-shell-wide section-space">
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {teachers.map((teacher, idx) => (
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {teachers.map((teacher) => (
             <Reveal key={teacher.slug}>
-              <Link
-                href={`/team/${teacher.slug}`}
-                className={`card-block group flex h-full flex-col transition hover:-translate-y-1 ${palette[idx % palette.length]}`}
-              >
-                <div className="flex items-center gap-4">
-                  <Avatar
-                    name={teacher.name}
-                    size={56}
-                    src={teacher.image}
-                    alt={teacher.imageAlt}
-                    title={teacher.imageTitle}
-                  />
-                  <div>
-                    <div className="text-[1.125rem] font-medium tracking-[-0.005em] text-[#262626] leading-[1.2]">
-                      {teacher.displayName ?? teacher.name}
-                    </div>
-                    <div className="text-xs text-[#6b6b6b]">
-                      {teacher.jobTitle ?? teacher.specialization}
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-5 flex flex-wrap gap-2">
-                  <span className="tag-pill">{teacher.experience}</span>
-                </div>
-                <p className="mt-5 text-sm leading-7 text-[#4b4b4b]">
-                  {(teacher.profileArticle?.[0] ?? teacher.bio ?? teacher.credentials).slice(0, 220)}
-                  {(teacher.profileArticle?.[0] ?? teacher.bio ?? teacher.credentials).length > 220
-                    ? "..."
-                    : ""}
-                </p>
-                <div className="mt-auto pt-6 text-sm font-semibold text-[#1b1b1b] underline-offset-4 group-hover:underline">
-                  Профиль преподавателя →
-                </div>
-              </Link>
+              <TeacherCard teacher={teacher} />
             </Reveal>
           ))}
         </div>

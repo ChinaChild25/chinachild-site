@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import JsonLd from "@/components/seo/JsonLd";
 import CertificateGallery from "@/components/content/CertificateGallery";
-import Avatar from "@/components/ui/Avatar";
 import Reveal from "@/components/ui/Reveal";
 import { getAllPosts } from "@/lib/blog";
 import { buildMetadata } from "@/lib/metadata";
 import { resolveTeacherCertificates } from "@/lib/team-certificates";
+import { teacherToneClass } from "@/lib/teacher-tone";
 import {
   createBreadcrumbNode,
   createTeacherNode,
@@ -134,13 +135,20 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
           <div className="card-block card-block-lg card-violet-soft">
             <div className="grid gap-8 lg:grid-cols-[0.55fr_1.45fr] lg:items-center">
               <div>
-                <Avatar
-                  name={name}
-                  size={220}
-                  src={teacher.image}
-                  alt={teacher.imageAlt}
-                  title={teacher.imageTitle}
-                />
+                {/* Квадрат со скруглёнными углами. Фото прозрачное — фон
+                    рисует CSS-тон (тот же, что на главной и в «Команде»). */}
+                <div
+                  className={`relative aspect-square w-full max-w-[240px] overflow-hidden rounded-[20px] ${teacherToneClass(teacher.slug)}`}
+                >
+                  <Image
+                    src={teacher.image}
+                    alt={teacher.imageAlt ?? name}
+                    title={teacher.imageTitle}
+                    fill
+                    sizes="240px"
+                    className="object-cover"
+                  />
+                </div>
               </div>
               <div>
                 <span className="tag-pill">Профиль преподавателя</span>
