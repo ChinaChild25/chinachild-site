@@ -129,10 +129,15 @@ export type Review = {
 export type PricingTier = {
   title: string;
   price: string;
-  format: string;
+  /** Pill label above the title (e.g. «Самостоятельная практика»). */
+  badge: string;
+  /** Lead paragraph shown on the front face of the flip card. */
   description: string;
   featured?: boolean;
+  /** Bullet list revealed on the back face when the card flips. */
   features: string[];
+  /** 3D illustration shown on the front face. */
+  image: { src: string; alt: string; width: number; height: number };
 };
 
 export type FaqItem = {
@@ -712,7 +717,7 @@ export const pricingTiers: PricingTier[] = [
   {
     title: "Введение",
     price: "4 990 ₽",
-    format: "80 уроков для самопрохождения",
+    badge: "Самостоятельная практика",
     description:
       "Полный курс из 80 уроков для самостоятельного прохождения. Диалоги носителей, интересные факты о Китае и тестирование после каждого раздела.",
     features: [
@@ -721,11 +726,17 @@ export const pricingTiers: PricingTier[] = [
       "Интересные факты о жизни в Китае",
       "Промежуточное тестирование после каждого раздела",
     ],
+    image: {
+      src: "/pricing/vvedenie-3d.webp",
+      alt: "",
+      width: 554,
+      height: 316,
+    },
   },
   {
     title: "Индивидуальный",
     price: "17 990 ₽",
-    format: "8 занятий с преподавателем",
+    badge: "Востребованный курс",
     description:
       "Персональный план обучения и гибкий график. Подготовка к HSK с преподавателем уровня HSK4+, индивидуальное сопровождение куратором.",
     featured: true,
@@ -739,11 +750,17 @@ export const pricingTiers: PricingTier[] = [
       "Подготовка к HSK",
       "Преподаватель уровня HSK4+",
     ],
+    image: {
+      src: "/pricing/individualnyy-3d.webp",
+      alt: "",
+      width: 1600,
+      height: 639,
+    },
   },
   {
-    title: "Для начинающих",
+    title: "Групповой",
     price: "15 990 ₽",
-    format: "8 занятий в группе с преподавателем",
+    badge: "Самостоятельная практика",
     description:
       "Небольшие группы до 5 человек — как с репетитором, но дешевле. Доступ к записи уроков, закрытый чат, литература и сопровождение куратора.",
     features: [
@@ -756,6 +773,12 @@ export const pricingTiers: PricingTier[] = [
       "Сопровождение куратором на протяжении всего курса",
       "8 академических часов",
     ],
+    image: {
+      src: "/pricing/gruppovoy-3d.webp",
+      alt: "",
+      width: 702,
+      height: 316,
+    },
   },
 ];
 
@@ -763,7 +786,7 @@ export const faqs: FaqItem[] = [
   {
     question: "Сколько стоит обучение?",
     answer:
-      "Самопрохождение «Введение» — 4 990 ₽ за 80 уроков. Курс «Для начинающих» — 15 990 ₽ за 8 групповых занятий. Индивидуальный курс — 17 990 ₽ за 8 занятий с преподавателем уровня HSK4+. По акции КИТАПР26 действует выгода до 30%.",
+      "Самопрохождение «Введение» — 4 990 ₽ за 80 уроков. Групповой курс — 15 990 ₽ за 8 групповых занятий. Индивидуальный курс — 17 990 ₽ за 8 занятий с преподавателем уровня HSK4+. По акции КИТАПР26 действует выгода до 30%.",
   },
   {
     question: "Есть ли домашнее задание?",
