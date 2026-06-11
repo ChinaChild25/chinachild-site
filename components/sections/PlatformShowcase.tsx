@@ -211,7 +211,7 @@ function FeatureMedia({
           : "aspect-[756/491] border-white/10 bg-white/5"
       }`}
     >
-      <span className="px-6 text-xs uppercase tracking-[0.16em] text-white/40">
+      <span className="px-6 text-xs tracking-[0.04em] text-white/40">
         Скриншот / GIF
       </span>
     </div>

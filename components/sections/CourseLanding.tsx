@@ -183,7 +183,7 @@ export default function CourseLanding({
 
           {related && related.length > 0 ? (
             <div className="mt-12 border-t border-white/10 pt-8">
-              <div className="text-xs uppercase tracking-[0.08em] text-white/55">
+              <div className="text-xs tracking-[0.01em] text-white/55">
                 Также может пригодиться
               </div>
               <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2.5">

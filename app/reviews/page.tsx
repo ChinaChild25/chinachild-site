@@ -5,12 +5,18 @@ import JsonLd from "@/components/seo/JsonLd";
 import PageHero from "@/components/layout/PageHero";
 import Avatar from "@/components/ui/Avatar";
 import LeadModal from "@/components/forms/LeadModal";
+import ReviewYandexArrow from "@/components/ui/ReviewYandexArrow";
 import YandexLocalSection from "@/components/sections/YandexLocalSection";
 import { buttonStyles } from "@/components/ui/button";
 import { buildMetadata } from "@/lib/metadata";
 import { createReviewSchemas } from "@/lib/schema";
 import { absoluteUrl } from "@/lib/site-config";
-import { REVIEW_SOURCE_LABELS, reviews, siteFacts } from "@/lib/site-data";
+import {
+  getReviewYandexUrl,
+  REVIEW_SOURCE_LABELS,
+  reviews,
+  siteFacts,
+} from "@/lib/site-data";
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
@@ -50,10 +56,16 @@ export default function ReviewsPage() {
           {reviews.map((review) => {
             const rating = review.rating ?? 5;
             const stars = "★★★★★".slice(0, rating) + "☆☆☆☆☆".slice(0, 5 - rating);
-            return (
-              <article key={review.author} className="card-block card-cream-soft h-full">
+            const yandexUrl = getReviewYandexUrl(review);
+            const inner = (
+              <>
                 <div className="flex items-center gap-4">
-                  <Avatar name={review.author} size={64} />
+                  <Avatar
+                    name={review.author}
+                    size={64}
+                    src={review.image || undefined}
+                    alt={`Фото ученика ChinaChild ${review.author}`}
+                  />
                   <div>
                     <h2 className="text-[1.125rem] font-medium tracking-[-0.005em] text-[#262626] leading-[1.2]">
                       {review.author}
@@ -77,21 +89,31 @@ export default function ReviewsPage() {
                     )}
                     {review.date && review.source && " · "}
                     {review.source && (
-                      review.verifyUrl ? (
-                        <a
-                          href={review.verifyUrl}
-                          target="_blank"
-                          rel="noreferrer nofollow"
-                          className="underline underline-offset-2 hover:text-[#262626]"
-                        >
-                          источник
-                        </a>
-                      ) : (
-                        <span>источник: {REVIEW_SOURCE_LABELS[review.source]}</span>
-                      )
+                      <span>источник: {REVIEW_SOURCE_LABELS[review.source]}</span>
                     )}
                   </p>
                 )}
+                {yandexUrl ? <ReviewYandexArrow /> : null}
+              </>
+            );
+
+            return yandexUrl ? (
+              <a
+                key={review.author}
+                href={yandexUrl}
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                aria-label={`Отзыв «${review.author}» на Яндекс.Картах`}
+                className="card-block card-cream-soft group relative flex h-full flex-col"
+              >
+                {inner}
+              </a>
+            ) : (
+              <article
+                key={review.author}
+                className="card-block card-cream-soft relative flex h-full flex-col"
+              >
+                {inner}
               </article>
             );
           })}

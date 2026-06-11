@@ -60,7 +60,7 @@
 
   /* Pastel cards — точные HEX из blueprint */
   --violet: #d8d3ff;
-  --cream:  #e8e3d8;
+  --cream:  #f5f5f5;
   --lime:   #dce9a7;
   --sky:    #cddcee;
   --peach:  #f7d7c6;
@@ -70,7 +70,7 @@
      насыщенности из блюпринта, поэтому возвращаем полные значения.
      Названия классов оставлены, чтобы не править tsx. */
   --violet-soft: #d8d3ff;
-  --cream-soft:  #e8e3d8;
+  --cream-soft:  #f5f5f5;
   --lime-soft:   #dce9a7;
   --sky-soft:    #cddcee;
   --peach-soft:  #f7d7c6;
@@ -474,7 +474,7 @@ a:focus-visible {
   padding: 28px 30px;
   border: 0;
   border-radius: 14px;
-  background: #ffffff;
+  background: #f5f5f5;
   box-shadow: 0 12px 28px rgba(17, 17, 17, 0.04);
   text-align: left;
 }
@@ -974,6 +974,8 @@ html[data-theme="dark"] .teacher-card.card-block {
      верхние совпадают со скруглением карточки — фото читается как цельный шейп. */
   overflow: hidden;
   border-radius: var(--radius-card);
+  /* Цветной фон за фото плавно насыщается при наведении на карточку. */
+  transition: background-color 180ms ease;
 }
 
 /* Нарисованная подложка под фото. Сами фото прозрачные (свой фон не несут),
@@ -993,6 +995,20 @@ html[data-theme="dark"] .teacher-card.card-block {
   background: #ebf2cf;
 }
 
+/* Hover — чуть более насыщенный/тёмный фон за фото (вместо приподнятия). */
+.teacher-card:hover .teacher-photo--peach {
+  background: #f5cdb7;
+}
+.teacher-card:hover .teacher-photo--sky {
+  background: #d0deef;
+}
+.teacher-card:hover .teacher-photo--violet {
+  background: #dad2ff;
+}
+.teacher-card:hover .teacher-photo--lime {
+  background: #e0ebb6;
+}
+
 html[data-theme="dark"] .teacher-photo--peach {
   background: #3d322b;
 }
@@ -1004,6 +1020,19 @@ html[data-theme="dark"] .teacher-photo--violet {
 }
 html[data-theme="dark"] .teacher-photo--lime {
   background: #333823;
+}
+
+html[data-theme="dark"] .teacher-card:hover .teacher-photo--peach {
+  background: #4b3d33;
+}
+html[data-theme="dark"] .teacher-card:hover .teacher-photo--sky {
+  background: #343f4c;
+}
+html[data-theme="dark"] .teacher-card:hover .teacher-photo--violet {
+  background: #3d3854;
+}
+html[data-theme="dark"] .teacher-card:hover .teacher-photo--lime {
+  background: #3e4429;
 }
 
 /* Низ — больше воздуха: грей-шейп под текстом вытянут вниз, чтобы карточка
@@ -1029,17 +1058,91 @@ html[data-theme="dark"] .teacher-photo--lime {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 46px;
-  height: 46px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
+  /* Обводка и стрелка белые в обеих темах. */
   border: 2px solid rgba(255, 255, 255, 0.95);
   color: #ffffff;
-  filter: drop-shadow(0 1px 6px rgba(0, 0, 0, 0.35));
 }
 
 .teacher-card-icon svg {
-  width: 25px;
-  height: 25px;
+  width: 17px;
+  height: 17px;
+}
+
+/* Тот же кружок-со-стрелкой, что у карточки преподавателя, но «чернильный»
+   вариант для карточки отзыва: она без фото, на светлом тоне — поэтому
+   обводка и стрелка тёмные. При ховере карточки кружок наливается, а стрелка
+   проворачивается на 90° (group-hover в разметке). */
+.review-card-icon {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  /* Обводка и стрелка одного цвета (var(--foreground)) — без заливки внутри.
+     Цвет берётся из темы, поэтому кружок виден и в светлой, и в тёмной. */
+  border: 1.5px solid var(--foreground);
+  color: var(--foreground);
+  background: transparent;
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+}
+
+.review-card-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.group:hover .review-card-icon {
+  opacity: 1;
+}
+
+/* Карточки блога: вместо приподнятия — потемнение фона + фиолетовая стрелка,
+   которая проворачивается в правый нижний угол при наведении. */
+.blog-preview-card {
+  transition: background-color 180ms ease;
+}
+
+.blog-preview-arrow {
+  position: absolute;
+  top: 28px;
+  right: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .blog-preview-arrow {
+    top: 36px;
+    right: 36px;
+  }
+}
+
+.blog-preview-card.card-cream-soft:hover {
+  background: #ececec;
+}
+.blog-preview-card.card-sky-soft:hover {
+  background: #bccfe4;
+}
+.blog-preview-card.card-lime-soft:hover {
+  background: #d0df93;
+}
+
+html[data-theme="dark"] .blog-preview-card.card-cream-soft:hover {
+  background: #353029;
+}
+html[data-theme="dark"] .blog-preview-card.card-sky-soft:hover {
+  background: #28333f;
+}
+html[data-theme="dark"] .blog-preview-card.card-lime-soft:hover {
+  background: #343a25;
 }
 
 /* ==========================================================================

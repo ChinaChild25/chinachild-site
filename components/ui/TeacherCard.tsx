@@ -9,7 +9,7 @@ export default function TeacherCard({ teacher }: { teacher: Teacher }) {
   return (
     <Link
       href={`/team/${teacher.slug}`}
-      className="card-block teacher-card group flex flex-col transition hover:-translate-y-1"
+      className="card-block teacher-card group flex flex-col"
     >
       <div className={`teacher-card-photo ${teacherToneClass(teacher.slug)}`}>
         <Image

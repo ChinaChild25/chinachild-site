@@ -186,31 +186,31 @@ export default function LicensePage() {
           </p>
           <dl className="mt-8 grid gap-x-8 gap-y-5 sm:grid-cols-2 text-sm leading-[1.55] text-[#262626]">
             <div>
-              <dt className="text-xs uppercase tracking-[0.08em] text-[#262626]/55">
+              <dt className="text-xs tracking-[0.01em] text-[#262626]/55">
                 Регистрационный номер
               </dt>
               <dd className="mt-1.5 font-medium">{LICENSE_DETAILS.registrationNumber}</dd>
             </div>
             <div>
-              <dt className="text-xs uppercase tracking-[0.08em] text-[#262626]/55">
+              <dt className="text-xs tracking-[0.01em] text-[#262626]/55">
                 Дата выдачи
               </dt>
               <dd className="mt-1.5 font-medium">18 декабря 2025 г.</dd>
             </div>
             <div>
-              <dt className="text-xs uppercase tracking-[0.08em] text-[#262626]/55">
+              <dt className="text-xs tracking-[0.01em] text-[#262626]/55">
                 Уведомление № исх.
               </dt>
               <dd className="mt-1.5 font-medium">{LICENSE_DETAILS.outgoingNumber}</dd>
             </div>
             <div>
-              <dt className="text-xs uppercase tracking-[0.08em] text-[#262626]/55">
+              <dt className="text-xs tracking-[0.01em] text-[#262626]/55">
                 Программа
               </dt>
               <dd className="mt-1.5 font-medium">{LICENSE_PROGRAM}</dd>
             </div>
             <div className="sm:col-span-2">
-              <dt className="text-xs uppercase tracking-[0.08em] text-[#262626]/55">
+              <dt className="text-xs tracking-[0.01em] text-[#262626]/55">
                 Лицензирующий орган
               </dt>
               <dd className="mt-1.5">
@@ -226,7 +226,7 @@ export default function LicensePage() {
               </dd>
             </div>
             <div className="sm:col-span-2">
-              <dt className="text-xs uppercase tracking-[0.08em] text-[#262626]/55">
+              <dt className="text-xs tracking-[0.01em] text-[#262626]/55">
                 Лицензиат
               </dt>
               <dd className="mt-1.5">

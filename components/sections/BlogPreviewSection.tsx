@@ -23,8 +23,24 @@ export default function BlogPreviewSection({
           <Reveal key={post.slug}>
             <Link
               href={`/blog/${post.slug}`}
-              className={`card-block group flex h-full flex-col transition hover:-translate-y-1 ${palette[index % palette.length]}`}
+              className={`card-block blog-preview-card group flex h-full flex-col ${palette[index % palette.length]}`}
             >
+              <span className="blog-preview-arrow" aria-hidden="true">
+                <svg
+                  width="20"
+                  height="21"
+                  viewBox="0 0 20 21"
+                  fill="none"
+                  className="transition-transform duration-200 group-hover:rotate-90"
+                >
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M3.99997 0.25H0V4.24997H3.99997V0.25ZM4 0.25H7.99997V4.24997H4V0.25ZM12 0.25H8V4.24997H12V0.25ZM12 0.25H16V4.24997H12V0.25ZM16 0.25H20V4.24997H16V0.25ZM12 4.25H16V8.24997H12V4.25ZM12 8.25H8V12.25H12V8.25ZM4 12.25H7.99997V16.25H4V12.25ZM3.99997 16.25H0V20.25H3.99997V16.25ZM16 8.25H20V12.25H16V8.25ZM20 12.25H16V16.25H20V12.25ZM16 16.25H20V20.25H16V16.25ZM20 4.25H16V8.24997H20V4.25Z"
+                    fill="#726BFF"
+                  />
+                </svg>
+              </span>
               <span className="tag-pill self-start">{post.category}</span>
               <h3 className="mt-6 text-[1.25rem] font-medium leading-[1.2] tracking-[-0.01em] text-[#262626]">
                 {post.title}

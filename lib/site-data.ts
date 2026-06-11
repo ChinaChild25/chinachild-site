@@ -1,4 +1,10 @@
-import { absoluteUrl, CONTACT_EMAIL, SITE_NAME, SITE_URL } from "@/lib/site-config";
+import {
+  absoluteUrl,
+  CONTACT_EMAIL,
+  SITE_NAME,
+  SITE_URL,
+  YANDEX_BUSINESS_REVIEWS_URL,
+} from "@/lib/site-config";
 
 export type AudienceSegment = {
   title: string;
@@ -589,7 +595,7 @@ export const reviews: Review[] = [
     result: "Продолжает обучение",
     body:
       "Специалисты заинтересованы дать ученикам как можно больше материала в довольно короткий срок! Остаюсь довольной и продолжаю обучение.",
-    image: "",
+    image: "https://avatars.mds.yandex.net/get-yapic/18057972/iZke3VmRmK4xuMTaTTc7tP7Kcs-1/orig",
     course: "online-chinese",
   },
   {
@@ -597,7 +603,7 @@ export const reviews: Review[] = [
     result: "Высокий уровень преподавания",
     body:
       "Замечательная программа подготовки и высокий уровень преподавания, обучение проходит с интересом, увлечённо! Очень удобный Личный кабинет.",
-    image: "",
+    image: "https://avatars.mds.yandex.net/get-yapic/18057972/urO5iPQQRbCiEApDRyclFQQAMQ-1/orig",
     course: "hsk-preparation",
   },
   {
@@ -605,7 +611,10 @@ export const reviews: Review[] = [
     result: "Прошёл курс для начинающих",
     body:
       "Все понравилось, удобный интерфейс! Прошёл входное тестирование, подал заявку на курс, быстро отреагировали! Прошёл курс для начинающих, понравился.",
+    // Отзыв из Яндекса, но без своей аватарки (показываются инициалы) — source
+    // помечен явно, чтобы стрелка вела на страницу отзывов компании.
     image: "",
+    source: "yandex-maps",
     course: "online-chinese",
   },
   {
@@ -613,7 +622,7 @@ export const reviews: Review[] = [
     result: "Рекомендует школу",
     body:
       "Все очень хорошо! Высокое качество образования, удобный интерфейс в личном кабинете. Рекомендую!",
-    image: "",
+    image: "https://avatars.mds.yandex.net/get-yapic/51169/AYqwtynDIxUyG2L54RqXK8Sfcw-1/orig",
     course: "business-chinese",
   },
   {
@@ -621,7 +630,9 @@ export const reviews: Review[] = [
     result: "Доступная цена и удобное приложение",
     body:
       "Обучение проходит замечательно! Материал легко усваивается. Приложение очень удобное, а преподаватели весёлые и урок проходит не скучно, а главное доступная цена за такое качество.",
-    image: "",
+    // Аватарка из Яндекса. URL контентно-адресуемый (get-yapic): при смене фото
+    // в Яндексе меняется и ссылка — обнови вручную. Пусто = цветные инициалы.
+    image: "https://avatars.mds.yandex.net/get-yapic/26311/cEZbEbmK0WwpRjkyfnLVDoV6xQk-1/orig",
     date: "2022-11-08",
     source: "yandex-maps",
     rating: 5,
@@ -634,7 +645,8 @@ export const reviews: Review[] = [
     result: "Дочь занимается с удовольствием",
     body:
       "Спасибо огромное! Дочь очень довольна. Очень нравятся преподаватели, хорошая подача материала, позитивные, креативные, находят общий язык с детьми. Молодцы!",
-    image: "",
+    // Аватарка из Яндекса — см. комментарий у отзыва Алины Толкачевой выше.
+    image: "https://avatars.mds.yandex.net/get-yapic/28439/El0ni2gQCDA40s9cCB4G3AJvxnA-1/orig",
     date: "2022-11-01",
     source: "yandex-maps",
     rating: 5,
@@ -643,6 +655,21 @@ export const reviews: Review[] = [
     course: "chinese-for-kids",
   },
 ];
+
+/**
+ * Ссылка на отзыв в Яндекс.Картах, если отзыв вообще «подтягивается» из
+ * Яндекса. Признак — отзыв с verifyUrl (прямой пермалинк) ИЛИ с аватаркой,
+ * взятой из Яндекса (avatars.mds.yandex.net) — значит автор реальный из
+ * карточки компании. Для пермалинка ведём на сам отзыв, иначе — на страницу
+ * отзывов компании. Отзывы без связи с Яндексом (только инициалы) → null.
+ */
+export function getReviewYandexUrl(review: Review): string | null {
+  if (review.verifyUrl) return review.verifyUrl;
+  const fromYandex =
+    review.source === "yandex-maps" ||
+    review.image.includes("avatars.mds.yandex.net");
+  return fromYandex ? YANDEX_BUSINESS_REVIEWS_URL : null;
+}
 
 /**
  * Returns the reviews relevant to a specific course landing. The first match

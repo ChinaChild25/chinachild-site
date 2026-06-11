@@ -122,7 +122,7 @@ function YandexReviewsCard() {
     <div className="yandex-reviews-card flex h-full flex-col gap-5 rounded-[var(--radius-card-md)] p-5 sm:p-6">
       <header className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-xs font-medium uppercase tracking-[0.04em] text-[var(--muted-strong)]">
+          <p className="text-xs font-medium tracking-[0.01em] text-[var(--muted-strong)]">
             Яндекс.Карты
           </p>
           <div className="mt-1 flex items-baseline gap-3">

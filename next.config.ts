@@ -130,6 +130,17 @@ const nextConfig: NextConfig = {
   compress: true,
   images: {
     formats: ["image/avif", "image/webp"],
+    // Аватарки авторов отзывов из Яндекса. URL вида
+    // https://avatars.mds.yandex.net/get-yapic/<id>/islands-retina-50 —
+    // контентно-адресуемые, поэтому при смене фото в Яндексе меняется и URL
+    // (вставляем новый в поле review.image вручную, см. lib/site-data.ts).
+    remotePatterns: [
+      { protocol: "https", hostname: "avatars.mds.yandex.net" },
+    ],
+    // Разрешаем next/image отдавать локальные SVG-иллюстрации (декоративные
+    // иконки разделов в /public/related). CSP + sandbox обезвреживают скрипты.
+    dangerouslyAllowSVG: true,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   async headers() {
     return [
