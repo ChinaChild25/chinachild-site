@@ -121,7 +121,7 @@ async function loadDecks(): Promise<DeckRow[]> {
 }
 
 const getCachedDecks = nextCache(loadDecks, ["public-dict-decks-v1"], {
-  revalidate: 300,
+  revalidate: 86400,
   tags: ["public-dictionary"],
 });
 

@@ -6,7 +6,7 @@ import { getPublicGrammarTags } from "@/lib/content/grammar";
 import { formatArticleCountRu } from "@/lib/content/labels";
 import { buildMetadata } from "@/lib/metadata";
 
-export const revalidate = 300;
+export const revalidate = 86400;
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({

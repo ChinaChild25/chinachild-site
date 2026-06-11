@@ -21,7 +21,7 @@ import { absoluteUrl } from "@/lib/site-config";
 import { wordHanziDisplayClass } from "@/lib/content/word-hanzi-size";
 import { createBreadcrumbNode } from "@/lib/schema";
 
-export const revalidate = 300;
+export const revalidate = 86400;
 
 export async function generateStaticParams(): Promise<Array<{ slug: string }>> {
   const slugs = await getPublicWordSlugs();

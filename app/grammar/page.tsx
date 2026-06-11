@@ -11,7 +11,7 @@ import { formatArticleCountRu } from "@/lib/content/labels";
 import { buildMetadata } from "@/lib/metadata";
 import { absoluteUrl } from "@/lib/site-config";
 
-export const revalidate = 300;
+export const revalidate = 86400;
 
 export async function generateMetadata({ searchParams }: GrammarPageProps): Promise<Metadata> {
   const params = await searchParams;

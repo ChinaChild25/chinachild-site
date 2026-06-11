@@ -18,7 +18,7 @@ import { buildMetadata } from "@/lib/metadata";
 import { absoluteUrl } from "@/lib/site-config";
 import { createBreadcrumbNode } from "@/lib/schema";
 
-export const revalidate = 300;
+export const revalidate = 86400;
 
 export async function generateStaticParams(): Promise<Array<{ version: string }>> {
   const versions = await getPublicHskVersions();

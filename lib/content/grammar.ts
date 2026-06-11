@@ -256,7 +256,7 @@ async function loadSnapshot(): Promise<GrammarSnapshot> {
 
 // 5-minute server cache so revisited pages do not refetch on every nav.
 const getCachedSnapshot = nextCache(loadSnapshot, ["public-grammar-snapshot-v2"], {
-  revalidate: 300,
+  revalidate: 86400,
   tags: ["public-grammar"],
 });
 
@@ -297,7 +297,7 @@ async function loadPublishedArticleBlocks(articleIds: string[]): Promise<BlockRo
 }
 
 const getCachedArticleBlocks = nextCache(loadArticleBlocks, ["public-grammar-article-blocks-v1"], {
-  revalidate: 300,
+  revalidate: 86400,
   tags: ["public-grammar"],
 });
 
@@ -305,7 +305,7 @@ const getCachedPublishedArticleBlocks = nextCache(
   loadPublishedArticleBlocks,
   ["public-grammar-published-blocks-v1"],
   {
-    revalidate: 300,
+    revalidate: 86400,
     tags: ["public-grammar"],
   },
 );
