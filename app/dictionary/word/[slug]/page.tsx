@@ -7,7 +7,7 @@ import AudioButton from "@/components/content/AudioButton";
 import StrokeOrderPreview from "@/components/content/StrokeOrderPreview";
 import {
   getPublicWordBySlug,
-  getPublicWordSlugs,
+  getPopularWordSlugs,
 } from "@/lib/content/dictionary";
 import { getPublicGrammarRelatedForTerm } from "@/lib/content/grammar";
 import {
@@ -22,9 +22,13 @@ import { wordHanziDisplayClass } from "@/lib/content/word-hanzi-size";
 import { createBreadcrumbNode } from "@/lib/schema";
 
 export const revalidate = 86400;
+// Prerender only the most frequent words at build; the long tail (full list in
+// sitemap-pages.xml) is generated on first visit and cached for `revalidate`.
+// Keeps each deploy from rewriting ~2000 ISR entries + re-querying Supabase.
+export const dynamicParams = true;
 
 export async function generateStaticParams(): Promise<Array<{ slug: string }>> {
-  const slugs = await getPublicWordSlugs();
+  const slugs = await getPopularWordSlugs();
   return slugs.map((slug) => ({ slug }));
 }
 

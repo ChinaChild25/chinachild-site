@@ -357,6 +357,28 @@ export async function getPublicWordSlugs(limit = 2000): Promise<string[]> {
     .map((row) => row.slug);
 }
 
+// Build-time prewarm set: only the most frequent words are prerendered at build.
+// The long tail is generated on-demand on first visit (dynamicParams) and cached
+// per `revalidate`, so each deploy rewrites ~`limit` ISR entries instead of ~2000.
+// The complete word list still ships in sitemap-pages.xml via getPublicWordSlugs,
+// so crawlers discover every word and lazily warm the rest — nothing is dropped.
+export async function getPopularWordSlugs(limit = 200): Promise<string[]> {
+  const supabase = getPublicSupabaseClient();
+  if (!supabase) return [];
+  const { data, error } = await supabase
+    .from("vocab_terms")
+    .select("slug, metadata, frequency_rank")
+    .order("frequency_rank", { ascending: true, nullsFirst: false })
+    .limit(limit);
+  if (error) {
+    console.warn("[public-content/dictionary] popular slug list error:", error.message);
+    return [];
+  }
+  return ((data ?? []) as Array<Pick<TermRow, "slug" | "metadata" | "frequency_rank">>)
+    .filter(isPublicTerm)
+    .map((row) => row.slug);
+}
+
 export async function getPublicWordBySlug(slug: string): Promise<WordDetail | null> {
   const supabase = getPublicSupabaseClient();
   if (!supabase) return null;
