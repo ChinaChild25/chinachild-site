@@ -77,6 +77,12 @@ export default function CompareFormatsPage() {
         description="Оба формата работают, но дают разный результат. Разбираем семь параметров — темп, цена, гибкость, мотивация, контроль, прогресс — чтобы вы выбрали под свою цель и характер."
         primaryCta={{ label: "Записаться на пробное", modal: true }}
         secondaryCta={{ label: "Все курсы", href: "/courses" }}
+        heroToneClass="card-hero-compare"
+        illustration="/heroes/gruppa-ili-individualno.webp"
+        illustrationAlt="Сравнение мини-группы и индивидуальных онлайн-занятий китайским языком"
+        illustrationWidth={3024}
+        illustrationHeight={1730}
+        illustrationFill
       />
 
       <section className="page-shell-wide section-space">

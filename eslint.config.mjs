@@ -11,7 +11,14 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   {
-    ignores: [".next/**", "node_modules/**", "next-env.d.ts"],
+    ignores: [
+      ".next/**",
+      "node_modules/**",
+      "next-env.d.ts",
+      // Вендорный 3D-компонент из ReactBits (R3F/Rapier) — типы и lint-правила
+      // не наши; держим @ts-nocheck и не линтуем.
+      "components/team/lanyard/Lanyard.tsx",
+    ],
   },
   ...compat.extends("next/core-web-vitals", "next/typescript"),
 ];

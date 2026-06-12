@@ -4,7 +4,7 @@
 }
 
 .processShell {
-  width: min(calc(100% - 28px), 365px);
+  width: min(calc(100% - 32px), 640px);
   margin: 0 auto;
 }
 
@@ -66,8 +66,8 @@
   line-height: 0.98;
   letter-spacing: 0;
   text-align: center;
-  overflow-wrap: normal;
-  white-space: nowrap;
+  overflow-wrap: break-word;
+  text-wrap: balance;
 }
 
 .stepThreeTitle {
@@ -155,7 +155,7 @@
 }
 
 .resultsShell {
-  width: min(calc(100% - 50px), 342px);
+  width: min(calc(100% - 32px), 640px);
   margin: 0 auto;
 }
 
@@ -166,7 +166,9 @@
 
 .resultCard {
   position: relative;
-  aspect-ratio: 342 / 472;
+  display: flex;
+  flex-direction: column;
+  min-height: 470px;
   overflow: hidden;
   border-radius: 14px;
   background: var(--result-bg);
@@ -198,12 +200,8 @@
   font-weight: 400;
   line-height: 1.08;
   letter-spacing: 0;
-  overflow-wrap: normal;
-  white-space: nowrap;
-}
-
-.resultNowrap {
-  white-space: nowrap;
+  overflow-wrap: break-word;
+  text-wrap: balance;
 }
 
 .resultBlue .resultCopy h3,
@@ -218,7 +216,8 @@
   font-weight: 400;
   line-height: 1.08;
   letter-spacing: 0;
-  white-space: nowrap;
+  overflow-wrap: break-word;
+  text-wrap: pretty;
 }
 
 .resultPeople {
@@ -252,14 +251,12 @@
 }
 
 .resultGlass {
-  position: absolute;
+  position: relative;
   z-index: 4;
   box-sizing: border-box;
-  right: 15px;
-  bottom: 15px;
-  left: 15px;
+  margin: auto 10px 15px;
   min-height: 136px;
-  padding: 16px 20px 14px;
+  padding: 14px 17px 12px;
   overflow: visible;
   border: 1px solid rgba(255, 255, 255, 0.72);
   border-radius: 9px;
@@ -286,7 +283,8 @@
   font-weight: 400;
   line-height: 1.12;
   letter-spacing: 0;
-  white-space: nowrap;
+  overflow-wrap: break-word;
+  text-wrap: pretty;
 }
 
 .resultInfoWrap {
@@ -352,7 +350,7 @@
   transform: translateY(0);
 }
 
-@media (min-width: 768px) {
+@media (min-width: 640px) {
   .processShell {
     width: min(calc(100% - 28px), 812px);
   }
@@ -423,7 +421,9 @@
   }
 
   .resultCard {
+    display: block;
     aspect-ratio: auto;
+    min-height: 0;
     height: 502px;
     border-radius: 18px;
   }
@@ -476,11 +476,12 @@
   }
 
   .resultGlass {
+    position: absolute;
+    margin: 0;
     right: 13px;
     bottom: 16px;
     left: 13px;
-    height: 159px;
-    min-height: 0;
+    min-height: 159px;
     padding: 18px 20px 16px;
   }
 
@@ -515,8 +516,7 @@
   .resultCard:not(.resultLead) .resultGlass {
     right: 10px;
     left: 10px;
-    height: 159px;
-    min-height: 0;
+    min-height: 159px;
     padding: 18px 20px 16px;
   }
 
@@ -532,7 +532,7 @@
   }
 }
 
-@media (min-width: 768px) and (max-width: 819px) {
+@media (min-width: 640px) and (max-width: 819px) {
   .stepCopy {
     padding: 32px 24px 0;
   }
@@ -543,7 +543,7 @@
   }
 
   .resultsShell {
-    width: min(calc(100% - 48px), 728px);
+    width: min(calc(100% - 32px), 728px);
   }
 
   .resultsGrid {
@@ -776,8 +776,7 @@
     right: 12px;
     bottom: 14px;
     left: 12px;
-    height: 160px;
-    min-height: 0;
+    min-height: 160px;
     padding: 18px 20px 16px;
     border-radius: 9px;
   }
@@ -790,8 +789,7 @@
   .resultCard:not(.resultLead) .resultGlass {
     right: 12px;
     left: 12px;
-    height: 160px;
-    min-height: 0;
+    min-height: 160px;
     padding: 18px 20px 16px;
   }
 
@@ -892,7 +890,7 @@
     right: 15px;
     bottom: 16px;
     left: 15px;
-    height: 184px;
+    min-height: 184px;
     padding: 22px 24px 18px;
   }
 
@@ -903,7 +901,7 @@
   .resultCard:not(.resultLead) .resultGlass {
     right: 15px;
     left: 15px;
-    height: 184px;
+    min-height: 184px;
     padding: 22px 24px 18px;
   }
 
@@ -932,7 +930,7 @@
 }
 
 :global(html[data-theme="dark"]) .stepCream {
-  --step-bg: #2b2722;
+  --step-bg: #303030;
 }
 
 :global(html[data-theme="dark"]) .stepLime {
@@ -996,7 +994,7 @@
 }
 
 :global(html[data-theme="dark"]) .resultWarm {
-  --result-bg: #2b2722;
+  --result-bg: #303030;
 }
 
 :global(html[data-theme="dark"]) .resultGlass {
@@ -1057,14 +1055,6 @@
 
   .resultCopy p {
     font-size: 18px;
-  }
-
-  .resultGlass {
-    right: 10px;
-    bottom: 15px;
-    left: 10px;
-    min-height: 136px;
-    padding: 14px 17px 12px;
   }
 
   .resultValue {

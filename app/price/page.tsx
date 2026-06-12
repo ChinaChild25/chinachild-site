@@ -49,7 +49,17 @@ export default function PricePage() {
       <PricingSection />
 
       <section className="page-shell-wide section-space">
-        <TaxDeductionCalculator />
+        <div className="section-head-center mx-auto max-w-3xl">
+          <h2 className="section-title">Посчитайте свой налоговый вычет</h2>
+          <p className="section-description">
+            Школа лицензирована Департаментом образования Москвы — обучение
+            попадает под социальный вычет по ст. 219 НК&nbsp;РФ. Двигайте ползунок
+            и смотрите, сколько вернёте на карту за год.
+          </p>
+        </div>
+        <div className="mt-10 sm:mt-14">
+          <TaxDeductionCalculator />
+        </div>
       </section>
 
       <FAQSection

@@ -81,6 +81,12 @@ export default function ResultsPage() {
         description="Программа рассчитана на конкретный измеримый результат: разговорный уровень HSK 2 за 6 месяцев, сертификат HSK для резюме и понятный маршрут к HSK 4 для поступления в Китай."
         primaryCta={{ label: "Записаться на пробное", modal: true }}
         secondaryCta={{ label: "Все курсы", href: "/courses" }}
+        heroToneClass="card-hero-results"
+        illustration="/heroes/rezultaty-uchenikov-chinachild-optimized.webp"
+        illustrationAlt="Прогресс учеников ChinaChild: сертификат, процент результата и учебные цели"
+        illustrationWidth={1134}
+        illustrationHeight={752}
+        illustrationFill
       />
 
       <section className="page-shell-wide section-space">

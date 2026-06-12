@@ -96,11 +96,17 @@ export default async function DictionaryPage({
 
       <PageHero
         variant="cream"
+        heroToneClass="card-hero-dictionary"
         eyebrow="Словарь"
         title="Китайский словарь"
         description="HSK-списки, pinyin, значения, примеры и карточки слов. Бесплатно, на русском."
         primaryCta={{ label: "Записаться на пробное", modal: true }}
         secondaryCta={{ label: "Глоссарий терминов", href: "/glossary" }}
+        illustration="/heroes/kitajskij-slovar.webp"
+        illustrationAlt="Китайский словарь ChinaChild с HSK-словами, pinyin и карточками терминов"
+        illustrationWidth={1500}
+        illustrationHeight={1500}
+        illustrationFill
       />
 
       <section className="page-shell-wide section-space">

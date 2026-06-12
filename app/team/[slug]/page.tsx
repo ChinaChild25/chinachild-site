@@ -9,7 +9,7 @@ import Reveal from "@/components/ui/Reveal";
 import { getAllPosts } from "@/lib/blog";
 import { buildMetadata } from "@/lib/metadata";
 import { resolveTeacherCertificates } from "@/lib/team-certificates";
-import { teacherToneClass } from "@/lib/teacher-tone";
+import { teacherBlockToneClass, teacherToneClass } from "@/lib/teacher-tone";
 import {
   createBreadcrumbNode,
   createTeacherNode,
@@ -132,7 +132,7 @@ export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
 
       <article itemScope itemType="https://schema.org/Person">
         <section className="page-shell-wide py-8 pt-10 md:py-10">
-          <div className="card-block card-block-lg card-violet-soft">
+          <div className={`card-block card-block-lg ${teacherBlockToneClass(teacher.slug)}`}>
             <div className="grid gap-8 lg:grid-cols-[0.55fr_1.45fr] lg:items-center">
               <div>
                 {/* Квадрат со скруглёнными углами. Фото прозрачное — фон

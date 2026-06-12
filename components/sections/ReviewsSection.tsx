@@ -36,7 +36,10 @@ export default function ReviewsSection() {
             const yandexUrl = getReviewYandexUrl(review);
             const inner = (
               <>
-                <div className="flex items-center gap-4">
+                {/* pr-12 резервирует место под угловой кружок-стрелку
+                    (.review-card-icon, ~64px от правого края), чтобы длинный
+                    подзаголовок переносился, а не заезжал под стрелку. */}
+                <div className="flex items-center gap-4 pr-12">
                   <Avatar
                     name={review.author}
                     size={56}

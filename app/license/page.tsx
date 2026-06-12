@@ -114,6 +114,11 @@ export default function LicensePage() {
         description={`Лицензия № ${LICENSE_DETAILS.registrationNumber} выдана ${LICENSE_REGION_INSTRUMENTAL} от ${LICENSE_DETAILS.issueDate}. Программа дополнительного профессионального образования «${LICENSE_PROGRAM}». Даёт ученикам право на налоговый вычет 13% — до 19 500 ₽ в год.`}
         primaryCta={{ label: "Записаться на пробное", modal: true }}
         secondaryCta={{ label: "О школе", href: "/about" }}
+        illustration="/home-redesign/litsenzirovannaya-programma-hsk-1-2.webp"
+        illustrationAlt="Образовательная лицензия Москвы на программу HSK 1–2"
+        illustrationWidth={1332}
+        illustrationHeight={1056}
+        illustrationFill
       />
 
       <section className="page-shell-wide section-space">

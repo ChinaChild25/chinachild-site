@@ -102,11 +102,17 @@ export default async function GrammarPage({ searchParams }: GrammarPageProps) {
       <JsonLd data={collectionSchema} id="grammar-collection" />
       <PageHero
         variant="violet"
+        heroToneClass="card-hero-grammar"
         eyebrow="Грамматика"
         title="Грамматика китайского языка"
         description="Правила, схемы, примеры и объяснения для изучающих китайский. Структурированный справочник: от порядка слов до сложных конструкций."
         primaryCta={{ label: "Записаться на пробное", modal: true }}
         secondaryCta={{ label: "Все термины и понятия", href: "/glossary" }}
+        illustration="/heroes/grammatika-kitajskogo-yazyka.webp"
+        illustrationAlt="Справочник по грамматике китайского языка ChinaChild с правилами и примерами"
+        illustrationWidth={1500}
+        illustrationHeight={1500}
+        illustrationFill
       />
 
       <section className="page-shell-wide section-space">

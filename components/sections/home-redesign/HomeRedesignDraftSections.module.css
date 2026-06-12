@@ -212,7 +212,7 @@
 }
 
 :global(html[data-theme="dark"]) .toneSand {
-  --card-bg: #2b2722;
+  --card-bg: #303030;
   --card-hover: #342f28;
 }
 

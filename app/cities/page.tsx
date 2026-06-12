@@ -42,6 +42,12 @@ export default function CitiesIndexPage() {
         description="Учим онлайн со всей России. Подбираем расписание под ваш часовой пояс, готовим к ближайшему центру сдачи HSK. Выберите свой город, чтобы посмотреть локальную информацию."
         primaryCta={{ label: "Записаться на пробное", modal: true }}
         secondaryCta={{ label: "Все курсы", href: "/courses" }}
+        heroToneClass="card-hero-cities"
+        illustration="/heroes/kursy-kitajskogo-v-gorodah-rossii.webp"
+        illustrationAlt="Онлайн-курсы китайского языка ChinaChild для учеников из городов России"
+        illustrationWidth={3024}
+        illustrationHeight={1730}
+        illustrationFill
       />
 
       <section className="page-shell-wide section-space">

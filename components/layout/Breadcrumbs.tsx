@@ -19,7 +19,7 @@ export default function Breadcrumbs({
             const isLast = index === items.length - 1;
 
             return (
-              <li key={item.path} className="flex items-center gap-2">
+              <li key={`${item.path}-${index}`} className="flex items-center gap-2">
                 {isLast ? (
                   <span aria-current="page" className="font-medium text-[#262626]">
                     {item.name}

@@ -73,6 +73,10 @@ export default function FloatingCta() {
     };
   }, [pathname]);
 
+  // The immersive HSK-test runner is a full-screen overlay with its own
+  // fixed bottom nav — never show the floating CTA over it.
+  if (pathname === "/chinese/hsk-test/take") return null;
+
   const shellClassName = [
     "floating-cta-shell",
     (!isPastHero || hasVisiblePageCta) && "floating-cta-shell--hidden",

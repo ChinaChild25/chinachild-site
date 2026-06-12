@@ -1,17 +1,8 @@
 import type { CSSProperties } from "react";
-import {
-  ArrowRight,
-  Headphones,
-  Heart,
-  Info,
-  MessageCircleMore,
-  Mic,
-  Star,
-  Trophy,
-} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import LeadModal from "@/components/forms/LeadModal";
+import { HeroArrowRightIcon, HeroInfoIcon, HeroOrbitIcon, type OrbitIconName } from "@/components/sections/HeroSectionIcons";
 import { buttonStyles } from "@/components/ui/button";
 import { siteFacts } from "@/lib/site-data";
 
@@ -76,8 +67,6 @@ const orbitItems: Array<{
   },
 ];
 
-type OrbitIconName = "star" | "chat" | "mic" | "headphones" | "heart" | "trophy";
-
 const heroStats = [
   {
     value: "HSK 1–6",
@@ -96,24 +85,6 @@ const heroStats = [
     label: "Налоговый вычет — лицензия Москвы",
   },
 ] as const;
-
-function HeroOrbitIcon({ name }: { name: OrbitIconName }) {
-  const className = "home-hero-orbit-icon-svg";
-  switch (name) {
-    case "star":
-      return <Star aria-hidden className={className} strokeWidth={1.8} />;
-    case "chat":
-      return <MessageCircleMore aria-hidden className={className} strokeWidth={1.8} />;
-    case "mic":
-      return <Mic aria-hidden className={className} strokeWidth={1.8} />;
-    case "headphones":
-      return <Headphones aria-hidden className={className} strokeWidth={1.8} />;
-    case "heart":
-      return <Heart aria-hidden className={className} strokeWidth={1.8} />;
-    case "trophy":
-      return <Trophy aria-hidden className={className} strokeWidth={1.8} />;
-  }
-}
 
 export default function HeroSection() {
   return (
@@ -163,7 +134,7 @@ export default function HeroSection() {
             <span aria-hidden className="home-hero-rating-star">★</span>
             <span className="home-hero-rating-value">{siteFacts.aggregateRating} из 5</span>
             <span className="home-hero-rating-copy">· на основании отзывов выпускников</span>
-            <Info aria-hidden className="home-hero-rating-info" strokeWidth={1.8} />
+            <HeroInfoIcon />
           </Link>
 
           <div className="home-hero-license">
@@ -207,7 +178,7 @@ export default function HeroSection() {
               suppressFloatingCta
             >
               <span>Записаться на пробный урок</span>
-              <ArrowRight aria-hidden className="home-hero-cta-icon" strokeWidth={1.8} />
+              <HeroArrowRightIcon />
             </LeadModal>
             <Link
               href="/courses"

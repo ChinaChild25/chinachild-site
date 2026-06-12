@@ -172,6 +172,12 @@ export default function RepetitorPage() {
         primaryCta={{ label: "Записаться на бесплатный урок", modal: true }}
         secondaryCta={{ label: "Все курсы", href: "/courses" }}
         variant="violet"
+        heroToneClass="card-hero-repetitor"
+        illustration="/heroes/kitajskij-s-nulya-marshrut-obucheniya-optimized.webp"
+        illustrationAlt="Индивидуальный маршрут обучения китайскому языку с репетитором до результата"
+        illustrationWidth={1134}
+        illustrationHeight={752}
+        illustrationFill
       />
 
       {/* === WHY ============================================================ */}
@@ -258,7 +264,7 @@ export default function RepetitorPage() {
           <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {processSteps.map((step) => (
               <Reveal key={step.step}>
-                <article className="card-block h-full bg-[var(--background-2)]">
+                <article className="card-block repetitor-process-step-card h-full">
                   <div className="text-2xl font-medium tracking-[-0.01em] text-[var(--ink)]">
                     {step.step}
                   </div>

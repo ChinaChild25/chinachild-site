@@ -28,3 +28,11 @@ export function teacherToneClass(slug: string): string {
   }
   return TONES[hash % TONES.length];
 }
+
+// Тон-класс блока-обложки в профиле. Берёт тот же оттенок, что и подложка под
+// фото (teacherToneClass), но в более насыщенном `card-*-soft` варианте —
+// фото-аватар оказывается чуть светлее своего блока и сливается с ним по тону.
+export function teacherBlockToneClass(slug: string): string {
+  const tone = teacherToneClass(slug).replace("teacher-photo--", "");
+  return `card-${tone}-soft`;
+}

@@ -475,7 +475,6 @@ a:focus-visible {
   border: 0;
   border-radius: 14px;
   background: #f5f5f5;
-  box-shadow: 0 12px 28px rgba(17, 17, 17, 0.04);
   text-align: left;
 }
 
@@ -503,8 +502,16 @@ a:focus-visible {
 
 .home-hero-secondary-cta {
   min-width: 190px;
-  background: rgba(255, 255, 255, 0.74);
-  box-shadow: 0 14px 34px rgba(29, 29, 29, 0.08);
+}
+
+/* Compound с .btn-white, чтобы перебить базовый светлый фон кнопки
+   (.btn-white объявлен ниже и при равной специфичности выигрывал). */
+.btn-white.home-hero-secondary-cta {
+  background: #f5f5f5;
+}
+
+.btn-white.home-hero-secondary-cta:hover {
+  background: #dedfe9;
 }
 
 .home-hero-cta-icon {
@@ -863,6 +870,14 @@ a:focus-visible {
 .card-lime   { background: var(--lime);   }
 .card-sky    { background: var(--sky);    }
 .card-peach  { background: var(--peach);  }
+
+.repetitor-process-step-card {
+  background: #fff;
+}
+
+html[data-theme="dark"] .repetitor-process-step-card {
+  background: rgba(255, 255, 255, 0.06);
+}
 
 .card-ink {
   background: var(--ink);
@@ -2588,6 +2603,135 @@ textarea.lead-input {
 .card-cream  { background: var(--cream); }
 .card-lime   { background: var(--lime); }
 .card-sky    { background: var(--sky); }
+.card-hero-courses { background: #f5f5f5; }
+.card-hero-beginners { background: #efedf5; }
+.card-hero-cities { background: #efefed; }
+.card-hero-compare { background: #e4eef9; }
+.card-hero-grammar { background: #f8dccd; }
+.card-hero-dictionary { background: #edf5cb; }
+.card-hero-repetitor { background: #f5f5f5; }
+.card-hero-results { background: hsl(247, 65%, 68%); }
+.card-hero-reviews { background: #f5f5f5; }
+
+.card-hero-results .page-hero-title {
+  color: #ffffff;
+}
+
+.card-hero-results .page-hero-description {
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.card-hero-cities .page-hero-media-img {
+  border-radius: 32px;
+}
+
+/* Тон hero-блока страницы курса = цвет карточки этого курса на главной
+   (раздел «Кому подойдёт»). В тёмной теме — нейтральный серый, без тёплого
+   бежевого оттенка, как у остальных тёмных карточек. */
+.card-course-violet { background: #d8d3ff; }
+.card-course-sand   { background: #eee9df; }
+.card-course-kids   { background: #f5f5f5; }
+.card-course-rose   { background: #f1e0e7; }
+.card-course-blue   { background: #dfe6f2; }
+.card-course-lime   { background: #edf3d4; }
+
+html[data-theme="dark"] .card-course-violet { background: #34333b; }
+html[data-theme="dark"] .card-course-sand,
+html[data-theme="dark"] .card-course-kids { background: #303030; }
+html[data-theme="dark"] .card-course-rose { background: #32252b; }
+html[data-theme="dark"] .card-course-blue { background: #1e2832; }
+html[data-theme="dark"] .card-course-lime { background: #2a2e1c; }
+
+html[data-theme="dark"] .card-hero-courses {
+  background: #303030;
+}
+
+html[data-theme="dark"] .card-hero-grammar {
+  background: #3d302b;
+}
+
+html[data-theme="dark"] .card-hero-dictionary {
+  background: #343b25;
+}
+
+html[data-theme="dark"] .card-hero-beginners,
+html[data-theme="dark"] .card-hero-repetitor,
+html[data-theme="dark"] .card-hero-results,
+html[data-theme="dark"] .card-hero-reviews {
+  background: #34333b;
+}
+
+html[data-theme="dark"] .card-hero-cities {
+  background: #303030;
+}
+
+html[data-theme="dark"] .card-hero-compare {
+  background: #35305f;
+}
+
+/* На странице курса в тёмной теме тёплые «кремовые» блоки (длинный текст и
+   карточки отзывов) тоже нейтрально-серые — чтобы не выбивались бежевым. */
+html[data-theme="dark"] .course-landing .card-cream,
+html[data-theme="dark"] .course-landing .card-cream-soft {
+  background: #262626;
+}
+
+/* Карточки каталога /courses: иллюстрация курса в правом нижнем углу (как на
+   карточках главной). Текст слева ограничен по ширине и никогда не заходит на
+   картинку; прозрачные PNG сливаются с фоном карточки без просветов. */
+.courses-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 300px;
+}
+
+.courses-card-copy {
+  position: relative;
+  z-index: 2;
+  max-width: 64%;
+}
+
+.courses-card-art {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  width: 40%;
+  height: 54%;
+  object-fit: contain;
+  object-position: right bottom;
+  pointer-events: none;
+}
+
+.courses-card-art-kids {
+  right: 0;
+  bottom: 0;
+  width: 44%;
+  height: 88%;
+  object-position: right bottom;
+}
+
+@media (min-width: 768px) {
+  .courses-card {
+    min-height: 336px;
+  }
+
+  .courses-card-copy {
+    max-width: 60%;
+  }
+
+  .courses-card-art {
+    width: 46%;
+    height: 62%;
+  }
+
+  .courses-card-art-kids {
+    right: 0;
+    bottom: 0;
+    width: 48%;
+    height: 94%;
+  }
+}
 
 /* ==========================================================================
    HERO LAYOUT
@@ -2734,6 +2878,218 @@ textarea.lead-input {
 }
 
 /* ==========================================================================
+   ILLUSTRATION — BLEED MODE (page-hero-card--media)
+   Крупный кадр иллюстрации курса, прижатый к правому нижнему углу блока (как на
+   карточках главной). Картинки — прозрачные PNG, поэтому пустые зоны показывают
+   фон блока: просветов справа/слева нет. Текст всегда выше и левее кадра.
+   ========================================================================== */
+
+.page-hero-card--media {
+  position: relative;
+}
+
+.page-hero-media {
+  pointer-events: none;
+  z-index: 0;
+}
+
+.page-hero-media-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: right bottom;
+}
+
+/* Мобильные: кадр — нижняя «полоса» блока, прижатая к правому нижнему углу.
+   Идёт после кнопок в потоке, поэтому не перекрывает текст. Отрицательные
+   поля «съедают» паддинг блока — кадр упирается в правый и нижний край. */
+@media (max-width: 767px) {
+  .page-hero-media {
+    position: relative;
+    margin: 20px -24px -32px 0;
+    height: clamp(196px, 60vw, 290px);
+  }
+
+  .card-hero-grammar .page-hero-media,
+  .card-hero-dictionary .page-hero-media,
+  .card-hero-beginners .page-hero-media,
+  .card-hero-cities .page-hero-media,
+  .card-hero-compare .page-hero-media,
+  .card-hero-repetitor .page-hero-media,
+  .card-hero-results .page-hero-media,
+  .card-hero-reviews .page-hero-media {
+    height: clamp(230px, 70vw, 360px);
+  }
+
+  .card-hero-repetitor .page-hero-media {
+    margin: 22px 0 0;
+    height: clamp(220px, 64vw, 320px);
+  }
+
+  .card-hero-cities .page-hero-media {
+    margin: 22px 0 0;
+    height: clamp(262px, 74vw, 384px);
+  }
+
+  .card-hero-results .page-hero-media {
+    margin: 22px 0 0;
+    height: clamp(218px, 62vw, 320px);
+  }
+
+  .card-hero-reviews .page-hero-media {
+    margin: 22px -24px 0 0;
+    height: clamp(218px, 62vw, 320px);
+  }
+
+  .card-hero-compare .page-hero-media {
+    margin: 22px 0 0;
+    height: clamp(252px, 72vw, 372px);
+  }
+
+  .card-course-kids .page-hero-media {
+    margin: 22px 0 0;
+    height: clamp(252px, 72vw, 372px);
+  }
+
+  .card-course-kids .page-hero-media-img {
+    object-position: right center;
+  }
+}
+
+/* Десктоп: кадр абсолютно прижат к правому нижнему углу, крупный; текст
+   получает правый отступ, чтобы никогда не заходить под иллюстрацию. */
+@media (min-width: 768px) {
+  .page-hero-card--media {
+    min-height: 380px;
+  }
+
+  .page-hero-card--media .page-hero-layout {
+    position: relative;
+    z-index: 1;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "content"
+      "ctas";
+    padding-right: 46%;
+  }
+
+  .page-hero-card--media .page-hero-content,
+  .page-hero-card--media .page-hero-ctas {
+    max-width: 100%;
+  }
+
+  .page-hero-media {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 42%;
+    max-width: 600px;
+    height: 92%;
+  }
+
+  .card-hero-grammar.page-hero-card--media .page-hero-layout {
+    padding-right: 49%;
+  }
+
+  .card-hero-grammar.page-hero-card--media .page-hero-media {
+    width: 46%;
+    max-width: 760px;
+    height: 94%;
+  }
+
+  .card-hero-dictionary.page-hero-card--media .page-hero-layout {
+    padding-right: 47%;
+  }
+
+  .card-hero-dictionary.page-hero-card--media .page-hero-media {
+    width: 45%;
+    max-width: 700px;
+    height: 90%;
+  }
+
+  .card-hero-beginners.page-hero-card--media .page-hero-layout,
+  .card-hero-repetitor.page-hero-card--media .page-hero-layout,
+  .card-hero-results.page-hero-card--media .page-hero-layout,
+  .card-hero-reviews.page-hero-card--media .page-hero-layout {
+    padding-right: 50%;
+  }
+
+  .card-course-kids.page-hero-card--media .page-hero-layout,
+  .card-hero-cities.page-hero-card--media .page-hero-layout,
+  .card-hero-compare.page-hero-card--media .page-hero-layout {
+    padding-right: 56%;
+  }
+
+  .card-hero-beginners.page-hero-card--media .page-hero-media {
+    width: 48%;
+    max-width: 760px;
+    height: 88%;
+  }
+
+  .card-course-kids.page-hero-card--media .page-hero-media {
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+    width: 55%;
+    max-width: 840px;
+    height: 94%;
+  }
+
+  .card-course-kids.page-hero-card--media .page-hero-media-img {
+    object-position: right center;
+  }
+
+  .card-hero-cities.page-hero-card--media .page-hero-media {
+    top: 50%;
+    right: clamp(24px, 3vw, 56px);
+    bottom: auto;
+    transform: translateY(-50%);
+    width: 50%;
+    max-width: 744px;
+    height: 91%;
+  }
+
+  .card-hero-results.page-hero-card--media .page-hero-media {
+    right: clamp(24px, 3vw, 56px);
+    bottom: clamp(20px, 2.5vw, 44px);
+    width: 42%;
+    max-width: 620px;
+    height: 76%;
+  }
+
+  .card-hero-reviews.page-hero-card--media .page-hero-media {
+    right: 0;
+    bottom: clamp(20px, 2.5vw, 44px);
+    width: 44%;
+    max-width: 640px;
+    height: 78%;
+  }
+
+  .card-hero-compare.page-hero-card--media .page-hero-media {
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+    width: 55%;
+    max-width: 840px;
+    height: 94%;
+  }
+
+  .card-hero-repetitor.page-hero-card--media .page-hero-media {
+    right: clamp(24px, 3vw, 56px);
+    bottom: clamp(20px, 2.5vw, 48px);
+    width: 44%;
+    max-width: 660px;
+    height: 76%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-hero-card--media {
+    min-height: 440px;
+  }
+}
+
+/* ==========================================================================
    EYEBROW
    ========================================================================== */
 
@@ -2747,17 +3103,20 @@ textarea.lead-input {
   color: #fff;
 }
 
+/* Eyebrow в hero-блоках — то же матовое «стекло», что у бейджей тарифов
+   (PricingFlip .badge): полупрозрачная белая заливка + светлый бордер +
+   inset-блики. Без обводки-«коробки» и без backdrop-filter (за пилюлей
+   сплошной пастельный фон — размывать нечего). */
 .eyebrow.eyebrow-on-light {
-  background: rgba(0, 0, 0, 0.06);
-  color: var(--ink);
-}
-
-
-/* Eyebrow на светлой пастельной карточке — тёмный текст, тёмная подложка. */
-.eyebrow.eyebrow-on-light {
-  background: rgba(30, 30, 30, 0.08);
-  color: var(--ink);
-  border: 1px solid rgba(30, 30, 30, 0.06);
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 500;
+  color: #1e1e1e;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow:
+    inset 0 1.5px 1px rgba(255, 255, 255, 0.95),
+    inset 0 -2px 4px rgba(255, 255, 255, 0.4);
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
 }
@@ -3740,14 +4099,14 @@ html[data-theme="dark"] {
 
   /* Пастели приглушаем — оставляем цвет-маркеры разделов. */
   --violet: #2a2740;
-  --cream: #2b2722;
+  --cream: #303030;
   --lime: #2a2e1c;
   --sky: #1e2832;
   --peach: #2f231e;
   --faq-bg: #232323;
 
   --violet-soft: #2a2740;
-  --cream-soft: #2b2722;
+  --cream-soft: #303030;
   --lime-soft: #2a2e1c;
   --sky-soft: #1e2832;
   --peach-soft: #2f231e;
@@ -3996,9 +4355,10 @@ html[data-theme="dark"] {
   /* Eyebrow на светлых пастельных = тёмный текст;
      на dark-теме пастели стали тёмными — текст должен быть светлым. */
   .eyebrow.eyebrow-on-light {
+    color: #ededed;
     background: rgba(255, 255, 255, 0.08);
-    color: var(--ink);
-    border-color: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.14);
+    box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.16);
   }
 
   .page-hero-description {

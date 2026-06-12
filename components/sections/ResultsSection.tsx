@@ -7,13 +7,7 @@ const assetPath = "/home-redesign/";
 const resultCards = [
   {
     key: "level",
-    title: (
-      <>
-        Достигайте
-        <br />
-        <span className={styles.resultNowrap}>разговорного уровня</span>
-      </>
-    ),
+    title: "Достигайте разговорного уровня",
     subtitle: (
       <>
         Открывайте доступ к аутентичным
@@ -43,13 +37,7 @@ const resultCards = [
   },
   {
     key: "groups",
-    title: (
-      <>
-        <span className={styles.resultNowrap}>Проходите занятия в</span>
-        <br />
-        мини-группах
-      </>
-    ),
+    title: "Проходите занятия в мини-группах",
     subtitle: (
       <>
         Открывайте доступ к аутентичным
@@ -78,13 +66,7 @@ const resultCards = [
   },
   {
     key: "cashback",
-    title: (
-      <>
-        <span className={styles.resultNowrap}>Возвращайте деньги</span>
-        <br />
-        за себя и близких
-      </>
-    ),
+    title: "Возвращайте деньги за себя и близких",
     subtitle: (
       <>
         Поможем с оформлением всех

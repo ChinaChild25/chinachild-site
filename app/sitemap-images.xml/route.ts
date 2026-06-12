@@ -15,6 +15,116 @@ export async function GET() {
   const now = new Date().toISOString();
 
   const homeImg = absoluteUrl("/opengraph-image");
+  const pageHeroImages: UrlEntry[] = [
+    {
+      loc: absoluteUrl("/repetitor-kitayskogo"),
+      lastmod: now,
+      images: [
+        {
+          loc: absoluteUrl("/heroes/kitajskij-s-nulya-marshrut-obucheniya-optimized.webp"),
+          title: "Репетитор китайского языка онлайн — индивидуальный маршрут",
+          caption:
+            "Иллюстрация индивидуального маршрута обучения китайскому языку с репетитором ChinaChild.",
+        },
+      ],
+    },
+    {
+      loc: absoluteUrl("/dictionary"),
+      lastmod: now,
+      images: [
+        {
+          loc: absoluteUrl("/heroes/kitajskij-slovar.webp"),
+          title: "Китайский словарь ChinaChild",
+          caption:
+            "Иллюстрация словаря ChinaChild с HSK-словами, pinyin и карточками терминов.",
+        },
+      ],
+    },
+    {
+      loc: absoluteUrl("/grammar"),
+      lastmod: now,
+      images: [
+        {
+          loc: absoluteUrl("/heroes/grammatika-kitajskogo-yazyka.webp"),
+          title: "Грамматика китайского языка ChinaChild",
+          caption:
+            "Иллюстрация справочника по грамматике китайского языка с правилами, схемами и примерами.",
+        },
+      ],
+    },
+    {
+      loc: absoluteUrl("/results"),
+      lastmod: now,
+      images: [
+        {
+          loc: absoluteUrl("/heroes/rezultaty-uchenikov-chinachild-optimized.webp"),
+          title: "Результаты учеников ChinaChild",
+          caption:
+            "Иллюстрация прогресса учеников: сертификат, процент результата и учебные цели по китайскому языку.",
+        },
+      ],
+    },
+    {
+      loc: absoluteUrl("/reviews"),
+      lastmod: now,
+      images: [
+        {
+          loc: absoluteUrl("/heroes/otzivi.svg"),
+          title: "Отзывы учеников ChinaChild",
+          caption:
+            "Иллюстрация отзывов учеников ChinaChild о курсах китайского языка и результатах обучения.",
+        },
+      ],
+    },
+    {
+      loc: absoluteUrl("/cities"),
+      lastmod: now,
+      images: [
+        {
+          loc: absoluteUrl("/heroes/kursy-kitajskogo-v-gorodah-rossii.webp"),
+          title: "Курсы китайского языка в городах России",
+          caption:
+            "Иллюстрация онлайн-обучения китайскому языку для учеников из разных городов России.",
+        },
+      ],
+    },
+    {
+      loc: absoluteUrl("/compare/mini-group-vs-individual"),
+      lastmod: now,
+      images: [
+        {
+          loc: absoluteUrl("/heroes/gruppa-ili-individualno.webp"),
+          title: "Мини-группа или индивидуально — сравнение форматов",
+          caption:
+            "Иллюстрация сравнения мини-группы и индивидуальных занятий китайским языком.",
+        },
+      ],
+    },
+    {
+      loc: absoluteUrl("/learn/beginners"),
+      lastmod: now,
+      images: [
+        {
+          loc: absoluteUrl("/heroes/kitajskij-s-nulya-marshrut-obucheniya-optimized.webp"),
+          title: "Китайский с нуля — маршрут обучения",
+          caption:
+            "Иллюстрация маршрута от первых шагов в китайском языке до уверенного учебного результата.",
+        },
+      ],
+    },
+    {
+      loc: absoluteUrl("/courses/chinese-for-kids"),
+      lastmod: now,
+      images: [
+        {
+          loc: absoluteUrl("/heroes/kitajskij-dlya-shkolnikov.webp"),
+          title: "Китайский язык для школьников 12+",
+          caption:
+            "Иллюстрация онлайн-курса китайского языка для школьников 12+ в ChinaChild.",
+        },
+      ],
+    },
+  ];
 
   const entries: UrlEntry[] = [
     {
@@ -22,16 +132,14 @@ export async function GET() {
       lastmod: now,
       images: [{ loc: homeImg, title: "ChinaChild — онлайн-школа китайского языка" }],
     },
+    ...pageHeroImages,
     ...[
       "/about",
       "/methodology",
-      "/results",
-      "/reviews",
       "/courses",
       "/courses/online-chinese",
       "/courses/hsk-preparation",
       "/courses/chinese-for-adults",
-      "/courses/chinese-for-kids",
       "/courses/business-chinese",
     ].map((path): UrlEntry => ({
       loc: absoluteUrl(path),

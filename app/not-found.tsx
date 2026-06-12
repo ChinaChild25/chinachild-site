@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { absoluteUrl, SITE_NAME } from "@/lib/site-config";
+import { SITE_NAME } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: `Страница не найдена — ${SITE_NAME}`,
   description: "Запрошенная страница не существует или была перенесена.",
+  // 404 отдаётся с noindex; canonical НЕ ставим. Канонический тег на
+  // несуществующей странице заставляет Google классифицировать мёртвые URL
+  // (старые /home, /guidebook и т.п.) как «вариант страницы с canonical»
+  // вместо честного 404 и конфликтует с noindex.
   robots: { index: false, follow: true },
-  alternates: { canonical: absoluteUrl("/") },
 };
 
 export default function NotFound() {

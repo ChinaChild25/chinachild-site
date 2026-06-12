@@ -4,15 +4,19 @@ import LeadModal from "@/components/forms/LeadModal";
 import FAQSection from "@/components/sections/FAQSection";
 import PageHero from "@/components/layout/PageHero";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
+import Avatar from "@/components/ui/Avatar";
+import ReviewYandexArrow from "@/components/ui/ReviewYandexArrow";
 import { buttonStyles } from "@/components/ui/button";
 import {
   createCourseSchema,
   createReviewNode,
   type JsonLd as JsonLdType,
 } from "@/lib/schema";
+import { courseMediaBySlug } from "@/lib/course-media";
+import { YANDEX_BUSINESS_REVIEWS_URL } from "@/lib/site-config";
 import {
   getReviewsForCourse,
-  REVIEW_SOURCE_LABELS,
+  getReviewYandexUrl,
   type Course,
   type FaqItem,
 } from "@/lib/site-data";
@@ -43,6 +47,16 @@ const toneClass: Record<Bullet["tone"], string> = {
   "cream-soft": "card-cream-soft",
 };
 
+// Тон hero-блока = цвет карточки этого курса на главной (раздел «Кому
+// подойдёт»). В тёмной теме классы card-course-* дают нейтральный серый.
+const heroToneClassBySlug: Record<string, string> = {
+  "chinese-for-kids": "card-course-kids",
+  "chinese-for-adults": "card-course-rose",
+  "online-chinese": "card-course-violet",
+  "hsk-preparation": "card-course-blue",
+  "business-chinese": "card-course-lime",
+};
+
 export default function CourseLanding({
   breadcrumb,
   pageHero,
@@ -55,6 +69,8 @@ export default function CourseLanding({
   // Курс-специфичные отзывы — рендерим Review schema + UI-блок, чтобы получить
   // звёзды в SERP и социальное доказательство на странице покупки.
   const courseReviews = getReviewsForCourse(schemaCourse.slug);
+  const heroMedia = courseMediaBySlug[schemaCourse.slug];
+  const heroToneClass = heroToneClassBySlug[schemaCourse.slug];
   const reviewGraph: JsonLdType | null =
     courseReviews.length > 0
       ? {
@@ -64,7 +80,7 @@ export default function CourseLanding({
       : null;
 
   return (
-    <main>
+    <main className="course-landing">
       <Breadcrumbs
         items={[
           { name: "Главная", path: "/" },
@@ -79,11 +95,17 @@ export default function CourseLanding({
 
       <PageHero
         variant={pageHero.variant ?? "violet"}
+        heroToneClass={heroToneClass}
         eyebrow={pageHero.eyebrow}
         title={pageHero.title}
         description={pageHero.description}
         primaryCta={{ label: "Записаться на пробное", modal: true }}
         secondaryCta={{ label: "Все курсы", href: "/courses" }}
+        illustration={heroMedia?.src}
+        illustrationAlt={heroMedia?.alt}
+        illustrationWidth={heroMedia?.width}
+        illustrationHeight={heroMedia?.height}
+        illustrationFill={Boolean(heroMedia)}
       />
 
       <section className="page-shell-wide section-space">
@@ -112,39 +134,66 @@ export default function CourseLanding({
 
       {courseReviews.length > 0 ? (
         <section className="page-shell-wide section-space">
-          <div className="max-w-2xl">
-            <span className="tag-pill">Отзывы выпускников</span>
-            <h2 className="mt-4 text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-[#1b1b1b] sm:text-[2rem]">
-              Что говорят выпускники курса
-            </h2>
+          <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+            <div className="max-w-2xl">
+              <span className="tag-pill">Отзывы выпускников</span>
+              <h2 className="mt-4 text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-[#1b1b1b] sm:text-[2rem]">
+                Что говорят выпускники курса
+              </h2>
+            </div>
+            <a
+              href={YANDEX_BUSINESS_REVIEWS_URL}
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              className="text-sm font-medium text-[#262626] underline-offset-4 hover:underline"
+            >
+              Все отзывы на Яндексе →
+            </a>
           </div>
           <div className="mt-8 grid gap-4 md:grid-cols-2">
             {courseReviews.map((review) => {
-              const sourceLabel = review.source ? REVIEW_SOURCE_LABELS[review.source] : null;
-              return (
-                <article key={review.author} className="card-block card-cream-soft">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="text-sm font-medium text-[#262626]">{review.author}</div>
-                    <div className="text-xs text-[#1b1b1b]/60">★ {review.rating ?? 5} / 5</div>
+              const yandexUrl = getReviewYandexUrl(review);
+              const inner = (
+                <>
+                  {/* pr-12 резервирует место под угловую стрелку на Яндекс. */}
+                  <div className="flex items-center gap-4 pr-12">
+                    <Avatar
+                      name={review.author}
+                      size={56}
+                      src={review.image || undefined}
+                      alt={`Фото ученика ChinaChild ${review.author}`}
+                    />
+                    <div>
+                      <h3 className="text-[1.25rem] font-normal tracking-[-0.01em] text-[#262626] leading-[1.2]">
+                        {review.author}
+                      </h3>
+                      {review.result ? (
+                        <p className="mt-1.5 text-base text-[#262626]/60">{review.result}</p>
+                      ) : null}
+                    </div>
                   </div>
-                  <p className="mt-4 text-sm leading-[1.6] text-[#4b4b4b]">{review.body}</p>
-                  <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#6b6b6b]">
-                    {review.result ? <span>{review.result}</span> : null}
-                    {sourceLabel ? (
-                      review.verifyUrl ? (
-                        <a
-                          href={review.verifyUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="underline underline-offset-4 hover:text-[#262626]"
-                        >
-                          {sourceLabel} →
-                        </a>
-                      ) : (
-                        <span>{sourceLabel}</span>
-                      )
-                    ) : null}
-                  </div>
+                  <p className="mt-5 text-sm leading-[1.6] text-[#4b4b4b]">«{review.body}»</p>
+                  {yandexUrl ? <ReviewYandexArrow /> : null}
+                </>
+              );
+
+              return yandexUrl ? (
+                <a
+                  key={review.author}
+                  href={yandexUrl}
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
+                  aria-label={`Отзыв «${review.author}» на Яндекс.Картах`}
+                  className="card-block card-cream-soft group relative flex h-full flex-col"
+                >
+                  {inner}
+                </a>
+              ) : (
+                <article
+                  key={review.author}
+                  className="card-block card-cream-soft flex h-full flex-col"
+                >
+                  {inner}
                 </article>
               );
             })}

@@ -33,7 +33,9 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' data: https://fonts.gstatic.com",
       "img-src 'self' data: blob: https://mc.yandex.ru https://mc.yandex.com https://yandex.ru https://*.yandex.ru https://*.yandex.com https://mc.webvisor.org https://mc.webvisor.com https://smartcaptcha.yandexcloud.net https://smartcaptcha.cloud.yandex.ru https://www.google-analytics.com https://*.google-analytics.com https://stats.g.doubleclick.net https://*.vercel.app",
-      "connect-src 'self' https://mc.yandex.ru https://mc.yandex.com https://*.yandex.ru https://*.mc.yandex.ru https://yandex.ru https://mc.webvisor.org https://mc.webvisor.com https://smartcaptcha.yandexcloud.net https://smartcaptcha.cloud.yandex.ru wss://mc.yandex.ru wss://mc.yandex.com wss://*.yandex.ru wss://mc.webvisor.org wss://mc.webvisor.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://stats.g.doubleclick.net https://*.vercel-insights.com https://vitals.vercel-insights.com https://*.supabase.co https://cdn.jsdelivr.net",
+      // blob: — three.js GLTFLoader fetch()-ит встроенные текстуры моделей
+      // (.glb) через blob-URL; без него падает загрузка карты лэньярда.
+      "connect-src 'self' blob: https://mc.yandex.ru https://mc.yandex.com https://*.yandex.ru https://*.mc.yandex.ru https://yandex.ru https://mc.webvisor.org https://mc.webvisor.com https://smartcaptcha.yandexcloud.net https://smartcaptcha.cloud.yandex.ru wss://mc.yandex.ru wss://mc.yandex.com wss://*.yandex.ru wss://mc.webvisor.org wss://mc.webvisor.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://stats.g.doubleclick.net https://*.vercel-insights.com https://vitals.vercel-insights.com https://*.supabase.co https://cdn.jsdelivr.net",
       "media-src 'self' blob: data: https://*.supabase.co",
       "frame-src https://mc.yandex.ru https://mc.yandex.com https://mc.webvisor.org https://mc.webvisor.com https://yandex.ru https://*.yandex.ru https://smartcaptcha.yandexcloud.net https://smartcaptcha.cloud.yandex.ru",
       "frame-ancestors 'self'",
@@ -152,7 +154,19 @@ const nextConfig: NextConfig = {
     ];
   },
   async redirects() {
-    return loadLegacyRedirects();
+    // Порядок важен: Next берёт первое совпадение. Точечные правила из CSV
+    // (/guidebook/<slug> → конкретные /blog/...) должны идти РАНЬШЕ catch-all.
+    return [
+      // /home — старая главная прежнего (WordPress) сайта. Google всё ещё
+      // помнит её с мая; 308 на актуальную главную вместо 404.
+      { source: "/home", destination: "/", permanent: true },
+      // Точечные 301 со старых /guidebook/<slug> на новые статьи.
+      ...loadLegacyRedirects(),
+      // Раздел /guidebook переименован в /blog. Корень и любые слаги, которых
+      // нет в карте, отправляем в блог, чтобы старые URL не отдавали 404.
+      { source: "/guidebook", destination: "/blog", permanent: true },
+      { source: "/guidebook/:path*", destination: "/blog", permanent: true },
+    ];
   },
 };
 

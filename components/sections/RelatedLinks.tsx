@@ -1,14 +1,6 @@
-import {
-  Award,
-  Backpack,
-  Briefcase,
-  Laptop,
-  ShieldCheck,
-  Sprout,
-  type LucideIcon,
-} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import RelatedLinkIcon, { type RelatedLinkIconName } from "@/components/sections/RelatedLinkIcon";
 import Reveal from "@/components/ui/Reveal";
 
 type LinkItem = {
@@ -17,7 +9,7 @@ type LinkItem = {
   description: string;
   tone: string;
   /** lucide-иконка — fallback, если картинка не задана/не загрузилась. */
-  icon: LucideIcon;
+  icon: RelatedLinkIconName;
   /** Иллюстрация раздела. Лёгкие SVG — как есть (масштабируемые, чёткие);
       исходно растровые (3D) — оптимизированные webp. */
   image?: string;
@@ -49,7 +41,7 @@ const defaultItems: LinkItem[] = [
     href: "/courses/hsk-preparation",
     description: "Все уровни международного экзамена в одном маршруте — от базы до продвинутого.",
     tone: "card-violet-soft",
-    icon: Award,
+    icon: "award",
     image: "/home-redesign/podgotovka-hsk-papki-dokumenty.webp",
     imageW: 848,
     imageH: 848,
@@ -61,7 +53,7 @@ const defaultItems: LinkItem[] = [
     href: "/courses/online-chinese",
     description: "Программа для тех, кто никогда не учил китайский. С телефона или ноутбука.",
     tone: "card-cream",
-    icon: Laptop,
+    icon: "laptop",
     image: "/related/online.svg",
     imageW: 295,
     imageH: 331,
@@ -73,7 +65,7 @@ const defaultItems: LinkItem[] = [
     href: "/courses/chinese-for-kids",
     description: "Индивидуальный курс с преподавателем — скидка 10% при оплате за 2 месяца.",
     tone: "card-sky",
-    icon: Backpack,
+    icon: "backpack",
     image: "/related/kids.svg",
     imageW: 80,
     imageH: 72,
@@ -85,7 +77,7 @@ const defaultItems: LinkItem[] = [
     href: "/courses/chinese-for-adults",
     description: "Лицензированный курс HSK 1–2 — разговорный уровень за 6 месяцев.",
     tone: "card-peach-soft",
-    icon: Sprout,
+    icon: "sprout",
     image: "/related/adults.svg",
     imageW: 570,
     imageH: 346,
@@ -97,7 +89,7 @@ const defaultItems: LinkItem[] = [
     href: "/courses/business-chinese",
     description: "Корпоративные мини-группы, отчётность для HR и закрывающие документы.",
     tone: "card-lime-soft",
-    icon: Briefcase,
+    icon: "briefcase",
     image: "/home-redesign/korporativnyy-kitajskiy-papka-dokumenty.webp",
     imageW: 1720,
     imageH: 1100,
@@ -109,7 +101,7 @@ const defaultItems: LinkItem[] = [
     href: "/about",
     description: "Команда из выпускников ЮФУ и ДГТУ с опытом 10+ лет, лицензия Москвы.",
     tone: "card-cream-soft",
-    icon: ShieldCheck,
+    icon: "shield-check",
     image: "/home-redesign/litsenzirovannaya-programma-hsk-1-2.webp",
     imageW: 1332,
     imageH: 1056,
@@ -129,7 +121,6 @@ export default function RelatedLinks({ items = defaultItems }: { items?: LinkIte
       </div>
       <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         {items.map((item) => {
-          const Icon = item.icon;
           return (
             <Reveal key={item.href}>
               <Link
@@ -147,11 +138,10 @@ export default function RelatedLinks({ items = defaultItems }: { items?: LinkIte
                     className={`pointer-events-none absolute h-auto ${item.imageClassName ?? "-bottom-3 -right-3 w-[48%] max-w-[220px]"}`}
                   />
                 ) : (
-                  <Icon
-                    aria-hidden
-                    strokeWidth={1.4}
+                  <RelatedLinkIcon
+                    name={item.icon}
                     className="pointer-events-none absolute -bottom-4 -right-4 aspect-square h-auto w-[34%] max-w-[150px]"
-                    style={{ color: toneIconColor[item.tone] ?? "#bdbdbd" }}
+                    color={toneIconColor[item.tone] ?? "#bdbdbd"}
                   />
                 )}
                 <h3 className="relative max-w-[60%] text-[1.25rem] font-medium tracking-[-0.01em] text-[#262626] leading-[1.2]">

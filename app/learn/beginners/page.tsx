@@ -147,6 +147,12 @@ export default async function LearnBeginnersHub() {
         }}
         secondaryCta={{ label: "Курс с нуля", href: "/courses/online-chinese" }}
         variant="cream"
+        heroToneClass="card-hero-beginners"
+        illustration="/heroes/kitajskij-s-nulya-marshrut-obucheniya-optimized.webp"
+        illustrationAlt="Маршрут обучения китайскому с нуля от первых шагов до выпускного результата"
+        illustrationWidth={1134}
+        illustrationHeight={752}
+        illustrationFill
       />
 
       <section className="page-shell-wide section-space">

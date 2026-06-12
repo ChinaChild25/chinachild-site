@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import PageHero from "@/components/layout/PageHero";
 import JsonLd from "@/components/seo/JsonLd";
+import { courseMediaBySlug, type CourseMedia } from "@/lib/course-media";
 import { buildMetadata } from "@/lib/metadata";
 import { createCoursesItemListSchema } from "@/lib/schema";
 
@@ -29,7 +31,7 @@ const courses = [
     description:
       "Лицензированная программа HSK 1–2 для подростков 12+ и взрослых. Мини-группы до 5 человек или индивидуально.",
     href: "/courses/online-chinese",
-    tone: "card-violet-soft",
+    tone: "card-course-violet",
     badge: "Самый популярный",
   },
   {
@@ -37,7 +39,7 @@ const courses = [
     description:
       "Все уровни международного экзамена. Базовый курс HSK 1–2 за 6 месяцев, далее на платформе до HSK 6.",
     href: "/courses/hsk-preparation",
-    tone: "card-cream",
+    tone: "card-course-blue",
     badge: "HSK 1–6",
   },
   {
@@ -45,7 +47,7 @@ const courses = [
     description:
       "Индивидуальный курс или мини-группа для школьников 12+. Скидка 10% при оплате за 2 месяца.",
     href: "/courses/chinese-for-kids",
-    tone: "card-lime-soft",
+    tone: "card-course-sand",
     badge: "12+",
   },
   {
@@ -53,7 +55,7 @@ const courses = [
     description:
       "Курс для взрослых без подготовки: разговорный уровень за 6 месяцев. Гибкий формат, налоговый вычет 13%.",
     href: "/courses/chinese-for-adults",
-    tone: "card-sky",
+    tone: "card-course-rose",
     badge: "С нуля",
   },
   {
@@ -61,10 +63,19 @@ const courses = [
     description:
       "Корпоративное обучение по программе HSK 1–2. Отчётность для HR, закрывающие документы, ЭДО.",
     href: "/courses/business-chinese",
-    tone: "card-peach-soft",
+    tone: "card-course-lime",
     badge: "Корпоративно",
   },
 ];
+
+const coursesCardMediaOverride: Record<string, CourseMedia> = {
+  "chinese-for-kids": {
+    src: "/heroes/kitajskij-dlya-detej-card.webp",
+    alt: "Курс китайского языка для детей 12+ в ChinaChild",
+    width: 2000,
+    height: 3000,
+  },
+};
 
 export default function CoursesIndexPage() {
   return (
@@ -81,31 +92,50 @@ export default function CoursesIndexPage() {
         description="Подбираем формат под уровень, возраст и темп: мини-группа до 5 человек, индивидуальные занятия или корпоративное обучение. Программа лицензирована департаментом города Москвы."
         primaryCta={{ label: "Записаться на пробное", modal: true }}
         secondaryCta={{ label: "О школе", href: "/about" }}
+        heroToneClass="card-hero-courses"
         illustration="/heroes/courses.webp"
         illustrationAlt="Иероглиф 课程 курсы"
-        illustrationWidth={1254}
-        illustrationHeight={1254}
+        illustrationWidth={1500}
+        illustrationHeight={1500}
       />
       <JsonLd data={createCoursesItemListSchema()} id="courses-item-list-schema" />
 
       <section className="page-shell-wide section-space">
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {courses.map((c) => (
-            <Link
-              key={c.href}
-              href={c.href}
-              className={`card-block group flex h-full flex-col transition hover:-translate-y-1 ${c.tone}`}
-            >
-              <span className="tag-pill self-start">{c.badge}</span>
-              <h2 className="mt-6 text-[1.5rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#1b1b1b]">
-                {c.title}
-              </h2>
-              <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">{c.description}</p>
-              <div className="mt-auto pt-6 text-sm font-semibold text-[#1b1b1b] underline-offset-4 group-hover:underline">
-                Подробнее →
-              </div>
-            </Link>
-          ))}
+          {courses.map((c) => {
+            const slug = c.href.replace("/courses/", "");
+            const media = coursesCardMediaOverride[slug] ?? courseMediaBySlug[slug];
+            const isKidsCardMedia = media?.src === "/heroes/kitajskij-dlya-detej-card.webp";
+            return (
+              <Link
+                key={c.href}
+                href={c.href}
+                className={`courses-card card-block group flex h-full flex-col transition hover:-translate-y-1 ${c.tone}`}
+              >
+                <div className="courses-card-copy flex h-full flex-col">
+                  <span className="tag-pill self-start">{c.badge}</span>
+                  <h2 className="mt-6 text-[1.5rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#1b1b1b]">
+                    {c.title}
+                  </h2>
+                  <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">{c.description}</p>
+                  <div className="mt-auto pt-6 text-sm font-semibold text-[#1b1b1b] underline-offset-4 group-hover:underline">
+                    Подробнее →
+                  </div>
+                </div>
+                {media ? (
+                  <Image
+                    src={media.src}
+                    alt=""
+                    width={media.width}
+                    height={media.height}
+                    className={`courses-card-art${isKidsCardMedia ? " courses-card-art-kids" : ""}`}
+                    sizes="(min-width: 1280px) 220px, (min-width: 768px) 36vw, 44vw"
+                    aria-hidden
+                  />
+                ) : null}
+              </Link>
+            );
+          })}
         </div>
       </section>
 

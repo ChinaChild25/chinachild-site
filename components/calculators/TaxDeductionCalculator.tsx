@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useId, useMemo, useState } from "react";
 import {
@@ -10,225 +11,127 @@ import {
 
 type Recipient = "self" | "child";
 
-const PRESETS = [4_990, 15_990, 31_990, 50_000, 100_000, 150_000];
+// Потолок шкалы — 180 000 ₽: чуть выше самого большого лимита вычета (150 000 ₽
+// «за себя»). Тянуть дальше смысла нет — возврат всё равно не растёт.
+const SLIDER_MAX = 180_000;
+const SLIDER_STEP = 5_000;
 
-function formatRub(value: number): string {
-  return `${value.toLocaleString("ru-RU")} ₽`;
-}
-
-function limitFor(recipient: Recipient): number {
-  return recipient === "self"
-    ? TAX_DEDUCTION_LIMIT_SELF_RUB
-    : TAX_DEDUCTION_LIMIT_CHILD_RUB;
-}
-
-function RecipientCard({
-  active,
-  title,
-  hint,
-  refundMax,
-  limit,
-  onClick,
-}: {
-  active: boolean;
-  title: string;
-  hint: string;
-  refundMax: number;
-  limit: number;
-  onClick: () => void;
-}) {
-  // Активная карточка — тёмная (card-ink). Неактивная — белая полупрозрачная,
-  // та же сетка контрастов, что в PricingSection для tier.featured.
-  const tone = active ? "card-ink" : "bg-white/70";
-  return (
-    <button
-      type="button"
-      aria-pressed={active}
-      onClick={onClick}
-      className={`card-block flex h-full flex-col text-left transition hover:-translate-y-1 ${tone}`}
-    >
-      <div className="text-[1.25rem] font-medium tracking-[-0.01em] leading-[1.2]">
-        {title}
-      </div>
-      <p className="mt-2 text-sm leading-[1.55] opacity-72">{hint}</p>
-      <p className="mt-5 text-sm leading-[1.55] opacity-72">
-        Лимит {formatRub(limit)} · возврат до {formatRub(refundMax)}
-      </p>
-    </button>
-  );
-}
-
-function ResultBlock({
-  tone,
-  caption,
-  value,
-  hint,
-}: {
-  tone: "soft" | "ink";
-  caption: string;
-  value: string;
-  hint: string;
-}) {
-  const className =
-    tone === "ink" ? "card-block card-ink" : "card-block bg-white/70";
-  return (
-    <div className={className}>
-      <div className="text-sm opacity-72">{caption}</div>
-      <div className="mt-3 text-[2.25rem] font-medium tracking-[-0.02em] leading-[1.05] sm:text-[2.5rem]">
-        {value}
-      </div>
-      <p className="mt-2 text-sm leading-[1.55] opacity-72">{hint}</p>
-    </div>
-  );
-}
+const fmt = (value: number) => value.toLocaleString("ru-RU");
 
 export default function TaxDeductionCalculator() {
-  const fieldId = useId();
-
-  const [tuition, setTuition] = useState<number>(50_000);
+  const id = useId();
   const [recipient, setRecipient] = useState<Recipient>("self");
+  const [tuition, setTuition] = useState<number>(150_000);
 
-  const { eligible, refund, limit, capped } = useMemo(() => {
-    const lim = limitFor(recipient);
+  const { limit, eligible, refund, capped, pct } = useMemo(() => {
+    const lim =
+      recipient === "self"
+        ? TAX_DEDUCTION_LIMIT_SELF_RUB
+        : TAX_DEDUCTION_LIMIT_CHILD_RUB;
     const eli = Math.min(Math.max(tuition, 0), lim);
-    const ref = Math.round(eli * TAX_DEDUCTION_RATE);
-    return { eligible: eli, refund: ref, limit: lim, capped: tuition > lim };
+    return {
+      limit: lim,
+      eligible: eli,
+      refund: Math.round(eli * TAX_DEDUCTION_RATE),
+      capped: tuition > lim,
+      pct: (Math.min(Math.max(tuition, 0), SLIDER_MAX) / SLIDER_MAX) * 100,
+    };
   }, [tuition, recipient]);
 
-  const maxRefund = Math.round(limit * TAX_DEDUCTION_RATE);
-
   return (
-    <article className="card-block card-block-lg card-violet-soft">
-      <span className="tag-pill self-start">Калькулятор</span>
-      <h2 className="mt-6 text-[1.75rem] font-normal tracking-[-0.02em] leading-[1.15] text-[#1b1b1b] sm:text-4xl">
-        Сколько вернёте через налоговый вычет 13%
-      </h2>
-      <p className="mt-4 max-w-2xl text-base leading-[1.6] text-[#4b4b4b]">
-        Социальный вычет по&nbsp;статье&nbsp;219 НК&nbsp;РФ. Школа лицензирована
-        Департаментом образования и науки Москвы — расходы на наше обучение
-        попадают под вычет.
-      </p>
-
-      <div className="mt-7 grid gap-3 md:grid-cols-2">
-        <RecipientCard
-          active={recipient === "self"}
-          title="За себя"
-          hint="Или за брата&#8202;/&#8202;сестру до 24 лет на очной форме."
-          limit={TAX_DEDUCTION_LIMIT_SELF_RUB}
-          refundMax={Math.round(TAX_DEDUCTION_LIMIT_SELF_RUB * TAX_DEDUCTION_RATE)}
-          onClick={() => setRecipient("self")}
-        />
-        <RecipientCard
-          active={recipient === "child"}
-          title="За ребёнка"
-          hint="Своего ребёнка до 24 лет на очной форме обучения."
-          limit={TAX_DEDUCTION_LIMIT_CHILD_RUB}
-          refundMax={Math.round(TAX_DEDUCTION_LIMIT_CHILD_RUB * TAX_DEDUCTION_RATE)}
-          onClick={() => setRecipient("child")}
+    <div className="vychet">
+      {/* Иллюстрация-баннер над калькулятором. Чтобы заменить картинку — положи
+          свой файл в public/calculators/nalogovyy-vychet.webp (путь не меняется). */}
+      <div className="vychet-hero">
+        <Image
+          src="/calculators/nalogovyy-vychet.webp"
+          alt="Монета и папки с документами — налоговый вычет 13% за обучение"
+          fill
+          className="vychet-hero-img"
+          sizes="(min-width: 768px) 680px, 92vw"
+          priority
         />
       </div>
 
-      <div className="mt-8">
-        <label
-          htmlFor={fieldId}
-          className="block text-base font-medium text-[#1b1b1b]"
-        >
-          Стоимость обучения за год
-        </label>
-        <div className="mt-3 flex items-center gap-4">
+      <article className="vychet-card">
+        <div className="vychet-toggle" role="tablist" aria-label="За кого вычет">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={recipient === "self"}
+            data-active={recipient === "self"}
+            className="vychet-toggle-btn"
+            onClick={() => setRecipient("self")}
+          >
+            За себя
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={recipient === "child"}
+            data-active={recipient === "child"}
+            className="vychet-toggle-btn"
+            onClick={() => setRecipient("child")}
+          >
+            За ребёнка
+          </button>
+        </div>
+
+        <div className="vychet-field">
+          <div className="vychet-field-head">
+            <label htmlFor={id}>Стоимость обучения за год</label>
+            <span className="vychet-amount">
+              <input
+                id={id}
+                type="text"
+                inputMode="numeric"
+                autoComplete="off"
+                value={tuition === 0 ? "" : fmt(tuition)}
+                onChange={(e) => {
+                  const digits = e.target.value.replace(/\D/g, "");
+                  setTuition(Math.min(Number(digits) || 0, SLIDER_MAX));
+                }}
+                aria-label="Стоимость обучения за год, рублей"
+              />
+              <span aria-hidden>₽</span>
+            </span>
+          </div>
+
           <input
-            id={fieldId}
-            type="number"
+            type="range"
             min={0}
-            max={1_000_000}
-            step={1000}
-            value={tuition}
-            onChange={(e) => setTuition(Math.max(0, Number(e.target.value) || 0))}
-            className="lead-input max-w-[220px]"
-            aria-describedby={`${fieldId}-hint`}
+            max={SLIDER_MAX}
+            step={SLIDER_STEP}
+            value={Math.min(tuition, SLIDER_MAX)}
+            onChange={(e) => setTuition(Number(e.target.value))}
+            className="vychet-range"
+            style={{ "--pct": `${pct}%` } as React.CSSProperties}
+            aria-label="Стоимость обучения, ползунок"
           />
-          <span className="text-base text-[#4b4b4b]">₽ за год</span>
+          <div className="vychet-scale" aria-hidden>
+            <span>0 ₽</span>
+            <span>{fmt(SLIDER_MAX)} ₽</span>
+          </div>
         </div>
-        <input
-          type="range"
-          min={0}
-          max={300_000}
-          step={1000}
-          value={Math.min(tuition, 300_000)}
-          onChange={(e) => setTuition(Number(e.target.value))}
-          className="tax-calc-range mt-5 w-full"
-          aria-label="Стоимость обучения, ползунок"
-        />
-        <div
-          id={`${fieldId}-hint`}
-          className="mt-4 flex flex-wrap items-center gap-2"
-        >
-          <span className="text-sm text-[#4b4b4b]">Часто выбирают</span>
-          {PRESETS.map((preset) => (
-            <button
-              key={preset}
-              type="button"
-              onClick={() => setTuition(preset)}
-              className="tag-pill"
-              aria-pressed={tuition === preset}
-            >
-              {formatRub(preset)}
-            </button>
-          ))}
+
+        <div className="vychet-result">
+          <div className="vychet-result-cap">Вернёте на карту</div>
+          <div className="vychet-result-value">{fmt(refund)} ₽</div>
+          <div className="vychet-result-hint">
+            {capped
+              ? `Лимит ${fmt(limit)} ₽ в год — больше вернуть не получится`
+              : `13% от ${fmt(eligible)} ₽`}
+          </div>
         </div>
-      </div>
 
-      <div className="mt-8 grid gap-4 md:grid-cols-3">
-        <ResultBlock
-          tone="soft"
-          caption="Засчитают"
-          value={formatRub(eligible)}
-          hint={`из ${formatRub(tuition)}`}
-        />
-        <ResultBlock
-          tone="ink"
-          caption="Вернёте на карту"
-          value={formatRub(refund)}
-          hint="13% от засчитанной суммы"
-        />
-        <ResultBlock
-          tone="soft"
-          caption="Лимит вычета"
-          value={formatRub(maxRefund)}
-          hint={`при расходах ${formatRub(limit)}`}
-        />
-      </div>
-
-      {capped ? (
-        <p className="mt-6 text-sm leading-[1.6] text-[#4b4b4b]">
-          Сумма обучения превышает лимит — возврат рассчитан от {formatRub(limit)}.
-          Если оплачиваете обучение нескольких членов семьи, расходы суммируются
-          до соответствующих лимитов.
-        </p>
-      ) : null}
-
-      <div className="mt-7 grid gap-3 text-sm leading-[1.6] text-[#4b4b4b] md:grid-cols-2">
-        <p>
-          Для вычета нужен документ от лицензированной школы и платёжные документы.{" "}
-          <Link
-            href="/license"
-            className="underline underline-offset-2 hover:text-[#1b1b1b]"
-          >
-            Образовательная лицензия школы
-          </Link>{" "}
-          — никаких отдельных бумаг от вас не потребуется.
-        </p>
-        <p>
-          Подробная инструкция, как подать 3-НДФЛ и за что —{" "}
-          <Link
-            href="/blog/license-tax-deduction-chinese-school"
-            className="underline underline-offset-2 hover:text-[#1b1b1b]"
-          >
-            в статье блога
+        <p className="vychet-note">
+          Социальный вычет по ст. 219 НК РФ. Школа лицензирована — нужна только{" "}
+          <Link href="/license">лицензия</Link> и платёжки.{" "}
+          <Link href="/blog/license-tax-deduction-chinese-school">
+            Как подать 3-НДФЛ
           </Link>
-          .
         </p>
-      </div>
-    </article>
+      </article>
+    </div>
   );
 }

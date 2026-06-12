@@ -49,6 +49,12 @@ export default function ReviewsPage() {
         description="Что пишут наши ученики после прохождения курса. Все отзывы — из формы обратной связи на сайте."
         primaryCta={{ label: "Оставить отзыв", href: absoluteUrl("/reviews"), external: true }}
         secondaryCta={{ label: "Записаться на пробное", modal: true }}
+        heroToneClass="card-hero-reviews"
+        illustration="/heroes/otzivi.svg"
+        illustrationAlt="Отзывы учеников ChinaChild о курсах китайского языка и результатах обучения"
+        illustrationWidth={494}
+        illustrationHeight={420}
+        illustrationFill
       />
 
       <section className="page-shell-wide section-space">

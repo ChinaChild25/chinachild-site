@@ -1,18 +1,25 @@
 /* ==========================================================================
    Pricing flip cards
-   Воздушный 3D-разворот (perspective + rotateY) как на mt-webdesign.ru/flip-cards.
+   Воздушный 3D-разворот (perspective + rotateY).
    Лицо — иллюстрация + описание, оборот — список того, что входит в тариф.
 
    Десктоп (устройства с указателем) разворачивают карточку по :hover / :focus.
    Тач-устройства (hover: none) — по тапу через data-flipped.
 
+   Почему грани вращаются ПО ОТДЕЛЬНОСТИ, а не один общий слой с preserve-3d:
+   iOS Safari игнорирует backface-visibility, когда у элемента с
+   transform-style: preserve-3d стоит display: grid/flex (а grid нам нужен —
+   чтобы обе грани лежали в одной ячейке и высота = высоте большей грани).
+   3D-контекст «схлопывается», и при перевороте просвечивали обе грани сразу:
+   оборот читался верно, а лицо — зеркально, со двоящейся стрелкой-подсказкой.
+   Решение без preserve-3d: каждая грань вращается сама в общей перспективе
+   (front 0→180°, back −180°→0°), backface-visibility прячет её «изнанку» —
+   и на всех движках одновременно видна ровно одна грань.
+
    Слои:
-     .card      — позиционирование, скругление, scale «выступающего» тарифа.
-     .viewport  — ТОЛЬКО perspective (не трансформируется), чтобы scale на .card
-                  не ломал 3D-проекцию граней.
-     .inner     — вращающийся слой (preserve-3d); обе грани лежат в одной
-                  grid-ячейке, поэтому высота = высоте большей грани, без
-                  фиксированных высот и скачков layout.
+     .card     — позиционирование, скругление, scale «выступающего» тарифа.
+     .inner    — perspective + grid-наложение граней; сам не вращается.
+     .face     — вращающаяся грань (own backface-visibility), без фикс. высот.
    ========================================================================== */
 
 .card {
@@ -32,22 +39,15 @@
 .viewport {
   height: 100%;
   border-radius: inherit;
-  perspective: 1600px;
 }
 
+/* Perspective — на прямом родителе граней (без preserve-3d): так каждая грань
+   получает 3D-проекцию, а grid-наложение задаёт высоту по большей грани. */
 .inner {
   display: grid;
   height: 100%;
   border-radius: inherit;
-  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
-  transform-style: preserve-3d;
-  -webkit-transform-style: preserve-3d;
-  will-change: transform;
-}
-
-/* Тень едет вместе с карточкой (на .inner), а не остаётся статичным «слотом». */
-.card[data-featured="true"] .inner {
-  box-shadow: 0 30px 60px -22px rgba(108, 92, 231, 0.5);
+  perspective: 1600px;
 }
 
 .face {
@@ -61,10 +61,16 @@
   color: #262626;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  will-change: transform;
+}
+
+.front {
+  transform: rotateY(0deg);
 }
 
 .back {
-  transform: rotateY(180deg);
+  transform: rotateY(-180deg);
 }
 
 /* Featured (центральный) тариф — насыщенный фиолетовый, белый текст */
@@ -77,27 +83,37 @@
 /* --- Разворот --------------------------------------------------------------
    Десктоп: по наведению / фокусу. Тач: по тапу (data-flipped). */
 @media (hover: hover) {
-  .card:hover .inner,
-  .card:focus-within .inner {
+  .card:hover .front,
+  .card:focus-within .front {
     transform: rotateY(180deg);
+  }
+  .card:hover .back,
+  .card:focus-within .back {
+    transform: rotateY(0deg);
   }
 }
 
 @media (hover: none) {
-  .card[data-flipped="true"] .inner {
+  .card[data-flipped="true"] .front {
     transform: rotateY(180deg);
+  }
+  .card[data-flipped="true"] .back {
+    transform: rotateY(0deg);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .inner {
+  .face {
     transition: none;
   }
 }
 
-/* --- Бейдж: матовое стекло (Figma «Glass»: fill #FEFEFE 20%, frost ≈5,
-   свет −45° / 80%, pill). Refraction/dispersion в CSS недоступны — берём
-   читаемую часть: полупрозрачная белая заливка + frost-блюр + блик от −45°. */
+/* --- Бейдж: матовое стекло (Figma «Glass»: fill #FEFEFE 20%, свет −45° / 80%,
+   pill). Refraction/dispersion в CSS недоступны — берём читаемую часть:
+   полупрозрачная белая заливка + бордер + inset-блики.
+   ВАЖНО: без backdrop-filter. Бейдж лежит на сплошном цвете грани (за ним нет
+   контента), поэтому blur ничего не размывал — а в 3D-трансформированной грани
+   он триггерит баг Chromium/WebKit, из-за которого бейдж рендерился зеркально. */
 .badge {
   align-self: center;
   display: inline-flex;
@@ -110,8 +126,6 @@
   line-height: 1.1;
   color: #1e1e1e;
   background: rgba(255, 255, 255, 0.6);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.95);
   box-shadow:
     inset 0 1.5px 1px rgba(255, 255, 255, 0.95),
