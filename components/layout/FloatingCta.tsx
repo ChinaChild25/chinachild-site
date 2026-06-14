@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import LeadModal from "@/components/forms/LeadModal";
 import { useConsent } from "@/lib/consent/context";
 import { usePathname } from "next/navigation";
@@ -77,6 +78,14 @@ export default function FloatingCta() {
   // fixed bottom nav — never show the floating CTA over it.
   if (pathname === "/chinese/hsk-test/take") return null;
 
+  // On the HSK-test landing the floating CTA starts the test («Начать тест»),
+  // not the lead form. Same visibility logic: hidden while a page start-button
+  // is on screen, shown (on the glass) when scrolled past it.
+  const isHskLanding = pathname === "/chinese/hsk-test";
+
+  // On a level page the CTA jumps to that level's test instead of the lead form.
+  const isHskLevel = /^\/chinese\/hsk-test\/level-\d+$/.test(pathname);
+
   const shellClassName = [
     "floating-cta-shell",
     (!isPastHero || hasVisiblePageCta) && "floating-cta-shell--hidden",
@@ -88,13 +97,31 @@ export default function FloatingCta() {
   return (
     <div className={shellClassName}>
       <div className="floating-cta-glass">
-        <LeadModal
-          source="floating-cta"
-          triggerClassName="floating-cta-btn"
-          ariaLabel="Оставить заявку — открыть форму"
-        >
-          Оставить заявку
-        </LeadModal>
+        {isHskLevel ? (
+          <Link
+            href="#start"
+            className="floating-cta-btn"
+            aria-label="Пройти тест HSK бесплатно"
+          >
+            Пройти тест бесплатно
+          </Link>
+        ) : isHskLanding ? (
+          <Link
+            href="#levels"
+            className="floating-cta-btn"
+            aria-label="Начать тест HSK"
+          >
+            Начать тест
+          </Link>
+        ) : (
+          <LeadModal
+            source="floating-cta"
+            triggerClassName="floating-cta-btn"
+            ariaLabel="Оставить заявку — открыть форму"
+          >
+            Оставить заявку
+          </LeadModal>
+        )}
       </div>
     </div>
   );

@@ -180,7 +180,10 @@ body {
   font-size: var(--fs-body);
   line-height: var(--lh-tight);
   letter-spacing: var(--tracking-body);
-  overflow-x: hidden;
+  /* `clip` (not `hidden`) prevents the horizontal scrollbar without turning
+     <body> into a scroll container — that would break `position: sticky`
+     descendants (e.g. .hsk-explain stacking cards). */
+  overflow-x: clip;
   width: 100%;
   max-width: 100%;
   overscroll-behavior-x: none;
@@ -267,7 +270,10 @@ a:focus-visible {
   flex-direction: column;
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  /* `clip` keeps horizontal overflow contained but, unlike `hidden`, does not
+     create a scroll container — so `position: sticky` descendants still pin to
+     the viewport (.hsk-explain stacking cards rely on this). */
+  overflow-x: clip;
 }
 
 .site-shell > main {
@@ -6243,86 +6249,353 @@ html[data-theme="dark"] .d-share-btn:hover { background: rgba(255,255,255,0.04);
 @media (min-width: 768px) {
   .hsk-test-level-grid {
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    gap: 24px;
   }
 }
 
-.hsk-test-level-card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  padding: 28px;
-  border-radius: var(--radius-card);
-  min-height: 280px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  overflow: hidden;
-  color: #1b1b1b;
+/* Desktop master layout: two 500×500 cards per row, 28px gaps, centred —
+   total grid width 1028px (matches the 16-inch reference). */
+@media (min-width: 1280px) {
+  .hsk-test-level-grid {
+    grid-template-columns: repeat(2, 500px);
+    gap: 28px;
+    justify-content: center;
+  }
 }
 
-@media (min-width: 768px) {
+/* ---- Level cards (pixel-matched to the brand reference) ----
+   Theme-adaptive: light surface + dark ink by default, inverted under
+   [data-theme="dark"]. The bottom illustration bleeds past the card edge;
+   HSK 4 swaps to a dark-interior variant in dark mode (CSS-only, SSR-safe). */
+.hsk-test-level-card {
+  /* Light theme (matches the light master ref). */
+  --card-bg: #ececec;
+  --card-ink: #1b1b1b;
+  --card-muted: rgba(0, 0, 0, 0.46);
+
+  container-type: inline-size; /* metrics below in cqw → exact at 500px, fluid under it */
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1; /* square in every breakpoint — never a flat rectangle */
+  border-radius: 24px;
+  background: var(--card-bg);
+  overflow: hidden;
+  isolation: isolate;
+  text-decoration: none;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Dark theme (the section's deliverable, per the dark page screenshot). */
+html[data-theme="dark"] .hsk-test-level-card {
+  --card-bg: #181818;
+  --card-ink: #ffffff;
+  --card-muted: rgba(255, 255, 255, 0.46);
+}
+
+/* Lock the master card size on desktop: exactly 500×500. */
+@media (min-width: 1280px) {
   .hsk-test-level-card {
-    padding: 36px;
-    min-height: 340px;
+    width: 500px;
+    height: 500px;
+    aspect-ratio: auto;
   }
 }
 
 .hsk-test-level-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.14);
+}
+html[data-theme="dark"] .hsk-test-level-card:hover {
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
 }
 
+/* Title — 92px / lh 0.92 at a 500px card (18.4cqw). Light, not bold. */
 .hsk-test-level-card-title {
-  font-size: clamp(56px, 9vw, 120px);
-  font-weight: 600;
-  line-height: 0.95;
-  letter-spacing: -0.04em;
-  color: #1b1b1b;
-  margin: 0;
+  position: relative;
+  z-index: 1;
+  margin: 6cqw 0 0 7.6cqw; /* top 30, left 38 */
+  font-size: 18.4cqw;
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  color: var(--card-ink);
 }
 
+/* Subtitle — 24px (4.8cqw), quiet grey, two forced lines. */
 .hsk-test-level-card-blurb {
-  font-size: 16px;
+  position: relative;
+  z-index: 1;
+  margin: 7cqw 0 0 7.6cqw; /* lands subtitle ~150px from card top, left 38 */
+  max-width: var(--sub-w);
+  font-size: 4.8cqw;
+  font-weight: 400;
+  line-height: 1.06;
+  color: var(--card-muted);
+}
+
+/* Arrow — fixed in the top-right corner of every card (24/24, 38px). */
+.hsk-test-level-card-arrow {
+  position: absolute;
+  z-index: 1;
+  top: 4.8cqw;
+  right: 4.8cqw;
+  width: 7.6cqw;
+  height: auto;
+  color: var(--card-ink);
+}
+
+/* Illustration layer — spans the whole card (no padding on the card, so % and
+   cqw map cleanly to the 500px box). Sits below the text. Each level has its
+   own width / offset / rotation — objects are NOT centred uniformly. */
+.hsk-test-level-card-art {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hsk-test-level-card-art-img {
+  position: absolute;
+  width: var(--img-w);
+  max-width: none; /* allow >100% bleed (HSK 3) past the global img reset */
+  left: var(--img-left, auto);
+  right: var(--img-right, auto);
+  bottom: var(--img-bottom);
+  transform: rotate(var(--img-rot, 0deg));
+  object-fit: contain;
+  object-position: center bottom;
+  user-select: none;
+}
+
+/* HSK 4 art: light variant by default, dark variant under dark theme. */
+.hsk-test-level-card-art-img--dark { display: none; }
+html[data-theme="dark"] .hsk-test-level-card-art-img--light { display: none; }
+html[data-theme="dark"] .hsk-test-level-card-art-img--dark { display: block; }
+
+/* ==========================================================================
+   Level-page hero — same dark-card language as the landing #levels grid:
+   theme-adaptive graphite surface, big light title, the level's own 3D object
+   bleeding off the bottom-right corner. Reuses the landing's per-theme tokens.
+   ========================================================================== */
+.hsk-test-level-hero {
+  --card-bg: #ececec;
+  --card-ink: #1b1b1b;
+  --card-muted: rgba(0, 0, 0, 0.5);
+
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  overflow: hidden;
+  border-radius: 24px;
+  background: var(--card-bg);
+  isolation: isolate;
+}
+
+html[data-theme="dark"] .hsk-test-level-hero {
+  --card-bg: #181818;
+  --card-ink: #ffffff;
+  --card-muted: rgba(255, 255, 255, 0.5);
+}
+
+@media (min-width: 860px) {
+  .hsk-test-level-hero {
+    grid-template-columns: 1.12fr 0.88fr;
+    align-items: center;
+    min-height: 440px;
+  }
+}
+
+.hsk-test-level-hero-body {
+  position: relative;
+  z-index: 1;
+  max-width: 600px;
+  padding: 30px 24px 0;
+}
+
+@media (min-width: 860px) {
+  .hsk-test-level-hero-body { padding: 56px 0 56px 56px; }
+}
+
+.hsk-test-level-hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-tag);
+  padding: 8px 15px;
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--card-ink);
+}
+
+.hsk-test-level-hero-title {
+  margin: 18px 0 0;
+  font-size: clamp(30px, 4.2vw, 50px);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--card-ink);
+}
+
+.hsk-test-level-hero-sub {
+  margin: 18px 0 0;
+  max-width: 520px;
+  font-size: clamp(15px, 1.5vw, 18px);
   line-height: 1.5;
-  color: #1b1b1b;
-  margin: 0;
-  max-width: 360px;
+  color: var(--card-muted);
 }
 
-@media (min-width: 768px) {
-  .hsk-test-level-card-blurb { font-size: 17px; }
-}
-
-.hsk-test-level-card-meta {
+.hsk-test-level-hero-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-top: auto;
+  gap: 8px;
+  margin-top: 22px;
 }
 
-.hsk-test-level-card-chip {
-  background: rgba(255, 255, 255, 0.6);
-  color: #1b1b1b;
+.hsk-test-level-hero-chip {
+  padding: 8px 14px;
   border-radius: var(--radius-tag);
   font-size: 13px;
   font-weight: 500;
-  padding: 6px 10px;
   line-height: 1;
+  color: var(--card-ink);
 }
 
-.hsk-test-level-card-cta {
-  align-self: flex-start;
-  background: var(--ink);
-  color: #ffffff;
-  padding: 12px 18px;
+/* Glass material — identical recipe to the «Самостоятельная практика» tariff
+   badge: translucent white fill + bright border + inset highlights + a soft
+   drop shadow for depth (no backdrop-filter — nothing to blur on a solid card). */
+.hsk-test-level-hero-eyebrow,
+.hsk-test-level-hero-chip {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow:
+    inset 0 1.5px 1px rgba(255, 255, 255, 0.95),
+    inset 0 -2px 4px rgba(255, 255, 255, 0.4),
+    0 10px 24px rgba(20, 20, 40, 0.1),
+    0 2px 6px rgba(20, 20, 40, 0.05);
+}
+
+html[data-theme="dark"] .hsk-test-level-hero-eyebrow,
+html[data-theme="dark"] .hsk-test-level-hero-chip {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.38);
+  box-shadow:
+    inset 1.5px 1.5px 1.5px rgba(255, 255, 255, 0.45),
+    inset -1px -1px 2px rgba(255, 255, 255, 0.1),
+    0 8px 22px rgba(0, 0, 0, 0.4);
+}
+
+.hsk-test-level-hero-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.hsk-test-level-hero-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 13px 22px;
   border-radius: var(--radius-button);
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 600;
   text-decoration: none;
+  background: var(--card-ink);
+  color: var(--card-bg);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.hsk-test-level-hero-btn:hover { transform: translateY(-2px); opacity: 0.92; }
+
+.hsk-test-level-hero-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  padding: 13px 22px;
+  border-radius: var(--radius-button);
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--card-ink);
+  background: color-mix(in srgb, var(--card-ink) 8%, transparent);
   transition: background-color 0.2s ease;
 }
+.hsk-test-level-hero-btn-ghost:hover {
+  background: color-mix(in srgb, var(--card-ink) 14%, transparent);
+}
 
-.hsk-test-level-card-cta:hover { background: var(--ink-700); }
+/* Object area — reserves the bottom (mobile) / right column (desktop). The
+   image itself anchors to the whole card (art cell stays static) so it bleeds
+   off the bottom-right corner like the landing objects. */
+.hsk-test-level-hero-art {
+  position: static;
+  min-height: 250px;
+  pointer-events: none;
+}
+@media (min-width: 860px) {
+  .hsk-test-level-hero-art { min-height: 0; }
+}
+
+.hsk-test-level-hero-img {
+  position: absolute;
+  right: var(--h-right, 0%);
+  bottom: var(--h-bottom, 0%);
+  width: var(--h-w, 62%);
+  height: auto;
+  max-width: none;
+  transform: rotate(var(--h-rot, 0deg));
+  transform-origin: center bottom;
+  user-select: none;
+}
+
+/* Desktop: size by height (card is wide, so % of width would be huge). */
+@media (min-width: 860px) {
+  .hsk-test-level-hero-img {
+    width: auto;
+    height: var(--h-h, 70%);
+  }
+  /* Square objects (HSK 1, 4) sit vertically centred in the right zone so they
+     don't read as jammed into the bottom-right corner. */
+  .hsk-test-level-hero[data-level="1"] .hsk-test-level-hero-img,
+  .hsk-test-level-hero[data-level="4"] .hsk-test-level-hero-img {
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%) rotate(var(--h-rot, 0deg));
+    transform-origin: center;
+  }
+  /* HSK 3 is tilted and bottom-anchored: the left leg drops off the bottom edge
+     and the right leg off the right edge, so both flat-cut ends stay hidden. */
+  .hsk-test-level-hero[data-level="3"] .hsk-test-level-hero-img {
+    transform-origin: center;
+  }
+}
+
+/* Level 4 art: light variant by default, dark variant under dark theme. */
+.hsk-test-level-hero-img--dark { display: none; }
+html[data-theme="dark"] .hsk-test-level-hero-img--light { display: none; }
+html[data-theme="dark"] .hsk-test-level-hero-img--dark { display: block; }
+
+/* Paired tip cards (mistake / next step) — a 3D object on the right, text
+   constrained to the left so they read like the new card language. */
+.hsk-test-tip-card {
+  position: relative;
+  overflow: hidden;
+}
+.hsk-test-tip-body {
+  position: relative;
+  z-index: 1;
+  max-width: 72%;
+}
+.hsk-test-tip-art {
+  position: absolute;
+  right: -14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 132px;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+}
+@media (max-width: 640px) {
+  .hsk-test-tip-body { max-width: 78%; }
+  .hsk-test-tip-art { width: 104px; right: -10px; }
+}
 
 /* Hero trust-badges row */
 .hsk-test-trust {
@@ -6696,9 +6969,89 @@ html[data-theme="dark"] .d-share-btn:hover { background: rgba(255,255,255,0.04);
 
 @media (min-width: 768px) {
   .hsk-test-result-hero {
-    grid-template-columns: 260px 1fr;
-    gap: 36px;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 40px;
   }
+}
+
+/* Big level number — Praktikum-style hero headline (replaces the badge). */
+.hsk-test-result-level-big {
+  font-size: clamp(52px, 9vw, 92px);
+  font-weight: 600;
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  color: #1b1b1b;
+}
+
+.hsk-test-result-hero-art {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hsk-test-result-hero-art .hsk-art {
+  width: min(360px, 100%);
+}
+
+/* ----- Skill bar chart (result, Praktikum «направления» style) ----------
+   Theme-safe: colours derive from var(--ink) via color-mix, so they read on
+   both the light pastel card and its dark-tinted variant. */
+.hsk-chart {
+  padding-top: 4px;
+}
+.hsk-chart-axis {
+  display: block;
+  padding-bottom: 8px;
+  font-size: 12px;
+  color: var(--muted);
+  border-bottom: 1px dashed color-mix(in srgb, var(--ink) 16%, transparent);
+}
+.hsk-chart-bars {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(8px, 2.5vw, 18px);
+  align-items: end;
+  height: 240px;
+  margin-top: 14px;
+}
+.hsk-chart-col {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 8px;
+  height: 100%;
+  text-align: center;
+}
+.hsk-chart-pct {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.hsk-chart-track {
+  display: flex;
+  align-items: flex-end;
+  min-height: 0;
+}
+.hsk-chart-fill {
+  width: 100%;
+  border-radius: 12px 12px 6px 6px;
+  background: repeating-linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--ink) 13%, transparent) 0 6px,
+    color-mix(in srgb, var(--ink) 5%, transparent) 6px 12px
+  );
+  transition: height 0.5s ease;
+}
+.hsk-chart-fill-top {
+  background: linear-gradient(180deg, #a86ae0 0%, #e36fbf 100%);
+}
+.hsk-chart-name {
+  font-size: 13px;
+  line-height: 1.3;
+  color: var(--muted-strong);
+}
+@media (max-width: 520px) {
+  .hsk-chart-bars { height: 200px; }
+  .hsk-chart-name { font-size: 12px; }
 }
 
 .hsk-test-result-badge {
@@ -6838,7 +7191,7 @@ html[data-theme="dark"] .hsk-test-lead-inline {
   align-items: center;
   padding: 20px 22px;
   border-radius: var(--radius-card-md);
-  background: var(--background-2);
+  background: #f5f5f5;
   border: 0;
   text-align: left;
   font-family: inherit;
@@ -6849,7 +7202,7 @@ html[data-theme="dark"] .hsk-test-lead-inline {
 }
 
 .hsk-test-mode-card:hover {
-  background: rgba(0, 0, 0, 0.06);
+  background: #ececec;
   transform: translateY(-1px);
 }
 
@@ -7369,13 +7722,13 @@ html[data-theme="dark"] .hsk-test-audio-btn:hover:not(:disabled) {
   .hsk-test-landing-hero { padding: 48px 56px; }
 }
 .hsk-test-landing-section {
-  padding: 32px 0;
+  padding: 22px 0;
 }
 @media (min-width: 768px) {
-  .hsk-test-landing-section { padding: 40px 0; }
+  .hsk-test-landing-section { padding: 26px 0; }
 }
 @media (min-width: 1280px) {
-  .hsk-test-landing-section { padding: 48px 0; }
+  .hsk-test-landing-section { padding: 30px 0; }
 }
 
 /* Inline lead form on result page */
@@ -7572,6 +7925,2064 @@ html[data-theme="dark"] {
 }
 
 /* ==========================================================================
+   HSK TEST — IMMERSIVE RUNNER (Praktikum-style quiz box)
+
+   Full-viewport overlay that covers the site chrome. Layout matches the
+   Praktikum profession test: own top bar, a centred light card, and a fixed
+   bottom bar with a segmented progress + Назад/Дальше.
+
+   Theme strategy: the backdrop is always a deep dark (Praktikum is dark-only),
+   while the CARD uses the global --surface/--ink tokens — so it's a white card
+   with dark text in light theme, and a dark elevated card with light text in
+   dark theme. The question content (.hsk-test-choice/.hsk-test-tile/…) already
+   adapts via the dark overrides above, so it works inside both.
+   ========================================================================== */
+
+.hsk-quiz {
+  position: fixed;
+  inset: 0;
+  /* Above the sticky site header (1000), mobile drawer (990) and cookie
+     banner (950) so the runner is a true full-screen takeover. /take
+     redirects to the landing without an active test, so a never-consented
+     user can't linger here behind the (now-covered) banner. */
+  z-index: 1001;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  background: radial-gradient(125% 120% at 50% 0%, #26262d 0%, #18181c 58%, #131317 100%);
+  font-family: var(--font-family-base);
+
+  --quiz-on: rgba(255, 255, 255, 0.94);
+  --quiz-on-dim: rgba(255, 255, 255, 0.58);
+  --quiz-chip: rgba(255, 255, 255, 0.10);
+  --quiz-chip-hover: rgba(255, 255, 255, 0.18);
+  --quiz-track: rgba(255, 255, 255, 0.16);
+  --quiz-accent: #4b86f7;
+  --quiz-accent-hover: #3d77ee;
+}
+
+html[data-theme="dark"] .hsk-quiz {
+  background: radial-gradient(125% 120% at 50% 0%, #161719 0%, #0d0d0f 70%);
+}
+
+/* Loading splash (page guard before the test is ready) */
+.hsk-quiz-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hsk-quiz-loading .hsk-quiz-body { color: var(--quiz-on); }
+
+/* ----- Top bar ----------------------------------------------------------- */
+.hsk-quiz-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px clamp(16px, 4vw, 32px);
+  color: var(--quiz-on);
+}
+
+.hsk-quiz-brand {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--quiz-on);
+  text-decoration: none;
+}
+.hsk-quiz-brand:hover { color: #ffffff; }
+
+.hsk-quiz-tabs {
+  display: flex;
+  gap: 8px;
+}
+.hsk-quiz-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: var(--radius-tag);
+  background: var(--quiz-chip);
+  color: var(--quiz-on);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.hsk-quiz-tab-live::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--quiz-accent);
+}
+
+.hsk-quiz-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: var(--radius-button);
+  background: var(--quiz-chip);
+  color: var(--quiz-on);
+  font-size: 15px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background-color 0.12s ease;
+}
+.hsk-quiz-close:hover { background: var(--quiz-chip-hover); }
+
+/* ----- Stage + card ------------------------------------------------------ */
+.hsk-quiz-stage {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  justify-content: center;
+  padding: clamp(12px, 3vw, 28px);
+}
+
+.hsk-quiz-card {
+  width: min(760px, 100%);
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: min(560px, 72vh);
+  background: var(--surface);
+  color: var(--ink);
+  border-radius: var(--radius-card);
+  padding: clamp(24px, 4vw, 48px);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.36);
+}
+
+/* Storytelling screens (intro / section / final) — centred, illustrated. */
+.hsk-quiz-screen {
+  margin: auto 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+}
+
+.hsk-quiz-art {
+  width: min(340px, 76%);
+  margin-bottom: 4px;
+}
+.hsk-quiz-art.hsk-art-ph {
+  aspect-ratio: 4 / 3;
+}
+
+.hsk-quiz-eyebrow {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.hsk-quiz-title {
+  margin: 0;
+  max-width: 20ch;
+  font-size: clamp(24px, 4.4vw, 36px);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.hsk-quiz-body {
+  margin: 0;
+  max-width: 52ch;
+  font-size: clamp(15px, 2.4vw, 18px);
+  line-height: 1.55;
+  color: var(--muted-strong);
+}
+.hsk-quiz-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 8px;
+  max-width: 46ch;
+  text-align: left;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--muted-strong);
+  cursor: pointer;
+}
+.hsk-quiz-consent input[type="checkbox"] {
+  margin-top: 2px;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  accent-color: var(--quiz-accent);
+}
+
+/* ----- Bottom bar -------------------------------------------------------- */
+.hsk-quiz-bottom {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px clamp(16px, 4vw, 32px);
+  padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+}
+
+.hsk-quiz-back,
+.hsk-quiz-next {
+  border: 0;
+  border-radius: var(--radius-button);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background-color 0.12s ease, opacity 0.12s ease;
+}
+.hsk-quiz-back {
+  padding: 12px 20px;
+  background: var(--quiz-chip);
+  color: var(--quiz-on);
+}
+.hsk-quiz-back:hover:not(:disabled) { background: var(--quiz-chip-hover); }
+.hsk-quiz-back:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.hsk-quiz-next {
+  padding: 12px 28px;
+  min-width: 124px;
+  font-weight: 600;
+  background: var(--quiz-accent);
+  color: #ffffff;
+}
+.hsk-quiz-next:hover:not(:disabled) { background: var(--quiz-accent-hover); }
+.hsk-quiz-next:disabled {
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.45);
+  cursor: not-allowed;
+}
+
+.hsk-quiz-progress {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.hsk-quiz-progress-pill {
+  max-width: 100%;
+  padding: 5px 12px;
+  border-radius: var(--radius-tag);
+  background: var(--quiz-chip);
+  color: var(--quiz-on);
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hsk-quiz-segments {
+  display: flex;
+  gap: 6px;
+  width: min(440px, 100%);
+}
+.hsk-quiz-segment {
+  position: relative;
+  flex: 1;
+  height: 6px;
+  border-radius: 4px;
+  background: var(--quiz-track);
+  overflow: hidden;
+}
+.hsk-quiz-segment-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  height: 100%;
+  border-radius: 4px;
+  background: var(--quiz-accent);
+  transition: width 0.3s ease;
+}
+
+/* ----- TestArt (illustration slot + placeholder) ------------------------- */
+.hsk-art-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+.hsk-art-ph {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  padding: 18px;
+  border-radius: var(--radius-card);
+  background:
+    radial-gradient(80% 80% at 30% 20%, color-mix(in srgb, var(--violet) 70%, transparent), transparent 70%),
+    radial-gradient(70% 70% at 80% 90%, color-mix(in srgb, var(--sky) 70%, transparent), transparent 70%),
+    var(--background-2);
+}
+.hsk-art-ph-glyph {
+  font-family: var(--font-hanzi-callig), var(--font-family-base);
+  font-size: clamp(56px, 16vw, 120px);
+  line-height: 1;
+  color: var(--ink);
+  opacity: 0.82;
+}
+.hsk-art-ph-name {
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  opacity: 0.7;
+}
+
+/* Landing art slots — small square tiles inside cards. */
+.hsk-test-card-art {
+  width: 84px;
+  flex-shrink: 0;
+}
+.hsk-test-card-art.hsk-art-ph {
+  aspect-ratio: 1;
+  padding: 10px;
+}
+.hsk-test-card-art.hsk-art-ph .hsk-art-ph-glyph { font-size: 40px; }
+.hsk-test-card-art.hsk-art-ph .hsk-art-ph-name { display: none; }
+
+.hsk-test-step-art {
+  width: 60px;
+}
+.hsk-test-step-art.hsk-art-ph {
+  aspect-ratio: 1;
+  padding: 8px;
+}
+.hsk-test-step-art.hsk-art-ph .hsk-art-ph-glyph { font-size: 30px; }
+.hsk-test-step-art.hsk-art-ph .hsk-art-ph-name { display: none; }
+
+/* ----- Mobile ------------------------------------------------------------ */
+@media (max-width: 600px) {
+  .hsk-quiz-card {
+    min-height: 0;
+    padding: 22px 18px 26px;
+  }
+  .hsk-quiz-screen { margin: 8px 0; }
+  .hsk-quiz-tab:not(.hsk-quiz-tab-live) { display: none; }
+  .hsk-quiz-bottom { gap: 10px; }
+  .hsk-quiz-back { padding: 11px 14px; }
+  .hsk-quiz-next { padding: 11px 18px; min-width: 0; }
+  .hsk-quiz-progress-pill { font-size: 12px; }
+}
+
+/* ==========================================================================
+   HSK TEST — PROMO LANDING ASSETS (Praktikum-style)
+   People-fan hero, dark object cards, gradient «methodology» card, result-hero
+   composition. Real PNGs live in public/hsk-test/ (see its README).
+   ========================================================================== */
+
+/* The whole landing is ONE uniform page background per theme — no banding.
+   Painted on <body> too (via :has) so the area behind the sticky header
+   matches the content. Light theme: white. Dark theme: near-black. */
+html:has(.hsk-promo-page) body,
+.hsk-promo-page {
+  background: #ffffff;
+}
+html[data-theme="dark"]:has(.hsk-promo-page) body,
+html[data-theme="dark"] .hsk-promo-page {
+  background: #0a0a0c;
+}
+/* FAQ card on this page is neutral grey (#f5f5f5), not the site beige; the
+   dark-theme analog is a matching subtle grey. Scoped via --faq-bg. */
+.hsk-promo-page {
+  --faq-bg: #f5f5f5;
+}
+html[data-theme="dark"] .hsk-promo-page {
+  --faq-bg: #18181b;
+}
+
+/* Desktop: narrower content column + more side air than the site-wide
+   container, so the cards read taller/«собраннее» (Praktikum proportions).
+   Scoped to the landing — the global .page-shell-wide is untouched. The hero
+   stays full-bleed (its own .hsk-promo-hero-bleed). */
+@media (min-width: 1280px) {
+  .hsk-promo-page .page-shell-wide {
+    width: min(1180px, calc(100% - 96px));
+    max-width: none;
+  }
+}
+@media (min-width: 1440px) {
+  .hsk-promo-page .page-shell-wide {
+    width: min(1140px, calc(100% - 128px));
+  }
+}
+
+/* ----- Full-bleed black hero (Praktikum promo) --------------------------- */
+.hsk-promo-hero-bleed {
+  position: relative;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  background: transparent; /* inherits the uniform page bg (no seam) */
+  overflow: hidden;
+  isolation: isolate;
+}
+/* Receding perspective-grid floor — Praktikum signature. Lines derive from
+   var(--ink) so the grid is light on the dark page and dark on the light page. */
+.hsk-promo-hero-bleed::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 300%;
+  height: 135%;
+  transform: translateX(-50%) perspective(640px) rotateX(72deg);
+  transform-origin: bottom center;
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--ink) 20%, transparent) 2px, transparent 2px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--ink) 20%, transparent) 2px, transparent 2px);
+  background-size: 120px 120px;
+  -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 100%);
+  mask-image: linear-gradient(to top, #000 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hsk-promo-hero {
+  position: relative;
+  z-index: 1;
+  max-width: 980px;
+  margin: 0 auto;
+  min-height: min(840px, 90vh);
+  padding: clamp(48px, 7vw, 96px) 20px clamp(56px, 8vw, 112px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.hsk-promo-hero .hsk-hero-people {
+  margin-bottom: clamp(28px, 4vw, 44px);
+}
+.hsk-promo-hero-title {
+  margin: 0;
+  max-width: 15ch;
+  font-size: clamp(2.6rem, 8vw, 5.75rem);
+  font-weight: 500;
+  line-height: 1.0;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+}
+.hsk-promo-hero-sub {
+  margin: 22px auto 0;
+  max-width: 42ch;
+  font-size: clamp(16px, 2.4vw, 20px);
+  line-height: 1.45;
+  color: var(--muted-strong);
+}
+.hsk-promo-hero-cta {
+  margin-top: 34px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+.hsk-promo-hero-note {
+  margin-top: 22px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* ----- Hero people composition (single pre-arranged image + badge) ------- */
+.hsk-hero-people {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+}
+.hsk-hero-people-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 24px 46px rgba(0, 0, 0, 0.45));
+}
+.hsk-hero-people-badge {
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  transform: translateX(-50%);
+  width: clamp(124px, 29%, 172px);
+  height: auto;
+  z-index: 2;
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.4));
+}
+@media (max-width: 600px) {
+  .hsk-hero-people { max-width: 400px; }
+}
+
+/* ----- Dark object cards (who / steps) — centred ------------------------- */
+.hsk-promo-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-top: 44px;
+  min-height: 380px;
+}
+.hsk-promo-num {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.55);
+}
+.hsk-promo-step-no {
+  position: absolute;
+  top: 22px;
+  left: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.4);
+}
+.hsk-promo-figure {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  margin: 8px 0 28px;
+}
+/* Soft spotlight so both light and dark 3D objects read on the dark card. */
+.hsk-promo-figure::before {
+  content: "";
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.13), transparent 64%);
+  z-index: 0;
+}
+img.hsk-promo-art {
+  position: relative;
+  z-index: 1;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 196px;
+  filter: drop-shadow(0 16px 32px rgba(0, 0, 0, 0.42));
+}
+/* Embossed white icons are opaque squares — render them as rounded chips. */
+img.hsk-promo-chip {
+  max-height: 132px;
+  border-radius: 22px;
+}
+.hsk-promo-card-title {
+  margin: 0;
+  max-width: 24ch;
+  font-size: 1.35rem;
+  font-weight: 500;
+  line-height: 1.22;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+}
+.hsk-promo-card-text {
+  margin: 10px auto 0;
+  max-width: 34ch;
+  font-size: 15px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ----- Interactive «что даст тест» cards (click-expand + hover-scale) ---- */
+.hsk-steps {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+@media (min-width: 768px) {
+  .hsk-steps {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+}
+.hsk-step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  /* Portrait cards — clearly taller than wide, like the Praktikum grid. */
+  min-height: clamp(500px, 44vw, 660px);
+  padding: 48px 34px;
+  border-radius: var(--radius-card);
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.hsk-step:hover {
+  background: color-mix(in srgb, var(--ink) 9%, transparent);
+}
+.hsk-step:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+.hsk-step-no {
+  position: absolute;
+  top: 24px;
+  left: 28px;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.hsk-step-icon {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  display: inline-flex;
+  color: var(--muted);
+}
+.hsk-step-face {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 38px;
+}
+.hsk-step-figure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+}
+img.hsk-step-art {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 200px;
+  filter: drop-shadow(0 16px 32px rgba(0, 0, 0, 0.42));
+  transform-origin: center 60%;
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+.hsk-step:hover img.hsk-step-art {
+  transform: scale(1.16);
+}
+.hsk-step-title {
+  margin: 0;
+  max-width: 16ch;
+  font-size: clamp(1.3rem, 2.6vw, 1.85rem);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+/* Inline info icon — trails the last word on the same line, scales with text. */
+.hsk-step-info {
+  display: inline-block;
+  width: 0.66em;
+  height: 0.66em;
+  margin-left: 0.32em;
+  vertical-align: -0.04em;
+  color: var(--muted);
+}
+.hsk-step-text {
+  margin: 0;
+  max-width: 26ch;
+  font-size: clamp(1.15rem, 2.4vw, 1.6rem);
+  font-weight: 400;
+  line-height: 1.34;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+/* ----- «Как работает тест» — pixel-matched stacking cards (Praktikum) ----- */
+/* Figma: card 1400×640 r20 #F0F0F0 (no shadow) · sky 665×595 r10 ·
+   mock 565×340 r20 #4B8CCB · title Inter 40/ body 20, tracking −5%.
+   Desktop: cards pin under the header (sticky) and the next slides over,
+   leaving a sliver peeking. Mobile: horizontal swipe carousel. No JS. */
+.hsk-explain {
+  --stack-top: 84px;   /* clear the fixed header (8 + 56 + air) */
+  --stack-step: 18px;  /* sliver of each pinned card left visible */
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.hsk-explain-card {
+  position: sticky;
+  top: calc(var(--stack-top) + var(--i, 0) * var(--stack-step));
+  aspect-ratio: 1400 / 640;
+  border-radius: 20px;
+  background: #f0f0f0; /* Figma F0F0F0, no shadow */
+  /* covered cards scale down toward their pinned top edge → 3D receding deck
+     (transform applied per-frame by useStackDepth in LevelExplainCards) */
+  transform-origin: center top;
+  will-change: transform;
+}
+html[data-theme="dark"] .hsk-explain-card {
+  background: #1c1c1c;
+}
+
+/* Left half — vertically + horizontally centred content (text-align center) */
+.hsk-explain-text {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 50.85%; /* 712/1400 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 24px;
+}
+.hsk-explain-badge {
+  height: clamp(58px, 5.6vw, 80px);
+  width: auto;
+  /* generous «air» under the badge, like the reference (~0.8× badge height) */
+  margin-bottom: clamp(32px, 4.4vw, 64px);
+}
+.hsk-explain-title {
+  margin: 0;
+  max-width: 503px;
+  font-size: clamp(1.5rem, 2.78vw, 2.5rem); /* 40px on a ~1440 viewport */
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: -0.05em;
+  color: #1e1e1e;
+}
+html[data-theme="dark"] .hsk-explain-title {
+  color: #ededed;
+}
+.hsk-explain-lead {
+  margin: 20px 0 0;
+  max-width: 503px;
+  font-size: clamp(15px, 1.4vw, 20px); /* 20px on a ~1430 viewport */
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.05em;
+  color: #878787;
+}
+html[data-theme="dark"] .hsk-explain-lead {
+  color: #9a9a9a;
+}
+
+/* Right half — the sky panel (image), inset 22px, aspect 665/595 */
+.hsk-explain-panel {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  bottom: 22px;
+  aspect-ratio: 665 / 595;
+  border-radius: 10px;
+  overflow: hidden;
+  background: url("/hsk-test/sky.png") center / cover no-repeat;
+  display: grid;
+  place-items: center;
+}
+
+/* Inner mock — #4B8CCB rounded panel centred in the sky */
+.hsk-explain-mock {
+  width: 85%; /* 565/665 */
+  min-height: 57%; /* 340/595 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(16px, 1.8vw, 24px);
+  padding: clamp(22px, 2.6vw, 38px) clamp(24px, 2.8vw, 42px);
+  border-radius: 20px;
+  background: #4b8ccb;
+  color: #fff;
+}
+.hsk-explain-mock-eyebrow {
+  font-size: clamp(13px, 1.25vw, 18px);
+  color: rgba(255, 255, 255, 0.82);
+}
+
+/* Card 1 mock — 2×2 skill areas */
+.hsk-explain-areas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(10px, 1.1vw, 14px);
+}
+.hsk-explain-area {
+  display: flex;
+  align-items: center;
+  gap: clamp(11px, 1.2vw, 16px);
+  padding: clamp(15px, 1.7vw, 22px) clamp(16px, 1.8vw, 24px);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.16);
+  font-size: clamp(15px, 1.6vw, 22px);
+}
+.hsk-explain-area::before {
+  content: "";
+  flex: none;
+  width: clamp(9px, 0.95vw, 13px);
+  height: clamp(9px, 0.95vw, 13px);
+  border-radius: 50%;
+  background: #fff;
+}
+
+/* Card 2 mock — checklist */
+.hsk-explain-check {
+  display: grid;
+  gap: clamp(10px, 1.1vw, 14px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hsk-explain-check li {
+  display: flex;
+  align-items: center;
+  gap: clamp(13px, 1.4vw, 20px);
+  padding: clamp(13px, 1.4vw, 19px) clamp(16px, 1.8vw, 24px);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.14);
+  font-size: clamp(15px, 1.55vw, 21px);
+  line-height: 1.3;
+}
+.hsk-explain-check-mark {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: clamp(32px, 3.2vw, 46px);
+  height: clamp(32px, 3.2vw, 46px);
+  border-radius: 50%;
+  background: #fff;
+  color: #4b8ccb;
+}
+.hsk-explain-check-mark svg {
+  width: 54%;
+  height: 54%;
+}
+
+/* Card 3 mock — sample question */
+.hsk-explain-q {
+  margin: 0;
+  font-size: clamp(17px, 1.9vw, 26px);
+  font-weight: 500;
+  line-height: 1.3;
+}
+.hsk-explain-opts {
+  display: grid;
+  gap: clamp(9px, 1vw, 13px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hsk-explain-opts li {
+  display: flex;
+  align-items: center;
+  gap: clamp(13px, 1.4vw, 18px);
+  padding: clamp(12px, 1.3vw, 17px) clamp(16px, 1.8vw, 24px);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.14);
+  font-size: clamp(15px, 1.55vw, 21px);
+}
+.hsk-explain-opt-dot {
+  flex: none;
+  width: clamp(22px, 2.2vw, 30px);
+  height: clamp(22px, 2.2vw, 30px);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.7);
+}
+.hsk-explain-opts li.is-on {
+  background: rgba(255, 255, 255, 0.24);
+  font-weight: 600;
+}
+.hsk-explain-opts li.is-on .hsk-explain-opt-dot {
+  background: radial-gradient(circle, #fff 0 44%, transparent 46%);
+  box-shadow: inset 0 0 0 2px #fff;
+}
+
+/* Mobile — full-width vertical stack; each card keeps its own air and crop. */
+@media (max-width: 859px) {
+  .hsk-explain {
+    flex-direction: row;
+    gap: 14px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .hsk-explain::-webkit-scrollbar {
+    display: none;
+  }
+  .hsk-explain-card {
+    position: static;
+    flex: 0 0 86%;
+    scroll-snap-align: start;
+    min-height: 720px;
+    aspect-ratio: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 40px 28px 28px;
+    border-radius: 28px;
+  }
+  .hsk-explain-text {
+    position: static;
+    width: 100%;
+    min-height: 350px;
+    padding: 0;
+  }
+  .hsk-explain-badge {
+    height: 72px;
+    margin-bottom: 34px;
+  }
+  .hsk-explain-title {
+    max-width: 12.5em;
+    font-size: clamp(28px, 5.4vw, 38px);
+    line-height: 1.12;
+  }
+  .hsk-explain-lead {
+    margin-top: 24px;
+    font-size: clamp(18px, 3.6vw, 25px);
+    line-height: 1.34;
+  }
+  .hsk-explain-panel {
+    position: static;
+    width: 100%;
+    margin-top: auto;
+    aspect-ratio: 665 / 595;
+    min-height: 0;
+    border-radius: 18px;
+  }
+  .hsk-explain-mock {
+    width: 88%;
+    min-height: 68%;
+    padding: 20px 22px;
+    gap: 12px;
+    border-radius: 24px;
+  }
+  .hsk-explain-mock-eyebrow {
+    font-size: clamp(16px, 3vw, 21px);
+  }
+  .hsk-explain-area,
+  .hsk-explain-check li,
+  .hsk-explain-opts li {
+    min-width: 0;
+    font-size: clamp(14px, 2.9vw, 19px);
+    line-height: 1.22;
+  }
+  .hsk-explain-areas {
+    gap: 9px;
+  }
+  .hsk-explain-area {
+    gap: 8px;
+    justify-content: flex-start;
+    padding: 13px 12px;
+    white-space: nowrap;
+  }
+  .hsk-explain-area::before {
+    width: 8px;
+    height: 8px;
+  }
+  .hsk-explain-check li,
+  .hsk-explain-opts li {
+    justify-content: flex-start;
+    padding: 10px 14px;
+  }
+  .hsk-explain-q {
+    font-size: clamp(16px, 3.2vw, 22px);
+    line-height: 1.22;
+  }
+  .hsk-explain-check {
+    gap: 8px;
+  }
+  .hsk-explain-check-mark {
+    width: 26px;
+    height: 26px;
+  }
+  .hsk-explain-opts {
+    gap: 8px;
+  }
+  .hsk-explain-opt-dot {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+@media (max-width: 380px) {
+  .hsk-explain-card {
+    min-height: 650px;
+    padding: 28px 14px 16px;
+  }
+
+  .hsk-explain-text {
+    min-height: 300px;
+  }
+
+  .hsk-explain-badge {
+    height: 58px;
+    margin-bottom: 22px;
+  }
+
+  .hsk-explain-title {
+    font-size: 25px;
+    line-height: 1.12;
+  }
+
+  .hsk-explain-lead {
+    margin-top: 18px;
+    font-size: 16px;
+    line-height: 1.32;
+  }
+
+  .hsk-explain-panel {
+    border-radius: 14px;
+  }
+
+  .hsk-explain-mock {
+    width: 90%;
+    min-height: 70%;
+    padding: 16px 14px;
+    gap: 9px;
+    border-radius: 18px;
+  }
+
+  .hsk-explain-mock-eyebrow {
+    font-size: 14px;
+  }
+
+  .hsk-explain-areas {
+    gap: 6px;
+  }
+
+  .hsk-explain-area,
+  .hsk-explain-check li,
+  .hsk-explain-opts li {
+    font-size: 13px;
+    line-height: 1.18;
+  }
+
+  .hsk-explain-area {
+    gap: 4px;
+    padding: 9px 7px;
+  }
+
+  .hsk-explain-area::before {
+    width: 6px;
+    height: 6px;
+  }
+
+  .hsk-explain-check {
+    gap: 6px;
+  }
+
+  .hsk-explain-check li,
+  .hsk-explain-opts li {
+    gap: 8px;
+    padding: 8px 10px;
+  }
+
+  .hsk-explain-check-mark {
+    width: 22px;
+    height: 22px;
+  }
+
+  .hsk-explain-q {
+    font-size: 15px;
+    line-height: 1.18;
+  }
+
+  .hsk-explain-opts {
+    gap: 7px;
+  }
+
+  .hsk-explain-opt-dot {
+    width: 19px;
+    height: 19px;
+  }
+
+  .hsk-explain-card:nth-child(2),
+  .hsk-explain-card:nth-child(3) {
+    min-height: 610px;
+  }
+
+  .hsk-explain-card:nth-child(2) .hsk-explain-text,
+  .hsk-explain-card:nth-child(3) .hsk-explain-text {
+    min-height: 260px;
+  }
+
+  .hsk-explain-card:nth-child(2) .hsk-explain-panel,
+  .hsk-explain-card:nth-child(3) .hsk-explain-panel {
+    margin-top: auto;
+  }
+
+  .hsk-explain-card:nth-child(2) .hsk-explain-badge,
+  .hsk-explain-card:nth-child(3) .hsk-explain-badge {
+    height: 52px;
+    margin-bottom: 18px;
+  }
+
+  .hsk-explain-card:nth-child(2) .hsk-explain-title,
+  .hsk-explain-card:nth-child(3) .hsk-explain-title {
+    font-size: 23px;
+  }
+
+  .hsk-explain-card:nth-child(2) .hsk-explain-lead,
+  .hsk-explain-card:nth-child(3) .hsk-explain-lead {
+    margin-top: 14px;
+    font-size: 15px;
+    line-height: 1.26;
+  }
+
+  .hsk-explain-card:nth-child(2) .hsk-explain-mock,
+  .hsk-explain-card:nth-child(3) .hsk-explain-mock {
+    width: calc(100% - 28px);
+    height: calc(100% - 28px);
+    min-height: 0;
+    padding: 16px 14px;
+  }
+
+  .hsk-explain-card:nth-child(2) .hsk-explain-mock-eyebrow,
+  .hsk-explain-card:nth-child(3) .hsk-explain-mock-eyebrow {
+    font-size: 13px;
+  }
+
+  .hsk-explain-card:nth-child(2) .hsk-explain-check li,
+  .hsk-explain-card:nth-child(3) .hsk-explain-opts li {
+    padding: 5px 8px;
+    font-size: 11.5px;
+  }
+
+  .hsk-explain-card:nth-child(3) .hsk-explain-mock {
+    gap: 5px;
+    padding: 12px;
+  }
+
+  .hsk-explain-card:nth-child(3) .hsk-explain-mock-eyebrow {
+    font-size: 12px;
+  }
+
+  .hsk-explain-card:nth-child(3) .hsk-explain-q {
+    font-size: 12px;
+    line-height: 1.12;
+  }
+
+  .hsk-explain-card:nth-child(3) .hsk-explain-opts {
+    gap: 5px;
+  }
+
+  .hsk-explain-card:nth-child(3) .hsk-explain-opt-dot {
+    width: 16px;
+    height: 16px;
+  }
+
+  .hsk-explain-card:nth-child(1) .hsk-explain-mock {
+    width: calc(100% - 22px);
+    height: calc(100% - 22px);
+    padding: 16px 12px;
+  }
+
+  .hsk-explain-card:nth-child(1) .hsk-explain-area {
+    font-size: 12px;
+  }
+}
+
+/* No scroll-jacking for users who prefer reduced motion — plain stack. */
+@media (min-width: 860px) and (prefers-reduced-motion: reduce) {
+  .hsk-explain-card {
+    position: static;
+  }
+}
+
+/* ----- «Типичная ошибка» — Praktikum hero collage -----------------------
+   Fixed 2048×1148 artboard scaled with container-query units (cqw): 1cqw = 1%
+   of .hsk-mistake width, so the px spec holds at any size. Mobile-first base is
+   a plain vertical stack; the collage lives in the ≥860px query below. */
+.hsk-mistake-heading {
+  margin-bottom: 64px;
+}
+
+.hsk-mistake {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: min(100% - 32px, 720px);
+  max-width: none;
+  margin: 0 auto;
+}
+.hsk-mistake-c {
+  position: relative;
+  overflow: hidden;
+  order: 5;
+  border-radius: 22px;
+  padding: 22px;
+  background-size: cover;
+  background-position: center;
+  border: 0;
+  box-shadow: 0 14px 38px rgba(40, 30, 80, 0.07);
+}
+.hsk-mistake-c1,
+.hsk-mistake-c2 {
+  min-height: 156px;
+}
+.hsk-mistake-c1 {
+  order: 1;
+  background-image: url("/hsk-test/card1.jpg");
+}
+.hsk-mistake-c2 {
+  order: 3;
+  background-image: url("/hsk-test/card2.jpg");
+}
+.hsk-mistake-c3 {
+  order: 4;
+  min-height: 330px;
+  background-image: url("/hsk-test/card3.jpg");
+  background-size: 100% auto;
+  background-position: center 180%;
+  background-repeat: no-repeat;
+}
+/* fade the keyboard texture (top gradient layer over the image) */
+.hsk-mistake-c4 {
+  order: 2;
+  display: flex;
+  flex-direction: column;
+  min-height: 190px;
+  background-image: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.12) 32%,
+      rgba(255, 255, 255, 0.55) 100%
+    ),
+    url("/hsk-test/card4.jpg");
+  background-size: cover, cover;
+  background-position: center, center;
+}
+.hsk-mistake-c4 .hsk-mistake-pills {
+  width: max-content;
+  max-width: 100%;
+  margin: auto auto 0;
+}
+.hsk-mistake-c4 .hsk-mistake-tag {
+  max-width: 15ch;
+  margin: 0 auto;
+  font-size: clamp(25px, 5.2vw, 34px);
+  line-height: 1.14;
+  letter-spacing: -0.02em;
+  text-align: center;
+  color: #242424;
+}
+.hsk-mistake-c:not(.hsk-mistake-c4) .hsk-mistake-tag {
+  display: none;
+}
+.hsk-mistake-tag {
+  display: block;
+  font-size: clamp(17px, 3.8vw, 24px);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: #8e899b;
+}
+.hsk-mistake-c p {
+  margin: 14px 0 0;
+  font-size: clamp(22px, 5.2vw, 34px);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: #242424;
+}
+
+.hsk-mistake-center {
+  order: 5;
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  aspect-ratio: 705 / 725;
+  background: url("/hsk-test/center.webp") center / contain no-repeat;
+}
+.hsk-mistake-expert {
+  order: 6;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 14px;
+  width: min(100%, 420px);
+  margin: 0 auto;
+  text-align: left;
+}
+.hsk-mistake-expert-title,
+.hsk-mistake-expert-text {
+  margin: 0;
+}
+.hsk-mistake-expert-title {
+  font-size: 21px;
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+  color: #242424;
+}
+.hsk-mistake-expert-text {
+  margin-top: 5px;
+  font-size: 16px;
+  line-height: 1.28;
+  color: #8a8a8a;
+}
+html[data-theme="dark"] .hsk-mistake-expert-title {
+  color: #ededed;
+}
+html[data-theme="dark"] .hsk-mistake-expert-text {
+  color: #a6a6a6;
+}
+.hsk-mistake-expert-photo {
+  display: block;
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  object-fit: cover;
+  object-position: center top;
+  background: #eee9ff;
+}
+.hsk-mistake-screen {
+  position: absolute;
+  inset: 11% 10% 30% 10%; /* upper black-screen area — glass base stays visible */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.hsk-mistake-eyebrow {
+  display: none;
+  font-size: 13px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, 0.42);
+}
+.hsk-mistake-big {
+  margin: 10px 0 0;
+  font-size: 34px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+  color: #fff;
+  font-family: var(--font-family-base), "PingFang SC", "Noto Sans SC",
+    "Microsoft YaHei", sans-serif;
+}
+.hsk-mistake-note {
+  margin: 12px 0 0;
+  max-width: 30ch;
+  font-size: 15px;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, 0.58);
+}
+.hsk-mistake-pills {
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  justify-content: center;
+  justify-items: center;
+  gap: 8px 10px;
+  margin-top: 12px;
+}
+.hsk-mistake-pill:nth-child(5) {
+  grid-column: 1 / -1;
+}
+.hsk-mistake-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  font-size: clamp(17px, 3.8vw, 24px);
+  letter-spacing: -0.01em;
+  color: #282828;
+}
+
+@media (max-width: 859px) {
+  .hsk-mistake-heading {
+    margin-bottom: 48px;
+  }
+
+  .hsk-mistake {
+    gap: 16px;
+  }
+
+  .hsk-mistake-c {
+    border-radius: 28px;
+    padding: 30px 36px;
+  }
+
+  .hsk-mistake-c1,
+  .hsk-mistake-c2 {
+    min-height: 178px;
+  }
+
+  .hsk-mistake-c p {
+    margin: 0;
+  }
+
+  .hsk-mistake-c3 {
+    min-height: 360px;
+    padding-bottom: 0;
+    background-size: 112% auto;
+    background-position: center bottom;
+  }
+
+  .hsk-mistake-c3 p {
+    max-width: 12.5em;
+  }
+
+  .hsk-mistake-c4 {
+    min-height: 390px;
+    padding: 46px 24px 0;
+    background-size: cover, 138% auto;
+    background-position: center, center bottom;
+    background-repeat: no-repeat;
+  }
+
+  .hsk-mistake-c4 .hsk-mistake-tag {
+    max-width: 17ch;
+    margin: 0;
+    font-size: clamp(24px, 5.5vw, 36px);
+    line-height: 1.2;
+    text-align: left;
+  }
+
+  .hsk-mistake-c4 .hsk-mistake-pills {
+    position: absolute;
+    left: 50%;
+    top: 72%;
+    width: max-content;
+    max-width: calc(100% - 48px);
+    margin: 0;
+    transform: translate(-50%, -50%);
+    gap: 14px 18px;
+  }
+
+  .hsk-mistake-pill {
+    min-width: 106px;
+    height: 54px;
+    padding: 0 22px;
+    font-size: clamp(22px, 4.8vw, 30px);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.045);
+  }
+
+  .hsk-mistake-expert {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 12px;
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  .hsk-mistake-expert-title {
+    font-size: 24px;
+    line-height: 1.18;
+  }
+
+  .hsk-mistake-expert-text {
+    margin-top: 6px;
+    font-size: 18px;
+    line-height: 1.26;
+  }
+
+  .hsk-mistake-expert-photo {
+    width: 86px;
+    height: 86px;
+    border-radius: 22px;
+  }
+}
+
+/* Desktop — the absolute 2000×950 collage (airier, ~13% smaller than before).
+   cqw = 1% of render width; design px → cqw = px / 2000 × 100. */
+@media (min-width: 860px) {
+  .hsk-mistake {
+    container-type: inline-size;
+    position: relative;
+    display: block;
+    width: min(1584px, calc(100vw - 64px));
+    max-width: none;
+    margin: 28px auto 0;
+    aspect-ratio: 1600 / 760;
+  }
+  .hsk-mistake-c {
+    position: absolute;
+    order: 0;
+    min-height: 0;
+    aspect-ratio: 1 / 1;
+    border-radius: 1.8cqw;
+    padding: 2.55cqw 2.2cqw;
+    box-shadow: 0 1.1cqw 3.2cqw rgba(40, 30, 80, 0.07);
+  }
+  .hsk-mistake-tag {
+    font-size: 0.92cqw; /* ~18px */
+    text-align: center;
+  }
+  .hsk-mistake-c p {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    height: 48%;
+    margin: 0 auto;
+    font-size: 1.28cqw;
+    line-height: 1.16;
+    text-align: center;
+  }
+  /* left card — square, closer to the device */
+  .hsk-mistake-c1 {
+    left: 12.2%;
+    top: 25%;
+    width: 19%;
+    z-index: 1;
+  }
+  .hsk-mistake-c1 p {
+    max-width: 15.4cqw;
+  }
+  /* left-bottom card — square image card, overlaps the device */
+  .hsk-mistake-c3 {
+    left: 17%;
+    top: 55%;
+    width: 19%;
+    transform: rotate(7deg);
+    z-index: 3;
+  }
+  .hsk-mistake-c3 p {
+    height: 43%;
+    max-width: 15.2cqw;
+  }
+  /* right-top card — square, behind the device, opposite tilt */
+  .hsk-mistake-c2 {
+    left: 71.8%;
+    top: 12.5%;
+    width: 19%;
+    transform: rotate(4deg);
+    z-index: 1;
+  }
+  .hsk-mistake-c2 p {
+    max-width: 15.4cqw;
+  }
+  /* right tag card — square, overlaps the device */
+  .hsk-mistake-c4 {
+    left: 63.6%;
+    top: 41.5%;
+    width: 19%;
+    z-index: 3;
+  }
+  .hsk-mistake-c4 .hsk-mistake-tag {
+    display: block;
+    margin: 0 auto;
+    max-width: 15.4cqw;
+    font-size: 1.36cqw;
+    line-height: 1.16;
+    letter-spacing: -0.02em;
+    text-align: center;
+    color: #242424;
+  }
+  .hsk-mistake-c4 .hsk-mistake-pills {
+    position: absolute;
+    left: 50%;
+    top: 68.5%;
+    width: auto;
+    max-width: 14.5cqw;
+    margin: 0;
+    transform: translate(-50%, -50%);
+  }
+
+  .hsk-mistake-center {
+    position: absolute;
+    order: 0;
+    left: 31.4%;
+    top: 13%;
+    width: 39%;
+    height: 75%;
+    max-width: none;
+    margin: 0;
+    aspect-ratio: auto;
+    z-index: 2;
+  }
+  .hsk-mistake-eyebrow {
+    display: none;
+    margin-bottom: 1.1cqw; /* 22 */
+    font-size: 1cqw; /* 20px */
+  }
+  .hsk-mistake-big {
+    margin: 0;
+    max-width: 24cqw;
+    font-size: clamp(36px, 3cqw, 56px);
+  }
+  .hsk-mistake-note {
+    margin: 1.1cqw 0 0;
+    max-width: 21cqw; /* 420 */
+    font-size: 1.05cqw; /* 21px */
+  }
+  .hsk-mistake-pills {
+    gap: 0.65cqw 0.7cqw; /* 13 / 14 */
+    margin-top: 1.2cqw;
+  }
+  .hsk-mistake-pill {
+    min-width: 5.15cqw;
+    padding: 0 0.9cqw;
+    height: 2.05cqw;
+    font-size: 0.85cqw;
+    box-shadow: 0 0.4cqw 0.9cqw rgba(0, 0, 0, 0.045);
+  }
+  .hsk-mistake-expert {
+    position: absolute;
+    right: 19.2%;
+    top: 91%;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.75cqw;
+    width: 28%;
+    max-width: none;
+    margin: 0;
+    z-index: 4;
+  }
+  .hsk-mistake-expert-title {
+    font-size: 1.2cqw;
+    line-height: 1.2;
+  }
+  .hsk-mistake-expert-text {
+    margin-top: 0.35cqw;
+    font-size: 1cqw;
+    line-height: 1.25;
+  }
+  .hsk-mistake-expert-photo {
+    width: 4.9cqw;
+    height: 4.9cqw;
+    border-radius: 1.1cqw;
+  }
+}
+
+/* ----- «Что дальше после HSK N» — green shape + ready-made ladder image -- */
+.hsk-next {
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  border-radius: 28px;
+  padding: clamp(28px, 4vw, 64px);
+  min-height: clamp(440px, 32vw, 520px);
+  background: linear-gradient(150deg, #5cc04d 0%, #3fa838 100%);
+  color: #fff;
+}
+.hsk-next-body {
+  position: relative;
+  z-index: 2;
+  max-width: min(46%, 540px);
+}
+.hsk-next-title {
+  margin: 0 0 18px;
+  font-size: clamp(28px, 3vw, 52px);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+.hsk-next-text {
+  margin: 0;
+  font-size: clamp(15px, 1.2vw, 20px);
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.82);
+}
+/* ready-made ladder + dial — the white dot already points at this level */
+.hsk-next-ladder {
+  position: absolute;
+  z-index: 1;
+  right: 0;
+  bottom: clamp(-56px, -3vw, -24px);
+  width: min(56%, 820px);
+  height: auto;
+  pointer-events: none;
+}
+
+@media (min-width: 860px) {
+  .hsk-next {
+    container-type: inline-size;
+    padding: 0;
+    min-height: 0;
+    aspect-ratio: 2000 / 735;
+    border-radius: clamp(28px, 1.55cqw, 44px);
+  }
+  .hsk-next-body {
+    position: absolute;
+    left: 5.9%;
+    top: 13.2%;
+    max-width: 42%;
+  }
+  .hsk-next-title {
+    margin-bottom: 2.55cqw;
+    font-size: clamp(42px, 2.7cqw, 78px);
+    line-height: 1.04;
+    white-space: nowrap;
+  }
+  .hsk-next-text {
+    max-width: 31cqw;
+    font-size: clamp(24px, 1.44cqw, 42px);
+    line-height: 1.22;
+  }
+  .hsk-next-ladder {
+    right: 3.4%;
+    bottom: auto;
+    top: 36.2%;
+    width: 58.4%;
+  }
+}
+
+@media (max-width: 859px) {
+  .hsk-next {
+    min-height: 0;
+    padding-bottom: 0;
+  }
+  .hsk-next-body {
+    max-width: none;
+  }
+  .hsk-next-ladder {
+    position: static;
+    display: block;
+    width: min(100%, 520px);
+    max-width: 100%;
+    margin: 28px auto 0;
+  }
+}
+
+/* ----- Gradient «methodology» card --------------------------------------- */
+.hsk-promo-gradient {
+  position: relative;
+  overflow: hidden;
+  /* Full-width card (aligned with the cards grid above), tall, content centred —
+     like Practicum «Авторы теста». */
+  min-height: 700px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url("/hsk-test/gradient.png");
+  background-size: cover;
+  background-position: left bottom;
+  color: #1b1b1b;
+  /* hairline so the light gradient card separates on a white page (light theme) */
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+}
+.hsk-promo-gradient-body {
+  position: relative;
+  z-index: 1;
+  max-width: 780px;
+  margin: 0 auto;
+  text-align: center;
+}
+.hsk-promo-gradient-title {
+  margin: 0 auto;
+  max-width: 22ch;
+  font-size: clamp(2.4rem, 5.8vw, 3.7rem);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  color: #1b1b1b;
+}
+.hsk-promo-gradient-text {
+  margin: 20px auto 0;
+  max-width: 720px;
+  font-size: clamp(16px, 2.5vw, 21px);
+  line-height: 1.5;
+  color: #2d2d2d;
+}
+.hsk-promo-rings {
+  display: block;
+  width: min(420px, 70%);
+  height: auto;
+  margin: 0 auto 26px;
+  filter: drop-shadow(0 18px 38px rgba(0, 0, 0, 0.2));
+}
+/* The gradient image is always light — keep text dark in both themes. */
+html[data-theme="dark"] .hsk-promo-gradient,
+html[data-theme="dark"] .hsk-promo-gradient-title {
+  color: #1b1b1b;
+}
+html[data-theme="dark"] .hsk-promo-gradient-text {
+  color: #2d2d2d;
+}
+
+/* ----- Result preview (landing) + result hero composition ---------------- */
+img.hsk-promo-preview {
+  display: block;
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  margin: 0 auto;
+  filter: drop-shadow(0 20px 50px rgba(0, 0, 0, 0.22));
+}
+.hsk-result-figure {
+  position: relative;
+  width: min(420px, 100%);
+  margin: 0 auto;
+}
+img.hsk-result-figure-photo {
+  width: 100%;
+  height: auto;
+}
+img.hsk-result-figure-shapes {
+  position: absolute;
+  left: -7%;
+  bottom: 2%;
+  width: 44%;
+  height: auto;
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.28));
+}
+
+/* ----- Result preview mock (landing «вот так выглядит результат») -------- */
+/* Steps section — normal gap from the hero, but flush (tiny gap) to the
+   white methodology card below. */
+.hsk-steps-section {
+  padding: clamp(22px, 3vw, 30px) 0 0;
+}
+/* Methodology section — symmetric tiny gaps above (to steps) and below (to
+   the result band). */
+.hsk-promo-methodology {
+  padding: 6px 0;
+}
+
+/* Result block — ONE cohesive dark section: title at the top, big mockup below.
+   No gray wrapper / double container. The mockup dissolves into the page bg at
+   the bottom (the «въезжает в кадр» effect). */
+.hsk-result-block {
+  padding: 0 0 clamp(20px, 3vw, 30px);
+}
+.hsk-result-section {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px 16px 0 0;
+  background: #141415;
+  padding: clamp(48px, 6vw, 80px) 0 0;
+}
+.hsk-result-section::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 200px;
+  background: linear-gradient(to bottom, rgba(20, 20, 21, 0) 0%, #ffffff 92%);
+  pointer-events: none;
+  z-index: 2;
+}
+html[data-theme="dark"] .hsk-result-section::after {
+  background: linear-gradient(to bottom, rgba(20, 20, 21, 0) 0%, #0a0a0c 92%);
+}
+.hsk-result-title {
+  margin: 0 auto clamp(48px, 6vw, 80px);
+  text-align: center;
+  font-size: clamp(2.6rem, 5.4vw, 4.25rem);
+  line-height: 0.98;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  color: #f2f2f2;
+}
+.hsk-result-title span {
+  color: #a6a6a6;
+}
+.hsk-result-mockup {
+  position: relative;
+  z-index: 1;
+  width: min(92%, 980px);
+  margin: 0 auto;
+}
+.hsk-preview {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+}
+/* Card-stack frame peeking behind the mock. */
+.hsk-preview::before,
+.hsk-preview::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  background: #16171c;
+  z-index: 0;
+}
+.hsk-preview::before {
+  transform: translate(16px, -16px) scale(0.97);
+  opacity: 0.55;
+}
+.hsk-preview::after {
+  transform: translate(32px, -30px) scale(0.94);
+  opacity: 0.3;
+}
+.hsk-preview-card {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  border-radius: 24px;
+  padding: clamp(20px, 3vw, 34px);
+  background:
+    radial-gradient(130% 90% at 82% 0%, rgba(240, 168, 176, 0.18), transparent 58%),
+    #1d1e24;
+  color: #ffffff;
+  box-shadow: 0 34px 80px rgba(0, 0, 0, 0.45);
+}
+.hsk-preview-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: clamp(18px, 3vw, 30px);
+}
+.hsk-preview-brand {
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+}
+.hsk-preview-dots {
+  display: flex;
+  gap: 8px;
+}
+.hsk-preview-dots span {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+}
+.hsk-preview-avatar {
+  background: rgba(255, 255, 255, 0.16) !important;
+}
+.hsk-preview-hero {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  align-items: center;
+}
+@media (min-width: 640px) {
+  .hsk-preview-hero {
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+}
+.hsk-preview-eyebrow {
+  display: block;
+  font-size: clamp(12px, 1.6vw, 14px);
+  color: rgba(255, 255, 255, 0.55);
+}
+.hsk-preview-level {
+  display: block;
+  margin-top: 6px;
+  font-size: clamp(40px, 7vw, 76px);
+  font-weight: 600;
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+  color: #ffffff;
+}
+.hsk-preview-btn {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 20px;
+  padding: 11px 20px;
+  border-radius: 8px;
+  background: var(--quiz-accent, #4b86f7);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+}
+.hsk-preview-figure {
+  position: relative;
+}
+img.hsk-preview-photo {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+img.hsk-preview-shapes {
+  position: absolute;
+  left: -10%;
+  bottom: 0;
+  width: 42%;
+  height: auto;
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.3));
+}
+.hsk-preview-info {
+  margin-top: clamp(16px, 2.5vw, 24px);
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Skill-breakdown panel inside the mock (left list + bars, right score + text) —
+   makes the card as tall/complete as the reference result page. */
+.hsk-preview-skills {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  margin-top: 16px;
+  padding: clamp(16px, 2vw, 24px);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+}
+@media (min-width: 560px) {
+  .hsk-preview-skills {
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+}
+.hsk-preview-skill-head {
+  display: block;
+  margin-bottom: 14px;
+  font-size: clamp(14px, 1.8vw, 17px);
+  font-weight: 600;
+  color: #ffffff;
+}
+.hsk-preview-skill-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 0;
+}
+.hsk-preview-skill-name {
+  font-size: clamp(12px, 1.6vw, 14px);
+  color: rgba(255, 255, 255, 0.72);
+}
+.hsk-preview-skill-bar {
+  position: relative;
+  flex: none;
+  width: 92px;
+  height: 7px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+.hsk-preview-skill-bar > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  height: 100%;
+  border-radius: 4px;
+  background: var(--quiz-accent, #4b86f7);
+}
+.hsk-preview-skill-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.hsk-preview-skill-score {
+  font-size: clamp(14px, 1.8vw, 17px);
+  color: rgba(255, 255, 255, 0.45);
+  text-align: right;
+}
+.hsk-preview-skill-text {
+  margin: 0;
+  font-size: clamp(13px, 1.7vw, 15px);
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* ----- Quiz storytelling art (real objects, was placeholder-only) -------- */
+img.hsk-quiz-art {
+  width: auto;
+  height: auto;
+  max-width: min(360px, 82%);
+  max-height: 240px;
+  margin: 0 auto 4px;
+  filter: drop-shadow(0 14px 30px rgba(0, 0, 0, 0.16));
+}
+
+/* ==========================================================================
    YANDEX LOCAL WIDGETS — карта и отзывы из Яндекс.Бизнес.
    Iframe от Яндекса не стилизуется напрямую (cross-origin),
    поэтому даём ему светлый «карточный» фрейм с нашим radius/тенью.
@@ -7717,45 +10128,245 @@ html[data-theme="dark"] .yandex-widget-attribution {
 }
 
 /* ==========================================================================
-   Tax deduction calculator — нативный range slider в системной палитре.
-   Радио-карточки и результаты переиспользуют card-block / card-ink — здесь
-   стилизуется только thumb/track, потому что нативный range slider
-   браузеры рендерят сильно по-разному.
+   Tax deduction calculator — минималистичная карточка в духе калькулятора
+   Яндекса: светлая карточка, сегментированный переключатель, один ползунок и
+   крупный результат. Сверху — иллюстрация-баннер на светло-голубом фоне.
    ========================================================================== */
 
-.tax-calc-range {
-  -webkit-appearance: none;
-  appearance: none;
-  height: 6px;
+.vychet {
+  width: min(680px, 100%);
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 28px;
+  background: var(--surface);
+  box-shadow: 0 26px 60px -30px rgba(20, 20, 50, 0.24);
+}
+
+.vychet-hero {
+  position: relative;
+  height: clamp(170px, 30vw, 260px);
+  background: #dcebf8;
+}
+
+/* cover — баннер заполняется без полей по бокам; у вашей широкой иллюстрации
+   собственный светло-голубой фон совпадёт с фоном зоны. */
+.vychet-hero-img {
+  object-fit: cover;
+  object-position: center;
+}
+
+.vychet-card {
+  padding: clamp(22px, 4vw, 36px);
+}
+
+/* Сегментированный переключатель «За себя / За ребёнка». */
+.vychet-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
   border-radius: 999px;
-  background: rgba(27, 27, 27, 0.12);
+  background: #f0f0f2;
+}
+
+.vychet-toggle-btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 11px 16px;
+  font-size: 0.98rem;
+  font-weight: 500;
+  color: rgba(30, 30, 30, 0.5);
+  background: transparent;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease, box-shadow 160ms ease;
+}
+
+.vychet-toggle-btn[data-active="true"] {
+  color: var(--ink);
+  background: #ffffff;
+  box-shadow: 0 2px 10px rgba(20, 20, 40, 0.12);
+}
+
+.vychet-field {
+  margin-top: 28px;
+}
+
+.vychet-field-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.vychet-field-head label {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.vychet-amount {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: clamp(1.5rem, 1.2rem + 1.2vw, 1.9rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.vychet-amount input {
+  width: 6.5ch;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: right;
   outline: none;
 }
 
-.tax-calc-range::-webkit-slider-thumb {
+/* Ползунок с залитой левой частью (var(--pct) задаётся инлайн из компонента). */
+.vychet-range {
   -webkit-appearance: none;
   appearance: none;
-  width: 22px;
-  height: 22px;
+  width: 100%;
+  height: 8px;
+  margin-top: 18px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--ink) var(--pct, 50%),
+    rgba(27, 27, 27, 0.12) var(--pct, 50%)
+  );
+  outline: none;
+}
+
+.vychet-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
-  background: var(--ink);
+  background: #ffffff;
+  border: 1.5px solid rgba(20, 20, 40, 0.12);
+  box-shadow: 0 3px 10px rgba(20, 20, 40, 0.22);
   cursor: pointer;
 }
 
-.tax-calc-range::-moz-range-thumb {
-  width: 22px;
-  height: 22px;
+.vychet-range::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
-  background: var(--ink);
+  background: #ffffff;
+  border: 1.5px solid rgba(20, 20, 40, 0.12);
+  box-shadow: 0 3px 10px rgba(20, 20, 40, 0.22);
   cursor: pointer;
-  border: none;
 }
 
-.tax-calc-range:focus-visible {
+.vychet-range:focus-visible {
   outline: 2px solid var(--violet);
   outline-offset: 4px;
 }
 
-html[data-theme="dark"] .tax-calc-range {
-  background: rgba(255, 255, 255, 0.18);
+.vychet-scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-size: 0.82rem;
+  color: rgba(30, 30, 30, 0.5);
+}
+
+.vychet-result {
+  margin-top: 28px;
+  padding: 22px 24px;
+  border-radius: 18px;
+  background: var(--violet-soft);
+}
+
+.vychet-result-cap {
+  font-size: 0.9rem;
+  color: rgba(30, 30, 30, 0.6);
+}
+
+.vychet-result-value {
+  margin-top: 6px;
+  font-size: clamp(2.4rem, 1.8rem + 2.6vw, 3.2rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.vychet-result-hint {
+  margin-top: 8px;
+  font-size: 0.92rem;
+  color: rgba(30, 30, 30, 0.6);
+}
+
+.vychet-note {
+  margin: 18px 0 0;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: rgba(30, 30, 30, 0.55);
+}
+
+.vychet-note a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Тёмная тема */
+html[data-theme="dark"] .vychet {
+  box-shadow: 0 26px 60px -30px rgba(0, 0, 0, 0.55);
+}
+
+html[data-theme="dark"] .vychet-toggle {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+html[data-theme="dark"] .vychet-toggle-btn {
+  color: rgba(237, 237, 237, 0.55);
+}
+
+html[data-theme="dark"] .vychet-toggle-btn[data-active="true"] {
+  color: var(--ink);
+  background: #3a3a3d;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+html[data-theme="dark"] .vychet-range {
+  background: linear-gradient(
+    to right,
+    #ededed var(--pct, 50%),
+    rgba(255, 255, 255, 0.16) var(--pct, 50%)
+  );
+}
+
+html[data-theme="dark"] .vychet-range::-webkit-slider-thumb {
+  background: #ededed;
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+html[data-theme="dark"] .vychet-range::-moz-range-thumb {
+  background: #ededed;
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+html[data-theme="dark"] .vychet-scale {
+  color: rgba(237, 237, 237, 0.5);
+}
+
+html[data-theme="dark"] .vychet-result {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+html[data-theme="dark"] .vychet-result-cap,
+html[data-theme="dark"] .vychet-result-hint {
+  color: rgba(237, 237, 237, 0.6);
+}
+
+html[data-theme="dark"] .vychet-note {
+  color: rgba(237, 237, 237, 0.5);
 }

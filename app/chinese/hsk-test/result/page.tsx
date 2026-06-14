@@ -9,6 +9,7 @@ import Certificate from "@/components/hsk-test/Certificate";
 import PrintableCertificate from "@/components/hsk-test/PrintableCertificate";
 import ShareResultButtons from "@/components/hsk-test/ShareResultButtons";
 import SkillBars from "@/components/hsk-test/SkillBars";
+import TestArt from "@/components/hsk-test/TestArt";
 import HskTestLeadInline from "@/components/hsk-test/HskTestLeadInline";
 import { HskTestGoals } from "@/lib/hsk-test/analytics";
 import { getHskTestLevel } from "@/lib/hsk-test/levels";
@@ -89,20 +90,14 @@ export default function HskTestResultPage() {
           }
         >
           <div className="hsk-test-result-hero">
-            <div
-              className="hsk-test-result-badge"
-              style={
-                { "--hsk-deep": recommended.color.deep } as React.CSSProperties
-              }
-            >
-              <span className="hsk-test-result-badge-eyebrow">Ваш уровень</span>
-              <span className="hsk-test-result-badge-level">
-                HSK {result.recommendedLevel}
-              </span>
-              <span className="hsk-test-result-score">CEFR {recommended.cefr}</span>
-            </div>
             <div>
-              <h1 className="text-[2rem] font-normal leading-[1.1] tracking-[-0.02em] text-[#1b1b1b] sm:text-[2.5rem]">
+              <span className="hsk-test-result-badge-eyebrow">
+                Ваш уровень по тесту
+              </span>
+              <div className="hsk-test-result-level-big">
+                HSK {result.recommendedLevel}
+              </div>
+              <h1 className="mt-2 text-[1.75rem] font-normal leading-[1.12] tracking-[-0.02em] text-[#1b1b1b] sm:text-[2.25rem]">
                 {verdict.title}
               </h1>
               <p className="mt-4 max-w-[560px] text-base leading-[1.6] text-[#1b1b1b] sm:text-lg">
@@ -125,6 +120,20 @@ export default function HskTestResultPage() {
                     HSK {result.level}
                   </span>
                 </div>
+              </div>
+              <div className="mt-6">
+                <Link
+                  href={`/hsk/hsk-${result.recommendedLevel}`}
+                  className={buttonStyles({ size: "large" })}
+                >
+                  Подробнее об уровне HSK {result.recommendedLevel}
+                </Link>
+              </div>
+            </div>
+            <div className="hsk-test-result-hero-art">
+              <div className="hsk-result-figure">
+                <TestArt name="result-photo" className="hsk-result-figure-photo" />
+                <TestArt name="result-shapes" className="hsk-result-figure-shapes" />
               </div>
             </div>
           </div>

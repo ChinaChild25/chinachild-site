@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import { pickAdaptive, pickQuestions } from "./questions";
+import { SKILL_ORDER } from "./quiz-sections";
 import { computeResult, scoreAnswer } from "./scoring";
 import type {
   HskAnswer,
@@ -64,10 +65,18 @@ function reducer(state: HskTestState, action: Action): HskTestState {
     case "start": {
       const seed = Date.now() & 0xffffffff;
       const length = MODE_LENGTH[action.mode];
-      const questions =
+      const picked =
         action.mode === "adaptive"
           ? pickAdaptive(action.level, length, seed)
           : pickQuestions(action.level, length, seed);
+      // Group into skill sections (vocabulary → grammar → reading → listening)
+      // so the runner can show one block per skill with interstitials between.
+      // Array.prototype.sort is stable (ES2019+), so difficulty progression
+      // within each skill — produced by pick* — is preserved. Scoring iterates
+      // all questions and is order-independent, so this only affects display.
+      const questions = [...picked].sort(
+        (a, b) => SKILL_ORDER.indexOf(a.skill) - SKILL_ORDER.indexOf(b.skill),
+      );
       return {
         ...state,
         level: action.level,
@@ -119,8 +128,11 @@ interface HskTestContextValue {
   hydrated: boolean;
   /** Begin a fresh test for a level + mode. */
   start: (level: HskTestLevel, mode: HskTestMode) => void;
-  /** Record an answer for the current question. */
+  /** Record an answer for the current question (index-based, legacy). */
   answer: (value: unknown) => void;
+  /** Record an answer for a specific question by id. Used by the immersive
+   *  runner, which drives its own screen machine instead of state.index. */
+  recordAnswer: (questionId: string, value: unknown) => void;
   /** Read the stored answer for the current question, if any. */
   getCurrentAnswer: () => HskAnswer | undefined;
   next: () => void;
@@ -182,6 +194,11 @@ export function HskTestProvider({ children }: { children: ReactNode }) {
     },
     [state.index, state.questions],
   );
+  const recordAnswer = useCallback(
+    (questionId: string, value: unknown) =>
+      dispatch({ type: "answer", questionId, value }),
+    [],
+  );
   const getCurrentAnswer = useCallback(() => {
     const q = state.questions[state.index];
     if (!q) return undefined;
@@ -206,6 +223,7 @@ export function HskTestProvider({ children }: { children: ReactNode }) {
       hydrated: hydratedRef.current,
       start,
       answer,
+      recordAnswer,
       getCurrentAnswer,
       next,
       back,
@@ -213,7 +231,18 @@ export function HskTestProvider({ children }: { children: ReactNode }) {
       reset,
       setName,
     }),
-    [state, start, answer, getCurrentAnswer, next, back, finish, reset, setName],
+    [
+      state,
+      start,
+      answer,
+      recordAnswer,
+      getCurrentAnswer,
+      next,
+      back,
+      finish,
+      reset,
+      setName,
+    ],
   );
 
   return (
