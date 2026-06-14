@@ -33,9 +33,9 @@ const LEVEL_CARD: Record<number, Preset> = {
     lines: ["Повседневные темы,", "диалоги и общение"],
     art: "/hsk-test/hsk-2.webp",
     vars: {
-      "--img-w": "76%",
-      "--img-left": "12%",
-      "--img-bottom": "-4%",
+      "--img-w": "88%",
+      "--img-left": "6%",
+      "--img-bottom": "-1%",
       "--img-rot": "0deg",
       "--sub-w": "312px",
     } as CSSProperties,
@@ -132,7 +132,8 @@ export default function LevelGrid(
                 src={card.art}
                 alt=""
                 className={`hsk-test-level-card-art-img${card.artDark ? " hsk-test-level-card-art-img--light" : ""}`}
-                loading="lazy"
+                loading="eager"
+                decoding="async"
                 draggable={false}
               />
               {card.artDark && (
@@ -140,7 +141,8 @@ export default function LevelGrid(
                   src={card.artDark}
                   alt=""
                   className="hsk-test-level-card-art-img hsk-test-level-card-art-img--dark"
-                  loading="lazy"
+                  loading="eager"
+                  decoding="async"
                   draggable={false}
                 />
               )}
