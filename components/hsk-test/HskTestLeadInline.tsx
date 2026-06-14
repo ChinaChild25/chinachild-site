@@ -93,7 +93,7 @@ export default function HskTestLeadInline({
           </h2>
           <p className="mt-3 max-w-[520px] text-base leading-[1.55] text-[#4b4b4b]">
             Куратор свяжется в течение рабочего дня и подскажет, с какой группы
-            на HSK {recommendedLevel} удобнее всего начать.
+            на HSK&nbsp;{recommendedLevel} удобнее всего начать.
           </p>
           <p className="mt-4 text-sm leading-[1.5] text-[#4b4b4b]">
             Хотите быстрее?{" "}
@@ -114,7 +114,7 @@ export default function HskTestLeadInline({
       <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr] lg:items-center">
         <div>
           <h2 className="text-[1.5rem] font-medium leading-[1.2] text-[#1b1b1b] sm:text-[1.875rem]">
-            Хотите консультацию по курсу HSK {recommendedLevel}?
+            Хотите консультацию по курсу HSK&nbsp;{recommendedLevel}?
           </h2>
           <p className="mt-3 max-w-[480px] text-base leading-[1.55] text-[#4b4b4b]">
             Оставьте телефон — куратор перезвонит в удобное время, расскажет про

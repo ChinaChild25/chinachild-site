@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 type TestArtProps = {
-  /** Asset base name — resolves to /hsk-test/<name>.png. */
+  /** Asset base name — resolves to /hsk-test/<name>.<format>. */
   name: string;
   /** Empty alt = decorative (default). Pass alt to make it a real image. */
   alt?: string;
@@ -11,6 +11,8 @@ type TestArtProps = {
   /** Decorative glyph shown in the placeholder before the real PNG exists. */
   glyph?: string;
 };
+
+const WEBP_ASSETS = new Set(["result-photo", "rings"]);
 
 /**
  * Illustration slot for the HSK-test funnel.
@@ -22,6 +24,7 @@ type TestArtProps = {
  */
 export default function TestArt({ name, alt = "", className, glyph }: TestArtProps) {
   const [failed, setFailed] = useState(false);
+  const format = WEBP_ASSETS.has(name) ? "webp" : "png";
 
   if (failed) {
     return (
@@ -42,7 +45,7 @@ export default function TestArt({ name, alt = "", className, glyph }: TestArtPro
     // its intrinsic size is unknown, so next/image isn't a fit here.
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={`/hsk-test/${name}.png`}
+      src={`/hsk-test/${name}.${format}`}
       alt={alt}
       className={`hsk-art hsk-art-img${className ? ` ${className}` : ""}`}
       onError={() => setFailed(true)}

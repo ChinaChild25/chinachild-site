@@ -8,7 +8,7 @@ import type { CSSProperties, ReactNode } from "react";
  * desktop (Praktikum «Как вы будете учиться») and collapse into a horizontal
  * swipe carousel on mobile. Pixel-matched to Figma:
  *   card  1400×640  r20  #F0F0F0  (no shadow)
- *   sky   665×595   r10  sky.png  (inset 22px, right half)
+ *   sky   665×595   r10  sky.webp  (inset 22px, right half)
  *   mock  565×340   r20  #4B8CCB  (centered in the sky)
  *   title Inter 400 40px / body Inter 400 20px, tracking −5%
  * Badges are the ready-made icon1/2/3.png assets. See `.hsk-explain*` in
@@ -167,7 +167,7 @@ export default function LevelExplainCards({
       <Card
         i={0}
         icon="/hsk-test/icon1.png"
-        title={`Что проверяет тест HSK ${level}`}
+        title={`Что проверяет тест HSK\u00A0${level}`}
         body={intro}
       >
         <span className="hsk-explain-mock-eyebrow">Что проверяем</span>
@@ -184,7 +184,7 @@ export default function LevelExplainCards({
       <Card
         i={1}
         icon="/hsk-test/icon2.png"
-        title={`На уровне HSK ${level} вы умеете`}
+        title={`На уровне HSK\u00A0${level} вы умеете`}
         body="Тест проверяет каждую из этих тем. Видно, что уже закрепилось, а что стоит повторить перед экзаменом."
       >
         <span className="hsk-explain-mock-eyebrow">Вы уже умеете</span>

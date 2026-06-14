@@ -46,10 +46,10 @@ export default function LevelHero({ meta }: { meta: HskTestLevelMeta }) {
     <div className="hsk-test-level-hero" data-level={meta.level} style={art.vars}>
       <div className="hsk-test-level-hero-body">
         <span className="hsk-test-level-hero-eyebrow">
-          Уровень HSK {meta.level} · CEFR {meta.cefr}
+          Уровень HSK&nbsp;{meta.level} · CEFR&nbsp;{meta.cefr}
         </span>
         <h1 className="hsk-test-level-hero-title">
-          Тест HSK {meta.level} онлайн — проверьте свой уровень китайского за 10 минут
+          Тест HSK&nbsp;{meta.level} онлайн — проверьте свой уровень китайского за 10 минут
         </h1>
         <p className="hsk-test-level-hero-sub">{meta.blurb}</p>
         <div className="hsk-test-level-hero-chips">
@@ -62,7 +62,7 @@ export default function LevelHero({ meta }: { meta: HskTestLevelMeta }) {
             Пройти тест бесплатно
           </Link>
           <Link href={`/hsk/hsk-${meta.level}`} className="hsk-test-level-hero-btn-ghost">
-            Подробнее о HSK {meta.level}
+            Подробнее о HSK&nbsp;{meta.level}
           </Link>
         </div>
       </div>

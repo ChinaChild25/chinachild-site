@@ -18,6 +18,27 @@ type Props = {
   typicalMistake: string;
 };
 
+const CJK_QUOTE_RE = /«[^»]*[\u3400-\u9fff][^»]*»/gu;
+
+function keepCjkQuotesTogether(text: string) {
+  const parts = [];
+  let lastIndex = 0;
+
+  for (const match of text.matchAll(CJK_QUOTE_RE)) {
+    const index = match.index ?? 0;
+    if (index > lastIndex) parts.push(text.slice(lastIndex, index));
+    parts.push(
+      <span className="hsk-nowrap" key={`${match[0]}-${index}`}>
+        {match[0]}
+      </span>,
+    );
+    lastIndex = index + match[0].length;
+  }
+
+  if (lastIndex < text.length) parts.push(text.slice(lastIndex));
+  return parts.length ? parts : text;
+}
+
 export default function LevelMistake({
   level,
   mistake,
@@ -28,13 +49,13 @@ export default function LevelMistake({
       {/* left-top */}
       <article className="hsk-mistake-c hsk-mistake-c1">
         <span className="hsk-mistake-tag">Типичная ошибка</span>
-        <p>{typicalMistake}</p>
+        <p>{keepCjkQuotesTogether(typicalMistake)}</p>
       </article>
 
       {/* left-bottom */}
       <article className="hsk-mistake-c hsk-mistake-c3">
         <span className="hsk-mistake-tag">Совет</span>
-        <p>{mistake.tip}</p>
+        <p>{keepCjkQuotesTogether(mistake.tip)}</p>
       </article>
 
       {/* centre — glossy device, focal example on the black screen */}
@@ -44,20 +65,20 @@ export default function LevelMistake({
           <p className="hsk-mistake-big" lang="zh">
             {mistake.big}
           </p>
-          <p className="hsk-mistake-note">{mistake.note}</p>
+          <p className="hsk-mistake-note">{keepCjkQuotesTogether(mistake.note)}</p>
         </div>
       </div>
 
       {/* right-top */}
       <article className="hsk-mistake-c hsk-mistake-c2">
         <span className="hsk-mistake-tag">Как не ошибиться</span>
-        <p>{mistake.fix}</p>
+        <p>{keepCjkQuotesTogether(mistake.fix)}</p>
       </article>
 
       {/* right-bottom (keyboard texture), overlaps the device */}
       <article className="hsk-mistake-c hsk-mistake-c4">
         <span className="hsk-mistake-tag">
-          На что обратить внимание на уровне HSK {level}
+          На что обратить внимание на&nbsp;уровне HSK&nbsp;{level}
         </span>
         <div className="hsk-mistake-pills">
           {mistake.watch.map((w) => (
@@ -82,8 +103,10 @@ export default function LevelMistake({
           src="/team/zhao-li-prepodavatel-kitajskogo.webp"
           alt=""
           aria-hidden
+          width={172}
+          height={172}
           className="hsk-mistake-expert-photo"
-          loading="eager"
+          loading="lazy"
           draggable={false}
         />
       </aside>

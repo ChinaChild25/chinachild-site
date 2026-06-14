@@ -12,7 +12,7 @@ export default function LevelNextStep({
   note: string;
 }) {
   const imageSize =
-    level === 1 ? { width: 2136, height: 1152 } : { width: 2080, height: 1272 };
+    level === 1 ? { width: 1700, height: 917 } : { width: 1700, height: 1040 };
 
   return (
     <div className="hsk-next">
@@ -23,7 +23,7 @@ export default function LevelNextStep({
 
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={`/hsk-test/hsk-ladder-${level}.png`}
+        src={`/hsk-test/hsk-ladder-${level}.webp`}
         alt=""
         aria-hidden
         width={imageSize.width}

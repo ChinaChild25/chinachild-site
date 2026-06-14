@@ -95,7 +95,7 @@ export default function HskTestResultPage() {
                 Ваш уровень по тесту
               </span>
               <div className="hsk-test-result-level-big">
-                HSK {result.recommendedLevel}
+                HSK&nbsp;{result.recommendedLevel}
               </div>
               <h1 className="mt-2 text-[1.75rem] font-normal leading-[1.12] tracking-[-0.02em] text-[#1b1b1b] sm:text-[2.25rem]">
                 {verdict.title}
@@ -117,7 +117,7 @@ export default function HskTestResultPage() {
                 <div>
                   <span className="hsk-test-result-stat-label">Вы выбрали</span>
                   <span className="hsk-test-result-stat-value">
-                    HSK {result.level}
+                    HSK&nbsp;{result.level}
                   </span>
                 </div>
               </div>
@@ -126,7 +126,7 @@ export default function HskTestResultPage() {
                   href={`/hsk/hsk-${result.recommendedLevel}`}
                   className={buttonStyles({ size: "large" })}
                 >
-                  Подробнее об уровне HSK {result.recommendedLevel}
+                  Подробнее об уровне HSK&nbsp;{result.recommendedLevel}
                 </Link>
               </div>
             </div>

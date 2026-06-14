@@ -271,7 +271,7 @@ export default async function HskTestLevelPage({ params }: LevelPageProps) {
       {/* How the test works — three cards that stack on scroll (Praktikum) */}
       <section className="page-shell-wide section-space">
         <h2 className="mb-12 text-center text-[1.875rem] font-normal leading-[1.1] tracking-[-0.02em] text-[#1b1b1b] sm:mb-16 sm:text-[2.5rem] lg:text-[3rem]">
-          Как устроен тест HSK {meta.level}
+          Как устроен тест <span className="whitespace-nowrap">HSK&nbsp;{meta.level}</span>
         </h2>
         <LevelExplainCards
           level={meta.level}
@@ -285,7 +285,7 @@ export default async function HskTestLevelPage({ params }: LevelPageProps) {
       <section className="section-space">
         <div className="page-shell-wide hsk-mistake-heading text-center">
           <h2 className="text-[1.875rem] font-normal leading-[1.1] tracking-[-0.02em] text-[#1b1b1b] sm:text-[2.5rem] lg:text-[3rem]">
-            Типичные ошибки на HSK {meta.level}
+            Типичные ошибки на <span className="whitespace-nowrap">HSK&nbsp;{meta.level}</span>
             <span className="block text-[#9a9a9a]">и как их обойти</span>
           </h2>
         </div>
@@ -299,7 +299,7 @@ export default async function HskTestLevelPage({ params }: LevelPageProps) {
       {/* What's next — standalone green shape with the HSK-ladder timeline */}
       <section className="page-shell-wide section-space">
         <h2 className="mb-12 text-center text-[1.875rem] font-normal leading-[1.1] tracking-[-0.02em] text-[#1b1b1b] sm:mb-16 sm:text-[2.5rem] lg:text-[3rem]">
-          Что дальше после HSK {meta.level}
+          Что дальше после <span className="whitespace-nowrap">HSK&nbsp;{meta.level}</span>
         </h2>
         <LevelNextStep level={meta.level} note={copy.nextStep} />
       </section>
@@ -307,17 +307,17 @@ export default async function HskTestLevelPage({ params }: LevelPageProps) {
       {/* Other levels */}
       <section className="page-shell-wide section-space">
         <h2 className="mb-12 text-center text-[1.875rem] font-normal leading-[1.1] tracking-[-0.02em] text-[#1b1b1b] sm:mb-16 sm:text-[2.5rem] lg:text-[3rem]">
-          Другие уровни HSK-теста
+          Другие уровни <span className="whitespace-nowrap">HSK-теста</span>
         </h2>
         <div>
-          <LevelGrid />
+          <LevelGrid excludeLevel={meta.level} />
         </div>
       </section>
 
       {/* FAQ */}
       <section id="faq">
         <FAQSection
-          title={`Частые вопросы про HSK ${meta.level}`}
+          title={`Частые вопросы про HSK\u00A0${meta.level}`}
           description="Если не нашли ответа — напишите, и куратор подскажет, какой уровень подойдёт именно вам."
           items={hskTestFaq}
           schema={false}
@@ -331,7 +331,7 @@ export default async function HskTestLevelPage({ params }: LevelPageProps) {
           <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr] lg:items-center">
             <div>
               <h2 className="text-[1.75rem] font-normal leading-[1.15] tracking-[-0.02em] text-white sm:text-4xl">
-                Готовы к курсу HSK {meta.level}?
+                Готовы к курсу HSK&nbsp;{meta.level}?
               </h2>
               <p className="mt-4 max-w-[560px] text-base leading-[1.55] text-white/85 sm:text-lg">
                 Откроем доступ к программе под ваш уровень и подберём преподавателя. Первое занятие бесплатное — поможет окончательно понять, ваш ли это уровень.
@@ -352,7 +352,7 @@ export default async function HskTestLevelPage({ params }: LevelPageProps) {
                   className: "bg-white/15 text-white hover:bg-white/25",
                 })}
               >
-                Подробнее о HSK {meta.level}
+                Подробнее о HSK&nbsp;{meta.level}
               </Link>
             </div>
           </div>

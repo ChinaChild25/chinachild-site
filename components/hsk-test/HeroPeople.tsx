@@ -1,6 +1,6 @@
 /**
  * Hero people composition — a single pre-arranged fan of three photos
- * (public/hsk-test/hero-people.png, transparent) with the ChinaChild badge
+ * (public/hsk-test/hero-people.webp, transparent) with the ChinaChild badge
  * overlapping the bottom-centre, recreating the Praktikum hero composition.
  */
 export default function HeroPeople() {
@@ -8,8 +8,10 @@ export default function HeroPeople() {
     <div className="hsk-hero-people" aria-hidden>
       {/* eslint-disable @next/next/no-img-element */}
       <img
-        src="/hsk-test/hero-people.png"
+        src="/hsk-test/hero-people.webp"
         alt=""
+        width={1600}
+        height={915}
         className="hsk-hero-people-img"
         draggable={false}
       />

@@ -96,14 +96,20 @@ export default function LevelGrid(
   {
     /** Kept for call-site compatibility; both targets resolve to the level page. */
     linkToLevelPage = true,
+    excludeLevel,
   }: {
     linkToLevelPage?: boolean;
+    excludeLevel?: number;
   } = {},
 ) {
   void linkToLevelPage;
+  const levels = excludeLevel
+    ? hskTestLevels.filter((meta) => meta.level !== excludeLevel)
+    : hskTestLevels;
+
   return (
     <div className="hsk-test-level-grid">
-      {hskTestLevels.map((meta) => {
+      {levels.map((meta) => {
         const card = LEVEL_CARD[meta.level];
         return (
           <Link
@@ -114,7 +120,7 @@ export default function LevelGrid(
             style={card.vars}
           >
             <CornerArrow />
-            <h3 className="hsk-test-level-card-title">HSK {meta.level}</h3>
+            <h3 className="hsk-test-level-card-title">HSK&nbsp;{meta.level}</h3>
             <p className="hsk-test-level-card-blurb">
               {card.lines[0]}
               <br />
