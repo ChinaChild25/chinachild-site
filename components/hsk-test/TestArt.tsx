@@ -12,7 +12,15 @@ type TestArtProps = {
   glyph?: string;
 };
 
-const WEBP_ASSETS = new Set(["result-photo", "rings"]);
+const WEBP_ASSETS = new Set([
+  "result-photo",
+  "rings",
+  "result-shapes",
+  "shape-masks",
+  "shape-spinner",
+  "shape-folder",
+  "shape-toggle",
+]);
 
 /**
  * Illustration slot for the HSK-test funnel.

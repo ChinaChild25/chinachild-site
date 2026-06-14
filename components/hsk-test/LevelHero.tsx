@@ -17,26 +17,25 @@ type HeroArt = {
 const HERO_ART: Record<number, HeroArt> = {
   1: {
     art: "/hsk-test/hsk-1.webp",
-    // square → vertically centred in the right zone (see CSS), not cornered
-    vars: { "--h-h": "82%", "--h-w": "66%", "--h-right": "4%", "--h-bottom": "-4%", "--h-rot": "0deg" } as CSSProperties,
+    // square → vertically centred in the right zone; bleeds off the right edge
+    vars: { "--h-h": "74%", "--h-w": "66%", "--h-right": "-3%", "--h-bottom": "-4%", "--h-rot": "0deg" } as CSSProperties,
   },
   2: {
     art: "/hsk-test/hsk-2.webp",
-    // moved left (bigger --h-right) and up (less bottom bleed)
-    vars: { "--h-h": "82%", "--h-w": "68%", "--h-right": "8%", "--h-bottom": "-4%", "--h-rot": "0deg" } as CSSProperties,
+    // bottom-anchored; pushed off the right edge so the crop is off-frame
+    vars: { "--h-h": "80%", "--h-w": "68%", "--h-right": "-6%", "--h-bottom": "-7%", "--h-rot": "0deg" } as CSSProperties,
   },
   3: {
     art: "/hsk-test/hsk-3.webp",
-    // tilted + bottom-anchored, sized large and pushed right so the left leg
-    // bleeds off the bottom and the right leg off the right edge — both flat-cut
-    // ends hidden, ☀ + 三级 stay in frame.
-    vars: { "--h-h": "94%", "--h-w": "108%", "--h-right": "-12%", "--h-bottom": "-10%", "--h-rot": "-24deg" } as CSSProperties,
+    // tilted + bottom-anchored, large and pushed right so the right leg bleeds
+    // off the right edge and the left leg off the bottom — cuts stay off-frame.
+    vars: { "--h-h": "88%", "--h-w": "108%", "--h-right": "-12%", "--h-bottom": "-10%", "--h-rot": "-24deg" } as CSSProperties,
   },
   4: {
     art: "/hsk-test/hsk-4-dark.webp",
     artDark: "/hsk-test/hsk-4.webp",
-    // square → vertically centred in the right zone (see CSS), not cornered
-    vars: { "--h-h": "78%", "--h-w": "60%", "--h-right": "5%", "--h-bottom": "-3%", "--h-rot": "14deg" } as CSSProperties,
+    // square → vertically centred in the right zone; bleeds off the right edge
+    vars: { "--h-h": "70%", "--h-w": "60%", "--h-right": "-2%", "--h-bottom": "-3%", "--h-rot": "14deg" } as CSSProperties,
   },
 };
 
