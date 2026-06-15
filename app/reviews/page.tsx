@@ -50,7 +50,7 @@ export default function ReviewsPage() {
         primaryCta={{ label: "Оставить отзыв", href: absoluteUrl("/reviews"), external: true }}
         secondaryCta={{ label: "Записаться на пробное", modal: true }}
         heroToneClass="card-hero-reviews"
-        illustration="/heroes/otzivi.svg"
+        illustration="/heroes/otzivi.webp"
         illustrationAlt="Отзывы учеников ChinaChild о курсах китайского языка и результатах обучения"
         illustrationWidth={494}
         illustrationHeight={420}

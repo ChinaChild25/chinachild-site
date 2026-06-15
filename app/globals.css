@@ -6366,6 +6366,7 @@ html[data-theme="dark"] .hsk-test-level-card:hover {
 .hsk-test-level-card-art-img {
   position: absolute;
   width: var(--img-w);
+  height: auto; /* width-driven; keep aspect ratio (next/image needs one auto) */
   max-width: none; /* allow >100% bleed (HSK 3) past the global img reset */
   left: var(--img-left, auto);
   right: var(--img-right, auto);

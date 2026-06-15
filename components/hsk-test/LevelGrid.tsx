@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { hskTestLevels } from "@/lib/hsk-test/levels";
@@ -13,14 +14,24 @@ type Preset = {
   lines: [string, string];
   art: string;
   artDark?: string;
+  /** Intrinsic pixel size of the source WebP (for next/image aspect ratio). */
+  w: number;
+  h: number;
   /** Inline CSS custom properties consumed by the card CSS. */
   vars: CSSProperties;
 };
+
+// Cards render at ~120–260px on screen; the sources are 720–1280px, so the
+// optimizer ships a small AVIF/WebP variant per DPR. `width` (--img-w) drives
+// the on-screen size in CSS; this is just a coverage hint for srcset.
+const CARD_ART_SIZES = "(max-width: 640px) 46vw, (max-width: 1024px) 30vw, 260px";
 
 const LEVEL_CARD: Record<number, Preset> = {
   1: {
     lines: ["Базовые слова и", "простые фразы"],
     art: "/hsk-test/hsk-1.webp",
+    w: 720,
+    h: 720,
     vars: {
       "--img-w": "58.4%",
       "--img-right": "2.4%",
@@ -32,6 +43,8 @@ const LEVEL_CARD: Record<number, Preset> = {
   2: {
     lines: ["Повседневные темы,", "диалоги и общение"],
     art: "/hsk-test/hsk-2.webp",
+    w: 760,
+    h: 760,
     vars: {
       "--img-w": "88%",
       "--img-left": "6%",
@@ -43,6 +56,8 @@ const LEVEL_CARD: Record<number, Preset> = {
   3: {
     lines: ["Грамматика, чтение и", "аудирование"],
     art: "/hsk-test/hsk-3.webp",
+    w: 1280,
+    h: 732,
     vars: {
       "--img-w": "112.4%",
       "--img-left": "-5.6%",
@@ -56,6 +71,8 @@ const LEVEL_CARD: Record<number, Preset> = {
     // Dark-interior octagon pops on the light card; light-interior on the dark card.
     art: "/hsk-test/hsk-4-dark.webp", // shown in light theme (--light)
     artDark: "/hsk-test/hsk-4.webp", // shown in dark theme (--dark)
+    w: 720,
+    h: 720,
     vars: {
       "--img-w": "55.2%",
       "--img-right": "2.8%",
@@ -131,28 +148,32 @@ export default function LevelGrid(
                   this card's `container-type: inline-size` context can silently
                   never load (the HSK 2 card rendered blank on iPhone). fetchPriority
                   "low" keeps it from competing with the LCP hero, so the PageSpeed
-                  win stands. Do not switch back to lazy. */}
-              {/* eslint-disable @next/next/no-img-element */}
-              <img
+                  win stands. Do not switch back to lazy. next/image only adds an
+                  AVIF/WebP srcset on top — these cards render tiny, so the variant
+                  is a few KB instead of the full source. */}
+              <Image
                 src={card.art}
                 alt=""
+                width={card.w}
+                height={card.h}
+                sizes={CARD_ART_SIZES}
                 className={`hsk-test-level-card-art-img${card.artDark ? " hsk-test-level-card-art-img--light" : ""}`}
                 loading="eager"
                 fetchPriority="low"
-                decoding="async"
                 draggable={false}
               />
               {card.artDark && (
-                <img
+                <Image
                   src={card.artDark}
                   alt=""
+                  width={card.w}
+                  height={card.h}
+                  sizes={CARD_ART_SIZES}
                   className="hsk-test-level-card-art-img hsk-test-level-card-art-img--dark"
                   loading="lazy"
-                  decoding="async"
                   draggable={false}
                 />
               )}
-              {/* eslint-enable @next/next/no-img-element */}
             </div>
           </Link>
         );

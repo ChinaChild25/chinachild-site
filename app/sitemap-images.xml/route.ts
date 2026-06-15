@@ -69,7 +69,7 @@ export async function GET() {
       lastmod: now,
       images: [
         {
-          loc: absoluteUrl("/heroes/otzivi.svg"),
+          loc: absoluteUrl("/heroes/otzivi.webp"),
           title: "Отзывы учеников ChinaChild",
           caption:
             "Иллюстрация отзывов учеников ChinaChild о курсах китайского языка и результатах обучения.",
