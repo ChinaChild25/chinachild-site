@@ -73,6 +73,7 @@ export default function LevelHero({ meta }: { meta: HskTestLevelMeta }) {
           alt=""
           className={`hsk-test-level-hero-img${art.artDark ? " hsk-test-level-hero-img--light" : ""}`}
           loading="eager"
+          fetchPriority="high"
           draggable={false}
         />
         {art.artDark && (

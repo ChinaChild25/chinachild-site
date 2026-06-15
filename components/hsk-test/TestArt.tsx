@@ -10,6 +10,8 @@ type TestArtProps = {
   className?: string;
   /** Decorative glyph shown in the placeholder before the real PNG exists. */
   glyph?: string;
+  /** Above-the-fold? Load eagerly instead of lazy (avoids an LCP load delay). */
+  priority?: boolean;
 };
 
 const WEBP_ASSETS = new Set([
@@ -30,7 +32,7 @@ const WEBP_ASSETS = new Set([
  * Drop a PNG/WebP named `<name>.png` into public/hsk-test/ and it appears with
  * no code change. See public/hsk-test/README.md for the asset list.
  */
-export default function TestArt({ name, alt = "", className, glyph }: TestArtProps) {
+export default function TestArt({ name, alt = "", className, glyph, priority = false }: TestArtProps) {
   const [failed, setFailed] = useState(false);
   const format = WEBP_ASSETS.has(name) ? "webp" : "png";
 
@@ -57,7 +59,7 @@ export default function TestArt({ name, alt = "", className, glyph }: TestArtPro
       alt={alt}
       className={`hsk-art hsk-art-img${className ? ` ${className}` : ""}`}
       onError={() => setFailed(true)}
-      loading="lazy"
+      loading={priority ? "eager" : "lazy"}
       draggable={false}
     />
   );

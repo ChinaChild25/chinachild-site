@@ -13,6 +13,7 @@ export default function HeroPeople() {
         width={1600}
         height={915}
         className="hsk-hero-people-img"
+        fetchPriority="high"
         draggable={false}
       />
       <img
