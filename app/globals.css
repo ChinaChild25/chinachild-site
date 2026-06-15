@@ -6612,6 +6612,16 @@ html[data-theme="dark"] .hsk-test-level-hero-chip {
     transform: rotate(var(--h-rot, -24deg));
     transform-origin: center bottom;
   }
+  /* HSK 2's object is exported with ~32% transparent headroom in its square
+     frame (vs ~5–9% for HSK 1/4). Bottom-anchored at height:100%, that empty
+     top filled the visible art zone while the object sat below the fold /
+     behind the fixed cookie banner — so HSK 2 read as "no illustration" on
+     phones. Scale by the object (~68% of the frame) so it fills the zone like
+     the other levels; the empty top spills above and is clipped. */
+  .hsk-test-level-hero[data-level="2"] .hsk-test-level-hero-img {
+    height: 122%;
+    bottom: -5%;
+  }
 }
 
 /* Level 4 art: light variant by default, dark variant under dark theme. */
