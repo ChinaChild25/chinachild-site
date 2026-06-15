@@ -29,7 +29,7 @@ export default function LevelNextStep({
         width={imageSize.width}
         height={imageSize.height}
         className="hsk-next-ladder"
-        loading="eager"
+        loading="lazy"
         draggable={false}
       />
     </div>

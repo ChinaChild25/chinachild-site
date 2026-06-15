@@ -132,7 +132,7 @@ export default function LevelGrid(
                 src={card.art}
                 alt=""
                 className={`hsk-test-level-card-art-img${card.artDark ? " hsk-test-level-card-art-img--light" : ""}`}
-                loading="eager"
+                loading="lazy"
                 decoding="async"
                 draggable={false}
               />
@@ -141,7 +141,7 @@ export default function LevelGrid(
                   src={card.artDark}
                   alt=""
                   className="hsk-test-level-card-art-img hsk-test-level-card-art-img--dark"
-                  loading="eager"
+                  loading="lazy"
                   decoding="async"
                   draggable={false}
                 />

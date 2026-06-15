@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Ma_Shan_Zheng } from "next/font/google";
+import { Inter } from "next/font/google";
 import { Suspense } from "react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
@@ -23,21 +23,16 @@ import { SITE_URL } from "@/lib/site-config";
 // .lead-required использовали — заменены на 600. Минус один woff2 = -25%
 // шрифтового трафика.
 const inter = Inter({
-  subsets: ["latin", "cyrillic"],
+  // latin-ext is required by the pinyin tone marks (ā á ǎ è ē ǐ ó …) sprinkled
+  // through the HSK content. Without it declared, next/font still serves that
+  // subset (~85 KiB) but only discovers it via CSS — so it loaded chained behind
+  // the stylesheet at VeryHigh priority and became the deepest critical-path
+  // node, starving the hero copy's fonts and inflating LCP on Slow 4G.
+  // Declaring it here preloads it in parallel instead.
+  subsets: ["latin", "latin-ext", "cyrillic"],
   display: "swap",
   variable: "--font-inter",
   weight: ["500", "400", "600"],
-});
-
-// Ma Shan Zheng — brush-calligraphy Chinese display font. Used for accent
-// hanzi in HSK-test heroes, certificates, and result-page watermarks via
-// the `.font-hanzi-callig` utility — never for body text.
-const maShanZheng = Ma_Shan_Zheng({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-hanzi-callig",
-  weight: ["400"],
-  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -87,7 +82,7 @@ export default function RootLayout({
   return (
     <html
       lang="ru"
-      className={`${inter.className} ${maShanZheng.variable}`}
+      className={inter.className}
       data-theme="light"
       suppressHydrationWarning
     >

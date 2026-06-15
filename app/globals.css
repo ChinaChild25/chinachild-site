@@ -7344,6 +7344,25 @@ html[data-theme="dark"] .hsk-test-cert-chip {
   color: var(--ink);
 }
 
+/* Ma Shan Zheng — brush-calligraphy accent font, self-hosted and text-subsetted
+   to the only 4 glyphs that use it (你学想题, the certificate level hanzi).
+   Loading the full Google font via next/font shipped ~90 @font-face subset rules
+   (~32 KiB) that render-blocked EVERY page; this single subset (≈3 KiB woff2)
+   only downloads where those glyphs appear (the result/certificate page) thanks
+   to unicode-range. Elsewhere `.font-hanzi-callig` falls back to system Chinese
+   fonts (PingFang SC, …). */
+@font-face {
+  font-family: "Ma Shan Zheng";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/ma-shan-zheng-subset.woff2) format("woff2");
+  unicode-range: U+4f60, U+5b66, U+60f3, U+9898;
+}
+:root {
+  --font-hanzi-callig: "Ma Shan Zheng";
+}
+
 /* Static, export-friendly hanzi accent — Ma Shan Zheng brush calligraphy.
    Not Inter with negative letter-spacing pretending to be a hanzi. */
 .hsk-test-cert-hanzi-static {

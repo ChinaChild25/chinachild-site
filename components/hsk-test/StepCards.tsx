@@ -60,7 +60,9 @@ export default function StepCards({ steps }: { steps: Step[] }) {
             ) : (
               <div className="hsk-step-face">
                 <div className="hsk-step-figure">
-                  <TestArt name={step.art} className="hsk-step-art" />
+                  {/* First two cards sit above the fold on mobile — load their
+                      art eagerly so it isn't the lazy-delayed LCP. */}
+                  <TestArt name={step.art} className="hsk-step-art" priority={i < 2} />
                 </div>
                 <h3 className="hsk-step-title">
                   {step.title}
