@@ -127,12 +127,18 @@ export default function LevelGrid(
               {card.lines[1]}
             </p>
             <div className="hsk-test-level-card-art" aria-hidden>
+              {/* loading="eager" (NOT lazy): on iOS Safari a lazy <img> inside
+                  this card's `container-type: inline-size` context can silently
+                  never load (the HSK 2 card rendered blank on iPhone). fetchPriority
+                  "low" keeps it from competing with the LCP hero, so the PageSpeed
+                  win stands. Do not switch back to lazy. */}
               {/* eslint-disable @next/next/no-img-element */}
               <img
                 src={card.art}
                 alt=""
                 className={`hsk-test-level-card-art-img${card.artDark ? " hsk-test-level-card-art-img--light" : ""}`}
-                loading="lazy"
+                loading="eager"
+                fetchPriority="low"
                 decoding="async"
                 draggable={false}
               />
