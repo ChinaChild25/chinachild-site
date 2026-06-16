@@ -2,6 +2,17 @@
   "name": "chinachild-site",
   "version": "0.1.0",
   "private": true,
+  "comment:browserslist": "Targets the support floor of the JS Baseline features PageSpeed flagged (Array.prototype.at/Object.hasOwn → Chrome 92 / Safari 15.4, 2022+). Stops Next/SWC shipping those polyfills + over-transpiling on every page (lighter JS, less main-thread parse/eval — the throttled-CPU bottleneck). Drops pre-2022 browsers (<1% of a 2026 RU audience); widen this list if analytics show meaningful old-browser traffic.",
+  "browserslist": [
+    "chrome >= 92",
+    "edge >= 92",
+    "firefox >= 91",
+    "safari >= 15.4",
+    "ios_saf >= 15.4",
+    "samsung >= 16",
+    "opera >= 78",
+    "not dead"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -44,6 +55,7 @@
     "autoprefixer": "^10.5.0",
     "eslint": "^9",
     "eslint-config-next": "^15.5.15",
+    "lighthouse": "^13.4.0",
     "postcss": "^8.5.12",
     "tailwindcss": "^4.2.4",
     "typescript": "^5"
