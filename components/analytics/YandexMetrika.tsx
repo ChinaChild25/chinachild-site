@@ -62,19 +62,26 @@ export function YandexMetrika() {
 
   return (
     <>
-      <Script id="yandex-metrika" strategy="afterInteractive">
+      {/* Split loader. The `ym` stub + init run early (afterInteractive) so the
+          counter queues pageview hits from the very first render — but the heavy
+          ~90 KiB tag.js DOWNLOAD is deferred to `lazyOnload` (after window.load),
+          so it no longer competes with the critical path (HTML → CSS → font →
+          LCP). When tag.js finally loads it drains the queued ym() calls, so no
+          pageviews are lost. Previously the whole thing was afterInteractive,
+          which pulled 90 KiB into the LCP window and inflated mobile LCP. This
+          mirrors the GA4 lazyOnload strategy in GoogleAnalytics.tsx. */}
+      <Script id="yandex-metrika-stub" strategy="afterInteractive">
         {`
-(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-m[i].l=1*new Date();
-for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-(window, document, "script", "https://mc.yandex.ru/metrika/tag.js?id=${YM_ID}", "ym");
-ym(${YM_ID}, "init", {
-  defer: true,
-  ecommerce: "dataLayer"
-});
+window.ym=window.ym||function(){(window.ym.a=window.ym.a||[]).push(arguments)};
+window.ym.l=1*new Date();
+ym(${YM_ID}, "init", { defer: true, ecommerce: "dataLayer" });
         `}
       </Script>
+      <Script
+        id="yandex-metrika-tag"
+        src={`https://mc.yandex.ru/metrika/tag.js?id=${YM_ID}`}
+        strategy="lazyOnload"
+      />
       <noscript>
         <div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
