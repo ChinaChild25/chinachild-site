@@ -23,7 +23,7 @@ type CityPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export const revalidate = 86400;
+export const revalidate = false;
 
 export function generateStaticParams() {
   return getCitySlugs().map((slug) => ({ slug }));

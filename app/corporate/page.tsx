@@ -10,7 +10,7 @@ import { buildMetadata } from "@/lib/metadata";
 import { absoluteUrl, CONTACT_EMAIL, CONTACT_PHONE, CONTACT_PHONE_TEL, SITE_URL } from "@/lib/site-config";
 import { getAllPosts } from "@/lib/blog";
 
-export const revalidate = 86400;
+export const revalidate = false;
 
 export const metadata: Metadata = buildMetadata({
   title: "Корпоративное обучение китайскому — ChinaChild для бизнеса",

@@ -32,9 +32,11 @@ type BlogPostPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-// ISR: rebuild each post at most once per day even without a deploy, so
-// dateModified bumps and content edits surface within 24h.
-export const revalidate = 86400;
+// Fully static: regenerated only at build/deploy, never on a timer. Daily ISR
+// revalidation of large pages is what burned the Vercel free-tier ISR-Writes
+// and Active-CPU budgets, so it is disabled. Content edits + dateModified bumps
+// surface on the next deploy (the scheduled blog bot deploys 2×/week).
+export const revalidate = false;
 
 /** Разбирает inline-markdown: `code` + **жирный** + autolink, возвращает
  *  массив React-узлов. `code` режется первым и не участвует в bold/links —

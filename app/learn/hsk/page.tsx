@@ -11,7 +11,7 @@ import { absoluteUrl, SITE_URL } from "@/lib/site-config";
 import { getAllPosts } from "@/lib/blog";
 import { getAllGlossaryTerms } from "@/lib/glossary";
 
-export const revalidate = 86400;
+export const revalidate = false;
 
 export const metadata: Metadata = buildMetadata({
   title: "HSK — все уровни экзамена и подготовка | Хаб ChinaChild",

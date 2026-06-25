@@ -21,10 +21,11 @@ import { absoluteUrl } from "@/lib/site-config";
 import { wordHanziDisplayClass } from "@/lib/content/word-hanzi-size";
 import { createBreadcrumbNode } from "@/lib/schema";
 
-export const revalidate = 86400;
-// Prerender only the most frequent words at build; the long tail (full list in
-// sitemap-pages.xml) is generated on first visit and cached for `revalidate`.
-// Keeps each deploy from rewriting ~2000 ISR entries + re-querying Supabase.
+// Fully static (no time-based ISR) to stay within Vercel free-tier ISR-Writes /
+// Active-CPU limits. Build prerenders the most frequent words; the long tail
+// (full list in sitemap-pages.xml) is generated on first visit and then cached
+// permanently until the next deploy — no daily regeneration. Refreshes on deploy.
+export const revalidate = false;
 export const dynamicParams = true;
 
 export async function generateStaticParams(): Promise<Array<{ slug: string }>> {

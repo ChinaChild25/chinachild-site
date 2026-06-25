@@ -15,7 +15,7 @@ type HskPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export const revalidate = 86400;
+export const revalidate = false;
 
 export function generateStaticParams() {
   return hskLevels.map((l) => ({ slug: l.slug }));

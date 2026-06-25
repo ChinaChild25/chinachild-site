@@ -15,7 +15,7 @@ import { formatWordCountRu } from "@/lib/content/labels";
 import { buildMetadata } from "@/lib/metadata";
 import { absoluteUrl } from "@/lib/site-config";
 
-export const revalidate = 86400;
+export const revalidate = false;
 
 type SP = Record<string, string | string[] | undefined>;
 

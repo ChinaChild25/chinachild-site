@@ -12,8 +12,10 @@ type GlossaryTermPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-// ISR: refresh each term once per day so updatedAt bumps without a redeploy.
-export const revalidate = 86400;
+// Fully static: regenerated only on deploy, never on a daily timer — daily ISR
+// revalidation of large pages is what blew the Vercel free-tier budgets.
+// updatedAt bumps surface on the next deploy.
+export const revalidate = false;
 
 export async function generateStaticParams(): Promise<Array<{ slug: string }>> {
   const slugs = await getGlossarySlugs();

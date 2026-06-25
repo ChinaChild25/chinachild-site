@@ -8,7 +8,7 @@ import { formatArticleCountRu, tagGroupLabel } from "@/lib/content/labels";
 import { buildMetadata } from "@/lib/metadata";
 import { absoluteUrl } from "@/lib/site-config";
 
-export const revalidate = 86400;
+export const revalidate = false;
 
 export async function generateStaticParams(): Promise<Array<{ slug: string }>> {
   const groups = await getPublicGrammarTags();
