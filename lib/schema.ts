@@ -324,6 +324,9 @@ export function createCourseNode(course: Course): JsonLd {
       "@type": "Audience",
       audienceType: course.audience,
     },
+    // Курсы без публичной цены (корпоратив, «по запросу») не получают Offer:
+    // Offer без price Google помечает как неполный, а price:"0" читается как
+    // «бесплатно». Поэтому Offer добавляется ниже только при наличии priceValue.
     hasCourseInstance: {
       "@type": "CourseInstance",
       courseMode: "online",
@@ -342,7 +345,7 @@ export function createCourseNode(course: Course): JsonLd {
         ? { instructor: { "@id": ID.teacher(course.instructorSlug) } }
         : {}),
     },
-    offers: offer,
+    ...(course.priceValue ? { offers: offer } : {}),
   };
 
   if (course.teaches && course.teaches.length > 0) {

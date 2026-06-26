@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
 import JsonLd from "@/components/seo/JsonLd";
 import LeadModal from "@/components/forms/LeadModal";
@@ -13,7 +14,12 @@ import {
   type JsonLd as JsonLdType,
 } from "@/lib/schema";
 import { courseMediaBySlug } from "@/lib/course-media";
-import { YANDEX_BUSINESS_REVIEWS_URL } from "@/lib/site-config";
+import {
+  CONTACT_EMAIL,
+  CONTACT_PHONE,
+  CONTACT_PHONE_TEL,
+  YANDEX_BUSINESS_REVIEWS_URL,
+} from "@/lib/site-config";
 import {
   getReviewsForCourse,
   getReviewYandexUrl,
@@ -31,11 +37,18 @@ type CourseLandingProps = {
     title: string;
     description: string;
   };
-  bullets: Bullet[];
-  longCopy: { heading: string; paragraphs: string[] };
+  bullets?: Bullet[];
+  longCopy?: { heading: string; paragraphs: string[] };
+  /** Rich bespoke sections (repetitor-level depth) rendered after the hero,
+   *  before the reviews block. When provided, the page fully controls its
+   *  middle while CourseLanding keeps owning hero, schema, reviews, FAQ, CTA. */
+  sections?: ReactNode;
   faqs: FaqItem[];
   schemaCourse: Course;
   related?: { title: string; href: string }[];
+  /** Override the final dark-CTA heading/lead copy per page. */
+  ctaHeading?: string;
+  ctaText?: string;
 };
 
 const toneClass: Record<Bullet["tone"], string> = {
@@ -62,9 +75,12 @@ export default function CourseLanding({
   pageHero,
   bullets,
   longCopy,
+  sections,
   faqs,
   schemaCourse,
   related,
+  ctaHeading,
+  ctaText,
 }: CourseLandingProps) {
   // Курс-специфичные отзывы — рендерим Review schema + UI-блок, чтобы получить
   // звёзды в SERP и социальное доказательство на странице покупки.
@@ -108,29 +124,35 @@ export default function CourseLanding({
         illustrationFill={Boolean(heroMedia)}
       />
 
-      <section className="page-shell-wide section-space">
-        <div className="grid gap-5 md:grid-cols-3">
-          {bullets.map((b) => (
-            <article key={b.title} className={`card-block h-full ${toneClass[b.tone]}`}>
-              <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#262626] leading-[1.2]">{b.title}</h2>
-              <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">{b.body}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="page-shell-wide section-space">
-        <div className="card-block card-block-lg card-cream">
-          <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] text-[#262626] leading-[1.15] sm:text-[2rem]">
-            {longCopy.heading}
-          </h2>
-          <div className="mt-6 grid gap-3 text-base leading-[1.55] text-[#4b4b4b]">
-            {longCopy.paragraphs.map((p, i) => (
-              <p key={i}>{p}</p>
+      {bullets && bullets.length > 0 ? (
+        <section className="page-shell-wide section-space">
+          <div className="grid gap-5 md:grid-cols-3">
+            {bullets.map((b) => (
+              <article key={b.title} className={`card-block h-full ${toneClass[b.tone]}`}>
+                <h2 className="text-[1.25rem] font-medium tracking-[-0.01em] text-[#262626] leading-[1.2]">{b.title}</h2>
+                <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">{b.body}</p>
+              </article>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
+
+      {longCopy ? (
+        <section className="page-shell-wide section-space">
+          <div className="card-block card-block-lg card-cream">
+            <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] text-[#262626] leading-[1.15] sm:text-[2rem]">
+              {longCopy.heading}
+            </h2>
+            <div className="mt-6 grid gap-3 text-base leading-[1.55] text-[#4b4b4b]">
+              {longCopy.paragraphs.map((p, i) => (
+                <p key={i}>{p}</p>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      {sections}
 
       {courseReviews.length > 0 ? (
         <section className="page-shell-wide section-space">
@@ -209,25 +231,44 @@ export default function CourseLanding({
 
       <section className="page-shell-wide section-space">
         <div className="card-block card-block-lg card-ink">
-          <h2 className="text-[1.75rem] font-normal tracking-[-0.02em] text-white leading-[1.15] sm:text-[2rem]">
-            Готовы начать?
-          </h2>
-          <p className="mt-4 max-w-2xl text-base leading-[1.55] text-white/80">
-            Запишитесь на бесплатное пробное занятие. Преподаватель оценит ваш уровень,
-            поставит цель и подберёт подходящий курс.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-              <LeadModal
-                triggerClassName={buttonStyles({ variant: "secondary", size: "large" })}
-                source={`course-landing-${schemaCourse.slug}`}
-                defaultCourse={schemaCourse.slug}
-                suppressFloatingCta
+          <div className="grid gap-6 lg:grid-cols-2 lg:items-center">
+            <div>
+              <span className="tag-pill tag-pill-ink">Остались вопросы?</span>
+              <h2 className="mt-5 text-[1.75rem] font-normal tracking-[-0.02em] text-white leading-[1.15] sm:text-[2rem]">
+                {ctaHeading ?? "Запишитесь на бесплатный пробный урок"}
+              </h2>
+              <p className="mt-4 text-base leading-[1.55] text-white/80">
+                {ctaText ??
+                  "60 минут с преподавателем онлайн: проверим уровень, обсудим цели и покажем личный кабинет. Никаких автосписаний и подписок — продолжать или нет, решаете вы."}
+              </p>
+            </div>
+            <div className="grid gap-3 text-white">
+              <a
+                href={`tel:${CONTACT_PHONE_TEL}`}
+                className="text-[1.5rem] font-medium tracking-[-0.01em] leading-[1.2]"
               >
-              Записаться на пробное
-            </LeadModal>
-            <Link href="/courses" className={buttonStyles({ size: "large", className: "bg-white/15 text-white hover:bg-white/25" })}>
-              Все курсы
-            </Link>
+                {CONTACT_PHONE}
+              </a>
+              <a href={`mailto:${CONTACT_EMAIL}`} className="text-base text-white/80">
+                {CONTACT_EMAIL}
+              </a>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <LeadModal
+                  triggerClassName={buttonStyles({ variant: "secondary", size: "large" })}
+                  source={`course-landing-${schemaCourse.slug}`}
+                  defaultCourse={schemaCourse.slug}
+                  suppressFloatingCta
+                >
+                  Записаться на пробное
+                </LeadModal>
+                <Link
+                  href="/price"
+                  className={buttonStyles({ size: "large", className: "bg-white/15 text-white hover:bg-white/25" })}
+                >
+                  Цены и пакеты
+                </Link>
+              </div>
+            </div>
           </div>
 
           {related && related.length > 0 ? (

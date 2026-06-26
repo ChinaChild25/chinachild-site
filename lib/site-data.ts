@@ -235,8 +235,8 @@ export const courses: Course[] = [
     level: "HSK 1–2",
     duration: "80 занятий",
     format: "Мини-группа до 5 человек",
-    price: "от 4 999 ₽ за курс",
-    priceValue: "4999",
+    price: "от 4 990 ₽ за курс",
+    priceValue: "4990",
     description:
       "Лицензированный курс китайского для подростков 12+ и взрослых. Разговорный уровень и сертификат HSK 2 за 6 месяцев.",
     audience: "Подростки 12+ и взрослые",
@@ -261,8 +261,8 @@ export const courses: Course[] = [
     level: "HSK 1–6",
     duration: "От 6 месяцев",
     format: "Онлайн, мини-группа или индивидуально",
-    price: "от 17 990 ₽",
-    priceValue: "17990",
+    price: "от 15 990 ₽",
+    priceValue: "15990",
     description:
       "Лицензированная программа подготовки к международному экзамену HSK от уровня 1 до 6. Базовый курс HSK 1–2, далее на платформе.",
     audience: "Подростки 12+ и взрослые",
@@ -287,9 +287,9 @@ export const courses: Course[] = [
     href: "/courses/chinese-for-kids",
     level: "HSK 1–2",
     duration: "От 2 месяцев",
-    format: "Один на один с преподавателем",
-    price: "от 17 990 ₽",
-    priceValue: "17990",
+    format: "Индивидуально или мини-группа",
+    price: "от 15 990 ₽",
+    priceValue: "15990",
     description:
       "Индивидуальный курс с преподавателем по программе HSK 1–2. Скидка 10% при оплате за 2 месяца — для школьников с 12 лет.",
     audience: "Школьники 12+",
@@ -304,7 +304,7 @@ export const courses: Course[] = [
     prerequisites: "Возраст от 12 лет. Предварительная подготовка не требуется.",
     credentialAwarded: "Подготовка к сертификату HSK 1 и HSK 2.",
     timeRequiredIso: "PT60H",
-    instructorSlug: "anastasia-ponomareva",
+    instructorSlug: "milena-karlova",
   },
   {
     slug: "business-chinese",
@@ -329,7 +329,7 @@ export const courses: Course[] = [
     credentialAwarded:
       "Документ о прохождении программы ДПО + подготовка к HSK 2.",
     timeRequiredIso: "PT80H",
-    instructorSlug: "zhao-li",
+    instructorSlug: "anastasia-erina",
   },
 ];
 
