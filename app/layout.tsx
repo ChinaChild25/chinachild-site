@@ -74,6 +74,25 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+function isPageSpecificSchemaNode(node: unknown): boolean {
+  if (!node || typeof node !== "object") return false;
+  const type = (node as Record<string, unknown>)["@type"];
+  if (type === "Person" || type === "Course") return true;
+  return Array.isArray(type) && type.some((value) => value === "Person" || value === "Course");
+}
+
+// Full Person and Course schemas live on their relevant profile/landing pages.
+// Shipping every teacher and every course in the root layout duplicated tens of
+// kilobytes into every HTML/RSC response, including all dictionary pages.
+const fullSiteGraph = createSiteGraph();
+const fullSiteGraphNodes = fullSiteGraph["@graph"];
+const compactSiteGraph = Array.isArray(fullSiteGraphNodes)
+  ? {
+      ...fullSiteGraph,
+      "@graph": fullSiteGraphNodes.filter((node) => !isPageSpecificSchemaNode(node)),
+    }
+  : fullSiteGraph;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -114,7 +133,7 @@ export default function RootLayout({
           </Suspense>
           <GoogleAnalytics />
           {/* Site-wide JSON-LD @graph: connected nodes for richer SERP rendering */}
-          <JsonLd data={createSiteGraph()} id="site-graph" />
+          <JsonLd data={compactSiteGraph} id="site-graph" />
           <div className="site-shell">
             <Header />
             {children}
@@ -123,7 +142,7 @@ export default function RootLayout({
           </div>
           <CookieBanner />
         </ConsentProvider>
-        <SpeedInsights />
+        <SpeedInsights sampleRate={0.25} />
       </body>
     </html>
   );
