@@ -7,7 +7,7 @@ import AudioButton from "@/components/content/AudioButton";
 import StrokeOrderPreview from "@/components/content/StrokeOrderPreview";
 import {
   getPublicWordBySlug,
-  getPopularWordSlugs,
+  getPublicWordSlugs,
 } from "@/lib/content/dictionary";
 import { getPublicGrammarRelatedForTerm } from "@/lib/content/grammar";
 import {
@@ -21,15 +21,14 @@ import { absoluteUrl } from "@/lib/site-config";
 import { wordHanziDisplayClass } from "@/lib/content/word-hanzi-size";
 import { createBreadcrumbNode } from "@/lib/schema";
 
-// Fully static (no time-based ISR) to stay within Vercel free-tier ISR-Writes /
-// Active-CPU limits. Build prerenders the most frequent words; the long tail
-// (full list in sitemap-pages.xml) is generated on first visit and then cached
-// permanently until the next deploy — no daily regeneration. Refreshes on deploy.
+// Fully static (no runtime ISR writes): every public word is rendered during the
+// deployment build and refreshed only by the next deploy. Search engines can
+// crawl the complete sitemap without lazily creating hundreds of cache entries.
 export const revalidate = false;
-export const dynamicParams = true;
+export const dynamicParams = false;
 
 export async function generateStaticParams(): Promise<Array<{ slug: string }>> {
-  const slugs = await getPopularWordSlugs();
+  const slugs = await getPublicWordSlugs();
   return slugs.map((slug) => ({ slug }));
 }
 
@@ -163,7 +162,14 @@ export default async function WordDetailPage({ params }: Props) {
             ) : null}
           </header>
 
-          <StrokeOrderPreview characters={word.characters} className="h-full" />
+          <StrokeOrderPreview
+            characters={word.characters.map(({ hanzi, strokes, medians }) => ({
+              hanzi,
+              strokes,
+              medians,
+            }))}
+            className="h-full"
+          />
 
           {word.senses.length > 0 ? (
             <section className="card-block h-full bg-white">
