@@ -106,7 +106,7 @@ npm run gen:images       # сгенерировать недостающие
 
 Параметры через env: `IMAGE_MODEL` (по умолчанию `gpt-image-1`), `IMAGE_SIZE` (`1536x1024` — 3:2 hero), `IMAGE_QUALITY` (`low`|`medium`|`high`), `ONLY=slug1,slug2`.
 
-## Inline-аудио: `:::audio` (OpenAI TTS)
+## Inline-аудио: `:::audio` (OpenAI TTS → Supabase Storage)
 
 Сценарий: блок с китайским текстом, пиньинем и переводом. Скрипт получает MP3 от OpenAI и привязывает.
 
@@ -122,22 +122,22 @@ npm run gen:images       # сгенерировать недостающие
 :::
 ```
 
-`ttsText` опционален — если не задан, скрипт берёт `hanzi`. `voice` тоже можно задать в блоке (`alloy`|`echo`|`fable`|`onyx`|`nova`|`shimmer`); по умолчанию — `OPENAI_TTS_VOICE` или `nova`.
+`ttsText` опционален — если не задан, скрипт берёт `hanzi`. `voice` тоже можно задать в блоке; по умолчанию используется рекомендованный для высокого качества `marin`. Модель по умолчанию — `gpt-4o-mini-tts`, с инструкцией на естественное нормативное произношение китайского.
 
 ```bash
 npm run gen:audio:dry    # план
 npm run gen:audio        # генерация
 ```
 
-Файлы кладутся в `public/audio/blog/<slug>/<hash>.mp3`. Одинаковые `ttsText + voice + model` шарят кэш — если другая статья уже сгенерировала тот же файл по другому пути, скрипт переиспользует существующий MP3 на диске.
+Файлы кладутся в публичный Supabase Storage bucket `vocab-public-audio` по content-addressed пути `blog/<prefix>/<hash>.mp3`. Одинаковые текст и настройки синтеза используют один объект; OpenAI повторно не вызывается. В MDX сохраняется постоянный публичный URL.
 
-Стоимость: tts-1 ~$15/M символов, типичная статья (5–10 коротких реплик) — менее $0.01. gpt-image-1 high quality 1536×1024 — около $0.19 за картинку.
+Актуальную стоимость синтеза нужно проверять по тарифам выбранной OpenAI TTS-модели; повторные просмотры статьи API-расходов не создают.
 
 ## Полный workflow для новой статьи с медиа
 
 1. Написать MDX, вставить нужное число `:::image` и `:::audio` блоков с пустыми `src`.
 2. `vercel env pull .env.local --environment=preview --yes` (один раз, если `.env.local` не свежий).
 3. `npm run gen:images:dry && npm run gen:audio:dry` — посмотреть план и стоимость.
-4. `npm run gen:images && npm run gen:audio` — реальная генерация, MDX обновится с `src` автоматически.
-5. `git add public/blog public/audio content/blog && git commit`.
+4. `npm run gen:images && npm run gen:audio` — реальная генерация, MP3 загружается в Supabase Storage, MDX обновится с `src` автоматически.
+5. `git add public/blog content/blog && git commit`.
 6. После деплоя — `/api/indexnow?secret=...` для срочной переиндексации.

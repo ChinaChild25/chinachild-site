@@ -13,6 +13,7 @@ import type {
   SentenceOrderQuestion,
   ToneIdQuestion,
 } from "@/lib/hsk-test/types";
+import { getStoredTestAudioUrl } from "@/lib/content/stored-test-audio";
 
 interface RendererProps<Q extends HskTestQuestion> {
   question: Q;
@@ -484,96 +485,26 @@ function PairMatchingRenderer({
 }
 
 // ---------------------------------------------------------------------------
-// Audio renderers — try OpenAI TTS via /api/hsk-test/tts (high-quality voice,
-// CDN-cached). On any failure (no OPENAI_API_KEY, account tier without audio,
-// rate-limit, network) fall back to the browser's built-in Web Speech API,
-// which has zh-CN voices on macOS/iOS/Android/recent Windows. The user always
-// gets a working "Прослушать" button.
+// Audio renderers — all clips are generated ahead of time with OpenAI TTS and
+// served directly from public Supabase Storage. Playback never calls OpenAI.
 // ---------------------------------------------------------------------------
 
-type AudioMode = "openai" | "webspeech" | "unavailable";
-
 function AudioPlayer({ text }: { text: string }) {
-  const [mode, setMode] = useState<AudioMode>("openai");
-  const [src, setSrc] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const src = getStoredTestAudioUrl(text);
+  const [unavailable, setUnavailable] = useState(!src);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const blobUrlRef = useRef<string | null>(null);
 
   useEffect(() => {
-    let cancelled = false;
-    setSrc(null);
-    setLoading(true);
-
-    (async () => {
-      try {
-        const res = await fetch("/api/hsk-test/tts", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text }),
-        });
-        if (!res.ok) throw new Error(`tts ${res.status}`);
-        const blob = await res.blob();
-        if (cancelled) return;
-        const url = URL.createObjectURL(blob);
-        blobUrlRef.current = url;
-        setSrc(url);
-        setMode("openai");
-      } catch {
-        // OpenAI TTS unavailable — fall back to Web Speech if the browser
-        // supports it. We don't pre-load the utterance; speak() is called
-        // synchronously on the play button click, which also satisfies
-        // browsers that require a user gesture to start audio.
-        if (cancelled) return;
-        const supportsWebSpeech =
-          typeof window !== "undefined" &&
-          "speechSynthesis" in window &&
-          typeof window.SpeechSynthesisUtterance === "function";
-        setMode(supportsWebSpeech ? "webspeech" : "unavailable");
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-      if (blobUrlRef.current) {
-        URL.revokeObjectURL(blobUrlRef.current);
-        blobUrlRef.current = null;
-      }
-      if (typeof window !== "undefined" && "speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-      }
-    };
-  }, [text]);
+    setUnavailable(!src);
+  }, [src, text]);
 
   const play = () => {
-    if (mode === "openai" && audioRef.current) {
-      audioRef.current.currentTime = 0;
-      void audioRef.current.play().catch(() => {});
-      return;
-    }
-    if (mode === "webspeech") {
-      try {
-        const synth = window.speechSynthesis;
-        synth.cancel();
-        const utter = new SpeechSynthesisUtterance(text);
-        // Pick the best Chinese voice the browser has.
-        const voices = synth.getVoices();
-        const zh =
-          voices.find((v) => v.lang === "zh-CN") ??
-          voices.find((v) => v.lang?.startsWith("zh"));
-        if (zh) utter.voice = zh;
-        utter.lang = zh?.lang ?? "zh-CN";
-        utter.rate = 0.85;
-        synth.speak(utter);
-      } catch {
-        setMode("unavailable");
-      }
-    }
+    if (!audioRef.current) return;
+    audioRef.current.currentTime = 0;
+    void audioRef.current.play().catch(() => setUnavailable(true));
   };
 
-  const ready = mode === "openai" ? Boolean(src) : mode === "webspeech";
+  const ready = Boolean(src) && !unavailable;
 
   return (
     <div className="hsk-test-audio">
@@ -581,7 +512,7 @@ function AudioPlayer({ text }: { text: string }) {
         type="button"
         className="hsk-test-audio-btn"
         onClick={play}
-        disabled={!ready || loading}
+        disabled={!ready}
         aria-label="Воспроизвести аудио"
       >
         <svg
@@ -594,16 +525,17 @@ function AudioPlayer({ text }: { text: string }) {
           <path d="M6 5 L6 17 L17 11 Z" fill="currentColor" />
         </svg>
         <span>
-          {loading
-            ? "Загружаем…"
-            : mode === "unavailable"
-              ? "Аудио недоступно"
-              : "Прослушать"}
+          {unavailable ? "Аудио недоступно" : "Прослушать"}
         </span>
       </button>
-      {mode === "openai" && src ? (
+      {src ? (
         // eslint-disable-next-line jsx-a11y/media-has-caption
-        <audio ref={audioRef} src={src} preload="auto" />
+        <audio
+          ref={audioRef}
+          src={src}
+          preload="auto"
+          onError={() => setUnavailable(true)}
+        />
       ) : null}
     </div>
   );

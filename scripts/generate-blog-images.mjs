@@ -15,7 +15,7 @@
  * пропускают блоки с уже заполненным `src`.
  *
  * Запуск:
- *   OPENAI_API_KEY=sk-... node scripts/generate-blog-images.mjs
+ *   OPENAI_API_KEY=... node scripts/generate-blog-images.mjs
  *   # или: vercel env pull .env.local && node scripts/generate-blog-images.mjs
  *
  * Опции через env:

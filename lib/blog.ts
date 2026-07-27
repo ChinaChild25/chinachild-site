@@ -47,7 +47,7 @@ export type ArticleBlock =
       translation?: string;
       /** What to feed OpenAI TTS when running the generation script. */
       ttsText?: string;
-      /** TTS voice override. Defaults from env OPENAI_TTS_VOICE / "nova". */
+      /** TTS voice override. Defaults from env OPENAI_TTS_VOICE / "marin". */
       voice?: string;
     }
   | { type: "tldr"; points: string[] }

@@ -15,7 +15,7 @@
   ],
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node --env-file-if-exists=.env.local scripts/generate-public-content-snapshot.mjs",
+    "prebuild": "node --env-file-if-exists=.env.local scripts/generate-public-content-snapshot.mjs && CHECK_ONLY=1 node scripts/generate-blog-audio.mjs && CHECK_ONLY=1 node scripts/generate-learning-audio.mjs",
     "build": "next build",
     "postbuild": "node scripts/audit-built-jsonld.mjs",
     "start": "next start",
@@ -23,6 +23,8 @@
     "audit:jsonld": "node scripts/audit-built-jsonld.mjs",
     "gen:images": "node --env-file=.env.local scripts/generate-blog-images.mjs",
     "gen:audio": "node --env-file=.env.local scripts/generate-blog-audio.mjs",
+    "gen:learning-audio": "node --env-file=.env.local scripts/generate-learning-audio.mjs",
+    "check:audio": "CHECK_ONLY=1 node scripts/generate-blog-audio.mjs && CHECK_ONLY=1 node scripts/generate-learning-audio.mjs",
     "gen:images:dry": "DRY_RUN=1 node --env-file=.env.local scripts/generate-blog-images.mjs",
     "gen:audio:dry": "DRY_RUN=1 node --env-file=.env.local scripts/generate-blog-audio.mjs",
     "publish:scheduled": "node scripts/publish-scheduled-blog.mjs",

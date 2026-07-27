@@ -10,6 +10,7 @@ import type {
   QuestionE,
   QuestionF,
 } from "@/lib/diagnostic/types";
+import { getStoredTestAudioUrl } from "@/lib/content/stored-test-audio";
 import HanziStroke from "./HanziStroke";
 import ToneArc from "./ToneArc";
 
@@ -57,15 +58,14 @@ export function QuestionARenderer({ question, onAnswer }: QuestionRendererProps<
 
 export function QuestionBRenderer({ question, onAnswer }: QuestionRendererProps<QuestionB>) {
   const [selected, setSelected] = useState<1 | 2 | 3 | 4 | 5 | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const speak = () => {
     if (typeof window === "undefined") return;
-    if (!("speechSynthesis" in window)) return;
-    const utter = new SpeechSynthesisUtterance(question.hanzi);
-    utter.lang = "zh-CN";
-    utter.rate = 0.85;
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(utter);
+    audioRef.current?.pause();
+    const audio = new Audio(getStoredTestAudioUrl(question.hanzi));
+    audioRef.current = audio;
+    void audio.play().catch(() => {});
   };
 
   return (
