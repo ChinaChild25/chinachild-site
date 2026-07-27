@@ -1,8 +1,6 @@
 import "server-only";
 import { createHash } from "node:crypto";
-import { unstable_cache as nextCache } from "next/cache";
-import { getPublicSupabaseClient } from "@/lib/supabase/public-content";
-import { fetchAudioUrls } from "@/lib/content/audio";
+import { getPublicContentSnapshot } from "@/lib/content/public-snapshot";
 import {
   normalizeTagGroupKey,
   TAG_GROUP_ORDER,
@@ -122,14 +120,11 @@ type SectionRow = {
 type ArticleTagRow = { article_id: string; tag_id: string };
 type ArticleSectionRow = { article_id: string; section_id: string };
 type VocabTermSlugRow = { slug: string };
-type SupabaseErrorLike = { message: string };
-type RangeQuery<T> = {
-  range: (
-    from: number,
-    to: number,
-  ) => PromiseLike<{ data: T[] | null; error: SupabaseErrorLike | null }>;
+type AudioRow = {
+  owner_id: string;
+  owner_type: string;
+  public_url: string | null;
 };
-type QueryResult<T> = { data: T | null; error: SupabaseErrorLike | null };
 
 type GrammarSnapshot = {
   articles: ArticleRow[];
@@ -139,176 +134,46 @@ type GrammarSnapshot = {
   articleSections: ArticleSectionRow[];
 };
 
-const EMPTY_SNAPSHOT: GrammarSnapshot = {
-  articles: [],
-  tags: [],
-  sections: [],
-  articleTags: [],
-  articleSections: [],
-};
-
-const SUPABASE_PAGE_SIZE = 1000;
-
-async function fetchAllRows<T>(
-  label: string,
-  makeQuery: () => RangeQuery<T>,
-): Promise<QueryResult<T[]>> {
-  const rows: T[] = [];
-  for (let from = 0; ; from += SUPABASE_PAGE_SIZE) {
-    const to = from + SUPABASE_PAGE_SIZE - 1;
-    const { data, error } = await makeQuery().range(from, to);
-    if (error) {
-      console.warn(`[public-content/grammar] ${label} supabase error:`, error.message);
-      return { data: null, error };
-    }
-    const page = data ?? [];
-    rows.push(...page);
-    if (page.length < SUPABASE_PAGE_SIZE) {
-      return { data: rows, error: null };
-    }
-  }
-}
-
 async function fetchKnownVocabSlugs(slugs: string[]): Promise<Set<string>> {
-  const supabase = getPublicSupabaseClient();
-  if (!supabase) return new Set();
   const uniqueSlugs = Array.from(new Set(slugs.filter(Boolean)));
   if (uniqueSlugs.length === 0) return new Set();
-
-  const rows: VocabTermSlugRow[] = [];
-  const chunkSize = 100;
-  for (let index = 0; index < uniqueSlugs.length; index += chunkSize) {
-    const chunk = uniqueSlugs.slice(index, index + chunkSize);
-    const { data, error } = await supabase.from("vocab_terms").select("slug").in("slug", chunk);
-    if (error) {
-      console.warn("[public-content/grammar] vocab_terms supabase error:", error.message);
-      return new Set();
-    }
-    rows.push(...((data ?? []) as VocabTermSlugRow[]));
-  }
-  return new Set(rows.map((row) => row.slug));
+  const snapshot = await getPublicContentSnapshot();
+  const requested = new Set(uniqueSlugs);
+  return new Set(
+    (snapshot.tables.vocabTerms as VocabTermSlugRow[])
+      .filter((row) => requested.has(row.slug))
+      .map((row) => row.slug),
+  );
 }
 
 async function loadSnapshot(): Promise<GrammarSnapshot> {
-  const supabase = getPublicSupabaseClient();
-  if (!supabase) return EMPTY_SNAPSHOT;
-
-  const [
-    articlesRes,
-    tagsRes,
-    sectionsRes,
-    articleTagsRes,
-    articleSectionsRes,
-  ] = await Promise.all([
-    fetchAllRows<ArticleRow>("grammar_articles", () =>
-      supabase
-        .from("grammar_articles")
-        .select(
-          "id, slug, title, summary, locale, status, difficulty_hsk_version, difficulty_hsk_level, metadata",
-        )
-        .eq("status", "published")
-        .order("created_at", { ascending: true }),
-    ),
-    fetchAllRows<TagRow>("grammar_tags", () =>
-      supabase
-        .from("grammar_tags")
-        .select("id, slug, label_ru, label_en, group_key, order_index")
-        .order("group_key", { ascending: true })
-        .order("order_index", { ascending: true }),
-    ),
-    fetchAllRows<SectionRow>("grammar_sections", () =>
-      supabase
-        .from("grammar_sections")
-        .select(
-          "id, slug, title_ru, title_en, description_ru, description_en, section_type, group_key, order_index",
-        )
-        .order("order_index", { ascending: true }),
-    ),
-    fetchAllRows<ArticleTagRow>("grammar_article_tags", () =>
-      supabase.from("grammar_article_tags").select("article_id, tag_id"),
-    ),
-    fetchAllRows<ArticleSectionRow>("grammar_article_sections", () =>
-      supabase.from("grammar_article_sections").select("article_id, section_id"),
-    ),
-  ]);
-
-  for (const res of [
-    articlesRes,
-    tagsRes,
-    sectionsRes,
-    articleTagsRes,
-    articleSectionsRes,
-  ]) {
-    if (res.error) {
-      // RLS / network errors should not crash the public site — degrade gracefully.
-      return EMPTY_SNAPSHOT;
-    }
-  }
-
+  const snapshot = await getPublicContentSnapshot();
   return {
-    articles: (articlesRes.data ?? []) as ArticleRow[],
-    tags: (tagsRes.data ?? []) as TagRow[],
-    sections: (sectionsRes.data ?? []) as SectionRow[],
-    articleTags: (articleTagsRes.data ?? []) as ArticleTagRow[],
-    articleSections: (articleSectionsRes.data ?? []) as ArticleSectionRow[],
+    articles: snapshot.tables.grammarArticles as ArticleRow[],
+    tags: snapshot.tables.grammarTags as TagRow[],
+    sections: snapshot.tables.grammarSections as SectionRow[],
+    articleTags: snapshot.tables.grammarArticleTags as ArticleTagRow[],
+    articleSections: snapshot.tables.grammarArticleSections as ArticleSectionRow[],
   };
 }
 
-// 5-minute server cache so revisited pages do not refetch on every nav.
-const getCachedSnapshot = nextCache(loadSnapshot, ["public-grammar-snapshot-v2"], {
-  revalidate: 86400,
-  tags: ["public-grammar"],
-});
+const getCachedSnapshot = loadSnapshot;
 
 async function loadArticleBlocks(articleId: string): Promise<BlockRow[]> {
-  const supabase = getPublicSupabaseClient();
-  if (!supabase) return [];
-  const res = await fetchAllRows<BlockRow>("grammar_blocks", () =>
-    supabase
-      .from("grammar_blocks")
-      .select("id, article_id, block_type, content, order_index")
-      .eq("article_id", articleId)
-      .order("order_index", { ascending: true }),
-  );
-  return (res.data ?? []) as BlockRow[];
+  const snapshot = await getPublicContentSnapshot();
+  return (snapshot.tables.grammarBlocks as BlockRow[])
+    .filter((row) => row.article_id === articleId);
 }
 
 async function loadPublishedArticleBlocks(articleIds: string[]): Promise<BlockRow[]> {
-  const supabase = getPublicSupabaseClient();
-  if (!supabase) return [];
-  const uniqueIds = Array.from(new Set(articleIds.filter(Boolean)));
-  if (uniqueIds.length === 0) return [];
-
-  const blocks: BlockRow[] = [];
-  const chunkSize = 100;
-  for (let index = 0; index < uniqueIds.length; index += chunkSize) {
-    const chunk = uniqueIds.slice(index, index + chunkSize);
-    const res = await fetchAllRows<BlockRow>("grammar_blocks", () =>
-      supabase
-        .from("grammar_blocks")
-        .select("id, article_id, block_type, content, order_index")
-        .in("article_id", chunk)
-        .order("article_id", { ascending: true })
-        .order("order_index", { ascending: true }),
-    );
-    blocks.push(...((res.data ?? []) as BlockRow[]));
-  }
-  return blocks;
+  const snapshot = await getPublicContentSnapshot();
+  const ids = new Set(articleIds);
+  return (snapshot.tables.grammarBlocks as BlockRow[])
+    .filter((row) => ids.has(row.article_id));
 }
 
-const getCachedArticleBlocks = nextCache(loadArticleBlocks, ["public-grammar-article-blocks-v1"], {
-  revalidate: 86400,
-  tags: ["public-grammar"],
-});
-
-const getCachedPublishedArticleBlocks = nextCache(
-  loadPublishedArticleBlocks,
-  ["public-grammar-published-blocks-v1"],
-  {
-    revalidate: 86400,
-    tags: ["public-grammar"],
-  },
-);
+const getCachedArticleBlocks = loadArticleBlocks;
+const getCachedPublishedArticleBlocks = loadPublishedArticleBlocks;
 
 function readMetadata(article: ArticleRow): Record<string, unknown> {
   if (!article.metadata || typeof article.metadata !== "object" || Array.isArray(article.metadata)) {
@@ -661,9 +526,11 @@ export async function getPublicGrammarArticleBySlug(
       });
     });
   }
-  const audioByOwnerId = await fetchAudioUrls(
-    "grammar_example",
-    exampleAudioKeys.map((entry) => entry.ownerId),
+  const snapshot = await getPublicContentSnapshot();
+  const audioByOwnerId = new Map(
+    (snapshot.tables.vocabAudioAssets as AudioRow[])
+      .filter((row) => row.owner_type === "grammar_example" && row.public_url)
+      .map((row) => [row.owner_id, row.public_url as string]),
   );
   const audioByBlockIndex = new Map<string, string>(); // key = `${blockId}|${index}`
   for (const entry of exampleAudioKeys) {

@@ -130,6 +130,10 @@ const nextConfig: NextConfig = {
   trailingSlash: false,
   skipTrailingSlashRedirect: true,
   compress: true,
+  outputFileTracingIncludes: {
+    "/dictionary/**/*": ["./.generated/public-content-snapshot.json"],
+    "/grammar/**/*": ["./.generated/public-content-snapshot.json"],
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     // Аватарки авторов отзывов из Яндекса. URL вида

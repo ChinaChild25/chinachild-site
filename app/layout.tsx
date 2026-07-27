@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { Suspense } from "react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import FloatingCta from "@/components/layout/FloatingCta";
 import Footer from "@/components/layout/Footer";
@@ -142,7 +141,6 @@ export default function RootLayout({
           </div>
           <CookieBanner />
         </ConsentProvider>
-        <SpeedInsights sampleRate={0.25} />
       </body>
     </html>
   );

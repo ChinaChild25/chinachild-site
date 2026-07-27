@@ -12,6 +12,7 @@ import { absoluteUrl } from "@/lib/site-config";
 import { createBreadcrumbNode } from "@/lib/schema";
 
 export const revalidate = false;
+export const dynamicParams = false;
 
 export async function generateStaticParams(): Promise<Array<{ slug: string }>> {
   const slugs = await getPublicGrammarSlugs();

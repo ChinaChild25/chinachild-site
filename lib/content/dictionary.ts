@@ -1,7 +1,7 @@
 import "server-only";
-import { unstable_cache as nextCache } from "next/cache";
 import { getPublicSupabaseClient } from "@/lib/supabase/public-content";
 import { fetchAudioUrls } from "@/lib/content/audio";
+import { getPublicContentSnapshot } from "@/lib/content/public-snapshot";
 import {
   escapeForPostgrestOr,
   normalizeQuery,
@@ -67,6 +67,7 @@ type SenseRow = {
 };
 
 type ExampleRow = {
+  id?: string;
   term_id: string | null;
   hanzi: string;
   pinyin: string | null;
@@ -75,7 +76,14 @@ type ExampleRow = {
 };
 
 type CharacterRow = {
+  id?: string;
   hanzi: string;
+};
+
+type AudioRow = {
+  owner_id: string;
+  owner_type: string;
+  public_url: string | null;
 };
 
 type StrokeRow = {
@@ -87,14 +95,6 @@ type StrokeRow = {
   viewport_height: number;
 };
 
-function chunkValues<T>(values: ReadonlyArray<T>, size: number): T[][] {
-  const chunks: T[][] = [];
-  for (let index = 0; index < values.length; index += size) {
-    chunks.push(values.slice(index, index + size) as T[]);
-  }
-  return chunks;
-}
-
 function isPublicTerm(row: Pick<TermRow, "metadata">): boolean {
   return row.metadata?.source !== "chinachild-demo";
 }
@@ -102,28 +102,11 @@ function isPublicTerm(row: Pick<TermRow, "metadata">): boolean {
 // ---- Deck-only snapshot (cheap; loaded on dictionary hub pages) ----
 
 async function loadDecks(): Promise<DeckRow[]> {
-  const supabase = getPublicSupabaseClient();
-  if (!supabase) return [];
-  const { data, error } = await supabase
-    .from("vocab_decks")
-    .select(
-      "id, slug, title, description, hsk_version, hsk_level, display_count, imported_count, kind, source_type, source_label",
-    )
-    .in("kind", ["system", "imported"])
-    .eq("source_type", "hsk")
-    .order("hsk_version", { ascending: true })
-    .order("hsk_level", { ascending: true });
-  if (error) {
-    console.warn("[public-content/dictionary] decks error:", error.message);
-    return [];
-  }
-  return (data ?? []) as DeckRow[];
+  const snapshot = await getPublicContentSnapshot();
+  return snapshot.tables.vocabDecks as DeckRow[];
 }
 
-const getCachedDecks = nextCache(loadDecks, ["public-dict-decks-v1"], {
-  revalidate: 86400,
-  tags: ["public-dictionary"],
-});
+const getCachedDecks = loadDecks;
 
 function normalizeHskVersionRaw(value: string | null): HskVersionId | null {
   if (!value) return null;
@@ -227,64 +210,27 @@ export async function getPublicHskLevelTerms(
   level: string,
   options: HskLevelTermsOptions = {},
 ): Promise<HskLevelTerms | null> {
-  const supabase = getPublicSupabaseClient();
   const deck = await getPublicHskDeck(version, level);
   if (!deck) return null;
-  if (!supabase) return { deck, terms: [], totalImported: 0 };
-
+  const snapshot = await getPublicContentSnapshot();
   const limit = Math.max(1, Math.min(options.limit ?? 2000, 2000));
-
-  const { data: items, error: itemsError } = await supabase
-    .from("vocab_deck_items")
-    .select("term_id, order_index")
-    .eq("deck_id", deck.id)
-    .order("order_index", { ascending: true })
-    .limit(limit);
-  if (itemsError) {
-    console.warn("[public-content/dictionary] level items error:", itemsError.message);
-    return { deck, terms: [], totalImported: 0 };
-  }
-  const itemRows = (items ?? []) as DeckItemRow[];
+  const itemRows = (snapshot.tables.vocabDeckItems as DeckItemRow[])
+    .filter((row) => row.deck_id === deck.id)
+    .sort((a, b) => a.order_index - b.order_index)
+    .slice(0, limit);
   if (itemRows.length === 0) return { deck, terms: [], totalImported: 0 };
 
-  const termIds = itemRows.map((row) => row.term_id);
-  const termRows: TermRow[] = [];
-  const pronunciations: PronunciationRow[] = [];
-  const senses: SenseRow[] = [];
-  let fanOutFailed = false;
-
-  for (const chunk of chunkValues(termIds, 100)) {
-    const [termsRes, pronRes, sensesRes] = await Promise.all([
-      supabase
-        .from("vocab_terms")
-        .select(
-          "id, slug, simplified, traditional, default_display, base_translation_ru, base_translation_en, frequency_rank, part_of_speech, metadata",
-        )
-        .in("id", chunk),
-      supabase
-        .from("vocab_pronunciations")
-        .select("term_id, pinyin_display, pinyin_normalized, is_primary, order_index")
-        .in("term_id", chunk),
-      supabase
-        .from("vocab_senses")
-        .select("term_id, locale, definition, order_index")
-        .in("term_id", chunk),
-    ]);
-    if (termsRes.error || pronRes.error || sensesRes.error) {
-      fanOutFailed = true;
-      console.warn(
-        "[public-content/dictionary] level fan-out error:",
-        termsRes.error?.message ?? pronRes.error?.message ?? sensesRes.error?.message,
-      );
-      continue;
-    }
-    termRows.push(...((termsRes.data ?? []) as TermRow[]).filter(isPublicTerm));
-    pronunciations.push(...((pronRes.data ?? []) as PronunciationRow[]));
-    senses.push(...((sensesRes.data ?? []) as SenseRow[]));
-  }
-
-  if (fanOutFailed && termRows.length === 0) return { deck, terms: [], totalImported: 0 };
-  const termAudioMap = await fetchAudioUrls("term", termIds);
+  const termIds = new Set(itemRows.map((row) => row.term_id));
+  const termRows = (snapshot.tables.vocabTerms as TermRow[]).filter((row) => termIds.has(row.id));
+  const pronunciations = (snapshot.tables.vocabPronunciations as PronunciationRow[])
+    .filter((row) => termIds.has(row.term_id));
+  const senses = (snapshot.tables.vocabSenses as SenseRow[])
+    .filter((row) => termIds.has(row.term_id));
+  const termAudioMap = new Map(
+    (snapshot.tables.vocabAudioAssets as AudioRow[])
+      .filter((row) => row.owner_type === "term" && termIds.has(row.owner_id) && row.public_url)
+      .map((row) => [row.owner_id, row.public_url as string]),
+  );
 
   const termById = new Map(termRows.map((t) => [t.id, t]));
   const primaryPronByTermId = new Map<string, PronunciationRow>();
@@ -344,118 +290,69 @@ export async function getPublicHskLevelTerms(
 
 // ---- Single word detail ----
 
-export async function getPublicWordSlugs(limit = 2000): Promise<string[]> {
-  const supabase = getPublicSupabaseClient();
-  if (!supabase) return [];
-  const { data, error } = await supabase.from("vocab_terms").select("slug, metadata").limit(limit);
-  if (error) {
-    console.warn("[public-content/dictionary] slug list error:", error.message);
-    return [];
-  }
-  return ((data ?? []) as Array<Pick<TermRow, "slug" | "metadata">>)
-    .filter(isPublicTerm)
-    .map((row) => row.slug);
+export async function getPublicWordSlugs(): Promise<string[]> {
+  const snapshot = await getPublicContentSnapshot();
+  return (snapshot.tables.vocabTerms as TermRow[]).map((row) => row.slug);
 }
 
-// Build-time prewarm set: only the most frequent words are prerendered at build.
-// The long tail is generated on-demand on first visit (dynamicParams) and cached
-// per `revalidate`, so each deploy rewrites ~`limit` ISR entries instead of ~2000.
-// The complete word list still ships in sitemap-pages.xml via getPublicWordSlugs,
-// so crawlers discover every word and lazily warm the rest — nothing is dropped.
 export async function getPopularWordSlugs(limit = 200): Promise<string[]> {
-  const supabase = getPublicSupabaseClient();
-  if (!supabase) return [];
-  const { data, error } = await supabase
-    .from("vocab_terms")
-    .select("slug, metadata, frequency_rank")
-    .order("frequency_rank", { ascending: true, nullsFirst: false })
-    .limit(limit);
-  if (error) {
-    console.warn("[public-content/dictionary] popular slug list error:", error.message);
-    return [];
-  }
-  return ((data ?? []) as Array<Pick<TermRow, "slug" | "metadata" | "frequency_rank">>)
-    .filter(isPublicTerm)
+  const snapshot = await getPublicContentSnapshot();
+  return [...(snapshot.tables.vocabTerms as TermRow[])]
+    .sort((a, b) => (a.frequency_rank ?? Number.MAX_SAFE_INTEGER) - (b.frequency_rank ?? Number.MAX_SAFE_INTEGER))
+    .slice(0, limit)
     .map((row) => row.slug);
 }
 
 export async function getPublicWordBySlug(slug: string): Promise<WordDetail | null> {
-  const supabase = getPublicSupabaseClient();
-  if (!supabase) return null;
-  const { data: termData, error: termError } = await supabase
-    .from("vocab_terms")
-    .select(
-      "id, slug, simplified, traditional, default_display, base_translation_ru, base_translation_en, frequency_rank, part_of_speech, metadata",
-    )
-    .eq("slug", slug)
-    .maybeSingle();
-  if (termError) {
-    console.warn("[public-content/dictionary] word term error:", termError.message);
-    return null;
-  }
-  if (!termData) return null;
-  const term = termData as TermRow;
-  if (!isPublicTerm(term)) return null;
-
-  const [pronRes, sensesRes, examplesRes, deckItemsRes] = await Promise.all([
-    supabase
-      .from("vocab_pronunciations")
-      .select("term_id, pinyin_display, pinyin_normalized, is_primary, order_index")
-      .eq("term_id", term.id)
-      .order("order_index", { ascending: true }),
-    supabase
-      .from("vocab_senses")
-      .select("term_id, locale, definition, order_index")
-      .eq("term_id", term.id)
-      .order("order_index", { ascending: true }),
-    supabase
-      .from("vocab_examples")
-      .select("id, term_id, hanzi, pinyin, translation_ru, order_index")
-      .eq("term_id", term.id)
-      .order("order_index", { ascending: true }),
-    supabase.from("vocab_deck_items").select("deck_id, term_id, order_index").eq("term_id", term.id),
-  ]);
-
-  const pronunciations = ((pronRes.data ?? []) as PronunciationRow[]).map((p) => ({
+  const snapshot = await getPublicContentSnapshot();
+  const term = (snapshot.tables.vocabTerms as TermRow[]).find((row) => row.slug === slug);
+  if (!term) return null;
+  const pronunciations = (snapshot.tables.vocabPronunciations as PronunciationRow[])
+    .filter((row) => row.term_id === term.id)
+    .sort((a, b) => a.order_index - b.order_index)
+    .map((p) => ({
     pinyinDisplay: p.pinyin_display,
     pinyinNormalized: p.pinyin_normalized,
     isPrimary: p.is_primary,
   }));
-  const senses = ((sensesRes.data ?? []) as SenseRow[])
-    .filter((s) => s.locale === "ru")
+  const senses = (snapshot.tables.vocabSenses as SenseRow[])
+    .filter((s) => s.term_id === term.id && s.locale === "ru")
+    .sort((a, b) => a.order_index - b.order_index)
     .map((s) => ({ definition: s.definition, locale: s.locale, orderIndex: s.order_index }));
-  const exampleRows = (examplesRes.data ?? []) as Array<ExampleRow & { id: string }>;
-  const exampleIds = exampleRows.map((row) => row.id).filter(Boolean);
-  const [termAudioMap, exampleAudioMap] = await Promise.all([
-    fetchAudioUrls("term", [term.id]),
-    fetchAudioUrls("example", exampleIds),
-  ]);
+  const exampleRows = (snapshot.tables.vocabExamples as ExampleRow[])
+    .filter((row) => row.term_id === term.id)
+    .sort((a, b) => a.order_index - b.order_index);
+  const audioRows = snapshot.tables.vocabAudioAssets as AudioRow[];
+  const termAudio = audioRows.find(
+    (row) => row.owner_type === "term" && row.owner_id === term.id,
+  )?.public_url ?? null;
+  const exampleAudioMap = new Map(
+    audioRows
+      .filter((row) => row.owner_type === "example" && row.public_url)
+      .map((row) => [row.owner_id, row.public_url as string]),
+  );
   const examples = exampleRows.map((e) => ({
     hanzi: e.hanzi,
     pinyin: e.pinyin,
     translationRu: e.translation_ru,
     orderIndex: e.order_index,
-    audioUrl: exampleAudioMap.get(e.id) ?? null,
+    audioUrl: e.id ? exampleAudioMap.get(e.id) ?? null : null,
   }));
 
-  // HSK badges from deck memberships.
-  const deckItems = (deckItemsRes.data ?? []) as DeckItemRow[];
-  const deckIds = deckItems.map((row) => row.deck_id);
-  let hskBadges: WordDetail["hskBadges"] = [];
-  if (deckIds.length > 0) {
-    const { data: deckRows } = await supabase
-      .from("vocab_decks")
-      .select("id, slug, hsk_version, hsk_level")
-      .in("id", deckIds)
-      .in("kind", ["system", "imported"]);
-    hskBadges = ((deckRows ?? []) as Array<Pick<DeckRow, "slug" | "hsk_version" | "hsk_level">>)
+  const deckIds = new Set(
+    (snapshot.tables.vocabDeckItems as DeckItemRow[])
+      .filter((row) => row.term_id === term.id)
+      .map((row) => row.deck_id),
+  );
+  const hskBadges: WordDetail["hskBadges"] =
+    (snapshot.tables.vocabDecks as DeckRow[])
+      .filter((row) => deckIds.has(row.id))
       .map((row) => {
         const version = normalizeHskVersionRaw(row.hsk_version);
         if (!version || !row.hsk_level || !row.slug) return null;
         return { version, level: row.hsk_level, deckSlug: row.slug };
       })
       .filter((b): b is { version: HskVersionId; level: string; deckSlug: string } => Boolean(b));
-  }
 
   // Stroke data for each unique hanzi in the simplified form. Include every
   // character so the public page can render a clean static fallback when the
@@ -463,27 +360,15 @@ export async function getPublicWordBySlug(slug: string): Promise<WordDetail | nu
   const characters: WordDetail["characters"] = [];
   const uniqueHanzi = Array.from(new Set(Array.from(term.simplified)));
   if (uniqueHanzi.length > 0) {
-    const { data: chars } = await supabase
-      .from("vocab_characters")
-      .select("id, hanzi")
-      .in("hanzi", uniqueHanzi);
-    const charRows = (chars ?? []) as Array<CharacterRow & { id: string }>;
-    let strokesByCharId = new Map<string, StrokeRow>();
-    if (charRows.length > 0) {
-      const { data: strokes } = await supabase
-        .from("character_stroke_assets")
-        .select("character_id, strokes, medians, raw_svg, viewport_width, viewport_height")
-        .in(
-          "character_id",
-          charRows.map((c) => c.id),
-        );
-      strokesByCharId = new Map(
-        ((strokes ?? []) as StrokeRow[]).map((s) => [s.character_id, s]),
-      );
-    }
+    const charRows = (snapshot.tables.vocabCharacters as CharacterRow[])
+      .filter((row) => uniqueHanzi.includes(row.hanzi));
+    const strokesByCharId = new Map(
+      (snapshot.tables.characterStrokeAssets as StrokeRow[])
+        .map((row) => [row.character_id, row]),
+    );
     for (const hanzi of uniqueHanzi) {
       const charRow = charRows.find((c) => c.hanzi === hanzi);
-      const stroke = charRow ? strokesByCharId.get(charRow.id) : undefined;
+      const stroke = charRow?.id ? strokesByCharId.get(charRow.id) : undefined;
       characters.push({
         hanzi,
         strokes: stroke?.strokes ?? null,
@@ -505,7 +390,7 @@ export async function getPublicWordBySlug(slug: string): Promise<WordDetail | nu
     frequencyRank: term.frequency_rank,
     primaryPinyin: pronunciations.find((p) => p.isPrimary)?.pinyinDisplay ?? pronunciations[0]?.pinyinDisplay ?? null,
     primarySense: senses[0]?.definition ?? null,
-    audioUrl: termAudioMap.get(term.id) ?? null,
+    audioUrl: termAudio,
     pronunciations,
     senses,
     examples,

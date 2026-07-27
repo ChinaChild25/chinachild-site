@@ -4,6 +4,20 @@ import path from "node:path";
 const APP_BUILD_DIR = process.env.JSONLD_BUILD_APP_DIR
   ? path.resolve(process.env.JSONLD_BUILD_APP_DIR)
   : path.join(process.cwd(), ".next/server/app");
+const SNAPSHOT_PATH = path.join(process.cwd(), ".generated/public-content-snapshot.json");
+const PRERENDER_MANIFEST_PATH = path.join(process.cwd(), ".next/prerender-manifest.json");
+const STATIC_SOURCE_FILES = [
+  "app/dictionary/page.tsx",
+  "app/dictionary/word/[slug]/page.tsx",
+  "app/dictionary/hsk/page.tsx",
+  "app/dictionary/hsk/[version]/page.tsx",
+  "app/dictionary/hsk/[version]/[level]/page.tsx",
+  "app/grammar/page.tsx",
+  "app/grammar/[slug]/page.tsx",
+  "app/grammar/tags/page.tsx",
+  "app/grammar/tags/[slug]/page.tsx",
+  "app/grammar/sections/[slug]/page.tsx",
+];
 
 async function walkHtmlFiles(dir) {
   const entries = await readdir(dir, { withFileTypes: true });
@@ -96,6 +110,50 @@ for (const file of files) {
   }
 }
 
+const snapshot = JSON.parse(await readFile(SNAPSHOT_PATH, "utf8"));
+const prerenderManifest = JSON.parse(await readFile(PRERENDER_MANIFEST_PATH, "utf8"));
+const staticPrefixes = ["/dictionary", "/grammar"];
+const staticRoutes = Object.entries(prerenderManifest.routes).filter(([route]) =>
+  staticPrefixes.some((prefix) => route === prefix || route.startsWith(`${prefix}/`)),
+);
+for (const [route, config] of staticRoutes) {
+  if (typeof config.initialRevalidateSeconds === "number") {
+    issues.push(`${route}: numeric revalidation ${config.initialRevalidateSeconds}`);
+  }
+}
+
+for (const relativePath of STATIC_SOURCE_FILES) {
+  const source = await readFile(path.join(process.cwd(), relativePath), "utf8");
+  if (/export\s+const\s+revalidate\s*=\s*\d+/u.test(source)) {
+    issues.push(`${relativePath}: numeric route revalidation`);
+  }
+}
+
+const dictionarySource = await readFile(
+  path.join(process.cwd(), "lib/content/dictionary.ts"),
+  "utf8",
+);
+const staticDictionarySource = dictionarySource.split("// ---- Global dictionary search ----")[0];
+const grammarSource = await readFile(path.join(process.cwd(), "lib/content/grammar.ts"), "utf8");
+if (/^\s*\.from\("/mu.test(staticDictionarySource)) {
+  issues.push("static dictionary loaders contain a live Supabase fetch");
+}
+if (/^\s*\.from\("/mu.test(grammarSource) || grammarSource.includes("getPublicSupabaseClient")) {
+  issues.push("static grammar loaders contain a live Supabase fetch");
+}
+if (/revalidate\s*:\s*\d+/u.test(staticDictionarySource) || /revalidate\s*:\s*\d+/u.test(grammarSource)) {
+  issues.push("static content loader contains numeric revalidation");
+}
+
+const generatedWordRoutes = files
+  .map(routeFromFile)
+  .filter((route) => route.startsWith("/dictionary/word/"));
+if (generatedWordRoutes.length !== snapshot.publicWordCount) {
+  issues.push(
+    `generated word route count ${generatedWordRoutes.length} does not match snapshot ${snapshot.publicWordCount}`,
+  );
+}
+
 if (issues.length > 0) {
   console.error("JSON-LD audit failed:");
   for (const issue of issues) {
@@ -104,4 +162,7 @@ if (issues.length > 0) {
   process.exit(1);
 }
 
-console.log(`JSON-LD audit passed: ${checkedPages} HTML pages checked, ${pagesWithFaq} pages with FAQPage.`);
+console.log(
+  `JSON-LD/static audit passed: ${checkedPages} HTML pages, ${pagesWithFaq} FAQ pages, ` +
+  `${generatedWordRoutes.length} word routes, ${staticRoutes.length} static dictionary/grammar routes.`,
+);

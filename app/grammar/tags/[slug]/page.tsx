@@ -9,6 +9,7 @@ import { buildMetadata } from "@/lib/metadata";
 import { absoluteUrl } from "@/lib/site-config";
 
 export const revalidate = false;
+export const dynamicParams = false;
 
 export async function generateStaticParams(): Promise<Array<{ slug: string }>> {
   const groups = await getPublicGrammarTags();
