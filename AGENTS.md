@@ -43,3 +43,98 @@ These rules are mandatory for every task.
 
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 <!-- END:nextjs-agent-rules -->
+
+# ChinaChild project context
+
+## Product boundary
+
+- This repository is the public SEO and lead-generation site for ChinaChild.
+- Production is `https://chinachild.ru`. The authenticated platform at
+  `https://my.chinachild.ru` is a separate product and repository.
+- The primary audience and search market are Russian-speaking users.
+- Business priorities are organic visibility in Yandex and Google, qualified
+  leads, trust, and conversion.
+- Public content includes courses, the blog, HSK resources, grammar,
+  dictionary, glossary, diagnostic tools, and lead forms.
+
+## Verified stack
+
+- Next.js App Router with React and TypeScript.
+- Tailwind CSS.
+- Vercel deployment.
+- Supabase for public grammar, vocabulary, and dictionary content.
+- Filesystem content for the blog and glossary.
+- Yandex Metrika and Google Analytics, gated by consent.
+- OpenAI-backed server routes for diagnostic features.
+
+## Architecture map
+
+- `app/`: routes, layouts, route metadata, API handlers, sitemaps, robots, and
+  generated SEO endpoints. `app/layout.tsx` is the global shell.
+- `app/globals.css`: global design tokens, responsive rules, and shared visual
+  behavior.
+- `components/`: shared UI, layout, analytics, consent, and SEO components.
+- `lib/site-config.ts`: canonical site identity, public origins, contact and
+  business constants, and absolute URL handling.
+- `lib/metadata.ts`: shared canonical, Open Graph, Twitter, verification, and
+  robots metadata behavior.
+- `lib/`: shared content access, schema, consent, and domain logic.
+- `content/blog/`, `content/scheduled-blog/`, `content/glossary/`: filesystem
+  content; queued blog posts are not public content until published.
+- `.generated/`: build-time public-content snapshot consumed by large static
+  route sets.
+- `public/`: static images, fonts, media, and verification assets.
+- `scripts/`: build snapshots, audits, media generation, and publishing tools.
+- `next.config.ts`: security headers, image policy, redirects, sitemap headers,
+  and build tracing.
+- `.env.example`: authoritative environment-variable inventory.
+- `.github/workflows/publish-scheduled-blog.yml`: protected scheduled publisher.
+
+## Mandatory project constraints
+
+- Never change UI, UX, visible copy, JSX structure, class names, design tokens,
+  responsive behavior, or interaction logic without explicit owner approval.
+- Never change routes, canonical URLs, metadata meaning, JSON-LD, sitemaps,
+  robots, redirects, internal linking, or indexability without explicit SEO
+  scope and owner approval.
+- Preserve the scheduled blog workflow. Never publish or move queued posts
+  unless explicitly requested.
+- Prefer static generation and build-time data loading. Avoid runtime ISR for
+  large static route sets.
+- Prohibit N+1 queries and unpaginated Supabase reads. Select only needed data,
+  reuse loaded data, and batch network operations.
+- Minimize client components, shipped JavaScript, serverless calls, background
+  jobs, and dependencies.
+- Do not add polling, cron, analytics, abstractions, or infrastructure without a
+  demonstrated need and an explicit resource budget.
+- Do not perform unrelated refactoring, cleanup, renaming, or file moves.
+- Preserve uncommitted changes and parallel-agent work. Never overwrite work
+  whose ownership or purpose is unclear.
+- Investigate the real execution path and all shared usages before editing.
+  Apply the smallest behavior-preserving fix.
+- Never modify Supabase data, production services, or external APIs without
+  explicit approval.
+
+## Agent workflow
+
+1. Read only relevant entry points, direct dependencies, focused tests, and
+   configuration. Do not inventory the repository by default.
+2. Before coding, explain the current execution path, measured problem, and
+   smallest safe intervention in at most 8 lines.
+3. Make product, UI, and SEO decisions only after owner approval.
+4. Run focused tests first, then typecheck, lint, and a production build when
+   relevant to the changed path.
+5. For performance work, record before/after execution models, expected or
+   measured request/query reduction, and an automated regression guard where
+   practical.
+6. Report changed files, behavior preserved, tests, measured effect, and
+   unresolved risks in at most 12 lines.
+7. Do not create documentation unless the task explicitly requests it.
+
+## Reasoning level
+
+- **Medium:** narrow implementation work and routine fixes.
+- **High:** important shared logic, performance work, SEO infrastructure, or
+  regression review.
+- **Extra High:** major architecture, security, billing, or destructive
+  migrations.
