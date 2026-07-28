@@ -120,6 +120,12 @@ export default async function CityLandingPage({ params }: CityPageProps) {
         }
         primaryCta={{ label: "Записаться на пробное", modal: true }}
         secondaryCta={{ label: "Все курсы", href: "/courses" }}
+        heroToneClass="city-detail-hero"
+        illustration={`/cities/${city.slug}.webp`}
+        illustrationAlt={`${city.name}: городская достопримечательность`}
+        illustrationWidth={748}
+        illustrationHeight={734}
+        illustrationFill
       />
 
       <section className="page-shell-wide section-space">

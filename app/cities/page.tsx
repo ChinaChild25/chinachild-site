@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import PageHero from "@/components/layout/PageHero";
@@ -17,15 +18,6 @@ export const metadata: Metadata = buildMetadata({
     "школа китайского регионы",
   ],
 });
-
-const palette = [
-  "card-violet-soft",
-  "card-cream",
-  "card-lime-soft",
-  "card-sky",
-  "card-peach-soft",
-  "card-cream-soft",
-];
 
 export default function CitiesIndexPage() {
   return (
@@ -51,26 +43,57 @@ export default function CitiesIndexPage() {
       />
 
       <section className="page-shell-wide section-space">
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {cities.map((city, idx) => (
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+          {cities.map((city) => (
             <Reveal key={city.slug}>
               <Link
                 href={`/cities/${city.slug}`}
-                className={`card-block group flex h-full flex-col transition hover:-translate-y-1 ${palette[idx % palette.length]}`}
+                className="group relative isolate block aspect-[748/734] overflow-hidden rounded-[8%] transition-transform duration-300 ease-out hover:-translate-y-1.5 hover:scale-[1.012] focus-visible:-translate-y-1.5 focus-visible:scale-[1.012] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#6c5ce7] active:translate-y-0 active:scale-[0.995] motion-reduce:transform-none motion-reduce:transition-none"
               >
-                <div className="flex items-start justify-between">
-                  <h2 className="text-[1.5rem] font-medium tracking-[-0.01em] leading-[1.2] text-[#1b1b1b]">
-                    {city.name}
-                  </h2>
-                  {city.licensedRegion ? (
-                    <span className="tag-pill tag-pill-ink">Лицензия</span>
-                  ) : null}
-                </div>
-                <p className="mt-3 text-sm leading-[1.55] text-[#4b4b4b]">
-                  {city.timezone}. Сдача HSK — {city.hskCenter}.
-                </p>
-                <div className="mt-auto pt-6 text-sm font-semibold text-[#1b1b1b] underline-offset-4 group-hover:underline">
-                  Открыть страницу города →
+                <Image
+                  src={`/cities/${city.slug}.webp`}
+                  alt=""
+                  fill
+                  sizes="(min-width: 1280px) 25vw, (min-width: 768px) 50vw, 100vw"
+                  className="object-contain"
+                />
+
+                <div className="absolute inset-0 z-10 flex flex-col p-[7.5%]">
+                  <div className="flex items-start justify-between gap-3">
+                    <h2 className="max-w-[76%] text-[clamp(1.35rem,2vw,1.8rem)] font-medium leading-[1.08] tracking-[-0.025em] text-[#171717]">
+                      {city.name}
+                    </h2>
+                    {city.licensedRegion ? (
+                      <span className="rounded-full bg-white/90 px-2.5 py-1 text-[0.68rem] font-semibold text-[#1b1b1b] shadow-sm backdrop-blur-sm">
+                        Лицензия
+                      </span>
+                    ) : null}
+                  </div>
+
+                  <p className="mt-2 max-w-[68%] text-[clamp(0.72rem,1vw,0.86rem)] leading-[1.35] text-[#303030]">
+                    {city.timezone}
+                  </p>
+                  <span className="sr-only">
+                    Сдача HSK — {city.hskCenter}.
+                  </span>
+
+                  <span
+                    className="absolute bottom-[7.5%] left-[7.5%] inline-flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#171717] text-[#171717] opacity-60 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100"
+                    aria-hidden="true"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.25"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="h-[17px] w-[17px] transition-transform duration-200 group-hover:rotate-90 group-focus-visible:rotate-90 motion-reduce:transition-none"
+                    >
+                      <path d="M4 20 20 4" />
+                      <path d="M9 4h11v11" />
+                    </svg>
+                  </span>
                 </div>
               </Link>
             </Reveal>

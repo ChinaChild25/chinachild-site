@@ -2627,6 +2627,12 @@ textarea.lead-input {
 .card-hero-repetitor { background: #f5f5f5; }
 .card-hero-results { background: hsl(247, 65%, 68%); }
 .card-hero-reviews { background: #f5f5f5; }
+.city-detail-hero {
+  overflow: visible;
+  padding-inline: 0;
+  border-radius: 0;
+  background: transparent;
+}
 
 .card-hero-results .page-hero-title {
   color: #ffffff;
@@ -2969,6 +2975,11 @@ html[data-theme="dark"] .course-landing .card-cream-soft {
   .card-course-kids .page-hero-media-img {
     object-position: right center;
   }
+
+  .city-detail-hero .page-hero-media {
+    height: clamp(280px, 78vw, 390px);
+    margin: 28px 0 0;
+  }
 }
 
 /* Десктоп: кадр абсолютно прижат к правому нижнему углу, крупный; текст
@@ -3062,6 +3073,26 @@ html[data-theme="dark"] .course-landing .card-cream-soft {
     width: 50%;
     max-width: 744px;
     height: 91%;
+  }
+
+  .city-detail-hero.page-hero-card--media {
+    min-height: 500px;
+  }
+
+  .city-detail-hero.page-hero-card--media .page-hero-layout {
+    min-height: 404px;
+    padding-right: 52%;
+    align-content: center;
+  }
+
+  .city-detail-hero.page-hero-card--media .page-hero-media {
+    top: 50%;
+    right: 0;
+    bottom: auto;
+    width: 46%;
+    max-width: 680px;
+    height: 100%;
+    transform: translateY(-50%);
   }
 
   .card-hero-results.page-hero-card--media .page-hero-media {
