@@ -6,6 +6,7 @@ const APP_BUILD_DIR = process.env.JSONLD_BUILD_APP_DIR
   : path.join(process.cwd(), ".next/server/app");
 const SNAPSHOT_PATH = path.join(process.cwd(), ".generated/public-content-snapshot.json");
 const PRERENDER_MANIFEST_PATH = path.join(process.cwd(), ".next/prerender-manifest.json");
+const SITEMAP_PAGES_PATH = path.join(process.cwd(), ".next/server/app/sitemap-pages.xml.body");
 const STATIC_SOURCE_FILES = [
   "app/dictionary/page.tsx",
   "app/dictionary/word/[slug]/page.tsx",
@@ -111,6 +112,7 @@ for (const file of files) {
 }
 
 const snapshot = JSON.parse(await readFile(SNAPSHOT_PATH, "utf8"));
+const sitemapPages = await readFile(SITEMAP_PAGES_PATH, "utf8");
 const prerenderManifest = JSON.parse(await readFile(PRERENDER_MANIFEST_PATH, "utf8"));
 const staticPrefixes = ["/dictionary", "/grammar"];
 const staticRoutes = Object.entries(prerenderManifest.routes).filter(([route]) =>
@@ -152,6 +154,15 @@ if (generatedWordRoutes.length !== snapshot.publicWordCount) {
   issues.push(
     `generated word route count ${generatedWordRoutes.length} does not match snapshot ${snapshot.publicWordCount}`,
   );
+}
+
+for (const deck of snapshot.tables.vocabDecks) {
+  if (!deck.hsk_version || !deck.hsk_level || (deck.imported_count ?? 0) > 0) continue;
+  const versionSlug = deck.hsk_version === "3.0" ? "new-hsk" : "hsk";
+  const emptyLevelPath = `/dictionary/hsk/${versionSlug}/${deck.hsk_level}`;
+  if (sitemapPages.includes(`${emptyLevelPath}</loc>`)) {
+    issues.push(`${emptyLevelPath}: empty HSK level is present in sitemap`);
+  }
 }
 
 if (issues.length > 0) {

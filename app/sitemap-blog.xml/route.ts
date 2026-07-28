@@ -7,12 +7,17 @@ export const dynamic = "force-static";
 
 export async function GET() {
   const posts = await getAllPosts();
-  const now = new Date().toISOString();
+  const latestPostModified = (matchingPosts = posts) =>
+    matchingPosts.reduce(
+      (latest, post) =>
+        post.dateModified > latest ? post.dateModified : latest,
+      "1970-01-01T00:00:00.000Z",
+    );
 
   const entries: UrlEntry[] = [
     {
       loc: absoluteUrl("/blog"),
-      lastmod: now,
+      lastmod: latestPostModified(),
       changefreq: "weekly",
       priority: 0.8,
     },
@@ -20,7 +25,7 @@ export async function GET() {
     // SEO-текстом и листингом spoke-статей.
     ...BLOG_HUBS.map((hub): UrlEntry => ({
       loc: absoluteUrl(`/blog/category/${hub.slug}`),
-      lastmod: now,
+      lastmod: latestPostModified(posts.filter((post) => post.category === hub.category)),
       changefreq: "weekly",
       priority: 0.7,
     })),

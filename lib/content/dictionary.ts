@@ -192,6 +192,12 @@ export async function getPublicHskDeck(
   );
 }
 
+export function isIndexableHskDeck(
+  deck: Pick<HskDeckSummary, "importedCount">,
+): boolean {
+  return (deck.importedCount ?? 0) > 0;
+}
+
 // ---- Level term listing ----
 
 export type HskLevelTermsOptions = {

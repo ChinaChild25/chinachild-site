@@ -64,11 +64,11 @@ export function renderSitemapIndex(sitemaps: { loc: string; lastmod?: string }[]
 `;
 }
 
-export function renderRootSitemapIndex(now = new Date().toISOString()): string {
+export function renderRootSitemapIndex(): string {
   return renderSitemapIndex([
-    { loc: absoluteUrl("/sitemap-pages.xml"), lastmod: now },
-    { loc: absoluteUrl("/sitemap-blog.xml"), lastmod: now },
-    { loc: absoluteUrl("/sitemap-images.xml"), lastmod: now },
+    { loc: absoluteUrl("/sitemap-pages.xml") },
+    { loc: absoluteUrl("/sitemap-blog.xml") },
+    { loc: absoluteUrl("/sitemap-images.xml") },
   ]);
 }
 

@@ -9,6 +9,7 @@ import DictionarySearch from "@/components/content/DictionarySearch";
 import {
   getPublicHskLevelTerms,
   getPublicHskVersions,
+  isIndexableHskDeck,
 } from "@/lib/content/dictionary";
 import {
   formatWordCountRu,
@@ -66,8 +67,8 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const path = `/dictionary/hsk/${versionParam}/${level}`;
   const versions = await getPublicHskVersions();
   const versionSummary = versions.find((candidate) => candidate.id === version);
-  const hasLevel = versionSummary?.decks.some((deck) => deck.hskLevel === level) ?? false;
-  if (!hasLevel) {
+  const deck = versionSummary?.decks.find((candidate) => candidate.hskLevel === level);
+  if (!deck) {
     const versionPath = `/dictionary/hsk/${versionParam}`;
     return {
       ...buildMetadata({
@@ -77,6 +78,16 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
       }),
       robots: { index: false, follow: true, googleBot: { index: false, follow: true } },
       alternates: { canonical: absoluteUrl(versionPath) },
+    };
+  }
+  if (!isIndexableHskDeck(deck)) {
+    return {
+      ...buildMetadata({
+        title: `${heading} — список слов готовится | ChinaChild`,
+        description: `Список слов уровня ${heading} (${versionLabel}) готовится к публикации.`,
+        path,
+      }),
+      robots: { index: false, follow: true, googleBot: { index: false, follow: true } },
     };
   }
   const metadata = buildMetadata({
