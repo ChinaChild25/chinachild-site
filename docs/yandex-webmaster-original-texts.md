@@ -1,5 +1,8 @@
 # Yandex Webmaster — «Оригинальные тексты»
 
+> External operational reference. Verify that the feature and current UI flow
+> are still available in Yandex Webmaster before relying on this checklist.
+
 Защита авторского контента от копирования: Яндекс запоминает, что вы — первый автор, и при копии в дальнейшем поднимает вас в выдаче выше копии.
 
 ## Зачем это нужно

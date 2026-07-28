@@ -19,6 +19,7 @@
     "build": "next build",
     "postbuild": "node scripts/audit-built-jsonld.mjs",
     "start": "next start",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint",
     "audit:jsonld": "node scripts/audit-built-jsonld.mjs",
     "gen:images": "node --env-file=.env.local scripts/generate-blog-images.mjs",

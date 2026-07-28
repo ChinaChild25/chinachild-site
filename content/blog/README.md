@@ -1,116 +1,76 @@
 # Блог ChinaChild
 
-Каждый файл `.mdx` в этой папке становится отдельной статьёй `/blog/[slug]`.
+Status: current authoring contract.
 
-## Структура
+Every published `*.mdx` file in this folder becomes `/blog/[slug]`.
+`content/scheduled-blog` is a protected queue and must not be moved or
+published manually unless that action was explicitly requested.
 
-См. `_TEMPLATE.mdx.example`. Поля frontmatter:
-- `title` — заголовок статьи (до 70 символов для SERP)
-- `description` — мета-описание (130–160 символов)
-- `excerpt` — лид для карточки на индексной странице
-- `category` — рубрика (одна из тематических)
-- `readingTime` — оценочное время чтения
-- `date` — дата публикации (ISO)
-- `dateModified` — дата последнего обновления
-- `author` — slug преподавателя из `lib/site-data.ts` (`anastasia-ponomareva`, `anastasia-erina`, `zhao-li`)
-- `keywords` — через запятую, попадают в `<meta keywords>` и в `Article` schema
+## Source of truth
 
-## Что уже есть (5 статей)
+- Frontmatter/body example: `_TEMPLATE.mdx.example`
+- Parser and supported custom blocks: `lib/blog.ts`
+- Page rendering: `app/blog/[slug]/page.tsx`
+- Category hubs: `lib/blog-hubs.ts`
+- Discovery: `app/sitemap-blog.xml/route.ts` and `app/feed.xml/route.ts`
+- Scheduled publishing: `scripts/publish-scheduled-blog.mjs`
 
-- `chinese-for-beginners-guide.mdx`
-- `chinese-grammar-basics.mdx`
-- `how-long-to-learn-chinese.mdx`
-- `how-to-learn-chinese-from-scratch.mdx`
-- `hsk-levels-explained.mdx`
+Do not maintain article counts or slug inventories in this README; the
+filesystem is authoritative.
 
-## Контент-план для domination (40+ статей)
+## Required frontmatter
 
-5 статей — это «тонкий контент» для Google. Цель — 40+ статей в 5 кластерах, чтобы накопить тематический авторитет.
+- `title` — SERP/page title.
+- `description` — meta description.
+- `excerpt` — card summary.
+- `category` — supported category used by blog hubs.
+- `readingTime` — displayed estimate.
+- `date` and `dateModified` — ISO timestamps.
+- `author` — a valid teacher slug from `lib/site-data.ts`.
+- `keywords` — comma-separated topic terms.
 
-### Кластер: HSK
-- `kak-podgotovitsya-k-hsk-1` — Как подготовиться к HSK 1 за 3 месяца
-- `slovarnyy-zapas-hsk-1` — Словарный запас HSK 1: 150 слов с примерами
-- `slovarnyy-zapas-hsk-2` — Словарный запас HSK 2: 300 слов
-- `ekzamen-hsk-1-struktura` — Экзамен HSK 1: задания и проходной балл
-- `gde-sdavat-hsk-v-rossii-2026` — Где сдать HSK в России в 2026
-- `hsk-vs-hskk` — HSK vs HSKK (устный): чем различаются
-- `hsk-3-podgotovka` — Подготовка к HSK 3: словарь + грамматика + тексты
-- `hsk-4-poshagovo` — Подготовка к HSK 4 пошагово: 6-месячный план
+The filename is the canonical slug: lowercase Latin characters/numbers and
+hyphens, without spaces. Changing a published filename changes its public URL
+and requires explicit redirect/SEO scope.
 
-### Кластер: начинающим
-- `kitayskiy-alfavit-mif` — Китайский алфавит — это миф
-- `skolko-ieroglifov-nuzhno` — Сколько иероглифов нужно для разговора
-- `kak-zapominat-ieroglify` — Как запоминать иероглифы: 5 методов
-- `tony-kitayskogo-osnovy` — Тоны китайского: основы и постановка
-- `pervye-50-fraz-dlya-turista` — Первые 50 фраз для туриста в Китае
-- `kitayskiy-vs-yaponskiy-vs-koreyskiy` — Что легче учить
-- `oshibki-novichkov-v-kitayskom` — 7 типичных ошибок начинающих
+## Content behavior
 
-### Кластер: дети и родители
-- `so-skolki-let-uchit-kitayskiy` — Со скольки лет учить китайский
-- `kitayskiy-v-shkole` — Китайский в школе: программа и подготовка
-- `olimpiady-po-kitayskomu-2026` — Олимпиады по китайскому языку 2026
-- `oge-ege-kitayskiy` — ОГЭ/ЕГЭ по китайскому: нужен ли репетитор
-- `multfilmy-na-kitayskom-dlya-detey` — Топ-10 мультфильмов на китайском
-- `motivirovat-rebenka-uchit-kitayskiy` — Как мотивировать ребёнка
+The project parses constrained Markdown plus custom blocks; it does not execute
+arbitrary MDX components. Tables, headings, lists, emphasis, images, and the
+documented `:::image`/`:::audio` JSON blocks are supported by `lib/blog.ts`.
 
-### Кластер: бизнес
-- `zachem-biznesu-kitayskiy` — Зачем бизнесу китайский язык
-- `delovaya-perepiska-s-kitaytsami` — Деловая переписка с китайскими партнёрами
-- `peregovory-s-kitaytsami` — Переговоры с китайцами: культурные ошибки
-- `korporativnoe-obuchenie-roi` — Корпоративное обучение китайскому: ROI
-- `vstrecha-s-kitayskim-partnerom-protokol` — Протокол первой встречи
+The page automatically provides metadata, Article/LearningResource schema,
+table of contents for sufficiently structured articles, related links,
+autolinking, and the site-wide CTA. Do not duplicate those mechanisms inside an
+article.
 
-### Кластер: культура и мотивация
-- `pochemu-kitayskiy-trudnee-chem-dumayut` — Почему китайский труднее, чем кажется
-- `kak-ne-brosit-cherez-3-mesyatsa` — Как не бросить китайский через 3 месяца
-- `istorii-vypusknikov` — Истории выпускников ChinaChild
-- `kitayskaya-kalligrafiya-osnovy` — Основы китайской каллиграфии
+## Generated images
 
-### Сезонные / актуальные (выходят раз в квартал)
-- `kak-vstretit-kitayskiy-noviy-god` — К Лунному Новому году
-- `chto-podarit-kitayskomu-partneru` — К Празднику середины осени
-- `chto-pochitat-na-kitayskom-letom` — Сезонный список книг
+An empty `:::image` block can be filled by the generation script:
 
-## Полезное
-
-- Авто-линкер (`lib/blog-autolinker.tsx`) сам ставит до 18 ссылок в каждой статье на курсы, города, термины глоссария — не нужно проставлять вручную
-- Article schema, OG-метаданные, atom-feed, sitemap — всё генерируется автоматически
-- При добавлении статьи запустите `npm run build` локально для проверки
-- Для срочной индексации после публикации триггерните `/api/indexnow` через `?secret=ENV_INDEXNOW_SECRET`
-- TOC рендерится автоматически на статьях с ≥4 H2 — id заголовков считаются через `slugifyHeading` (см. `lib/blog.ts`), якоря стабильны между билдами
-
-## Inline-иллюстрации: `:::image` (OpenAI gpt-image-1)
-
-Сценарий: вставь блок с пустым `src` и заполненным `prompt`, скрипт сгенерирует PNG.
-
-```
+```text
 :::image
 {
   "src": "",
-  "alt": "Короткое описание для alt и figcaption",
-  "caption": "Подпись под картинкой (опционально, иначе alt)",
-  "prompt": "Подробный английский промпт для gpt-image-1: стиль, фон, цвета, надписи. Без лиц, без китайских иероглифов в изображении."
+  "alt": "Содержательное описание",
+  "caption": "Необязательная подпись",
+  "prompt": "Detailed generation prompt"
 }
 :::
 ```
 
-Запуск генерации (один раз после `vercel env pull .env.local`):
-
 ```bash
-npm run gen:images:dry   # показать план без вызова OpenAI
-npm run gen:images       # сгенерировать недостающие
+npm run gen:images:dry
+npm run gen:images
 ```
 
-Скрипт идемпотентен: блоки с заполненным `src` пропускает; повторный запуск создаёт только новые. Файлы кладутся в `public/blog/<slug>/<NN>-<hash>.png`. Hash — детерминированный от `slug + prompt + size + model`, поэтому одинаковые промпты не дублируют файлы.
+The dry run is read-only. The real command calls an external API, writes
+generated files, and updates article sources; run it only with explicit
+authorization.
 
-Параметры через env: `IMAGE_MODEL` (по умолчанию `gpt-image-1`), `IMAGE_SIZE` (`1536x1024` — 3:2 hero), `IMAGE_QUALITY` (`low`|`medium`|`high`), `ONLY=slug1,slug2`.
+## Generated audio
 
-## Inline-аудио: `:::audio` (OpenAI TTS → Supabase Storage)
-
-Сценарий: блок с китайским текстом, пиньинем и переводом. Скрипт получает MP3 от OpenAI и привязывает.
-
-```
+```text
 :::audio
 {
   "src": "",
@@ -122,22 +82,23 @@ npm run gen:images       # сгенерировать недостающие
 :::
 ```
 
-`ttsText` опционален — если не задан, скрипт берёт `hanzi`. `voice` тоже можно задать в блоке; по умолчанию используется рекомендованный для высокого качества `marin`. Модель по умолчанию — `gpt-4o-mini-tts`, с инструкцией на естественное нормативное произношение китайского.
-
 ```bash
-npm run gen:audio:dry    # план
-npm run gen:audio        # генерация
+npm run gen:audio:dry
+npm run gen:audio
 ```
 
-Файлы кладутся в публичный Supabase Storage bucket `vocab-public-audio` по content-addressed пути `blog/<prefix>/<hash>.mp3`. Одинаковые текст и настройки синтеза используют один объект; OpenAI повторно не вызывается. В MDX сохраняется постоянный публичный URL.
+The real command calls OpenAI, uploads to protected Supabase Storage, and writes
+the resulting public URL into the article. `ttsText` defaults to `hanzi`.
 
-Актуальную стоимость синтеза нужно проверять по тарифам выбранной OpenAI TTS-модели; повторные просмотры статьи API-расходов не создают.
+## Validation
 
-## Полный workflow для новой статьи с медиа
+For an ordinary article edit:
 
-1. Написать MDX, вставить нужное число `:::image` и `:::audio` блоков с пустыми `src`.
-2. `vercel env pull .env.local --environment=preview --yes` (один раз, если `.env.local` не свежий).
-3. `npm run gen:images:dry && npm run gen:audio:dry` — посмотреть план и стоимость.
-4. `npm run gen:images && npm run gen:audio` — реальная генерация, MP3 загружается в Supabase Storage, MDX обновится с `src` автоматически.
-5. `git add public/blog content/blog && git commit`.
-6. После деплоя — `/api/indexnow?secret=...` для срочной переиндексации.
+```bash
+npm run typecheck
+npm run build
+```
+
+Check the rendered article, author, headings/TOC, media, canonical metadata,
+JSON-LD, blog sitemap, and feed. Publishing, IndexNow submission, commits, and
+deployments are separate external actions and require their own authorization.

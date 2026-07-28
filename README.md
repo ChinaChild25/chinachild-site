@@ -1,106 +1,71 @@
 # ChinaChild public site
 
-Public SEO and lead-generation website for ChinaChild, serving a primarily
-Russian-speaking search market.
+Public SEO and lead-generation website for
+[chinachild.ru](https://chinachild.ru), serving a primarily Russian-speaking
+market. The authenticated platform at
+[my.chinachild.ru](https://my.chinachild.ru) is a separate product and
+repository.
 
-- Public site: [chinachild.ru](https://chinachild.ru)
-- Authenticated platform: [my.chinachild.ru](https://my.chinachild.ru)
+## Start here
 
-The authenticated platform is a separate product and repository. This project
-focuses on organic visibility in Yandex and Google, qualified leads, trust, and
-conversion. It publishes course pages, blog articles, HSK resources, grammar,
-dictionary and glossary content, diagnostic tools, and lead forms.
+- Agents and contributors: [AGENTS.md](AGENTS.md)
+- Current system map and change routing: [ARCHITECTURE.md](ARCHITECTURE.md)
+- Environment-variable contract: [.env.example](.env.example)
+- Blog authoring: [content/blog/README.md](content/blog/README.md)
+- Glossary authoring: [content/glossary/README.md](content/glossary/README.md)
+- Public grammar/dictionary integration:
+  [docs/content-seo-setup.md](docs/content-seo-setup.md)
+
+Historical migration reports live in `AUDIT.md` and `docs/cutover/`. They are
+useful evidence but do not describe current production architecture.
 
 ## Stack
 
-- Next.js App Router, React, and TypeScript
-- Tailwind CSS
-- Vercel
-- Supabase public content
-- Filesystem blog and glossary content
-- Yandex Metrika and Google Analytics
-- OpenAI-backed diagnostic routes
+Next.js App Router, React, TypeScript, Tailwind CSS, Vercel, Supabase,
+filesystem MDX-like content, Yandex Metrika, Google Analytics, and
+OpenAI-backed diagnostics/media tooling.
 
-## Architecture
+## Local setup
 
-- `app/` — routes, layouts, API handlers, metadata, sitemaps, robots, and SEO
-  endpoints
-- `app/layout.tsx` — global shell, consent-aware analytics, and site JSON-LD
-- `app/globals.css` — design tokens and global responsive behavior
-- `components/` — shared UI, layout, consent, analytics, and SEO components
-- `lib/site-config.ts` — site identity, domains, public constants, and URL logic
-- `lib/metadata.ts` — canonical, social, verification, and robots metadata
-- `lib/` — shared content access, schema, consent, and domain logic
-- `content/blog/` and `content/glossary/` — published filesystem content
-- `content/scheduled-blog/` — queued posts protected from casual publication
-- `.generated/` — build-time snapshot for large public-content route sets
-- `public/` — static assets
-- `scripts/` — snapshot generation, audits, media tools, and publishing
-- `next.config.ts` — headers, redirects, images, and build tracing
+```bash
+npm install
+cp .env.example .env.local
+npm run dev
+```
 
-UI, responsive behavior, visible copy, routes, canonicals, metadata, JSON-LD,
-internal links, and indexability are intentional product and SEO behavior. Do
-not change them casually; obtain explicit approval and scope first.
-
-## Content sources
-
-Supabase provides public grammar, vocabulary, and dictionary data through
-restricted credentials. Large static route sets consume a paginated build-time
-snapshot to avoid per-page database fan-out. Blog and glossary content live in
-the filesystem. Scheduled posts remain queued until the protected publisher
-moves them into published content.
-
-## Environment
-
-Copy `.env.example` to `.env.local` and provide only the values needed locally.
-The file documents these groups:
-
-- Supabase public-read credentials and the server-only service role
-- public site and authenticated-app URLs
-- Yandex Metrika, Google Analytics, and optional webmaster verification
-- optional IndexNow key
-- SMTP lead delivery and IP hashing
-- server-only OpenAI key and optional diagnostic model overrides
-
-All `NEXT_PUBLIC_*` values are exposed to the browser. Never put secrets in
-them. Do not modify Supabase data, production services, or external APIs without
-explicit approval.
+The build requires the public Supabase URL and anon key because it generates a
+paginated static snapshot for grammar and dictionary routes. Add only the
+environment values needed for the workflow you are running. Every
+`NEXT_PUBLIC_*` value is exposed to the browser.
 
 ## Commands
 
 ```bash
 npm run dev                 # local development
-npm run build               # snapshot, production build, JSON-LD audit
-npm run start               # serve the production build
+npm run typecheck           # TypeScript without emitting files
 npm run lint                # ESLint
+npm run build               # snapshot + Next build + JSON-LD audit
+npm run start               # serve the production build
 npm run audit:jsonld        # audit built structured data
 npm run audit:redirects     # audit redirect behavior
-npm run audit:production    # production-readiness audit
+npm run audit:production    # audit production endpoints and readiness
+npm run check:audio         # verify that required generated audio exists
 ```
 
-Image/audio generation and scheduled publishing commands can create or move
-content. Use them only when that action is explicitly requested.
+Image/audio generation and scheduled publishing mutate files or external
+storage. Run those commands only for an explicitly authorized content task; see
+the relevant content-folder README.
 
-## Deployment
+## Deployment and protected workflows
 
-Production is deployed on Vercel with `NEXT_PUBLIC_SITE_URL` set to
-`https://chinachild.ru`. The production build generates the public-content
-snapshot before `next build` and audits built JSON-LD afterward. Preserve static
-generation and build-time loading; avoid runtime ISR for large route sets.
+Vercel builds production with `NEXT_PUBLIC_SITE_URL=https://chinachild.ru`.
+The build creates `.generated/public-content-snapshot.json` before `next build`
+and audits JSON-LD afterward.
 
-## Protected workflows
+`.github/workflows/publish-scheduled-blog.yml` publishes queued articles on its
+protected schedule and supports a manual count. `vercel.json` contains the
+existing IndexNow submission schedule. Do not alter either workflow casually.
 
-`.github/workflows/publish-scheduled-blog.yml` runs Monday and Thursday at 09:00
-Moscow time and supports a manual post-count input. It commits only publisher
-changes under `content/blog` and `content/scheduled-blog`.
-
-Do not alter the workflow or publish queued posts unless explicitly requested.
-Do not add cron jobs, polling, analytics, infrastructure, or dependencies
-without demonstrated need and a resource budget.
-
-## Contribution guardrails
-
-Read `AGENTS.md` before changing the project. Investigate the actual execution
-path and shared usages, make the smallest behavior-preserving change, avoid
-unrelated cleanup, and preserve uncommitted or parallel work. Run focused tests,
-typecheck, lint, and the production build when relevant.
+Product behavior, UI/UX, routes, metadata, indexability, and external data are
+intentional contracts. The exact invariants and required checks are documented
+in [ARCHITECTURE.md](ARCHITECTURE.md).

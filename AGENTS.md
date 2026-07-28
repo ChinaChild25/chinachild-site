@@ -1,140 +1,114 @@
-<!-- BEGIN:nextjs-agent-rules -->
-# This is NOT the Next.js you know
+# ChinaChild agent contract
 
-
-## Engineering constraints
-
-These rules are mandatory for every task.
-
-1. Preserve existing product behavior, API contracts, data semantics, and user-visible behavior unless the task explicitly requests a change.
-
-2. Do not change UI, UX, layout, markup, copy, labels, class names, visual states, or interaction design without explicit user approval. If a technical fix appears to require a UI change, stop and report it instead of implementing it.
-
-3. Prefer the smallest correct behavior-preserving change. Do not perform unrelated cleanup, broad refactoring, renaming, file moves, or architectural modernization.
-
-4. Before coding, identify:
-   - the existing execution path;
-   - the measured problem;
-   - the smallest safe intervention.
-   Keep this pre-coding note to a maximum of 8 lines.
-
-5. Do not scan the entire repository by default. Read only the relevant entry points, their direct dependencies, tests, and configuration.
-
-6. Do not add speculative abstractions, generic frameworks, duplicate services, wrapper layers, new dependencies, or extensibility that is not required by the current task.
-
-7. Do not add polling, cron jobs, retries, loops, self-chaining HTTP calls, background processing, ISR, cache invalidation, or recurring health checks without a clear resource budget and a demonstrated need.
-
-8. Background processing must be event-driven on the normal path. Scheduled jobs are recovery-only. A recovery job must perform a cheap preflight and must not call expensive workers when no work exists.
-
-9. Static generation must not perform per-page database fan-out. Shared content must be loaded once using paginated batch queries or a build-time snapshot.
-
-10. Avoid N+1 queries. Select only required columns, batch identifiers, paginate explicitly, and reuse already loaded data.
-
-11. Do not optimize for fewer source lines by compressing readable code. Optimize for fewer runtime operations, fewer network requests, lower latency, lower memory use, and simpler execution paths.
-
-12. Every performance or resource change must include:
-    - before and after execution model;
-    - expected request/query reduction;
-    - a regression test or automated guard where practical.
-
-13. Do not create documentation files unless explicitly requested. Keep the final report under 12 lines: changed files, behavior preserved, tests run, measured improvement, remaining risk.
-
-14. If the requested scope expands, stop instead of silently implementing extra work.
-
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
-<!-- END:nextjs-agent-rules -->
-
-# ChinaChild project context
+These instructions are loaded for every task. Keep them concise, current, and
+limited to durable project rules. Read [ARCHITECTURE.md](ARCHITECTURE.md) only
+for the sections relevant to the task.
 
 ## Product boundary
 
-- This repository is the public SEO and lead-generation site for ChinaChild.
-- Production is `https://chinachild.ru`. The authenticated platform at
-  `https://my.chinachild.ru` is a separate product and repository.
-- The primary audience and search market are Russian-speaking users.
-- Business priorities are organic visibility in Yandex and Google, qualified
-  leads, trust, and conversion.
-- Public content includes courses, the blog, HSK resources, grammar,
-  dictionary, glossary, diagnostic tools, and lead forms.
+- This repository is the public SEO and lead-generation site at
+  `https://chinachild.ru`.
+- The authenticated platform at `https://my.chinachild.ru` is a separate
+  product and repository.
+- The primary market is Russian-speaking users. Business priorities are organic
+  visibility in Yandex and Google, qualified leads, trust, and conversion.
+- Public content includes courses, blog, HSK resources, grammar, dictionary,
+  glossary, diagnostics, and lead forms.
 
 ## Verified stack
 
-- Next.js App Router with React and TypeScript.
-- Tailwind CSS.
+- Next.js App Router, React, TypeScript, and Tailwind CSS.
 - Vercel deployment.
-- Supabase for public grammar, vocabulary, and dictionary content.
-- Filesystem content for the blog and glossary.
-- Yandex Metrika and Google Analytics, gated by consent.
-- OpenAI-backed server routes for diagnostic features.
+- Supabase for public learning content and protected server-side lead/media
+  operations.
+- Filesystem content for blog and glossary.
+- Yandex Metrika and Google Analytics with consent handling.
+- OpenAI-backed diagnostic routes and offline media-generation scripts.
 
-## Architecture map
+## Sources of truth
 
-- `app/`: routes, layouts, route metadata, API handlers, sitemaps, robots, and
-  generated SEO endpoints. `app/layout.tsx` is the global shell.
-- `app/globals.css`: global design tokens, responsive rules, and shared visual
-  behavior.
-- `components/`: shared UI, layout, analytics, consent, and SEO components.
-- `lib/site-config.ts`: canonical site identity, public origins, contact and
-  business constants, and absolute URL handling.
-- `lib/metadata.ts`: shared canonical, Open Graph, Twitter, verification, and
-  robots metadata behavior.
-- `lib/`: shared content access, schema, consent, and domain logic.
-- `content/blog/`, `content/scheduled-blog/`, `content/glossary/`: filesystem
-  content; queued blog posts are not public content until published.
-- `.generated/`: build-time public-content snapshot consumed by large static
-  route sets.
-- `public/`: static images, fonts, media, and verification assets.
-- `scripts/`: build snapshots, audits, media generation, and publishing tools.
-- `next.config.ts`: security headers, image policy, redirects, sitemap headers,
-  and build tracing.
-- `.env.example`: authoritative environment-variable inventory.
-- `.github/workflows/publish-scheduled-blog.yml`: protected scheduled publisher.
+Use this order when documents disagree:
 
-## Mandatory project constraints
+1. Current code, `package.json`, configuration, and the lockfile.
+2. [ARCHITECTURE.md](ARCHITECTURE.md) for system boundaries and data flows.
+3. `.env.example` for the environment-variable contract.
+4. `README.md` and content-folder READMEs for human workflows.
+5. `AUDIT.md`, `docs/cutover/**`, and dated checklists are historical evidence,
+   not current architecture.
 
-- Never change UI, UX, visible copy, JSX structure, class names, design tokens,
-  responsive behavior, or interaction logic without explicit owner approval.
-- Never change routes, canonical URLs, metadata meaning, JSON-LD, sitemaps,
-  robots, redirects, internal linking, or indexability without explicit SEO
-  scope and owner approval.
-- Preserve the scheduled blog workflow. Never publish or move queued posts
-  unless explicitly requested.
-- Prefer static generation and build-time data loading. Avoid runtime ISR for
-  large static route sets.
-- Prohibit N+1 queries and unpaginated Supabase reads. Select only needed data,
-  reuse loaded data, and batch network operations.
-- Minimize client components, shipped JavaScript, serverless calls, background
-  jobs, and dependencies.
-- Do not add polling, cron, analytics, abstractions, or infrastructure without a
-  demonstrated need and an explicit resource budget.
-- Do not perform unrelated refactoring, cleanup, renaming, or file moves.
-- Preserve uncommitted changes and parallel-agent work. Never overwrite work
-  whose ownership or purpose is unclear.
-- Investigate the real execution path and all shared usages before editing.
-  Apply the smallest behavior-preserving fix.
-- Never modify Supabase data, production services, or external APIs without
-  explicit approval.
+If a maintained document conflicts with code, verify the execution path and
+update the document in the same scoped change when authorized.
 
-## Agent workflow
+## Mandatory constraints
 
-1. Read only relevant entry points, direct dependencies, focused tests, and
-   configuration. Do not inventory the repository by default.
-2. Before coding, explain the current execution path, measured problem, and
-   smallest safe intervention in at most 8 lines.
-3. Make product, UI, and SEO decisions only after owner approval.
-4. Run focused tests first, then typecheck, lint, and a production build when
-   relevant to the changed path.
-5. For performance work, record before/after execution models, expected or
-   measured request/query reduction, and an automated regression guard where
-   practical.
-6. Report changed files, behavior preserved, tests, measured effect, and
-   unresolved risks in at most 12 lines.
-7. Do not create documentation unless the task explicitly requests it.
+1. Preserve product behavior, API contracts, data semantics, UI, and SEO
+   behavior unless the request explicitly authorizes a change.
+2. Do not change visible copy, JSX structure, class names, design tokens,
+   responsive behavior, or interactions without explicit UI/UX scope.
+3. Do not change routes, canonical URLs, metadata meaning, JSON-LD, sitemaps,
+   robots, redirects, internal linking, or indexability without explicit SEO
+   scope.
+4. Preserve `content/scheduled-blog` and its protected publishing workflow.
+   Never publish or move queued posts unless explicitly requested.
+5. Never modify Supabase data, production services, external APIs, or secrets
+   without explicit approval.
+6. Preserve uncommitted changes and parallel work. Do not overwrite changes
+   whose ownership is unclear.
+7. Prefer the smallest correct change. Do not perform unrelated cleanup,
+   refactoring, renaming, file moves, dependency changes, or modernization.
+8. Do not add abstractions, polling, retries, cron jobs, background workers,
+   ISR, cache invalidation, analytics, or infrastructure without demonstrated
+   need and an explicit resource budget.
+9. Preserve static generation for large route sets. Shared database content
+   must be loaded once through paginated batch reads and the build snapshot;
+   prohibit per-page fan-out and N+1 queries.
+10. Optimize for fewer runtime operations, requests, queries, bytes, and simpler
+    execution paths—not fewer source lines.
 
-## Reasoning level
+## Task routing
 
-- **Medium:** narrow implementation work and routine fixes.
-- **High:** important shared logic, performance work, SEO infrastructure, or
-  regression review.
-- **Extra High:** major architecture, security, billing, or destructive
-  migrations.
+| Concern | Read first | Shared contracts to trace |
+| --- | --- | --- |
+| UI or page | route in `app/`, direct components | `app/layout.tsx`, `app/globals.css`, shared section/component consumers |
+| SEO/indexing | affected route | `lib/site-config.ts`, `lib/metadata.ts`, `lib/schema.ts`, sitemap/robots routes, redirects |
+| Grammar/dictionary | relevant `lib/content/*` adapter | snapshot generator, `lib/content/public-snapshot.ts`, static params, sitemap |
+| Blog/glossary | folder README and parser | route, metadata/schema, feed, sitemap, scheduled publisher |
+| Leads | `app/api/contact/route.ts` | form payload, rate limit, captcha, storage, dispatch, server analytics |
+| Analytics/consent | `lib/consent/*` | analytics components, event registry, privacy contract |
+| Build/deploy | `package.json` | snapshot/media prebuild, Next config, Vercel config, GitHub workflow |
+
+The detailed flows and validation matrix are in
+[ARCHITECTURE.md](ARCHITECTURE.md).
+
+## Working method
+
+1. Classify the task using the routing table. Do not inventory the repository.
+2. Read the entry point, direct dependencies, relevant tests/configuration, and
+   all shared consumers of the contract being changed.
+3. Before editing, state in at most eight lines: current execution path,
+   measured problem, and smallest safe intervention.
+4. Distinguish a local symptom from a shared invariant. Fix the shared source of
+   truth only when the evidence shows the problem is systemic.
+5. Before editing a Next.js API, verify the installed version and inspect its
+   installed types/source. Use local Next docs when present; do not assume a
+   remembered framework convention matches this project.
+6. Run the smallest relevant checks first, then broader checks in proportion to
+   risk. Tests are required when a relevant suite exists.
+7. For performance/resource changes, report before/after execution models,
+   request/query reduction, and an automated regression guard where practical.
+8. Stop if the requested scope materially expands or needs a product/SEO/UI
+   decision that was not authorized.
+
+## Standard validation
+
+- `npm run typecheck` — TypeScript.
+- `npm run lint` — ESLint.
+- `npm run build` — snapshot, production build, and JSON-LD post-build audit.
+- `npm run audit:redirects` — redirect changes.
+- `npm run audit:production` — production-readiness and public SEO endpoints.
+- Content/media generation and scheduled publishing are mutating operations;
+  never run them unless explicitly requested.
+
+Do not create documentation unless requested. Keep the final report under
+12 lines: changed files, preserved behavior, checks run, measured effect, and
+remaining risk.

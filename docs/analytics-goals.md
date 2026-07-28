@@ -1,5 +1,8 @@
 # Реестр целей аналитики — Яндекс.Метрика и Google Analytics
 
+> Status: operational checklist. Code defines emitted events; external
+> dashboard configuration must be verified in the current vendor UI.
+
 > Все цели уже отправляются из кода через `trackEvent()` ([lib/analytics.ts](../lib/analytics.ts)). Этот документ — **операционный чек-лист**: какие цели нужно завести в самих интерфейсах Метрики/GA, чтобы события попадали в отчёты.
 
 ## Зачем заводить цели вручную

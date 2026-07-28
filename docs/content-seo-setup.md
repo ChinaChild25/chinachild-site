@@ -1,114 +1,108 @@
-# Content/SEO setup — chinachild-site side
+# Public grammar and dictionary integration
 
-This repo is the **public marketing + SEO site**. Grammar and dictionary pages
-read content from the same Supabase project as `chinachild-sandbox` (the
-authenticated platform), through a narrow anon-RLS surface.
+Status: current integration contract, verified 2026-07-28.
 
-We do **not** copy content. We do **not** mirror schema. We just read it.
+This repository renders the public, indexable grammar and dictionary surface.
+The authenticated platform repository owns the Supabase schema, migrations,
+imports, and editorial source data.
 
-## What lives where
+## Ownership
 
-- Schema, migrations, fixtures, import script → `chinachild-sandbox`
-- Anon RLS policies that open the public surface → `chinachild-sandbox/supabase/migrations/20260717120000_public_content_anon_select.sql`
-- Public content access layer → this repo, `lib/content/*` + `lib/supabase/public-content.ts`
-- Public SEO pages → this repo, `app/grammar/*` and `app/dictionary/*`
-- CTAs into the platform → `lib/content/platform-links.ts` (uses `NEXT_PUBLIC_APP_URL`)
+| Concern | Owner |
+| --- | --- |
+| Database schema, migrations, imports, public RLS policies | platform repository |
+| Build-time public read | `scripts/generate-public-content-snapshot.mjs` |
+| Snapshot contract and loading | `lib/content/public-snapshot.ts` |
+| Grammar presentation adapter | `lib/content/grammar.ts` |
+| Dictionary presentation adapter | `lib/content/dictionary.ts` |
+| Public pages | `app/grammar/**`, `app/dictionary/**` |
+| Canonical platform links | `lib/content/platform-links.ts` |
+| URL discovery | `app/sitemap-pages.xml/route.ts` |
 
-## Data access strategy
+## Data path
 
-We use Option A from the architecture brief: **direct anon read from Supabase
-with RLS-restricted policies**. No service role key is in this repo.
+The production path is a paginated build snapshot:
 
-- Server-only client at `lib/supabase/public-content.ts`. The file starts with
-  `import "server-only"` so Next.js will refuse to bundle it into a client
-  component.
-- All `lib/content/*.ts` access modules import that server-only client and
-  call `next/cache#unstable_cache` with a 5-minute revalidate window so that
-  hot pages do not re-fan-out to Supabase on every request.
-- All exported functions degrade gracefully (return `[]` or `null`) when the
-  Supabase env vars are missing, so preview/CI builds without DB access still
-  succeed. The pages then render skeletons / "Загружено: 0" honest copy.
+```text
+Supabase public tables
+  -> anon client constrained by RLS
+  -> generate-public-content-snapshot.mjs
+  -> .generated/public-content-snapshot.json
+  -> one memoized server-only file read
+  -> grammar/dictionary adapters
+  -> statically generated pages and sitemap
+```
 
-## Env vars
+The generator selects explicit columns, paginates at 1,000 rows, and batches
+independent tables. Page generation must not query Supabase per route.
 
-See `.env.example`. Required for production:
+Grammar and dictionary routes use `revalidate = false`. Database changes appear
+on the public site only after a successful rebuild/deployment creates a fresh
+snapshot; there is no five-minute runtime revalidation path.
 
-| Variable                          | Purpose                                                  |
-| --------------------------------- | -------------------------------------------------------- |
-| `NEXT_PUBLIC_SUPABASE_URL`        | Same project as `chinachild-sandbox`                     |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY`   | Anon key — RLS limits it to public content               |
-| `NEXT_PUBLIC_SITE_URL`            | Canonical origin (`https://chinachild.ru`)               |
-| `NEXT_PUBLIC_APP_URL`             | Platform origin used for CTAs (`https://my.chinachild.ru`) |
+## Credentials
 
-**Never** put `SUPABASE_SERVICE_ROLE_KEY` here. The anon key is enough — the
-RLS policies guarantee only published grammar articles, system/imported HSK
-decks, and dictionary terms are visible.
+The snapshot generator uses:
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+Those credentials can read only the public RLS surface. A build without them
+fails intentionally instead of silently publishing an empty dictionary.
+
+`SUPABASE_SERVICE_ROLE_KEY` exists in this repository's environment contract,
+but it is not used to render grammar or dictionary content. It is restricted to
+protected server-side lead storage/rate limiting and authorized offline media
+uploads. Never move it into a client component or public-content read path.
+
+See `.env.example` for the complete variable inventory.
 
 ## Public routes
 
-- `/grammar` — hub with featured topics, search, filters, article grid.
-- `/grammar/[slug]` — article detail rendered from `grammar_blocks`.
-- `/grammar/tags` — all tag groups with article counts.
-- `/grammar/tags/[slug]` — articles for a tag.
-- `/grammar/sections/[slug]` — articles for a section.
-- `/dictionary` — hub with HSK plan + honest imported counts.
-- `/dictionary/hsk` — version chooser.
-- `/dictionary/hsk/[version]` — level cards for the chosen version.
-  `version` is one of `new-hsk`, `hsk`.
-- `/dictionary/hsk/[version]/[level]` — terms in that HSK level + search.
-- `/dictionary/word/[slug]` — word detail with examples, HSK badges, CTAs.
+- `/grammar`
+- `/grammar/[slug]`
+- `/grammar/tags`
+- `/grammar/tags/[slug]`
+- `/grammar/sections/[slug]`
+- `/dictionary`
+- `/dictionary/hsk`
+- `/dictionary/hsk/[version]`
+- `/dictionary/hsk/[version]/[level]`
+- `/dictionary/word/[slug]`
 
-All pages:
+These pages are public without authentication, use shared metadata/schema
+helpers, and are discovered through `sitemap-pages.xml`.
 
-- Server-render content. Client JS only enhances filtering/search.
-- Use `buildMetadata()` for canonical URLs + OG + Twitter + robots.
-- Emit a relevant Schema.org graph (BreadcrumbList + LearningResource /
-  CollectionPage / DefinedTerm).
-- Are included in `sitemap-pages.xml` (one route per dynamic slug).
-- Open without auth — they read public content only.
+## Adding or changing content
 
-## Canonical/noindex
+Grammar articles and HSK vocabulary are authored/imported in the platform
+repository. Do not copy records or schema into this repository.
 
-The public site is the indexable surface. The platform (`chinachild-sandbox`)
-is noindex globally (see its `app/layout.tsx`). Platform copies of the same
-content additionally emit `<link rel="canonical">` back to the public URL on
-this site, via `lib/seo/platform-seo.ts` in the sandbox repo.
+After platform data is published:
 
-## Adding a grammar article
+1. Confirm its public RLS projection exposes only intended fields.
+2. Rebuild this site so the snapshot includes the new data.
+3. Verify representative pages, counts, canonical metadata, and structured
+   data.
+4. Verify `sitemap-pages.xml` contains each new indexable URL.
 
-You do **not** add articles in this repo. Add them in `chinachild-sandbox`
-fixtures/admin, push the migration/import, and they appear here on next
-revalidation (every 5 minutes, see `unstable_cache` `revalidate`).
+If the database schema changes, update the snapshot query, snapshot type, and
+every affected adapter together. Preserve explicit column selection and
+paginated reads.
 
-If you want to surface a new featured topic on `/grammar`, update
-`FEATURED_TOPIC_SPECS` in `lib/content/grammar.ts` — pure metadata only, no
-content lives here.
+If a new route family is added, also evaluate static params, metadata, schema,
+internal links, `robots.txt`, and the page sitemap. Route/indexability changes
+require explicit SEO scope.
 
-## Adding HSK vocabulary
+## Verification
 
-Same as above — owned by the platform repo. The public site reads
-`display_count` for the plan and `imported_count` for the honest current state.
+```bash
+npm run typecheck
+npm run lint
+npm run build
+npm run audit:production
+```
 
-## Updating the sitemap
-
-`app/sitemap-pages.xml/route.ts` calls into `lib/content/*` for the full list
-of public URLs. There is nothing to update by hand: as the platform imports
-more content, the sitemap grows automatically (on revalidate).
-
-If you add a new top-level public route (e.g. `/dictionary/frequency/top-1000`),
-add a corresponding entry block to `sitemap-pages.xml/route.ts`.
-
-## How to verify
-
-1. `npm install`
-2. Set `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` in `.env.local`.
-3. `npm run build && npm run start` (or `npm run dev`).
-4. Visit:
-   - `/grammar` — must render without auth, with featured cards + filters.
-   - `/grammar/basic-sentence-structure` — article from `grammar_blocks`.
-   - `/dictionary` — HSK plan counts.
-   - `/dictionary/word/<some-slug>` — word detail.
-5. Inspect `<head>`: every page has `<link rel="canonical">` + OG metadata.
-6. `curl /sitemap-pages.xml` — must list the new routes.
-7. With the anon key, try `select * from vocab_review_states limit 1;` — must
-   return no rows / permission denied. Personal data must never leak.
+For a focused manual check, inspect one grammar page, one dictionary word, one
+HSK level page, and `sitemap-pages.xml`. Confirm the production canonical origin
+is `https://chinachild.ru`.

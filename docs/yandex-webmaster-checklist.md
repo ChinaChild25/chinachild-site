@@ -1,5 +1,8 @@
 # Yandex Webmaster — статус по всем рекомендациям и самостоятельным проверкам
 
+> Historical/operational snapshot. Repository implementation references remain
+> useful, but current Webmaster status must be checked in Yandex.
+
 Полный разбор по чек-листу из панели Yandex Webmaster (`webmaster.yandex.ru` → «Диагностика»). По каждому пункту: статус, где это реализовано и что осталось сделать вручную в UI Вебмастера.
 
 Last updated: 2026-05-25.

@@ -1,5 +1,10 @@
 # Production Migration Audit: chinachild-site -> chinachild.ru
 
+> Historical snapshot from the pre-cutover period. It is retained as audit
+> evidence and does not describe the current architecture or production state.
+> Use `ARCHITECTURE.md`, `AGENTS.md`, current code, and configuration for active
+> decisions.
+
 Дата аудита: 2026-05-19  
 Цель: оценить готовность Next.js сайта к замене текущего сайта на Tilda на основном домене `chinachild.ru`.  
 Фокус: SEO для Яндекс/Google, лидогенерация, РФ-юридика, производительность, готовность домена.
