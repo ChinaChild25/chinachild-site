@@ -1,15 +1,18 @@
 "use client";
 
-import { useState } from "react";
-
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
+import { useEffect, useRef, useState } from "react";
+import aiTrainerImage from "@/public/platform/ai-trainer.webp";
+import progressImage from "@/public/platform/progress.webp";
+import recordingsImage from "@/public/platform/recordings.webp";
+import scheduleImage from "@/public/platform/schedule.webp";
+import videoCallsImage from "@/public/platform/video-calls.webp";
 
 type PlatformFeature = {
   id: string;
   title: string;
   description: string;
-  /** Скриншот/гифка в /public/platform/. Если пусто — placeholder. */
-  media?: string;
+  media: StaticImageData;
   mediaAlt?: string;
 };
 
@@ -19,7 +22,7 @@ const features: PlatformFeature[] = [
     title: "Видеозвонки в браузере",
     description:
       "Уроки идут в реальном времени прямо в браузере — без установки Zoom или Skype. Качество связи мониторится автоматически.",
-    media: "/platform/video-calls.webp",
+    media: videoCallsImage,
     mediaAlt: "Видеозвонок с преподавателем китайского языка в браузере",
   },
   {
@@ -27,7 +30,7 @@ const features: PlatformFeature[] = [
     title: "Расписание и напоминания",
     description:
       "Календарь занятий синхронизирован с Google Calendar и iCal. SMS- и email-напоминания приходят за час до урока — никто не пропустит.",
-    media: "/platform/schedule.webp",
+    media: scheduleImage,
     mediaAlt: "Расписание занятий китайским языком в личном кабинете",
   },
   {
@@ -35,7 +38,7 @@ const features: PlatformFeature[] = [
     title: "AI-тренажёр иероглифов",
     description:
       "Встроенный ассистент на базе ChatGPT помогает разобрать тон, проверить написание иероглифа и подобрать подходящий перевод — 24/7.",
-    media: "/platform/ai-trainer.webp",
+    media: aiTrainerImage,
     mediaAlt: "AI-тренажёр иероглифов и словарь китайского языка",
   },
   {
@@ -43,7 +46,7 @@ const features: PlatformFeature[] = [
     title: "Записи уроков",
     description:
       "Каждый урок автоматически сохраняется в личный кабинет — можно пересмотреть тему, повторить произношение и догнать пропущенное.",
-    media: "/platform/recordings.webp",
+    media: recordingsImage,
     mediaAlt: "Запись урока китайского языка в личном кабинете ChinaChild",
   },
   {
@@ -51,17 +54,38 @@ const features: PlatformFeature[] = [
     title: "Трек прогресса по HSK",
     description:
       "Личный план обучения с разбивкой по уровням HSK 1–6. Видно, какие темы уже сданы и сколько осталось до сертификата.",
-    media: "/platform/progress.webp",
+    media: progressImage,
     mediaAlt: "Трек прогресса ученика по уровням HSK 1-6",
   },
 ];
 
 export default function PlatformShowcase() {
   const [activeId, setActiveId] = useState(features[0].id);
+  const [preloadMedia, setPreloadMedia] = useState(false);
+  const sectionRef = useRef<HTMLElement | null>(null);
   const active = features.find((f) => f.id === activeId) ?? features[0];
 
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section || !("IntersectionObserver" in window)) {
+      setPreloadMedia(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        setPreloadMedia(true);
+        observer.disconnect();
+      },
+      { rootMargin: "600px 0px" },
+    );
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section className="page-shell-wide section-space">
+    <section ref={sectionRef} className="page-shell-wide section-space">
       {/* Главный заголовок секции — на странице, ВНЕ карточек */}
       <div className="section-head-center mx-auto max-w-3xl">
         <h2 className="section-title">
@@ -148,9 +172,9 @@ export default function PlatformShowcase() {
                           здесь же, прямо под описанием активного пункта.
                           На десктопе — улетает в правую белую карточку. */}
                       <div className="mt-5 lg:hidden">
-                        <FeatureMedia
-                          media={feature.media}
-                          alt={feature.mediaAlt ?? feature.title}
+                        <FeatureMediaStack
+                          activeId={activeId}
+                          preloadMedia={preloadMedia}
                         />
                       </div>
                     </div>
@@ -166,9 +190,9 @@ export default function PlatformShowcase() {
             заполняет рамку через object-cover, чтобы не оставалось
             пустых полей даже при небольшом расхождении аспектов. */}
         <div className="hidden lg:flex bg-[#262626] rounded-[24px] p-5 overflow-hidden">
-          <FeatureMedia
-            media={active.media}
-            alt={active.mediaAlt ?? active.title}
+          <FeatureMediaStack
+            activeId={active.id}
+            preloadMedia={preloadMedia}
             fillContainer
           />
         </div>
@@ -177,43 +201,43 @@ export default function PlatformShowcase() {
   );
 }
 
-function FeatureMedia({
-  media,
-  alt,
+function FeatureMediaStack({
+  activeId,
+  preloadMedia,
   fillContainer,
 }: {
-  media?: string;
-  alt: string;
+  activeId: string;
+  preloadMedia: boolean;
   fillContainer?: boolean;
 }) {
-  if (media) {
-    return (
-      <Image
-        src={media}
-        alt={alt}
-        width={756}
-        height={491}
-        className={
-          fillContainer
-            ? "h-full w-full rounded-[12px] object-cover"
-            : "aspect-[756/491] w-full rounded-[12px] object-cover"
-        }
-      />
-    );
-  }
+  const active = features.find((feature) => feature.id === activeId) ?? features[0];
+  const renderedFeatures = preloadMedia ? features : [active];
+
   return (
-    <div
-      role="img"
-      aria-label={alt}
-      className={`flex w-full items-center justify-center rounded-[12px] border border-dashed text-center ${
+    <div className={`relative w-full ${
         fillContainer
-          ? "h-full flex-1 border-white/10 bg-white/5"
-          : "aspect-[756/491] border-white/10 bg-white/5"
+          ? "h-full min-w-0"
+          : "aspect-[756/491]"
       }`}
     >
-      <span className="px-6 text-xs tracking-[0.04em] text-white/40">
-        Скриншот / GIF
-      </span>
+      {renderedFeatures.map((feature) => {
+        const isActive = feature.id === activeId;
+        return (
+          <Image
+            key={feature.id}
+            src={feature.media}
+            alt={isActive ? (feature.mediaAlt ?? feature.title) : ""}
+            aria-hidden={!isActive}
+            fill
+            sizes="(min-width: 1536px) 820px, (min-width: 1024px) 56vw, 92vw"
+            loading={preloadMedia ? "eager" : "lazy"}
+            fetchPriority={isActive ? "auto" : "low"}
+            className={`rounded-[12px] object-cover ${
+              isActive ? "opacity-100" : "pointer-events-none opacity-0"
+            }`}
+          />
+        );
+      })}
     </div>
   );
 }

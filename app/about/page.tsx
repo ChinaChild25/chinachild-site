@@ -12,6 +12,11 @@ import AboutPlatformTabs, {
 } from "@/components/sections/AboutPlatformTabs";
 import { buttonStyles } from "@/components/ui/button";
 import { buildMetadata } from "@/lib/metadata";
+import aiTrainerImage from "@/public/platform/ai-trainer.webp";
+import progressImage from "@/public/platform/progress.webp";
+import recordingsImage from "@/public/platform/recordings.webp";
+import scheduleImage from "@/public/platform/schedule.webp";
+import videoCallsImage from "@/public/platform/video-calls.webp";
 import {
   absoluteUrl,
   CONTACT_EMAIL,
@@ -71,7 +76,7 @@ const platformTabs: AboutPlatformTab[] = [
     label: "Урок",
     caption:
       "Урок идёт прямо в браузере — без Zoom и без установки. Слышно собеседника, видно доску, всё под рукой.",
-    media: "/platform/video-calls.webp",
+    media: videoCallsImage,
     mediaAlt: "Видеоурок китайского языка в личном кабинете ChinaChild",
   },
   {
@@ -79,7 +84,7 @@ const platformTabs: AboutPlatformTab[] = [
     label: "Расписание",
     caption:
       "Календарь занятий с напоминаниями за час до урока. Синхронизируется с Google Calendar и iCal.",
-    media: "/platform/schedule.webp",
+    media: scheduleImage,
     mediaAlt: "Расписание занятий в личном кабинете школы китайского",
   },
   {
@@ -87,7 +92,7 @@ const platformTabs: AboutPlatformTab[] = [
     label: "Тренажёр",
     caption:
       "Иероглифы по порядку черт, тоны через микрофон, перевод и подсказка — встроенный ассистент на базе ChatGPT.",
-    media: "/platform/ai-trainer.webp",
+    media: aiTrainerImage,
     mediaAlt: "AI-тренажёр иероглифов и тонов в кабинете ChinaChild",
   },
   {
@@ -95,7 +100,7 @@ const platformTabs: AboutPlatformTab[] = [
     label: "Записи",
     caption:
       "Каждое занятие автоматически попадает в кабинет — пересмотреть тему или догнать пропущенный урок легко.",
-    media: "/platform/recordings.webp",
+    media: recordingsImage,
     mediaAlt: "Записи уроков китайского языка в личном кабинете",
   },
   {
@@ -103,7 +108,7 @@ const platformTabs: AboutPlatformTab[] = [
     label: "Прогресс",
     caption:
       "Личный план обучения по HSK 1–6: видно сданные темы и сколько осталось до сертификата.",
-    media: "/platform/progress.webp",
+    media: progressImage,
     mediaAlt: "Трекинг прогресса по HSK в личном кабинете ChinaChild",
   },
 ];

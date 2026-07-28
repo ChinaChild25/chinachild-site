@@ -309,6 +309,7 @@ export default function Header() {
                       <Link
                         key={item.href}
                         href={item.href}
+                        prefetch={isOpen ? null : false}
                         className={`site-header-dropdown-card ${
                           item.span === "full" ? "site-header-dropdown-card--full" : ""
                         } ${item.align === "center" ? "site-header-dropdown-card--center" : ""} ${
@@ -340,6 +341,7 @@ export default function Header() {
               <li key={item.href}>
                 <Link
                   href={item.href}
+                  prefetch={menuOpen ? null : false}
                   className="mobile-drawer-link"
                   onClick={() => setMenuOpen(false)}
                 >
