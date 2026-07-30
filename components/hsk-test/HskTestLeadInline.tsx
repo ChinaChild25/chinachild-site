@@ -1,8 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { trackLeadSubmitted } from "@/lib/analytics";
+import {
+  getCachedYandexClientId,
+  startYandexClientIdCapture,
+} from "@/lib/analytics/yandex-client-id";
 import { isPersistedLeadResponse } from "@/lib/leads/contact-response";
 import {
   beginLeadSubmission,
@@ -35,6 +39,8 @@ export default function HskTestLeadInline({
   const [error, setError] = useState<string | null>(null);
   const [formStartedAt] = useState(() => Date.now());
 
+  useEffect(() => startYandexClientIdCapture(), []);
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!beginLeadSubmission(submissionGate)) return;
@@ -63,6 +69,7 @@ export default function HskTestLeadInline({
       source_page: `hsk-test-result-level-${recommendedLevel}`,
       referrer: typeof document === "undefined" ? "" : document.referrer,
       utm: {},
+      yandex_client_id: getCachedYandexClientId(),
     };
 
     setStatus("submitting");

@@ -3,6 +3,10 @@
 import { SmartCaptcha } from "@yandex/smart-captcha";
 import { useEffect, useId, useRef, useState } from "react";
 import { trackLeadSubmitted } from "@/lib/analytics";
+import {
+  getCachedYandexClientId,
+  startYandexClientIdCapture,
+} from "@/lib/analytics/yandex-client-id";
 import { isPersistedLeadResponse } from "@/lib/leads/contact-response";
 import {
   beginLeadSubmission,
@@ -94,6 +98,8 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
     }
   }, []);
 
+  useEffect(() => startYandexClientIdCapture(), []);
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!beginLeadSubmission(submissionGate)) return;
@@ -132,6 +138,7 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
       source_page: source ?? pageHref,
       referrer: typeof document === "undefined" ? "" : document.referrer,
       utm: readUtm(),
+      yandex_client_id: getCachedYandexClientId(),
     };
 
     setStatus("submitting");

@@ -34,6 +34,7 @@ type LeadPayload = {
   consent?: unknown;
   consent_pd?: unknown;
   consent_marketing?: unknown;
+  yandex_client_id?: unknown;
 };
 
 function sanitize(value: unknown, max: number): string {
@@ -223,7 +224,8 @@ export async function POST(request: Request) {
   await markLeadDelivered(stored.id, emailResult?.ok === true, emailResult?.ok ? undefined : emailResult?.detail);
 
   const serverTrackingInput = {
-    sourceUrl: sourcePage || referrer || undefined,
+    explicitClientId: body.yandex_client_id,
+    sourceUrl: request.headers.get("referer") || sourcePage || undefined,
     cookieHeader: request.headers.get("cookie"),
     userAgent: userAgent || null,
     clientIp,
@@ -232,7 +234,7 @@ export async function POST(request: Request) {
     after(async () => {
       const tracking = await trackServerLead(serverTrackingInput);
       if (!tracking.ok) {
-        console.error("[ym-server] stored lead fallback failed", {
+        console.error("[ym-server] stored lead event not sent", {
           kind: tracking.kind,
           status: tracking.status,
           error: tracking.error,
@@ -241,7 +243,7 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error(
-      "[ym-server] could not schedule stored lead fallback",
+      "[ym-server] could not schedule stored lead event",
       error instanceof Error ? error.message : "unknown error",
     );
   }

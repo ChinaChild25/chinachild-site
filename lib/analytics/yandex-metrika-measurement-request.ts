@@ -1,5 +1,7 @@
+import { validateYandexClientId } from "./yandex-client-id-value.ts";
+
 export const YANDEX_MEASUREMENT_ENDPOINT = "https://mc.yandex.ru/collect";
-export const SERVER_LEAD_GOAL_PATH = "/lead-success/server";
+export const YANDEX_LEAD_EVENT = "lead_submitted";
 
 export type YandexMeasurementConfig = {
   counterId: string;
@@ -59,11 +61,50 @@ export function extractYandexClientId(
   const match = cookieHeader.match(/(?:^|;\s*)_ym_uid=([^;]+)/);
   if (!match) return null;
   try {
-    const clientId = decodeURIComponent(match[1]).trim();
-    return /^\d+$/.test(clientId) ? clientId : null;
+    return validateYandexClientId(decodeURIComponent(match[1]));
   } catch {
     return null;
   }
+}
+
+export function resolveYandexClientId(input: {
+  explicitClientId?: unknown;
+  cookieHeader?: string | null;
+}): string | null {
+  return (
+    validateYandexClientId(input.explicitClientId) ??
+    extractYandexClientId(input.cookieHeader)
+  );
+}
+
+function resolveMeasurementPageUrl(
+  siteOrigin: string,
+  sourceUrl?: string,
+): string {
+  const origin = new URL(siteOrigin);
+  if (!sourceUrl) return origin.href;
+
+  try {
+    const candidate =
+      sourceUrl.startsWith("/") && !sourceUrl.startsWith("//")
+        ? new URL(sourceUrl, origin)
+        : new URL(sourceUrl);
+    const permittedHosts = new Set([
+      origin.hostname,
+      origin.hostname.startsWith("www.")
+        ? origin.hostname.slice(4)
+        : `www.${origin.hostname}`,
+    ]);
+    if (
+      (candidate.protocol === "https:" || candidate.protocol === "http:") &&
+      permittedHosts.has(candidate.hostname)
+    ) {
+      return candidate.href;
+    }
+  } catch {
+    // A semantic form source such as "modal" is not a page URL.
+  }
+  return origin.href;
 }
 
 export function buildServerLeadMeasurementBody(input: {
@@ -72,18 +113,20 @@ export function buildServerLeadMeasurementBody(input: {
   sourceUrl?: string;
   eventTimeSeconds?: number;
 }): URLSearchParams {
-  if (!/^\d+$/.test(input.clientId)) {
+  const clientId = validateYandexClientId(input.clientId);
+  if (!clientId) {
     throw new Error("Yandex Metrica ClientID must contain digits only");
   }
 
-  const pageUrl = `${input.config.siteOrigin}${SERVER_LEAD_GOAL_PATH}`;
   const body = new URLSearchParams({
     tid: input.config.counterId,
-    cid: input.clientId,
-    t: "pageview",
-    dr: input.sourceUrl || input.config.siteOrigin,
-    dl: pageUrl,
-    dt: "Stored lead server fallback",
+    cid: clientId,
+    t: "event",
+    ea: YANDEX_LEAD_EVENT,
+    dl: resolveMeasurementPageUrl(
+      input.config.siteOrigin,
+      input.sourceUrl,
+    ),
     et: String(input.eventTimeSeconds ?? Math.floor(Date.now() / 1000)),
     ms: input.config.measurementToken,
   });

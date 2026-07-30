@@ -1,8 +1,10 @@
 type Params = Record<string, string | number | boolean | undefined>;
 
 /**
- * Centralised registry of analytics goal names sent to Yandex.Metrika
- * (`reachGoal`), Google Analytics (`event`), and the GTM dataLayer.
+ * Centralised registry for browser funnel events sent to Yandex.Metrika
+ * (`reachGoal`), Google Analytics (`event`), and the shared dataLayer.
+ * Persisted leads are different: GA4 `generate_lead` remains client-side,
+ * while Yandex `lead_submitted` is sent once by /api/contact after storage.
  *
  * Each name MUST also be registered as a Goal inside Yandex.Metrika UI
  * (Настройки → Цели → "JavaScript-событие" с тем же идентификатором).
@@ -89,38 +91,12 @@ export function trackLeadSubmitted(input: {
   }
   trackedLeadIds.add(input.leadId);
 
-  const params = {
-    course: input.course,
-    source: input.source,
-  };
-  const ymId = Number(process.env.NEXT_PUBLIC_YM_ID);
-
-  try {
-    if (ymId && window.ym) {
-      window.ym(ymId, "reachGoal", Goals.LEAD_SUBMITTED, params);
-    }
-  } catch {
-    // Analytics must never change the persisted-lead result shown to the user.
-  }
-
   try {
     if (typeof window.gtag === "function") {
       window.gtag("event", "generate_lead", {
         event_category: "lead",
         event_label: input.source ?? "form",
         course: input.course,
-      });
-    }
-  } catch {
-    // Analytics must never change the persisted-lead result shown to the user.
-  }
-
-  try {
-    if (Array.isArray(window.dataLayer)) {
-      window.dataLayer.push({
-        event: Goals.LEAD_SUBMITTED,
-        course: input.course,
-        source: input.source,
       });
     }
   } catch {
