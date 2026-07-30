@@ -33,7 +33,7 @@ export const Goals = {
   HSK_TEST_STARTED: "hsk_test_started",
   HSK_TEST_ANSWERED: "hsk_test_answered",
   HSK_TEST_COMPLETED: "hsk_test_completed",
-  HSK_TEST_LEAD: "hsk_test_lead",
+  HSK_TEST_DETAILS_CLICKED: "hsk_test_details_clicked",
   HSK_TEST_RESTARTED: "hsk_test_restarted",
   HSK_TEST_SHARED: "hsk_test_shared",
 
@@ -75,4 +75,57 @@ export function trackEvent(name: string, params?: Params) {
   if (Array.isArray(window.dataLayer)) {
     window.dataLayer.push({ event: name, ...params });
   }
+}
+
+const trackedLeadIds = new Set<string>();
+
+export function trackLeadSubmitted(input: {
+  leadId: string;
+  course?: string;
+  source?: string;
+}): boolean {
+  if (typeof window === "undefined" || trackedLeadIds.has(input.leadId)) {
+    return false;
+  }
+  trackedLeadIds.add(input.leadId);
+
+  const params = {
+    course: input.course,
+    source: input.source,
+  };
+  const ymId = Number(process.env.NEXT_PUBLIC_YM_ID);
+
+  try {
+    if (ymId && window.ym) {
+      window.ym(ymId, "reachGoal", Goals.LEAD_SUBMITTED, params);
+    }
+  } catch {
+    // Analytics must never change the persisted-lead result shown to the user.
+  }
+
+  try {
+    if (typeof window.gtag === "function") {
+      window.gtag("event", "generate_lead", {
+        event_category: "lead",
+        event_label: input.source ?? "form",
+        course: input.course,
+      });
+    }
+  } catch {
+    // Analytics must never change the persisted-lead result shown to the user.
+  }
+
+  try {
+    if (Array.isArray(window.dataLayer)) {
+      window.dataLayer.push({
+        event: Goals.LEAD_SUBMITTED,
+        course: input.course,
+        source: input.source,
+      });
+    }
+  } catch {
+    // Analytics must never change the persisted-lead result shown to the user.
+  }
+
+  return true;
 }

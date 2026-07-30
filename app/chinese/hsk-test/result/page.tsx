@@ -185,7 +185,10 @@ export default function HskTestResultPage() {
                 href={`/hsk/hsk-${result.recommendedLevel}`}
                 className={buttonStyles({ variant: "secondary", size: "large" })}
                 onClick={() =>
-                  HskTestGoals.lead(result.level, result.recommendedLevel)
+                  HskTestGoals.detailsClicked(
+                    result.level,
+                    result.recommendedLevel,
+                  )
                 }
               >
                 Подробнее о HSK {result.recommendedLevel}

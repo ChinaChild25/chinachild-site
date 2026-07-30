@@ -3,7 +3,10 @@
 > Status: operational checklist. Code defines emitted events; external
 > dashboard configuration must be verified in the current vendor UI.
 
-> Все цели уже отправляются из кода через `trackEvent()` ([lib/analytics.ts](../lib/analytics.ts)). Этот документ — **операционный чек-лист**: какие цели нужно завести в самих интерфейсах Метрики/GA, чтобы события попадали в отчёты.
+> Обычные funnel-события отправляются через `trackEvent()`, а подтверждённый
+> сохранённый лид использует разные основные имена провайдеров:
+> `lead_submitted` в Метрике и `generate_lead` в GA4. Этот документ —
+> **операционный чек-лист**; он не подтверждает состояние внешних интерфейсов.
 
 ## Зачем заводить цели вручную
 
@@ -35,7 +38,7 @@
 - [ ] `hsk_test_started` — клик «Начать тест» на лендинге или карточке уровня
 - [ ] `hsk_test_answered` — ответ на отдельный вопрос (квота: 30+ срабатываний за сессию)
 - [ ] `hsk_test_completed` — пользователь увидел экран результата
-- [ ] `hsk_test_lead` — клик «Записаться на курс» на экране результата (главный goal для теста)
+- [ ] `hsk_test_details_clicked` — переход с результата к подробностям уровня HSK; funnel-событие, не лид
 - [ ] `hsk_test_restarted` — повторный запуск
 - [ ] `hsk_test_shared` — поделиться результатом (с параметром `network`)
 
@@ -52,13 +55,12 @@
 - [ ] `tutor_chat_started` — открытие AI-tutor-чата
 - [ ] `tutor_message_sent` — отправка сообщения в AI-tutor
 
-### Главные конверсии (отметить как «Главные» в Метрике)
+### Классификация лидов Метрики
 
-Для удобства отчётов и фильтра воронки рекомендую отметить эти 3 цели как «**Главные**» в Метрике:
-
-1. `lead_submitted` — итоговая конверсия (лид в CRM)
-2. `phone_click` — конверсия по телефону
-3. `hsk_test_lead` / `course_cta_clicked` — лид с продуктовой воронки тестов
+`lead_submitted` / цель `562860580` — единственная выбранная основная лид-цель.
+Автоцели, историческая `hsk_test_lead` и серверный fallback не складываются с
+ней. Остальные события являются funnel-сигналами, пока владелец отдельно не
+подтвердит их бизнес-смысл.
 
 ---
 
@@ -66,10 +68,9 @@
 
 В GA4 события автоматически попадают в отчёты (в отличие от Метрики), но для конверсий нужно отметить их в `Admin → Events → Mark as key event`:
 
-- [ ] `lead_submitted` → conversion ✓
+- [ ] `generate_lead` → кандидат в key event для подтверждённого сохранённого лида
 - [ ] `phone_click` → conversion ✓
 - [ ] `course_cta_click` → conversion ✓
-- [ ] `hsk_test_lead` → conversion ✓
 - [ ] `course_cta_clicked` (из диагностики) → conversion ✓
 
 Остальные события полезны для построения воронок и поведенческих отчётов — оставить как обычные events.
@@ -88,7 +89,7 @@
 | `hsk_test_started` | `level`, `mode` |
 | `hsk_test_answered` | `level`, `questionId`, `correct` |
 | `hsk_test_completed` | `level`, `mode`, `score`, `verdict` |
-| `hsk_test_lead` | `level`, `recommendedLevel` |
+| `hsk_test_details_clicked` | `level`, `recommendedLevel` |
 | `hsk_test_shared` | `level`, `network` |
 | `lead_submitted` | `course`, `source` |
 | `calibration_completed` | `experience`, `goal`, `minutesPerDay` |

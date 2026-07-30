@@ -31,7 +31,12 @@
     "publish:scheduled": "node scripts/publish-scheduled-blog.mjs",
     "publish:scheduled:2": "PUBLISH_COUNT=2 node scripts/publish-scheduled-blog.mjs",
     "audit:redirects": "node scripts/audit-redirects.mjs",
-    "audit:production": "node scripts/audit-production-readiness.mjs"
+    "audit:production": "node scripts/audit-production-readiness.mjs",
+    "seo:check": "node --env-file-if-exists=.env.local scripts/seo/cli.mts check",
+    "seo:collect": "node --env-file-if-exists=.env.local scripts/seo/cli.mts collect",
+    "seo:report": "node --env-file-if-exists=.env.local scripts/seo/cli.mts report",
+    "test:seo": "node --test scripts/seo/tests/*.test.mts",
+    "test:leads": "node --test scripts/lead-tests/*.test.mts"
   },
   "dependencies": {
     "@next/third-parties": "^16.2.6",

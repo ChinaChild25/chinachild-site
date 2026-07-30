@@ -24,9 +24,9 @@ export const HskTestGoals = {
     verdict: Verdict,
   ) => trackHskTest("completed", { level, mode, score, verdict }),
 
-  /** Result screen → "Записаться на курс" click. The lead-magnet goal. */
-  lead: (level: HskTestLevel, recommendedLevel: HskTestLevel) =>
-    trackHskTest("lead", { level, recommendedLevel }),
+  /** Result screen → HSK level details. This is a funnel click, not a lead. */
+  detailsClicked: (level: HskTestLevel, recommendedLevel: HskTestLevel) =>
+    trackHskTest("details_clicked", { level, recommendedLevel }),
 
   /** Share to a particular network. */
   shared: (level: HskTestLevel, network: string) =>

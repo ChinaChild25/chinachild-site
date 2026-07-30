@@ -1,7 +1,9 @@
 import { dispatchLead, type LeadInput } from "@/lib/lead-dispatch";
+import { isSpamPayload } from "@/lib/leads/anti-abuse";
 import { checkRateLimit, hashIp } from "@/lib/leads/rate-limit";
 import { markLeadDelivered, storeLead, type LeadInsert } from "@/lib/leads/store";
 import { trackServerLead } from "@/lib/analytics/yandex-metrika-server";
+import { after } from "next/server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -60,20 +62,6 @@ function sanitizeUtm(value: unknown): Record<string, string> {
   );
 }
 
-function isSpamPayload(body: LeadPayload): boolean {
-  const honeypotValues = [body.company, body.website, body.url, body.fax];
-  if (honeypotValues.some((value) => typeof value === "string" && value.trim() !== "")) {
-    return true;
-  }
-
-  if (typeof body.form_started_at === "string") {
-    const startedAt = Number(body.form_started_at);
-    if (Number.isFinite(startedAt) && Date.now() - startedAt < 800) return true;
-  }
-
-  return false;
-}
-
 function getClientIp(request: Request): string {
   const forwardedFor = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
   return (
@@ -129,7 +117,10 @@ export async function POST(request: Request) {
   }
 
   if (isSpamPayload(body)) {
-    return Response.json({ ok: true, accepted: true }, { status: 200 });
+    return Response.json(
+      { ok: true, accepted: false, persisted: false },
+      { status: 200 },
+    );
   }
 
   const clientIp = getClientIp(request);
@@ -231,18 +222,35 @@ export async function POST(request: Request) {
   const emailResult = result.delivered.find((item) => item.channel === "email");
   await markLeadDelivered(stored.id, emailResult?.ok === true, emailResult?.ok ? undefined : emailResult?.detail);
 
-  // Server-side Я.Метрика — дубль конверсии для AdBlock-юзеров и ПФ.
-  // Fire-and-forget, не блокируем ответ.
-  void trackServerLead({
+  const serverTrackingInput = {
     sourceUrl: sourcePage || referrer || undefined,
     cookieHeader: request.headers.get("cookie"),
     userAgent: userAgent || null,
     clientIp,
-  });
+  };
+  try {
+    after(async () => {
+      const tracking = await trackServerLead(serverTrackingInput);
+      if (!tracking.ok) {
+        console.error("[ym-server] stored lead fallback failed", {
+          kind: tracking.kind,
+          status: tracking.status,
+          error: tracking.error,
+        });
+      }
+    });
+  } catch (error) {
+    console.error(
+      "[ym-server] could not schedule stored lead fallback",
+      error instanceof Error ? error.message : "unknown error",
+    );
+  }
 
   return Response.json(
     {
       ok: true,
+      accepted: true,
+      persisted: true,
       id: stored.id,
       delivered: result.delivered.filter((item) => item.ok).length,
       attempted: result.attempted,

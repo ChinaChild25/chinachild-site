@@ -42,3 +42,13 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .claude/
+
+# local read-only SEO collector data and credential-copy safeguards
+/seo-data/
+application_default_credentials.json
+client_secret*.json
+google-oauth*.json
+yandex-oauth-token*
+yandex-token*
+**/.config/gcloud/
+**/.secrets/

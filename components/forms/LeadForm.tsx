@@ -1,7 +1,13 @@
 "use client";
 
 import { SmartCaptcha } from "@yandex/smart-captcha";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import { trackLeadSubmitted } from "@/lib/analytics";
+import { isPersistedLeadResponse } from "@/lib/leads/contact-response";
+import {
+  beginLeadSubmission,
+  releaseLeadSubmission,
+} from "@/lib/leads/submission-gate";
 import { CONTACT_EMAIL, CONTACT_PHONE, CONTACT_PHONE_TEL } from "@/lib/site-config";
 
 // Reads the current theme from `<html data-theme="…">` and subscribes to
@@ -61,66 +67,6 @@ function readUtm(): Record<string, string> {
   return out;
 }
 
-type AnalyticsWindow = Window & {
-  ym?: (id: number, action: string, target?: string, params?: Record<string, unknown>) => void;
-  dataLayer?: Array<Record<string, unknown>>;
-  gtag?: (...args: unknown[]) => void;
-};
-
-type IdleWindow = Window & {
-  requestIdleCallback?: (callback: () => void, options?: { timeout?: number }) => number;
-};
-
-function trackLeadSubmitted(meta: { course?: string; source?: string }) {
-  if (typeof window === "undefined") return;
-  const win = window as AnalyticsWindow;
-  const counterIdRaw = process.env.NEXT_PUBLIC_YM_ID;
-  const counterId = counterIdRaw ? Number(counterIdRaw) : NaN;
-
-  try {
-    if (typeof win.ym === "function" && Number.isFinite(counterId)) {
-      win.ym(counterId, "reachGoal", "lead_submitted", {
-        course: meta.course,
-        source: meta.source,
-      });
-    }
-  } catch {
-    /* */
-  }
-  try {
-    if (typeof win.gtag === "function") {
-      win.gtag("event", "generate_lead", {
-        event_category: "lead",
-        event_label: meta.source ?? "form",
-        course: meta.course,
-      });
-    }
-  } catch {
-    /* */
-  }
-  try {
-    if (Array.isArray(win.dataLayer)) {
-      win.dataLayer.push({
-        event: "lead_submitted",
-        course: meta.course,
-        source: meta.source,
-      });
-    }
-  } catch {
-    /* */
-  }
-}
-
-function scheduleLeadSubmitted(meta: { course?: string; source?: string }) {
-  if (typeof window === "undefined") return;
-  const win = window as IdleWindow;
-  if (typeof win.requestIdleCallback === "function") {
-    win.requestIdleCallback(() => trackLeadSubmitted(meta), { timeout: 1500 });
-    return;
-  }
-  window.setTimeout(() => trackLeadSubmitted(meta), 0);
-}
-
 export default function LeadForm({ defaultCourse, source, compact }: LeadFormProps) {
   const nameId = useId();
   const phoneId = useId();
@@ -132,6 +78,7 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
   const marketingId = useId();
   const honeypotId = useId();
   const websiteHoneypotId = useId();
+  const submissionGate = useRef(false);
 
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<FieldError | null>(null);
@@ -149,7 +96,7 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (status === "submitting") return;
+    if (!beginLeadSubmission(submissionGate)) return;
 
     // Capture the form node before awaiting fetch — React releases the
     // synthetic event after the handler returns, so event.currentTarget is
@@ -160,6 +107,7 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
     const formData = new FormData(form);
     const consentPd = formData.get("consent_pd") === "on";
     if (!consentPd) {
+      releaseLeadSubmission(submissionGate);
       setStatus("error");
       setError({
         field: "consent_pd",
@@ -195,8 +143,16 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      const data = (await res.json()) as { ok: boolean; error?: string; field?: string };
-      if (!res.ok || !data.ok) {
+      const data = (await res.json()) as {
+        ok?: boolean;
+        accepted?: boolean;
+        persisted?: boolean;
+        id?: string;
+        error?: string;
+        field?: string;
+      };
+      if (!res.ok || !isPersistedLeadResponse(data)) {
+        releaseLeadSubmission(submissionGate);
         setStatus("error");
         setError({
           field: data.field,
@@ -205,12 +161,17 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
         return;
       }
       setStatus("success");
-      scheduleLeadSubmitted({ course: payload.course, source: payload.source_page });
+      trackLeadSubmitted({
+        leadId: data.id,
+        course: payload.course,
+        source: payload.source_page,
+      });
       form.reset();
       setFormStartedAt(Date.now());
       setCaptchaToken("");
       setCaptchaResetKey((k) => k + 1);
     } catch (err) {
+      releaseLeadSubmission(submissionGate);
       setStatus("error");
       setError({
         message:

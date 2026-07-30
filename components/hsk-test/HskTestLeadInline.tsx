@@ -1,8 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { HskTestGoals } from "@/lib/hsk-test/analytics";
+import { useRef, useState } from "react";
+import { trackLeadSubmitted } from "@/lib/analytics";
+import { isPersistedLeadResponse } from "@/lib/leads/contact-response";
+import {
+  beginLeadSubmission,
+  releaseLeadSubmission,
+} from "@/lib/leads/submission-gate";
 import { CONTACT_PHONE, CONTACT_PHONE_TEL } from "@/lib/site-config";
 import type { HskTestLevel } from "@/lib/hsk-test/types";
 
@@ -25,16 +30,19 @@ export default function HskTestLeadInline({
   recommendedLevel,
   score,
 }: Props) {
+  const submissionGate = useRef(false);
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
+  const [formStartedAt] = useState(() => Date.now());
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (status === "submitting") return;
+    if (!beginLeadSubmission(submissionGate)) return;
     const form = event.currentTarget;
     const fd = new FormData(form);
     const consent = fd.get("consent_pd") === "on";
     if (!consent) {
+      releaseLeadSubmission(submissionGate);
       setStatus("error");
       setError("Подтвердите согласие на обработку персональных данных");
       return;
@@ -51,7 +59,7 @@ export default function HskTestLeadInline({
       consent_marketing: false,
       company: "",
       website: "",
-      form_started_at: String(Date.now()),
+      form_started_at: String(formStartedAt),
       source_page: `hsk-test-result-level-${recommendedLevel}`,
       referrer: typeof document === "undefined" ? "" : document.referrer,
       utm: {},
@@ -66,15 +74,27 @@ export default function HskTestLeadInline({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      const data = (await res.json()) as { ok: boolean; error?: string };
-      if (!res.ok || !data.ok) {
+      const data = (await res.json()) as {
+        ok?: boolean;
+        accepted?: boolean;
+        persisted?: boolean;
+        id?: string;
+        error?: string;
+      };
+      if (!res.ok || !isPersistedLeadResponse(data)) {
+        releaseLeadSubmission(submissionGate);
         setStatus("error");
         setError(data.error ?? "Что-то пошло не так. Попробуйте ещё раз.");
         return;
       }
       setStatus("success");
-      HskTestGoals.lead(level, recommendedLevel);
+      trackLeadSubmitted({
+        leadId: data.id,
+        course: payload.course,
+        source: payload.source_page,
+      });
     } catch (err) {
+      releaseLeadSubmission(submissionGate);
       setStatus("error");
       setError(
         err instanceof Error

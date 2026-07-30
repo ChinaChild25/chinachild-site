@@ -50,11 +50,18 @@ npm run audit:jsonld        # audit built structured data
 npm run audit:redirects     # audit redirect behavior
 npm run audit:production    # audit production endpoints and readiness
 npm run check:audio         # verify that required generated audio exists
+npm run seo:check           # verify local read-only SEO data access
+npm run seo:collect -- --days=90  # collect local SEO data
+npm run seo:report          # create JSON, CSV, and Markdown SEO reports
 ```
 
 Image/audio generation and scheduled publishing mutate files or external
 storage. Run those commands only for an explicitly authorized content task; see
 the relevant content-folder README.
+
+The local read-only SEO collector is documented in
+[docs/seo-data-collector.md](docs/seo-data-collector.md). Its generated
+`seo-data/` directory is ignored by Git.
 
 ## Deployment and protected workflows
 
