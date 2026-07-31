@@ -1444,6 +1444,19 @@ html[data-theme="dark"] .blog-preview-card.card-lime-soft:hover {
   object-fit: cover;
 }
 
+/* Логотип под тему: тёмный бейдж (logo.svg) в светлой теме,
+   светлый бейдж (logo-black-mode.svg) — в тёмной. data-theme ставится
+   до пейнта, поэтому без мигания. */
+.site-header-mark-image--dark {
+  display: none;
+}
+html[data-theme="dark"] .site-header-mark-image--light {
+  display: none;
+}
+html[data-theme="dark"] .site-header-mark-image--dark {
+  display: block;
+}
+
 .site-header-wordmark {
   font-size: 1.125rem;
   line-height: 1;
@@ -4636,10 +4649,18 @@ html[data-theme="dark"] {
   padding-block: clamp(96px, 18vh, 180px);
   border-radius: 60px;
   overflow: hidden;
-  background-color: rgb(114 107 255 / var(--violet-spotlight-progress));
+  /* Заливка задаётся через --vs-rgb, чтобы разнести оттенок по темам:
+     светлая — мягкий лавандовый, тёмная — приглушённый фиолетовый.
+     В обоих случаях центральная карточка #6c5ce7 остаётся акцентом. */
+  --vs-rgb: 203 196 242;
+  background-color: rgb(var(--vs-rgb) / var(--violet-spotlight-progress));
   transition: background-color 80ms linear;
   view-timeline-name: --violet-spotlight;
   view-timeline-axis: block;
+}
+
+html[data-theme="dark"] .violet-spotlight {
+  --vs-rgb: 68 59 135;
 }
 
 .violet-spotlight .section-title,
@@ -4647,8 +4668,10 @@ html[data-theme="dark"] {
   transition: color 180ms ease;
 }
 
-.violet-spotlight.is-violet-active .section-title,
-.violet-spotlight.is-violet-active .section-description {
+/* Белый текст на активной заливке — только в тёмной теме (глубокий фиолетовый).
+   В светлой теме заливка светлая, поэтому текст остаётся тёмным (var(--ink)). */
+html[data-theme="dark"] .violet-spotlight.is-violet-active .section-title,
+html[data-theme="dark"] .violet-spotlight.is-violet-active .section-description {
   color: #ffffff;
 }
 
@@ -4665,8 +4688,8 @@ html[data-theme="dark"] {
     animation-range: entry 0% exit 100%;
   }
 
-  .violet-spotlight:not(.violet-spotlight--js) .section-title,
-  .violet-spotlight:not(.violet-spotlight--js) .section-description {
+  html[data-theme="dark"] .violet-spotlight:not(.violet-spotlight--js) .section-title,
+  html[data-theme="dark"] .violet-spotlight:not(.violet-spotlight--js) .section-description {
     animation: violet-spotlight-text linear;
     animation-timeline: --violet-spotlight;
     animation-range: entry 0% exit 100%;
@@ -4682,7 +4705,7 @@ html[data-theme="dark"] {
   }
   28%,
   76% {
-    background-color: #726bff;
+    background-color: rgb(var(--vs-rgb));
   }
 }
 

@@ -198,8 +198,16 @@ export default function Header() {
                 alt=""
                 width={28}
                 height={28}
-                className="site-header-mark-image"
+                className="site-header-mark-image site-header-mark-image--light"
                 priority
+              />
+              <Image
+                src="/brand/logo-black-mode.svg"
+                alt=""
+                width={28}
+                height={28}
+                className="site-header-mark-image site-header-mark-image--dark"
+                loading="lazy"
               />
             </span>
             <span className="site-header-wordmark">ChinaChild</span>

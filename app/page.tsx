@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import BlogPreviewSection from "@/components/sections/BlogPreviewSection";
+import CertificateSection from "@/components/sections/CertificateSection";
 import FAQSection from "@/components/sections/FAQSection";
 import HeroSection from "@/components/sections/HeroSection";
 import {
@@ -51,6 +52,7 @@ export default async function HomePage() {
       <ReviewsSection />
       <ResultsSection />
       <PricingSection />
+      <CertificateSection />
       <RelatedLinks />
       <FAQSection />
       <BlogPreviewSection posts={latestPosts} />

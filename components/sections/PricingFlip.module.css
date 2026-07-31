@@ -172,21 +172,27 @@
 }
 
 .illoWrap {
+  /* flex: 1 — иллюстрация забирает вертикальный воздух между описанием и ценой
+     (карточки в ряду тянутся до одной высоты, поэтому у боковых оставался
+     большой пустой зазор над кнопкой). align-items: center центрирует её
+     в этом пространстве. */
   margin-top: 24px;
   margin-bottom: 6px;
+  flex: 1;
   display: flex;
+  align-items: center;
   justify-content: center;
 }
 
 .illo {
   width: 100%;
   height: auto;
-  max-height: 200px;
+  max-height: 264px;
   object-fit: contain;
 }
 
 .card:not([data-featured="true"]) .illo {
-  max-width: 240px;
+  max-width: 300px;
 }
 
 /* --- Список «что входит» (оборот) ------------------------------------------ */
