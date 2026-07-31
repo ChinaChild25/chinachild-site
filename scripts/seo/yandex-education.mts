@@ -93,14 +93,7 @@ function parseKnownFeed(xml: string): ParsedFeed {
   if (!catalog || !shopElement) return {};
   const shopXml = shopElement.body;
   const currencyMatch = shopXml.match(/<currency\b([^>]*?)\/?>/i);
-  const categoriesElement = xmlElements(shopXml, "categories")[0];
   const offersElement = xmlElements(shopXml, "offers")[0];
-  const categories = categoriesElement
-    ? xmlElements(categoriesElement.body, "category").map((category) => ({
-        ...category.attributes,
-        "#text": decodeXml(category.body.trim()),
-      }))
-    : [];
   const offers = offersElement
     ? xmlElements(offersElement.body, "offer").map((offer) => ({
         ...offer.attributes,
@@ -129,7 +122,6 @@ function parseKnownFeed(xml: string): ParsedFeed {
         currencies: {
           currency: currencyMatch ? xmlAttributes(currencyMatch[1]) : {},
         },
-        categories: { category: categories },
         offers: { offer: offers },
       },
     },
@@ -244,15 +236,15 @@ export function validateYandexEducationXml(
     errors.push("RUR currency with rate 1 is missing");
   }
 
-  const categories = values(record(shop.categories).category).map(record);
-  const renderedCategoryIds = new Set(
-    categories.map((category) => text(category["@_id"])),
-  );
-  for (const category of YANDEX_EDUCATION_CATEGORIES) {
-    if (!renderedCategoryIds.has(category.id)) {
-      errors.push(`rubricator category ${category.id} is missing`);
-    }
+  if (/<categories\b/i.test(xml)) {
+    errors.push("Education feed must not declare local categories");
   }
+  if (/<sets\b/i.test(xml) || /<set-ids\b/i.test(xml)) {
+    errors.push("feed must not declare unmodeled sets or set-ids");
+  }
+  const rubricatorCategoryIds: ReadonlySet<string> = new Set(
+    YANDEX_EDUCATION_CATEGORIES.map((category) => category.id),
+  );
 
   const offers = values(record(shop.offers).offer).map(record);
   const offerIds = offers.map((offer) => text(offer["@_id"]));
@@ -293,8 +285,8 @@ export function validateYandexEducationXml(
     ) {
       errors.push(`${prefix}.url is not an approved canonical offer route`);
     }
-    if (!renderedCategoryIds.has(text(offer.categoryId))) {
-      errors.push(`${prefix}.categoryId is unresolved`);
+    if (!rubricatorCategoryIds.has(text(offer.categoryId))) {
+      errors.push(`${prefix}.categoryId is absent from the pinned rubricator`);
     }
     if (!/^\d+$/.test(text(offer.price)) || Number(offer.price) < 0) {
       errors.push(`${prefix}.price is invalid`);
@@ -355,6 +347,15 @@ export function validateYandexEducationXml(
       errors.push(
         `${prefix}.plan totals ${planHours} hours instead of ${expectedOffer.guidedHours}`,
       );
+    }
+    const classes = params.find((param) => param["@_name"] === "Классы");
+    if (classes) {
+      if (text(classes["@_type"]) !== "RANGELIST") {
+        errors.push(`${prefix}.classes type must be RANGELIST`);
+      }
+      if (!/^\d+(?:-\d+)?(?:,\d+(?:-\d+)?)*$/.test(text(classes["#text"]))) {
+        errors.push(`${prefix}.classes value is not a normalized range list`);
+      }
     }
   }
 

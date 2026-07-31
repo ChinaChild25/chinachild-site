@@ -88,6 +88,68 @@ test("generation is deterministic for a fixed date and keeps stable offer IDs", 
   assert.match(first, /date="2026-07-30 20:15"/);
 });
 
+test("Education XML omits local categories and unmodeled sets", () => {
+  const xml = renderYandexEducationFeed({
+    generatedAt: new Date("2026-07-30T20:15:00.000Z"),
+    offers: [validOffer()],
+  });
+  assert.doesNotMatch(xml, /<categories\b|<sets\b|<set-ids\b/);
+});
+
+test("school classes use the provider-required RANGELIST type", () => {
+  const xml = renderYandexEducationFeed({
+    generatedAt: new Date("2026-07-30T20:15:00.000Z"),
+    offers: [validOffer({ classes: "5–11" })],
+  });
+  assert.match(
+    xml,
+    /<param name="Классы" type="RANGELIST">5-11<\/param>/,
+  );
+  assert.deepEqual(
+    validateYandexEducationXml(xml, {
+      expectedOffers: [validOffer({ classes: "5–11" })],
+    }).errors,
+    [],
+  );
+});
+
+test("validator rejects the three structures reported by Yandex Webmaster", () => {
+  const base = renderYandexEducationFeed({
+    generatedAt: new Date("2026-07-30T20:15:00.000Z"),
+    offers: [validOffer({ classes: "5–11" })],
+  });
+  const withCategories = base.replace(
+    "    <offers>",
+    "    <categories><category id=\"20006\">Китайский язык</category></categories>\n    <offers>",
+  );
+  const withEmptySets = base.replace("    <offers>", "    <sets></sets>\n    <offers>");
+  const withoutRangeType = base.replace(' type="RANGELIST"', "");
+  assert.ok(
+    errorsContain(
+      validateYandexEducationXml(withCategories, {
+        expectedOffers: [validOffer({ classes: "5–11" })],
+      }).errors,
+      "must not declare local categories",
+    ),
+  );
+  assert.ok(
+    errorsContain(
+      validateYandexEducationXml(withEmptySets, {
+        expectedOffers: [validOffer({ classes: "5–11" })],
+      }).errors,
+      "must not declare unmodeled sets",
+    ),
+  );
+  assert.ok(
+    errorsContain(
+      validateYandexEducationXml(withoutRangeType, {
+        expectedOffers: [validOffer({ classes: "5–11" })],
+      }).errors,
+      "classes type must be RANGELIST",
+    ),
+  );
+});
+
 test("duplicate URLs and IDs are rejected", () => {
   const duplicate = validOffer({
     name: "Другое название",

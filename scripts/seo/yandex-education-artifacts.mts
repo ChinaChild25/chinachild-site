@@ -124,6 +124,13 @@ function checklistUpdates(): Record<string, ChecklistUpdate> {
   );
 
   return {
+    "feed-01": {
+      status: "confirmed compliant",
+      evidence:
+        "The generator emits yml_catalog, shop, currencies and offers; Education category IDs come only from the pinned unified rubricator, and unmodeled categories or sets are rejected by tests.",
+      owner_action:
+        "Keep tests aligned with Yandex Webmaster parser feedback and the current unified rubricator.",
+    },
     "site-09": {
       status: "confirmed compliant",
       evidence: `All ${offerCount} enabled canonical offer pages have direct application CTAs and preserve the reviewed lead flow.`,

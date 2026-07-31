@@ -142,6 +142,7 @@ const categoryIds = new Set(
   YANDEX_EDUCATION_CATEGORIES.map((category) => category.id),
 );
 const forbiddenXmlCharacters = /[\u0000-\u0008\u000B\u000C\u000E-\u001F]/;
+const classRangeListPattern = /^\d+(?:-\d+)?(?:,\d+(?:-\d+)?)*$/;
 
 function requireText(value: string, label: string, errors: string[]): void {
   if (!value.trim()) errors.push(`${label} is empty`);
@@ -245,6 +246,12 @@ export function validateYandexEducationOffers(
     if (!formats.has(offer.format)) {
       errors.push(`${prefix}.format is invalid`);
     }
+    if (
+      offer.classes &&
+      !classRangeListPattern.test(offer.classes.replace(/[–—]/g, "-"))
+    ) {
+      errors.push(`${prefix}.classes must be a comma-separated range list`);
+    }
     if (offer.plan.length < 3) {
       errors.push(`${prefix}.plan must contain at least three stages`);
     }
@@ -311,6 +318,12 @@ function renderBooleanParam(name: string, value: boolean | undefined): string {
     : `        <param name="${name}">${value ? "true" : "false"}</param>\n`;
 }
 
+function renderClassesParam(value: string | undefined): string {
+  if (!value) return "";
+  const rangeList = value.replace(/[–—]/g, "-");
+  return `        <param name="Классы" type="RANGELIST">${escapeYandexEducationXml(rangeList)}</param>\n`;
+}
+
 function renderOffer(offer: YandexEducationOffer): string {
   const plans = offer.plan
     .map(
@@ -330,7 +343,7 @@ function renderOffer(offer: YandexEducationOffer): string {
         <param name="Продолжительность" unit="${offer.duration.unit}">${offer.duration.value}</param>
 ${plans}
         <param name="Формат обучения">${offer.format}</param>
-${renderBooleanParam("Есть видеоуроки", offer.hasVideoLessons)}${renderBooleanParam("Есть текстовые уроки", offer.hasTextLessons)}${renderBooleanParam("Есть домашние работы", offer.hasHomework)}${renderBooleanParam("Есть тренажеры", offer.hasTrainingSimulators)}${renderBooleanParam("Есть бесплатная часть", offer.hasFreePart)}${offer.classes ? `        <param name="Классы">${escapeYandexEducationXml(offer.classes)}</param>\n` : ""}${offer.picture ? `        <picture>${escapeYandexEducationXml(offer.picture)}</picture>\n` : ""}        <description>${escapeYandexEducationXml(offer.description)}</description>
+${renderBooleanParam("Есть видеоуроки", offer.hasVideoLessons)}${renderBooleanParam("Есть текстовые уроки", offer.hasTextLessons)}${renderBooleanParam("Есть домашние работы", offer.hasHomework)}${renderBooleanParam("Есть тренажеры", offer.hasTrainingSimulators)}${renderBooleanParam("Есть бесплатная часть", offer.hasFreePart)}${renderClassesParam(offer.classes)}${offer.picture ? `        <picture>${escapeYandexEducationXml(offer.picture)}</picture>\n` : ""}        <description>${escapeYandexEducationXml(offer.description)}</description>
       </offer>`;
 }
 
@@ -350,12 +363,6 @@ export function renderYandexEducationFeed(
     throw new Error(`Invalid Yandex Education feed:\n- ${errors.join("\n- ")}`);
   }
 
-  const categories = YANDEX_EDUCATION_CATEGORIES.map((category) => {
-    const parent = "parentId" in category
-      ? ` parentId="${category.parentId}"`
-      : "";
-    return `      <category id="${category.id}"${parent}>${escapeYandexEducationXml(category.name)}</category>`;
-  }).join("\n");
   const renderedOffers = offers.map(renderOffer).join("\n");
 
   return `<?xml version="1.0" encoding="utf-8" standalone="yes"?>
@@ -370,10 +377,6 @@ export function renderYandexEducationFeed(
     <currencies>
       <currency id="RUR" rate="1"/>
     </currencies>
-    <categories>
-${categories}
-    </categories>
-    <sets></sets>
     <offers>${renderedOffers ? `\n${renderedOffers}\n    ` : ""}</offers>
   </shop>
 </yml_catalog>
