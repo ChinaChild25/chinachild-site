@@ -75,6 +75,23 @@ type ExampleRow = {
   order_index: number;
 };
 
+const META_VOCABULARY_EXAMPLE_PATTERNS = [
+  /这个词/u,
+  /(?:сегодня\s+)?мы\s+(?:выучили|изучаем|изучили|учим)\s+слово/ui,
+];
+
+/**
+ * Rejects meta-learning placeholders such as “Сегодня мы выучили слово …”.
+ * Dictionary examples must demonstrate the term in a real utterance instead
+ * of merely naming it as the object of a lesson.
+ */
+export function isUsefulVocabularyExample(
+  row: Pick<ExampleRow, "hanzi" | "translation_ru">,
+): boolean {
+  const text = `${row.hanzi ?? ""}\n${row.translation_ru ?? ""}`;
+  return !META_VOCABULARY_EXAMPLE_PATTERNS.some((pattern) => pattern.test(text));
+}
+
 type CharacterRow = {
   id?: string;
   hanzi: string;
@@ -326,7 +343,7 @@ export async function getPublicWordBySlug(slug: string): Promise<WordDetail | nu
     .sort((a, b) => a.order_index - b.order_index)
     .map((s) => ({ definition: s.definition, locale: s.locale, orderIndex: s.order_index }));
   const exampleRows = (snapshot.tables.vocabExamples as ExampleRow[])
-    .filter((row) => row.term_id === term.id)
+    .filter((row) => row.term_id === term.id && isUsefulVocabularyExample(row))
     .sort((a, b) => a.order_index - b.order_index);
   const audioRows = snapshot.tables.vocabAudioAssets as AudioRow[];
   const termAudio = audioRows.find(

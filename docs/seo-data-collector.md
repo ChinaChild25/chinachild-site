@@ -168,3 +168,94 @@ ADC с read-only scopes Search Console и Analytics. Чтобы заменить
 
 Никогда не отправляйте содержимое `.env.local`, ADC или OAuth-токены в чат,
 задачу, commit или отчёт.
+
+## Расширенная выгрузка Яндекс Вебмастера по URL
+
+Для точной связи «запрос → URL» используется отдельный асинхронный API
+расширенной выгрузки Яндекс Вебмастера. Обычные популярные запросы остаются в
+отчёте, но никогда не считаются URL-уровневыми данными.
+
+Официальный контракт:
+
+- `GET .../pro/limits` — текущий остаток;
+- `GET .../pro/serp/dates` — доступные даты;
+- `POST .../pro/serp/queries/download/` — инициализация;
+- `GET .../pro/serp/queries/download/{task-id}` — статус и временная ссылка.
+
+Документация Яндекса:
+[обзор выгрузки](https://yandex.ru/dev/webmaster/doc/ru/reference/enhanced-export),
+[лимиты](https://yandex.com/dev/webmaster/doc/ru/reference/domain-limits),
+[инициализация](https://yandex.ru/dev/webmaster/doc/ru/reference/initialization-export),
+[статус](https://yandex.ru/dev/webmaster/doc/ru/reference/status-retrieval).
+
+Одна пара URL × день расходует одну единицу. Базовый лимит обновляется в
+00:00 по Москве. Инструмент сначала читает фактический остаток и не отправляет
+задачу, если стоимость выше него. В POST всегда передаётся
+`use_pro_tariff: "false"`; ненулевой `pro_quota_used` считается ошибкой.
+
+```bash
+# только оценка, без расхода квоты
+npm run seo:yandex-export -- --dry-run
+
+# явные URL, даты и регионы
+npm run seo:yandex-export -- \
+  --urls=/,/courses,/repetitor-kitayskogo \
+  --start=2026-07-15 --end=2026-07-28 \
+  --regions=1,213 --dry-run
+
+# список URL по одному на строку
+npm run seo:yandex-export -- \
+  --urls-file=./urls.txt --start=2026-07-15 --end=2026-07-28 --init-only
+
+# проверить сохранённые задачи, не создавая новые
+npm run seo:yandex-export -- --resume
+
+# проверить и скачать все готовые задачи
+npm run seo:yandex-export -- --download
+
+# вручную повторно разрешить только неуспешные единицы очереди
+npm run seo:yandex-export -- --retry-failed
+```
+
+Режим без явного списка выбирает прямоугольник из наиболее приоритетных URL и
+последних доступных дат, который полностью помещается в оставшуюся бесплатную
+квоту. Если процесс оборвался после отправки, состояние `submitting`
+сохраняется до ответа и не повторяется автоматически: это безопаснее
+двойного расхода.
+
+Глобальное состояние и очередь лежат в
+`seo-data/yandex-enhanced/`. Их снимки, CSV и нормализованные строки лежат в
+`seo-data/runs/<evidence-run-id>/`. Задачи обычно готовятся от 20 минут до
+2 часов, иногда до 24 часов; команда не выполняет длительное ожидание и не
+создаёт cron.
+
+## Коммерческая evidence-матрица
+
+После инициализации или скачивания выгрузки:
+
+```bash
+npm run seo:commercial-evidence -- \
+  --run=<evidence-run-id> \
+  --source-run=<provider-collection-run-id>
+```
+
+Для проверки текущих внешних редиректов добавьте `--probe-live`. Инвентарь
+внутренних ссылок строится по локальным HTML-файлам
+`.next/server/app`; другой каталог можно передать через `--build-directory`.
+Отчёт сохраняет GSC, URL-выгрузку Яндекса, популярные запросы Яндекса, GA4 и
+Метрику отдельными строками и никогда не суммирует их показатели.
+
+Основные результаты:
+
+- `commercial-query-url-matrix.csv`;
+- `commercial-query-url-summary.md`;
+- `commercial-ownership-map.md`;
+- `internal-link-inventory.csv`;
+- `internal-link-destination-summary.csv`;
+- `protected-pages.csv` и `protected-page-rules.md`;
+- `legacy-route-evidence.csv`;
+- `owner-decisions-required.md`.
+
+Пока сохранённая задача Яндекса имеет статус `submitted` или `in_progress`,
+коммерческий отчёт считается промежуточным и не служит основанием для
+production SEO-изменений.

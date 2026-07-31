@@ -7923,6 +7923,10 @@ html[data-theme="dark"] {
   .hsk-test-result-score {
     color: var(--muted) !important;
   }
+  .hsk-test-result-shell .hsk-test-result-level-cta,
+  .hsk-test-result-shell .hsk-test-result-level-cta:hover {
+    color: #1a1a1a;
+  }
 
   /* The site-wide override remaps [class*="text-[#1b1b1b]"] to var(--ink).
      Inside pastel cards on dark we want them to stay dark — restore.
@@ -9629,10 +9633,10 @@ img.hsk-result-figure-photo {
   width: 100%;
   height: auto;
 }
-img.hsk-result-figure-shapes {
+.hsk-test-result-hero-art img.hsk-result-figure-shapes {
   position: absolute;
-  left: -7%;
-  bottom: 2%;
+  left: -2%;
+  bottom: -6%;
   width: 44%;
   height: auto;
   filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.28));

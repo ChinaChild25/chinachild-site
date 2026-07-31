@@ -6,6 +6,10 @@ const PAGE_SIZE = 1000;
 const outputPath = path.join(process.cwd(), ".generated", "public-content-snapshot.json");
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const META_VOCABULARY_EXAMPLE_PATTERNS = [
+  /这个词/u,
+  /(?:сегодня\s+)?мы\s+(?:выучили|изучаем|изучили|учим)\s+слово/ui,
+];
 
 if (!url || !anonKey) {
   throw new Error("NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are required.");
@@ -77,11 +81,16 @@ const entries = await Promise.all([
 
 const [
   vocabDecks, vocabDeckItems, rawVocabTerms, vocabPronunciations, vocabSenses,
-  vocabExamples, vocabAudioAssets, vocabCharacters, characterStrokeAssets,
+  rawVocabExamples, vocabAudioAssets, vocabCharacters, characterStrokeAssets,
   grammarArticles, grammarBlocks, grammarTags, grammarSections,
   grammarArticleTags, grammarArticleSections,
 ] = entries;
 const vocabTerms = rawVocabTerms.filter((row) => row.metadata?.source !== "chinachild-demo");
+const vocabExamples = rawVocabExamples.filter((row) => {
+  const text = `${row.hanzi ?? ""}\n${row.translation_ru ?? ""}`;
+  return !META_VOCABULARY_EXAMPLE_PATTERNS.some((pattern) => pattern.test(text));
+});
+const rejectedExampleCount = rawVocabExamples.length - vocabExamples.length;
 const snapshot = {
   version: 1,
   generatedAt: new Date().toISOString(),
@@ -97,4 +106,8 @@ const snapshot = {
 
 await mkdir(path.dirname(outputPath), { recursive: true });
 await writeFile(outputPath, `${JSON.stringify(snapshot)}\n`);
-console.log(`Public content snapshot: ${vocabTerms.length} words, ${grammarArticles.length} grammar articles, ${requestCount} paginated requests.`);
+console.log(
+  `Public content snapshot: ${vocabTerms.length} words, ${vocabExamples.length} useful examples, ` +
+    `${grammarArticles.length} grammar articles, ${requestCount} paginated requests. ` +
+    `Rejected ${rejectedExampleCount} meta-learning example(s).`,
+);

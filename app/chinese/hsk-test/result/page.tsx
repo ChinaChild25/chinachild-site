@@ -124,7 +124,10 @@ export default function HskTestResultPage() {
               <div className="mt-6">
                 <Link
                   href={`/hsk/hsk-${result.recommendedLevel}`}
-                  className={buttonStyles({ size: "large" })}
+                  className={buttonStyles({
+                    size: "large",
+                    className: "hsk-test-result-level-cta",
+                  })}
                 >
                   Подробнее об уровне HSK&nbsp;{result.recommendedLevel}
                 </Link>
