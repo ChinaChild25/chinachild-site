@@ -1,7 +1,7 @@
 # Redirect Check Results
 
-Generated: 2026-07-31T07:51:17.124Z
-Base URL: http://127.0.0.1:42107
+Generated: 2026-07-31T08:06:09.556Z
+Base URL: https://chinachild.ru
 Redirects checked: 246
 Passed: 246
 Failed: 0
@@ -24,10 +24,10 @@ Failed: 0
 | PASS | /hsk-6 | 308 | /hsk/hsk-6 | 200 | ok |
 | PASS | /hsk | 308 | /learn/hsk | 200 | ok |
 | PASS | /registration | 308 | /free-trial | 200 | ok |
-| PASS | /members | 308 | https://my.chinachild.ru/ | 200 | ok |
-| PASS | /members/ | 308 | https://my.chinachild.ru/ | 200 | ok |
-| PASS | /members/login | 308 | https://my.chinachild.ru/ | 200 | ok |
-| PASS | /members/signup | 308 | https://my.chinachild.ru/ | 200 | ok |
+| PASS | /members | 308 | https://my.chinachild.ru | 200 | ok |
+| PASS | /members/ | 308 | https://my.chinachild.ru | 200 | ok |
+| PASS | /members/login | 308 | https://my.chinachild.ru | 200 | ok |
+| PASS | /members/signup | 308 | https://my.chinachild.ru | 200 | ok |
 | PASS | /hsk1-versions1-5 | 308 | /hsk/hsk-1 | 200 | ok |
 | PASS | /hsk1-versions6-10 | 308 | /hsk/hsk-1 | 200 | ok |
 | PASS | /hsk1-versions11-15 | 308 | /hsk/hsk-1 | 200 | ok |

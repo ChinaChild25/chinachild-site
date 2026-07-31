@@ -1,7 +1,7 @@
 # Production Readiness Results
 
-Generated: 2026-07-31T07:51:13.671Z
-Base URL: http://127.0.0.1:42107
+Generated: 2026-07-31T08:05:24.509Z
+Base URL: https://chinachild.ru
 Expected metadata origin: https://chinachild.ru
 Result: PASS
 

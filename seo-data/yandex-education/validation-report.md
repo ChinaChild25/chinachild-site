@@ -1,38 +1,44 @@
-# PASS 6 validation report
+# Final production validation report
 
 Validation date: 2026-07-31
 
-Deployment/upload: not performed
+Deployment: production deployment `dpl_6xFz1dHWZDWh2xXsK6KkgCif73C1`
+from commit `2c562c6`; Yandex Webmaster upload not performed
 
 ## Passed
 
 - `npm run typecheck`
 - `npm run lint`: 0 errors; 6 pre-existing warnings outside the PASS 6
   artifact generator
-- `npm run test:leads`: 9/9 tests
-- `npm run test:seo`: 56/56 tests
+- `npm run test:leads`: 12/12 tests
+- `npm run test:seo`: 60/60 tests
 - `NEXT_PUBLIC_SITE_URL=https://chinachild.ru npm run build`
-- post-build JSON-LD/static audit: 2,813 HTML pages, 40 FAQ pages,
+- post-build JSON-LD/static audit: 2,814 HTML pages, 41 FAQ pages,
   2,476 dictionary word routes, 2,884 static dictionary/grammar routes
-- local production audit:
+- local and production strict audits:
   `npm run seo:yandex-education -- --base-url=http://127.0.0.1:42107`
-  returned 3 offers and 0 errors
+  and `--base-url=https://chinachild.ru` returned 3 offers and 0 errors
 - deterministic artifact generation:
   `npm run seo:yandex-education:artifacts`
 - CSV consistency validation:
   `npm run seo:yandex-education:artifacts -- --check` validated all 3 CSV
   artifacts against the reviewed Markdown and typed offer data
-- local feed: HTTP 200, `application/xml`, production canonical offer URLs,
+- production feed: HTTP 200, `application/xml`, production canonical offer URLs,
   `X-Yandex-Education-Readiness: ready-for-validation`
 - feed structure: 3 unique stable IDs, reviewed categories, 17,990 RUR
   monthly price, subscription false, one-month duration, four stages and eight
   total guided hours per offer
 - live-page validator: direct HTTP 200, production canonical, visible price,
   8 lessons, 60 minutes, one month, and separate next-module purchase
-- agent-browser accessibility audit of the schoolchildren module section:
-  0 violations and 0 incomplete checks
-- browser funnel check: one `education_offer_cta_click` and one
-  `education_offer_form_start` delivery with non-PII module context
+- production canonical/sitemap/robots/internal-link audit: PASS; all 246
+  production redirect checks also passed
+- production browser checks covered the homepage, about, licence, price,
+  free-trial, all three offers, and the XML feed on desktop and mobile
+- the production form opened, loaded SmartCaptcha, displayed the corrected
+  response hours, and enforced client validation; no persisted test lead was
+  sent because the repository has no safe internal-test identification path
+- browser funnel checks captured `education_offer_cta_click` and
+  `education_offer_form_start` with non-PII module context and no console errors
 - before/after desktop screenshots saved for adults, schoolchildren, HSK, and
   price pages under `screenshots/`
 - the build snapshot step completed with 38 paginated reads and did not leave a
@@ -59,8 +65,9 @@ Deployment/upload: not performed
 - `/repetitor`, `/courses/adults`, and `/courses/kids` remain absent.
 - Group, self-study, corporate, trial, city, `/zayavka`, protected pages, HSK
   informational routes, and `go.chinachild.ru` are not feed offers.
-- No redirect, canonical ownership, sitemap inclusion, deployment, Webmaster
-  upload, or external service state was changed.
+- Redirects, canonical ownership and sitemap ownership were preserved.
+- The production deployment completed; no Webmaster upload, Supabase data,
+  DNS, Tilda, `go.chinachild.ru`, or other external service state was changed.
 
 ## Remaining operational checks
 
@@ -75,4 +82,4 @@ These are provider-submission checks, not blockers to technical completion.
 
 ## Technical status
 
-`ready for deployment and production validation`
+`deployed and production-validated — ready for owner upload to Yandex`

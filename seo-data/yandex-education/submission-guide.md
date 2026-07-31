@@ -2,14 +2,15 @@
 
 ## Current state
 
-The source feed contains three reviewed modular offers and passes strict
-structural and local production validation. The repository artifacts and
-eligibility checklist are current for PASS 6. This task does not deploy or
-upload the feed. The production URL will be:
+The production feed contains three reviewed modular offers and passes strict
+structural, local, and production validation. The repository artifacts and
+eligibility checklist are current. The feed is deployed but has not been
+uploaded to Yandex Webmaster. Its production URL is:
 
 `https://chinachild.ru/yandex-education.yml`
 
-Technical status: `ready for deployment and production validation`.
+Technical status:
+`deployed and production-validated — ready for owner upload to Yandex`.
 
 ## Current review artifacts
 
@@ -47,15 +48,17 @@ npm run seo:yandex-education:artifacts -- --check
    invoices, payment links, and contracts.
 6. Check Yandex Webmaster for malware/security issues and for an existing
    duplicate Education feed.
-7. Submit one internal test lead and verify delivery without creating an
-   unwanted paid order.
+7. Submit an internal test lead only if a safe test-identification workflow is
+   configured and the lead cannot be mistaken for a real customer. Otherwise,
+   rely on the automated lead suite and verify the production form opens,
+   loads SmartCaptcha, and enforces validation without persisting a lead.
 8. Run a local production build, start it, and execute:
 
    ```bash
    npm run seo:yandex-education -- --base-url=http://127.0.0.1:42107
    ```
 
-9. After an authorized deployment, execute:
+9. Immediately before upload, execute:
 
    ```bash
    npm run seo:yandex-education -- --base-url=https://chinachild.ru
