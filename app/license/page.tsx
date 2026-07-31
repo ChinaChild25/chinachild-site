@@ -19,7 +19,7 @@ import {
 
 export const metadata: Metadata = buildMetadata({
   title: "Образовательная лицензия ChinaChild — Москва, программа HSK 1–2",
-  description: `Лицензия № ${LICENSE_DETAILS.registrationNumber} от Департамента образования Москвы. Право на налоговый вычет 13% — до 19 500 ₽ в год.`,
+  description: `Лицензия № ${LICENSE_DETAILS.registrationNumber} от Департамента образования Москвы. Налоговый вычет при наличии права: до 19 500 ₽ за себя или до 14 300 ₽ за ребёнка.`,
   path: "/license",
   keywords: [
     "лицензия школы китайского",
@@ -111,7 +111,7 @@ export default function LicensePage() {
       <PageHero
         eyebrow="Документы"
         title="Образовательная лицензия ChinaChild"
-        description={`Лицензия № ${LICENSE_DETAILS.registrationNumber} выдана ${LICENSE_REGION_INSTRUMENTAL} от ${LICENSE_DETAILS.issueDate}. Программа дополнительного профессионального образования «${LICENSE_PROGRAM}». Даёт ученикам право на налоговый вычет 13% — до 19 500 ₽ в год.`}
+        description={`Лицензия № ${LICENSE_DETAILS.registrationNumber} выдана ${LICENSE_REGION_INSTRUMENTAL} от ${LICENSE_DETAILS.issueDate}. Программа дополнительного профессионального образования «${LICENSE_PROGRAM}». При наличии права на социальный вычет можно вернуть до 19 500 ₽ за своё обучение или до 14 300 ₽ за обучение ребёнка.`}
         primaryCta={{ label: "Записаться на пробное", modal: true }}
         secondaryCta={{ label: "О школе", href: "/about" }}
         illustration="/home-redesign/litsenzirovannaya-programma-hsk-1-2.webp"
@@ -134,9 +134,10 @@ export default function LicensePage() {
                 профессионального образования.
               </li>
               <li>
-                <strong className="text-[#262626]">Налоговый вычет 13%.</strong> Возвращаете
-                до 19 500 ₽ в год через личный кабинет ФНС или работодателя — социальный
-                налоговый вычет за обучение, ст. 219 НК РФ.
+                <strong className="text-[#262626]">Налоговый вычет 13%.</strong>{" "}
+                При наличии права можно вернуть до 19 500 ₽ за своё обучение или
+                до 14 300 ₽ за обучение ребёнка. Сумма зависит от расходов,
+                уплаченного НДФЛ и лимитов по ст. 219 НК РФ.
               </li>
               <li>
                 <strong className="text-[#262626]">Государственный надзор.</strong>{" "}
@@ -259,8 +260,9 @@ export default function LicensePage() {
               Через личный кабинет налогоплательщика на nalog.gov.ru или у работодателя.
             </li>
             <li>
-              <strong className="text-[#262626]">3. Получите возврат.</strong>{" "}
-              13% от стоимости обучения, до 19 500 ₽ в год — поступают на ваш счёт.
+              <strong className="text-[#262626]">3. Получите решение ФНС.</strong>{" "}
+              При подтверждении права сумма возврата зависит от фактических расходов,
+              уплаченного НДФЛ и установленных законом лимитов.
             </li>
           </ol>
           <div className="mt-8 flex flex-wrap gap-3">

@@ -1,8 +1,15 @@
+import { readFileSync } from "node:fs";
 import { runSeoCheck } from "./check.mts";
 import { runCollection } from "./collect.mts";
+import { generateCommercialEvidence } from "./commercial-evidence.mts";
 import { loadSeoConfig } from "./config.mts";
 import { buildComparisonRange } from "./date-range.mts";
 import { generateSeoReport } from "./reports.mts";
+import {
+  normalizeEnhancedPath,
+  runYandexEnhancedExport,
+} from "./yandex-enhanced-export.mts";
+import { auditYandexEducationFeed } from "./yandex-education.mts";
 
 type CliOptions = Record<string, string | boolean>;
 
@@ -35,6 +42,36 @@ function stringOption(options: CliOptions, name: string): string | undefined {
   if (value === undefined) return undefined;
   if (typeof value !== "string") throw new Error(`--${name} requires a value`);
   return value;
+}
+
+function booleanOption(options: CliOptions, name: string): boolean {
+  const value = options[name];
+  if (value === undefined) return false;
+  if (value !== true) throw new Error(`--${name} does not take a value`);
+  return true;
+}
+
+function csvOption(options: CliOptions, name: string): string[] | undefined {
+  const value = stringOption(options, name);
+  return value
+    ?.split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function enhancedUrls(options: CliOptions, domain: string): string[] | undefined {
+  const inline = csvOption(options, "urls") ?? [];
+  const filename = stringOption(options, "urls-file");
+  const fromFile = filename
+    ? readFileSync(filename, "utf8")
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter((line) => line && !line.startsWith("#"))
+    : [];
+  const values = [...inline, ...fromFile];
+  return values.length
+    ? values.map((value) => normalizeEnhancedPath(value, domain))
+    : undefined;
 }
 
 function printCheck(items: Awaited<ReturnType<typeof runSeoCheck>>): void {
@@ -106,8 +143,92 @@ async function main(): Promise<void> {
     return;
   }
 
+  if (command === "yandex-export") {
+    const regionValues = csvOption(options, "regions");
+    const result = await runYandexEnhancedExport(config, {
+      paths: enhancedUrls(options, config.domain),
+      startDate: stringOption(options, "start"),
+      endDate: stringOption(options, "end"),
+      regionIds: regionValues?.map((value) => {
+        const parsed = Number(value);
+        if (!Number.isInteger(parsed) || parsed <= 0) {
+          throw new Error("--regions must contain positive integer IDs");
+        }
+        return parsed;
+      }),
+      runId: stringOption(options, "run"),
+      dryRun: booleanOption(options, "dry-run"),
+      initOnly: booleanOption(options, "init-only"),
+      resume: booleanOption(options, "resume"),
+      download: booleanOption(options, "download"),
+      retryFailed: booleanOption(options, "retry-failed"),
+    });
+    console.log(
+      `Yandex enhanced export run ${result.runId}: ` +
+        `${result.quota.freeRemaining} free URL-day units were available before this command.`,
+    );
+    if (result.planned) {
+      console.log(
+        `Planned ${result.planned.paths.length} URLs × ${result.planned.dates.length} days = ` +
+          `${result.planned.quotaUnits} free units.`,
+      );
+    }
+    if (result.submittedTaskId) {
+      console.log(`Task ${result.submittedTaskId} is persisted for resume.`);
+    }
+    for (const task of result.state.tasks) {
+      console.log(
+        `[${task.status.toUpperCase()}] ${task.taskId ?? "task-id-not-returned"}: ` +
+          `${task.quotaUnits} URL-days` +
+          (task.error ? ` — ${task.error}` : ""),
+      );
+    }
+    const pending = result.queue.units.filter(
+      (unit) => unit.status === "pending",
+    ).length;
+    console.log(
+      `Backfill queue: ${pending} pending of ${result.queue.units.length} URL-days.`,
+    );
+    return;
+  }
+
+  if (command === "commercial-evidence") {
+    const evidenceRunId = stringOption(options, "run");
+    if (!evidenceRunId) {
+      throw new Error("commercial-evidence requires --run=EVIDENCE_RUN_ID");
+    }
+    const result = await generateCommercialEvidence(config, {
+      evidenceRunId,
+      sourceRunId: stringOption(options, "source-run"),
+      buildDirectory: stringOption(options, "build-directory"),
+      probeLive: booleanOption(options, "probe-live"),
+    });
+    console.log(`Commercial evidence written to ${result.reportDirectory}`);
+    console.log(`Decision summary: ${result.summaryPath}`);
+    return;
+  }
+
+  if (command === "yandex-education") {
+    const result = await auditYandexEducationFeed({
+      allowEmpty: booleanOption(options, "allow-empty"),
+      baseUrl: stringOption(options, "base-url"),
+    });
+    for (const check of result.checks) console.log(`[PASS] ${check}`);
+    for (const error of result.errors) console.error(`[FAIL] ${error}`);
+    console.log(
+      `Yandex Education feed: ${result.offerCount} offers, ${result.errors.length} errors`,
+    );
+    if (result.errors.length) process.exitCode = 1;
+    return;
+  }
+
   throw new Error(
-    "Usage: cli.mts <check|collect|report> [--days=90 | --start=YYYY-MM-DD --end=YYYY-MM-DD] [--run=RUN_ID]",
+    "Usage: cli.mts <check|collect|report|yandex-export|commercial-evidence|yandex-education> " +
+      "[--days=90 | --start=YYYY-MM-DD --end=YYYY-MM-DD] [--run=RUN_ID] " +
+      "[--urls=/,/courses | --urls-file=FILE] [--regions=ID,ID] " +
+      "[--dry-run|--init-only|--resume|--download] [--retry-failed] " +
+      "[--source-run=RUN_ID] [--build-directory=PATH] [--probe-live] " +
+      "[--base-url=URL] [--allow-empty]",
   );
 }
 

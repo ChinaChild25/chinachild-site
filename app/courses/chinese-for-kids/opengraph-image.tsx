@@ -9,7 +9,7 @@ export default function Image() {
   return renderCourseOg({
     badge: "Курсы",
     title: "Китайский для школьников 12+ онлайн",
-    subtitle: "Индивидуальный курс HSK 1–2 · скидка 10% при оплате за 2 месяца",
+    subtitle: "Индивидуальный модуль для школьников 12+ · 8 занятий по 60 минут",
     price: "от 17 990 ₽",
     background: "#cfe0f4",
     cta: "Записаться",

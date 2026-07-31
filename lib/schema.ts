@@ -3,6 +3,7 @@ import {
   BRAND_NAME,
   CONTACT_PHONE,
   LICENSE_DETAILS,
+  LICENSE_PROGRAM,
   LICENSE_REGION,
   LICENSEE,
   PROMO_VIDEO,
@@ -23,6 +24,12 @@ import {
   type Review,
   type Teacher,
 } from "@/lib/site-data";
+import type { CityData } from "@/lib/cities";
+import {
+  INDIVIDUAL_MODULE_CONTINUATION_COPY,
+  INDIVIDUAL_MODULE_TERMS,
+  type IndividualCourseModule,
+} from "@/lib/course-modules";
 
 export type JsonLd = Record<string, unknown>;
 
@@ -30,6 +37,44 @@ export type BreadcrumbItem = {
   name: string;
   path: string;
 };
+
+export function createCityServiceSchema(city: CityData): JsonLd {
+  const pageUrl = `${SITE_URL}/cities/${city.slug}`;
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Service",
+        "@id": `${pageUrl}#service`,
+        name: `Онлайн-курсы китайского языка ${city.inCity}`,
+        description: city.metaDescription,
+        serviceType: "Онлайн-обучение китайскому языку",
+        url: pageUrl,
+        provider: {
+          "@id": `${SITE_URL}/#organization`,
+          name: SITE_NAME,
+        },
+        areaServed: {
+          "@type": "City",
+          name: city.name,
+          sameAs: city.wikipedia,
+        },
+        ...(city.licensedRegion
+          ? {
+              hasCredential: {
+                "@type": "EducationalOccupationalCredential",
+                name: `Образовательная лицензия — ${LICENSE_PROGRAM}`,
+                recognizedBy: {
+                  "@type": "Organization",
+                  name: LICENSE_REGION,
+                },
+              },
+            }
+          : {}),
+      },
+    ],
+  };
+}
 
 // ---------------------------------------------------------------------------
 // Stable @id anchors for the JSON-LD graph.
@@ -778,6 +823,41 @@ export function createEducationalOrganizationSchema(): JsonLd {
 }
 export function createCourseSchema(course: Course): JsonLd {
   return { "@context": "https://schema.org", ...createCourseNode(course) };
+}
+export function createIndividualModuleSchema(
+  module: IndividualCourseModule,
+): JsonLd {
+  const url = `${SITE_URL}${module.path}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "@id": `${url}#individual-module`,
+    name: module.name,
+    description: `${module.description} ${INDIVIDUAL_MODULE_CONTINUATION_COPY}`,
+    url,
+    provider: { "@id": ID.organization },
+    inLanguage: "ru-RU",
+    audience: {
+      "@type": "Audience",
+      audienceType: module.audience,
+    },
+    timeRequired: `PT${INDIVIDUAL_MODULE_TERMS.guidedHours}H`,
+    hasCourseInstance: {
+      "@type": "CourseInstance",
+      courseMode: "online",
+      courseWorkload: `PT${INDIVIDUAL_MODULE_TERMS.guidedHours}H`,
+      inLanguage: "ru-RU",
+    },
+    offers: {
+      "@type": "Offer",
+      name: "Индивидуальный модуль на один месяц",
+      url,
+      price: String(INDIVIDUAL_MODULE_TERMS.priceRub),
+      priceCurrency: "RUB",
+      category: "Индивидуальные онлайн-занятия с преподавателем",
+      availability: "https://schema.org/InStock",
+    },
+  };
 }
 export function createFaqSchema(items: FaqItem[]): JsonLd {
   return { "@context": "https://schema.org", ...createFaqNode(items) };

@@ -1,3 +1,4 @@
+import { gunzipSync } from "node:zlib";
 import type { SeoConfig } from "../config.mts";
 import {
   discoverMetrikaCounter,
@@ -56,6 +57,31 @@ class YandexReadOnlyClient {
           Authorization: `OAuth ${this.token}`,
           Accept: "application/json",
         },
+      },
+      {
+        provider,
+        secrets: [this.token],
+      },
+      { fetch: this.fetchImpl },
+    );
+  }
+
+  async post(
+    url: string,
+    body: Record<string, unknown>,
+    provider = "Yandex",
+  ): Promise<Record<string, unknown>> {
+    this.requestCount += 1;
+    return requestJson(
+      url,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `OAuth ${this.token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
       },
       {
         provider,
@@ -263,5 +289,39 @@ export class YandexWebmasterClient extends YandexReadOnlyClient {
       params,
       `Yandex Webmaster (${suffix})`,
     );
+  }
+
+  async hostPost(
+    userId: number,
+    hostId: string,
+    suffix: string,
+    body: Record<string, unknown>,
+  ): Promise<Record<string, unknown>> {
+    return this.post(
+      `${this.base(userId, hostId)}${suffix}`,
+      body,
+      `Yandex Webmaster (${suffix})`,
+    );
+  }
+
+  async downloadText(url: string): Promise<string> {
+    this.requestCount += 1;
+    const response = await (this.fetchImpl ?? fetch)(url, {
+      method: "GET",
+      headers: {
+        Accept: "text/csv, text/plain, application/octet-stream",
+      },
+      signal: AbortSignal.timeout(60_000),
+    });
+    if (!response.ok) {
+      throw new Error(
+        `Yandex Webmaster export download returned ${response.status}`,
+      );
+    }
+    const bytes = Buffer.from(await response.arrayBuffer());
+    if (bytes[0] === 0x1f && bytes[1] === 0x8b) {
+      return gunzipSync(bytes).toString("utf8");
+    }
+    return bytes.toString("utf8");
   }
 }

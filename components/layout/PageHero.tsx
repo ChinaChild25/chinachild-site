@@ -2,10 +2,16 @@ import Image from "next/image";
 import Link from "next/link";
 import LeadModal from "@/components/forms/LeadModal";
 import { buttonStyles } from "@/components/ui/button";
+import type { EducationOfferAnalyticsContext } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 type CtaLink = { label: string; href: string; external?: boolean };
-type CtaModal = { label: string; modal: true; defaultCourse?: string };
+type CtaModal = {
+  label: string;
+  modal: true;
+  defaultCourse?: string;
+  offerContext?: EducationOfferAnalyticsContext;
+};
 type Cta = CtaLink | CtaModal;
 
 type PageHeroProps = {
@@ -106,6 +112,7 @@ export default function PageHero({
                     triggerClassName={buttonStyles({ size: "large" })}
                     source="page-hero"
                     defaultCourse={primaryCta.defaultCourse}
+                    offerContext={primaryCta.offerContext}
                     suppressFloatingCta
                   >
                     {primaryCta.label}
@@ -130,6 +137,7 @@ export default function PageHero({
                     })}
                     source="page-hero-secondary"
                     defaultCourse={secondaryCta.defaultCourse}
+                    offerContext={secondaryCta.offerContext}
                     suppressFloatingCta
                   >
                     {secondaryCta.label}

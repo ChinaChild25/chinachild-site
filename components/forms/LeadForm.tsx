@@ -2,7 +2,12 @@
 
 import { SmartCaptcha } from "@yandex/smart-captcha";
 import { useEffect, useId, useRef, useState } from "react";
-import { trackLeadSubmitted } from "@/lib/analytics";
+import {
+  Goals,
+  trackEducationOfferEvent,
+  trackLeadSubmitted,
+  type EducationOfferAnalyticsContext,
+} from "@/lib/analytics";
 import {
   getCachedYandexClientId,
   startYandexClientIdCapture,
@@ -12,7 +17,13 @@ import {
   beginLeadSubmission,
   releaseLeadSubmission,
 } from "@/lib/leads/submission-gate";
-import { CONTACT_EMAIL, CONTACT_PHONE, CONTACT_PHONE_TEL } from "@/lib/site-config";
+import {
+  CONTACT_EMAIL,
+  CONTACT_PHONE,
+  CONTACT_PHONE_TEL,
+  LEAD_RESPONSE_FULL,
+  LEAD_RESPONSE_HOURS,
+} from "@/lib/site-config";
 
 // Reads the current theme from `<html data-theme="…">` and subscribes to
 // changes so the captcha widget re-renders with the matching colour scheme
@@ -50,6 +61,7 @@ export type LeadFormProps = {
   defaultCourse?: string;
   source?: string;
   compact?: boolean;
+  offerContext?: EducationOfferAnalyticsContext;
 };
 
 function readUtm(): Record<string, string> {
@@ -71,7 +83,12 @@ function readUtm(): Record<string, string> {
   return out;
 }
 
-export default function LeadForm({ defaultCourse, source, compact }: LeadFormProps) {
+export default function LeadForm({
+  defaultCourse,
+  source,
+  compact,
+  offerContext,
+}: LeadFormProps) {
   const nameId = useId();
   const phoneId = useId();
   const emailId = useId();
@@ -83,6 +100,7 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
   const honeypotId = useId();
   const websiteHoneypotId = useId();
   const submissionGate = useRef(false);
+  const formStartTracked = useRef(false);
 
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<FieldError | null>(null);
@@ -99,6 +117,16 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
   }, []);
 
   useEffect(() => startYandexClientIdCapture(), []);
+
+  function trackFormStart() {
+    if (!offerContext || formStartTracked.current) return;
+    formStartTracked.current = true;
+    trackEducationOfferEvent(Goals.EDUCATION_OFFER_FORM_START, {
+      source: source ?? pageHref,
+      course: defaultCourse,
+      ...offerContext,
+    });
+  }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -172,6 +200,7 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
         leadId: data.id,
         course: payload.course,
         source: payload.source_page,
+        offerContext,
       });
       form.reset();
       setFormStartedAt(Date.now());
@@ -194,7 +223,7 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
       <div role="status" aria-live="polite" className="lead-success">
         <div className="lead-success-title">Спасибо! Заявка принята.</div>
         <p className="lead-success-text">
-          Менеджер свяжется с вами в течение рабочего дня по указанному телефону.
+          {LEAD_RESPONSE_FULL}
         </p>
         <div className="lead-success-actions">
           <a href={`tel:${CONTACT_PHONE_TEL}`} className="btn-pill btn-ink">
@@ -217,6 +246,7 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
       noValidate
       className={`lead-form ${gap}`}
       aria-busy={status === "submitting"}
+      onFocusCapture={trackFormStart}
     >
       <div className="lead-field">
         <label htmlFor={nameId} className="lead-label">
@@ -287,7 +317,7 @@ export default function LeadForm({ defaultCourse, source, compact }: LeadFormPro
 
       <div className="lead-field">
         <label htmlFor={timeId} className="lead-label">
-          Удобное время для звонка (по будням с 09:00 до 19:00 МСК)
+          Удобное время для звонка ({LEAD_RESPONSE_HOURS})
         </label>
         <input
           id={timeId}

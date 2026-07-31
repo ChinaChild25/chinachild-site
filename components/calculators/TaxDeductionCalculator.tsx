@@ -115,18 +115,20 @@ export default function TaxDeductionCalculator() {
         </div>
 
         <div className="vychet-result">
-          <div className="vychet-result-cap">Вернёте на карту</div>
+          <div className="vychet-result-cap">Расчётный возврат</div>
           <div className="vychet-result-value">{fmt(refund)} ₽</div>
           <div className="vychet-result-hint">
             {capped
-              ? `Лимит ${fmt(limit)} ₽ в год — больше вернуть не получится`
+              ? `Расчёт ограничен базой ${fmt(limit)} ₽ в год`
               : `13% от ${fmt(eligible)} ₽`}
           </div>
         </div>
 
         <p className="vychet-note">
-          Социальный вычет по ст. 219 НК РФ. Школа лицензирована — нужна только{" "}
-          <Link href="/license">лицензия</Link> и платёжки.{" "}
+          Предварительный расчёт по ст. 219 НК РФ. Фактический возврат зависит
+          от права на вычет, уплаченного НДФЛ и других расходов в общем лимите.
+          Школа предоставляет документы и сведения о{" "}
+          <Link href="/license">лицензии</Link>.{" "}
           <Link href="/blog/license-tax-deduction-chinese-school">
             Как подать 3-НДФЛ
           </Link>

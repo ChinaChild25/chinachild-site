@@ -1,6 +1,6 @@
 export const SITE_NAME = "ChinaChild";
 export const BRAND_NAME = "HSK+";
-const DEFAULT_SITE_URL = "https://chinachild-site.vercel.app";
+const DEFAULT_SITE_URL = "https://chinachild.ru";
 
 export const TRUST_PROFILE_LINKS = [
   {
@@ -107,6 +107,16 @@ export const PROMO_CODE = "КИТАПР26";
  * Актуальный лимит с 2024 г.: 150 000 ₽ базы → 19 500 ₽ к возврату.
  */
 export const TAX_DEDUCTION_MAX = "до 19 500 ₽ в год";
+export const TAX_DEDUCTION_COMPACT =
+  "Налоговый вычет: до 19 500 ₽ за своё обучение или до 14 300 ₽ за обучение ребёнка.";
+export const TAX_DEDUCTION_SUMMARY =
+  "При наличии права на социальный налоговый вычет можно вернуть до 19 500 ₽ за своё обучение или до 14 300 ₽ за обучение каждого ребёнка. Размер возврата зависит от фактических расходов, уплаченного НДФЛ и установленных законом лимитов.";
+
+export const LEAD_RESPONSE_HOURS = "ежедневно с 09:00 до 21:00 МСК";
+export const LEAD_RESPONSE_COMPACT =
+  "Заявки обрабатываем ежедневно с 09:00 до 21:00 по московскому времени. Обычно отвечаем в течение 1–2 часов в этот период.";
+export const LEAD_RESPONSE_FULL =
+  `${LEAD_RESPONSE_COMPACT} На заявки, поступившие ночью, отвечаем с начала следующего периода обработки заявок.`;
 
 /**
  * Реальные параметры социального вычета за обучение по ст. 219 НК РФ.

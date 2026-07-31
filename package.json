@@ -35,6 +35,11 @@
     "seo:check": "node --env-file-if-exists=.env.local scripts/seo/cli.mts check",
     "seo:collect": "node --env-file-if-exists=.env.local scripts/seo/cli.mts collect",
     "seo:report": "node --env-file-if-exists=.env.local scripts/seo/cli.mts report",
+    "seo:yandex-export": "node --env-file-if-exists=.env.local scripts/seo/cli.mts yandex-export",
+    "seo:commercial-evidence": "node --env-file-if-exists=.env.local scripts/seo/cli.mts commercial-evidence",
+    "seo:yandex-education": "node scripts/seo/cli.mts yandex-education",
+    "seo:yandex-education:structure": "node scripts/seo/cli.mts yandex-education --allow-empty",
+    "seo:yandex-education:artifacts": "node scripts/seo/yandex-education-artifacts.mts",
     "test:seo": "node --test scripts/seo/tests/*.test.mts",
     "test:leads": "node --test scripts/lead-tests/*.test.mts"
   },

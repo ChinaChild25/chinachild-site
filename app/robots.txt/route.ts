@@ -9,7 +9,6 @@ const indexableAllowPaths = [
   "/courses/",
   "/price",
   "/free-trial",
-  "/zayavka",
   "/learn/",
   "/hsk/",
   "/chinese/hsk-test",

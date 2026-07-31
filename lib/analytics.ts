@@ -1,5 +1,14 @@
 type Params = Record<string, string | number | boolean | undefined>;
 
+export type EducationOfferAnalyticsContext = {
+  offer_id: string;
+  offer_path: string;
+  offer_audience: string;
+  module_price_rub: number;
+  module_lesson_count: number;
+  module_lesson_minutes: number;
+};
+
 /**
  * Centralised registry for browser funnel events sent to Yandex.Metrika
  * (`reachGoal`), Google Analytics (`event`), and the shared dataLayer.
@@ -18,6 +27,9 @@ export const Goals = {
   EMAIL_CLICK: "email_click",
   WHATSAPP_CLICK: "whatsapp_click",
   COURSE_CTA_CLICK: "course_cta_click",
+  EDUCATION_OFFER_VIEW: "education_offer_view",
+  EDUCATION_OFFER_CTA_CLICK: "education_offer_cta_click",
+  EDUCATION_OFFER_FORM_START: "education_offer_form_start",
 
   // — Page-level views —
   PRICING_VIEW: "pricing_view",
@@ -79,12 +91,38 @@ export function trackEvent(name: string, params?: Params) {
   }
 }
 
+/**
+ * Offer-funnel diagnostics use non-PII module context. When gtag is present,
+ * it already writes its command to dataLayer, so avoid a duplicate object push.
+ */
+export function trackEducationOfferEvent(
+  name:
+    | typeof Goals.EDUCATION_OFFER_VIEW
+    | typeof Goals.EDUCATION_OFFER_CTA_CLICK
+    | typeof Goals.EDUCATION_OFFER_FORM_START,
+  params: Params,
+) {
+  if (typeof window === "undefined") return;
+
+  const ymId = Number(process.env.NEXT_PUBLIC_YM_ID);
+  if (ymId && window.ym) {
+    window.ym(ymId, "reachGoal", name, params);
+  }
+
+  if (typeof window.gtag === "function") {
+    window.gtag("event", name, params);
+  } else if (Array.isArray(window.dataLayer)) {
+    window.dataLayer.push({ event: name, ...params });
+  }
+}
+
 const trackedLeadIds = new Set<string>();
 
 export function trackLeadSubmitted(input: {
   leadId: string;
   course?: string;
   source?: string;
+  offerContext?: EducationOfferAnalyticsContext;
 }): boolean {
   if (typeof window === "undefined" || trackedLeadIds.has(input.leadId)) {
     return false;
@@ -97,6 +135,7 @@ export function trackLeadSubmitted(input: {
         event_category: "lead",
         event_label: input.source ?? "form",
         course: input.course,
+        ...input.offerContext,
       });
     }
   } catch {

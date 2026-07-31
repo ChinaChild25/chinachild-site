@@ -1,28 +1,30 @@
 # Production Readiness Results
 
-Generated: 2026-06-02T09:54:32.141Z
-Base URL: https://chinachild-site.vercel.app
-Expected metadata origin: https://chinachild-site.vercel.app
-Result: FAIL
+Generated: 2026-07-31T07:51:13.671Z
+Base URL: http://127.0.0.1:42107
+Expected metadata origin: https://chinachild.ru
+Result: PASS
 
 ## Page Checks
 
 | Result | Path | HTTP | Title | Canonical | OG image | Notes |
 | --- | --- | ---: | --- | --- | --- | --- |
-| PASS | / | 200 | ChinaChild — онлайн-школа китайского языка HSK 1–6 | https://chinachild-site.vercel.app | PASS | ok |
-| PASS | /courses | 200 | Курсы китайского языка онлайн — все программы школы | https://chinachild-site.vercel.app/courses | PASS | ok |
-| PASS | /price | 200 | Цены на курсы китайского языка ChinaChild — тарифы и оплата | https://chinachild-site.vercel.app/price | PASS | ok |
-| PASS | /learn/hsk | 200 | HSK — все уровни экзамена и подготовка \| Хаб ChinaChild | https://chinachild-site.vercel.app/learn/hsk | PASS | ok |
-| PASS | /chinese/hsk-test | 200 | Тест на уровень HSK онлайн бесплатно — Яндекс Практикум | https://chinachild-site.vercel.app/chinese/hsk-test | PASS | ok |
-| PASS | /grammar | 200 | Грамматика китайского языка — справочник и правила | https://chinachild-site.vercel.app/grammar | PASS | ok |
-| PASS | /dictionary | 200 | Китайский словарь — HSK списки слов, пиньинь, переводы | https://chinachild-site.vercel.app/dictionary | PASS | ok |
-| FAIL | /dictionary/hsk/new-hsk/1 | 200 | Новый HSK 1 — список слов с пиньинем и переводом | https://chinachild-site.vercel.app/dictionary/hsk/new-hsk/1 | PASS | HTML contains localhost, sandbox, app.chinachild.ru, or Tilda domain; platform link points to stale domain; stale platform href: https://chinachild-sandbox.vercel.app/vocabulary/hsk/new-hsk/1 |
-| PASS | /blog | 200 | Блог ChinaChild о китайском языке \| Статьи для детей и | https://chinachild-site.vercel.app/blog | PASS | ok |
-| PASS | /blog/chinese-for-beginners-guide | 200 | Китайский для начинающих — полное руководство 2026 | https://chinachild-site.vercel.app/blog/chinese-for-beginners-guide | PASS | ok |
-| PASS | /glossary | 200 | Глоссарий китайского языка — термины и понятия \| ChinaChild | https://chinachild-site.vercel.app/glossary | PASS | ok |
-| PASS | /glossary/hsk | 200 | HSK — что это в китайском языке \| Глоссарий ChinaChild | https://chinachild-site.vercel.app/glossary/hsk | PASS | ok |
-| FAIL | /dictionary/word/ni-hao | 200 | 你好 (nǐ hǎo) — Стандартное приветствие при встрече. | https://chinachild-site.vercel.app/dictionary/word/ni-hao | PASS | HTML contains localhost, sandbox, app.chinachild.ru, or Tilda domain; platform link points to stale domain; stale platform href: https://chinachild-sandbox.vercel.app/vocabulary/word/ni-hao; stale platform href: https://chinachild-sandbox.vercel.app/vocabulary/train |
-| PASS | /free-trial | 200 | Бесплатный пробный урок китайского языка — ChinaChild | https://chinachild-site.vercel.app/free-trial | PASS | ok |
+| PASS | / | 200 | ChinaChild — онлайн-школа китайского языка HSK 1–6 | https://chinachild.ru | PASS | ok |
+| PASS | /courses | 200 | Курсы китайского языка онлайн — все программы школы | https://chinachild.ru/courses | PASS | ok |
+| PASS | /price | 200 | Цены на курсы китайского языка ChinaChild — тарифы и оплата | https://chinachild.ru/price | PASS | ok |
+| PASS | /repetitor-kitayskogo | 200 | Репетитор по китайскому языку онлайн — индивидуально с нуля | https://chinachild.ru/repetitor-kitayskogo | PASS | ok |
+| PASS | /learn/hsk | 200 | HSK — все уровни экзамена и подготовка \| Хаб ChinaChild | https://chinachild.ru/learn/hsk | PASS | ok |
+| PASS | /chinese/hsk-test | 200 | Тест на уровень HSK онлайн бесплатно — Яндекс Практикум | https://chinachild.ru/chinese/hsk-test | PASS | ok |
+| PASS | /chinese/hsk-test/level-1 | 200 | Тест HSK 1 онлайн бесплатно — проверь уровень китайского | https://chinachild.ru/chinese/hsk-test/level-1 | PASS | ok |
+| PASS | /grammar | 200 | Грамматика китайского языка — справочник и правила | https://chinachild.ru/grammar | PASS | ok |
+| PASS | /dictionary | 200 | Китайский словарь — HSK списки слов, пиньинь, переводы | https://chinachild.ru/dictionary | PASS | ok |
+| PASS | /dictionary/hsk/new-hsk/1 | 200 | Новый HSK 1 — список слов с пиньинем и переводом | https://chinachild.ru/dictionary/hsk/new-hsk/1 | PASS | ok |
+| PASS | /blog | 200 | Блог ChinaChild о китайском языке \| Статьи для детей и | https://chinachild.ru/blog | PASS | ok |
+| PASS | /blog/chinese-for-beginners-guide | 200 | Китайский для начинающих — полное руководство 2026 | https://chinachild.ru/blog/chinese-for-beginners-guide | PASS | ok |
+| PASS | /glossary | 200 | Глоссарий китайского языка — термины и понятия \| ChinaChild | https://chinachild.ru/glossary | PASS | ok |
+| PASS | /glossary/hsk | 200 | HSK — что это в китайском языке \| Глоссарий ChinaChild | https://chinachild.ru/glossary/hsk | PASS | ok |
+| PASS | /dictionary/word/ni-hao | 200 | 你好 (nǐ hǎo) — Стандартное приветствие при встрече. | https://chinachild.ru/dictionary/word/ni-hao | PASS | ok |
+| PASS | /free-trial | 200 | Бесплатный пробный урок китайского языка — ChinaChild | https://chinachild.ru/free-trial | PASS | ok |
 | PASS | /__cutover-smoke-missing-page__ | 404 |  |  |  | ok |
 
 ## Sitemap, Robots, Verification
@@ -30,6 +32,8 @@ Result: FAIL
 | Result | Item | HTTP | Notes |
 | --- | --- | ---: | --- |
 | PASS | /sitemap.xml | 200 | contains expected site URLs |
+| PASS | /sitemap-feeds.xml | 200 | contains expected site URLs |
+| PASS | /sitemap-store.xml | 200 | contains expected site URLs |
 | PASS | /robots.txt | 200 | points at expected sitemap |
 | PASS | /e7c1a4d8b9f3469c2a85e6f4d2b9a3c1.txt | 200 | available |
 | PASS | /google54888911d7826dee.html | 200 | available |
@@ -41,6 +45,9 @@ Result: FAIL
 | --- | --- | ---: | --- |
 | PASS | /about | 200 | ok |
 | PASS | /blog | 200 | ok |
+| PASS | /blog/100-fraz-na-kitayskom | 200 | ok |
+| PASS | /blog/4-tona-kitayskogo-poshagovo | 200 | ok |
+| PASS | /blog/50-pervykh-ieroglifov | 200 | ok |
 | PASS | /blog/ai-trainer-chinese-pronunciation | 200 | ok |
 | PASS | /blog/business-chinese-online-courses | 200 | ok |
 | PASS | /blog/category/biznes | 200 | ok |
@@ -56,12 +63,29 @@ Result: FAIL
 | PASS | /blog/how-long-to-learn-chinese | 200 | ok |
 | PASS | /blog/how-to-learn-chinese-from-scratch | 200 | ok |
 | PASS | /blog/how-to-set-chinese-pronunciation-tones | 200 | ok |
+| PASS | /blog/hsk-2-300-slov-spisok | 200 | ok |
+| PASS | /blog/hsk-3-0-novyy-format-2027 | 200 | ok |
+| PASS | /blog/hsk-3-i-cefr-b1 | 200 | ok |
+| PASS | /blog/hsk-4-dlya-postupleniya-v-vuz | 200 | ok |
+| PASS | /blog/hsk-5-business-and-society | 200 | ok |
+| PASS | /blog/hsk-6-bilingual | 200 | ok |
 | PASS | /blog/hsk-levels-explained | 200 | ok |
+| PASS | /blog/hskk-podgotovka-ustnyy-ekzamen | 200 | ok |
+| PASS | /blog/kitayskiy-dlya-detey-igrovye-metody | 200 | ok |
+| PASS | /blog/kitayskiy-podrostkam-12-15 | 200 | ok |
+| PASS | /blog/kitayskiy-v-shkole-kak-vtoroy-inostrannyy | 200 | ok |
+| PASS | /blog/kitayskiy-yazyk-dlya-puteshestvii | 200 | ok |
+| PASS | /blog/kitayskiy-yazyk-trudnyy-li | 200 | ok |
 | PASS | /blog/license-tax-deduction-chinese-school | 200 | ok |
+| PASS | /blog/nalogovyy-vychet-za-detey | 200 | ok |
 | PASS | /blog/online-platform-video-calls-chat | 200 | ok |
 | PASS | /blog/pinyin-uchim-za-7-dney | 200 | ok |
 | PASS | /blog/podgotovka-k-hsk-1-za-3-mesyatsa | 200 | ok |
+| PASS | /blog/razgovornik-kitayskogo-dlya-puteshestviy | 200 | ok |
 | PASS | /blog/s-kakogo-vozrasta-uchit-kitayskiy | 200 | ok |
+| PASS | /blog/samouchitel-kitayskogo-rating-2026 | 200 | ok |
+| PASS | /blog/skolko-ieroglifov-nuzhno-znat | 200 | ok |
+| PASS | /blog/slovar-hsk-1-150-slov | 200 | ok |
 | PASS | /blog/teachers-chinese-school-real-team | 200 | ok |
 | PASS | /chinese/hsk-test | 200 | ok |
 | PASS | /chinese/hsk-test/level-1 | 200 | ok |
@@ -690,3 +714,4 @@ Result: FAIL
 | PASS | /team/milena-karlova | 200 | ok |
 | PASS | /team/zhao-li | 200 | ok |
 | PASS | /user-agreement | 200 | ok |
+| PASS | /zayavka | 200 | ok |

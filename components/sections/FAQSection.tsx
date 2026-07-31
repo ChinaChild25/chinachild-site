@@ -2,6 +2,7 @@ import JsonLd from "@/components/seo/JsonLd";
 import Reveal from "@/components/ui/Reveal";
 import SectionShell from "@/components/ui/SectionShell";
 import { createFaqSchema } from "@/lib/schema";
+import { LEAD_RESPONSE_COMPACT } from "@/lib/site-config";
 import { faqs, type FaqItem } from "@/lib/site-data";
 
 type FAQSectionProps = {
@@ -26,7 +27,7 @@ export default function FAQSection({
   const resolvedDescription =
     description ??
     (items === faqs && title === "Отвечаем на вопросы"
-      ? "Если не нашли свой вопрос — напишите, и мы ответим лично в течение рабочего дня."
+      ? `Если не нашли свой вопрос — напишите. ${LEAD_RESPONSE_COMPACT}`
       : undefined);
 
   return (

@@ -5,16 +5,12 @@
 
 > Обычные funnel-события отправляются через `trackEvent()`, а подтверждённый
 > сохранённый лид использует разные основные имена провайдеров:
-> серверный `lead_submitted` в Метрике и клиентский `generate_lead` в GA4.
-> Этот документ —
+> `lead_submitted` в Метрике и `generate_lead` в GA4. Этот документ —
 > **операционный чек-лист**; он не подтверждает состояние внешних интерфейсов.
 
 ## Зачем заводить цели вручную
 
-Обычный `window.ym(id, "reachGoal", "<name>")` попадает в отчёты только если
-цель зарегистрирована в `Настройки → Цели`. Канонический `lead_submitted`
-отправляется не из браузера, а сервером через Measurement Protocol после
-сохранения заявки и использует ту же JavaScript-цель.
+`window.ym(id, "reachGoal", "<name>")` уходит на сервер Метрики всегда, но **попадает в отчёты только если эта цель явно зарегистрирована в `Настройки → Цели`**. Без регистрации события молча игнорируются.
 
 Аналогично в Google Analytics 4: цель (Conversion) должна быть включена в `Admin → Events → Mark as conversion`.
 
@@ -36,6 +32,16 @@
 
 - [ ] `pricing_view` — заход на `/price`
 - [ ] `free_trial_view` — заход на `/free-trial`
+
+### Yandex Education: модульные офферы
+
+- [ ] `education_offer_view` — просмотр одного из трёх допущенных офферов
+- [ ] `education_offer_cta_click` — открытие формы с допущенной страницы
+- [ ] `education_offer_form_start` — первый фокус в форме этого оффера
+
+Это диагностические шаги воронки, а не дополнительные конверсии. Успешный
+сохранённый лид по-прежнему учитывается только через `lead_submitted` в
+Метрике и `generate_lead` в GA4.
 
 ### HSK-тест (`/chinese/hsk-test`)
 
@@ -62,13 +68,9 @@
 ### Классификация лидов Метрики
 
 `lead_submitted` / цель `562860580` — единственная выбранная основная лид-цель.
-Сайт делает одну серверную попытку отправки на сохранённую заявку, если доступен
-настоящий ClientID Метрики. Браузер не вызывает для неё `reachGoal` и не
-публикует одноимённое событие в `dataLayer`. Если ClientID недоступен, заявка
-всё равно сохраняется, но конверсию нельзя связать с визитом и сервер ничего не
-подменяет. Даже настоящий ClientID не гарантирует атрибуцию, если Метрика не
-находит подходящий недавний визит. Автоцели, историческая `hsk_test_lead` и
-старая цель fallback `563512735` не складываются с канонической целью.
+Автоцели, историческая `hsk_test_lead` и серверный fallback не складываются с
+ней. Остальные события являются funnel-сигналами, пока владелец отдельно не
+подтвердит их бизнес-смысл.
 
 ---
 
@@ -76,7 +78,7 @@
 
 В GA4 события автоматически попадают в отчёты (в отличие от Метрики), но для конверсий нужно отметить их в `Admin → Events → Mark as key event`:
 
-- [x] `generate_lead` → key event для подтверждённого сохранённого лида
+- [ ] `generate_lead` → кандидат в key event для подтверждённого сохранённого лида
 - [ ] `phone_click` → conversion ✓
 - [ ] `course_cta_click` → conversion ✓
 - [ ] `course_cta_clicked` (из диагностики) → conversion ✓
@@ -94,11 +96,15 @@
 | `phone_click` | `href`, `path` |
 | `email_click` | `href`, `path` |
 | `course_cta_click` | `source`, `course` |
+| `education_offer_view` | `offer_id`, `offer_path`, `offer_audience`, `module_price_rub`, `module_lesson_count`, `module_lesson_minutes` |
+| `education_offer_cta_click` | те же параметры оффера + `source`, `course` |
+| `education_offer_form_start` | те же параметры оффера + `source`, `course` |
 | `hsk_test_started` | `level`, `mode` |
 | `hsk_test_answered` | `level`, `questionId`, `correct` |
 | `hsk_test_completed` | `level`, `mode`, `score`, `verdict` |
 | `hsk_test_details_clicked` | `level`, `recommendedLevel` |
 | `hsk_test_shared` | `level`, `network` |
+| `lead_submitted` | `course`, `source`; для модульного оффера — также неперсональные параметры оффера |
 | `calibration_completed` | `experience`, `goal`, `minutesPerDay` |
 | `test_completed` | `ability`, `hsk`, `archetype`, `questions` |
 | `share_clicked` | `channel` |

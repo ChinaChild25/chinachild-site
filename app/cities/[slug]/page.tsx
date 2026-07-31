@@ -6,17 +6,15 @@ import LeadModal from "@/components/forms/LeadModal";
 import PageHero from "@/components/layout/PageHero";
 import JsonLd from "@/components/seo/JsonLd";
 import { buttonStyles } from "@/components/ui/button";
-import { cities, getCityBySlug, getCitySlugs, type CityData } from "@/lib/cities";
+import { cities, getCityBySlug, getCitySlugs } from "@/lib/cities";
 import { buildMetadata } from "@/lib/metadata";
+import { createCityServiceSchema } from "@/lib/schema";
 import {
   CONTACT_EMAIL,
   CONTACT_PHONE,
   CONTACT_PHONE_TEL,
-  LICENSE_PROGRAM,
   LICENSE_REGION,
   LICENSE_REGION_INSTRUMENTAL,
-  SITE_NAME,
-  SITE_URL,
 } from "@/lib/site-config";
 
 type CityPageProps = {
@@ -55,45 +53,6 @@ export async function generateMetadata({
   });
 }
 
-function buildLocalBusinessGraph(city: CityData) {
-  return {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": ["EducationalOrganization", "LocalBusiness"],
-        "@id": `${SITE_URL}/cities/${city.slug}#localbusiness`,
-        name: `${SITE_NAME} — ${city.name}`,
-        url: `${SITE_URL}/cities/${city.slug}`,
-        telephone: CONTACT_PHONE,
-        email: CONTACT_EMAIL,
-        areaServed: {
-          "@type": "City",
-          name: city.name,
-          sameAs: city.wikipedia,
-        },
-        address: {
-          "@type": "PostalAddress",
-          addressCountry: "RU",
-          addressRegion: city.region,
-          addressLocality: city.name,
-        },
-        ...(city.licensedRegion
-          ? {
-              hasCredential: {
-                "@type": "EducationalOccupationalCredential",
-                name: `Образовательная лицензия — ${LICENSE_PROGRAM}`,
-                recognizedBy: {
-                  "@type": "Organization",
-                  name: LICENSE_REGION,
-                },
-              },
-            }
-          : {}),
-      },
-    ],
-  };
-}
-
 export default async function CityLandingPage({ params }: CityPageProps) {
   const { slug } = await params;
   const city = getCityBySlug(slug);
@@ -108,14 +67,14 @@ export default async function CityLandingPage({ params }: CityPageProps) {
           { name: city.name, path: `/cities/${city.slug}` },
         ]}
       />
-      <JsonLd data={buildLocalBusinessGraph(city)} id={`city-${city.slug}-localbusiness`} />
+      <JsonLd data={createCityServiceSchema(city)} id={`city-${city.slug}-service`} />
 
       <PageHero
         eyebrow={city.name}
         title={`Курсы китайского языка ${city.inCity} онлайн`}
         description={
           city.licensedRegion
-            ? `ChinaChild — онлайн-школа китайского языка с образовательной лицензией ${LICENSE_REGION.toLowerCase()}. Мини-группы до 5 человек, индивидуальные занятия, программа HSK 1–2 за 6 месяцев. Налоговый вычет 13% — до 19 500 ₽ в год.`
+            ? `ChinaChild — онлайн-школа китайского языка с образовательной лицензией ${LICENSE_REGION.toLowerCase()}. Мини-группы до 5 человек, индивидуальные занятия, программа HSK 1–2. При наличии права доступен социальный налоговый вычет.`
             : `ChinaChild — онлайн-школа китайского языка с лицензированной программой HSK 1–2. Курс доступен из любой точки ${city.ofCity} и пригородов: ${city.suburbs}. Расписание подбираем под ваш часовой пояс.`
         }
         primaryCta={{ label: "Записаться на пробное", modal: true }}
@@ -210,8 +169,9 @@ export default async function CityLandingPage({ params }: CityPageProps) {
                 Контакты для жителей {city.ofCity}
               </h2>
               <p className="mt-4 text-base leading-7 text-white/85">
-                Звоните или пишите — отвечаем в течение рабочего дня. Все консультации
-                бесплатны. Учитываем ваш часовой пояс — {city.timezone}.
+                Звоните или пишите. Заявки обрабатываем ежедневно с 09:00 до
+                21:00 МСК, обычно отвечаем в течение 1–2 часов в этот период.
+                Все консультации бесплатны. Учитываем ваш часовой пояс — {city.timezone}.
               </p>
             </div>
             <div className="grid gap-3 text-white">

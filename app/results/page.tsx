@@ -10,7 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
     title: "Результаты учеников ChinaChild — кейсы и прогресс",
     description:
-      "Что получают ученики ChinaChild: разговорный уровень за 6 месяцев, сертификат HSK 2, мини-группы до 5, налоговый вычет до 19 500 ₽ — реальные кейсы.",
+      "Результаты учеников ChinaChild: разговорный уровень, HSK 2 и мини-группы до 5. Налоговый вычет: до 19 500 ₽ за себя или до 14 300 ₽ за ребёнка.",
     path: "/results",
     keywords: [
       "результаты обучения китайскому",

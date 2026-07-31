@@ -119,8 +119,8 @@ export default function HskTestLeadInline({
             Спасибо! Заявка принята.
           </h2>
           <p className="mt-3 max-w-[520px] text-base leading-[1.55] text-[#4b4b4b]">
-            Куратор свяжется в течение рабочего дня и подскажет, с какой группы
-            на HSK&nbsp;{recommendedLevel} удобнее всего начать.
+            Ежедневно с 09:00 до 21:00 МСК обычно отвечаем в течение 1–2 часов
+            и подсказываем, с какой группы на HSK&nbsp;{recommendedLevel} начать.
           </p>
           <p className="mt-4 text-sm leading-[1.5] text-[#4b4b4b]">
             Хотите быстрее?{" "}

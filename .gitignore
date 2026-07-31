@@ -44,7 +44,23 @@ next-env.d.ts
 .claude/
 
 # local read-only SEO collector data and credential-copy safeguards
-/seo-data/
+/seo-data/*
+!/seo-data/yandex-education/
+/seo-data/yandex-education/*
+!/seo-data/yandex-education/eligibility-audit.md
+!/seo-data/yandex-education/eligibility-checklist.csv
+!/seo-data/yandex-education/offer-id-baseline.json
+!/seo-data/yandex-education/submission-guide.md
+!/seo-data/yandex-education/modular-pricing-decision.md
+!/seo-data/yandex-education/feed-conversion-measurement.md
+!/seo-data/yandex-education/competitor-offer-benchmark.csv
+!/seo-data/yandex-education/competitor-offer-benchmark.md
+!/seo-data/yandex-education/offer-page-consistency.csv
+!/seo-data/yandex-education/offer-page-consistency.md
+!/seo-data/yandex-education/curriculum-stage-evidence.md
+!/seo-data/yandex-education/validation-report.md
+!/seo-data/yandex-education/screenshots/
+!/seo-data/yandex-education/screenshots/*.png
 application_default_credentials.json
 client_secret*.json
 google-oauth*.json

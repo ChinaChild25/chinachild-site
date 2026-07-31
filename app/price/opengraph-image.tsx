@@ -10,7 +10,7 @@ export default function Image() {
   return renderSectionOg({
     badge: "Цены",
     title: "Тарифы и оплата",
-    subtitle: "Стоимость курсов, помесячная оплата, скидки и налоговый вычет 13%.",
+    subtitle: "Стоимость модулей и курсов · документы для социального вычета",
     footer: "chinachild.ru / price",
     background: "#efeae0",
     imagePath: "/og/price.png",

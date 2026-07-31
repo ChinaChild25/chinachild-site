@@ -11,6 +11,7 @@ import {
   LICENSE_REGION_INSTRUMENTAL,
   LICENSEE,
   SITE_URL,
+  TAX_DEDUCTION_COMPACT,
   TRUST_PROFILE_LINKS,
 } from "@/lib/site-config";
 
@@ -101,7 +102,7 @@ export default function Footer() {
           <div>
             Образовательная лицензия № {LICENSE_DETAILS.registrationNumber} от 18.12.2025,
             выдана {LICENSE_REGION_INSTRUMENTAL}. Программа «{LICENSE_PROGRAM}».
-            Налоговый вычет 13% — до 19 500 ₽ в год.{" "}
+            {" "}{TAX_DEDUCTION_COMPACT}{" "}
             <Link href="/license" className="underline underline-offset-4 hover:text-white">
               Подробнее о лицензии
             </Link>

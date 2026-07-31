@@ -1,8 +1,10 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import JsonLd from "@/components/seo/JsonLd";
+import EducationOfferTracker from "@/components/analytics/EducationOfferTracker";
 import LeadModal from "@/components/forms/LeadModal";
 import FAQSection from "@/components/sections/FAQSection";
+import IndividualModuleSection from "@/components/sections/IndividualModuleSection";
 import PageHero from "@/components/layout/PageHero";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import Avatar from "@/components/ui/Avatar";
@@ -10,6 +12,7 @@ import ReviewYandexArrow from "@/components/ui/ReviewYandexArrow";
 import { buttonStyles } from "@/components/ui/button";
 import {
   createCourseSchema,
+  createIndividualModuleSchema,
   createReviewNode,
   type JsonLd as JsonLdType,
 } from "@/lib/schema";
@@ -26,6 +29,10 @@ import {
   type Course,
   type FaqItem,
 } from "@/lib/site-data";
+import {
+  INDIVIDUAL_MODULE_TERMS,
+  type IndividualCourseModule,
+} from "@/lib/course-modules";
 
 type Bullet = { title: string; body: string; tone: "violet-soft" | "cream" | "lime-soft" | "sky" | "peach-soft" | "cream-soft" };
 
@@ -49,6 +56,7 @@ type CourseLandingProps = {
   /** Override the final dark-CTA heading/lead copy per page. */
   ctaHeading?: string;
   ctaText?: string;
+  individualModule?: IndividualCourseModule;
 };
 
 const toneClass: Record<Bullet["tone"], string> = {
@@ -81,6 +89,7 @@ export default function CourseLanding({
   related,
   ctaHeading,
   ctaText,
+  individualModule,
 }: CourseLandingProps) {
   // Курс-специфичные отзывы — рендерим Review schema + UI-блок, чтобы получить
   // звёзды в SERP и социальное доказательство на странице покупки.
@@ -94,6 +103,16 @@ export default function CourseLanding({
           "@graph": courseReviews.map((r) => createReviewNode(r)),
         }
       : null;
+  const offerContext = individualModule
+    ? {
+        offer_id: individualModule.id,
+        offer_path: individualModule.path,
+        offer_audience: individualModule.audience,
+        module_price_rub: INDIVIDUAL_MODULE_TERMS.priceRub,
+        module_lesson_count: INDIVIDUAL_MODULE_TERMS.lessonCount,
+        module_lesson_minutes: INDIVIDUAL_MODULE_TERMS.lessonMinutes,
+      }
+    : undefined;
 
   return (
     <main className="course-landing">
@@ -105,6 +124,15 @@ export default function CourseLanding({
         ]}
       />
       <JsonLd data={createCourseSchema(schemaCourse) as JsonLdType} id={`course-${schemaCourse.slug}-schema`} />
+      {individualModule ? (
+        <>
+          <JsonLd
+            data={createIndividualModuleSchema(individualModule)}
+            id={`course-${schemaCourse.slug}-individual-module-schema`}
+          />
+          <EducationOfferTracker context={offerContext!} />
+        </>
+      ) : null}
       {reviewGraph ? (
         <JsonLd data={reviewGraph} id={`course-${schemaCourse.slug}-reviews-schema`} />
       ) : null}
@@ -115,7 +143,12 @@ export default function CourseLanding({
         eyebrow={pageHero.eyebrow}
         title={pageHero.title}
         description={pageHero.description}
-        primaryCta={{ label: "Записаться на пробное", modal: true }}
+        primaryCta={{
+          label: "Записаться на пробное",
+          modal: true,
+          defaultCourse: schemaCourse.slug,
+          offerContext,
+        }}
         secondaryCta={{ label: "Все курсы", href: "/courses" }}
         illustration={heroMedia?.src}
         illustrationAlt={heroMedia?.alt}
@@ -153,6 +186,10 @@ export default function CourseLanding({
       ) : null}
 
       {sections}
+
+      {individualModule ? (
+        <IndividualModuleSection module={individualModule} />
+      ) : null}
 
       {courseReviews.length > 0 ? (
         <section className="page-shell-wide section-space">
@@ -257,6 +294,7 @@ export default function CourseLanding({
                   triggerClassName={buttonStyles({ variant: "secondary", size: "large" })}
                   source={`course-landing-${schemaCourse.slug}`}
                   defaultCourse={schemaCourse.slug}
+                  offerContext={offerContext}
                   suppressFloatingCta
                 >
                   Записаться на пробное

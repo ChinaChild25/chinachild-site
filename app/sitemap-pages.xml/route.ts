@@ -46,7 +46,6 @@ export async function GET() {
     // Commercial conversion pages
     { loc: absoluteUrl("/price"), changefreq: "weekly", priority: 0.9 },
     { loc: absoluteUrl("/free-trial"), changefreq: "monthly", priority: 0.88 },
-    { loc: absoluteUrl("/zayavka"), changefreq: "monthly", priority: 0.86 },
 
     // Learning hubs — pillar pages
     { loc: absoluteUrl("/learn/hsk"), changefreq: "weekly", priority: 0.92 },

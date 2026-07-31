@@ -26,7 +26,6 @@ const STATIC_ROUTES = [
   "/courses/business-chinese",
   "/cities",
   "/glossary",
-  "/zayavka",
   "/team",
   "/learn/hsk",
   "/learn/beginners",

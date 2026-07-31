@@ -2,7 +2,12 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import { trackEvent } from "@/lib/analytics";
+import {
+  Goals,
+  trackEducationOfferEvent,
+  trackEvent,
+  type EducationOfferAnalyticsContext,
+} from "@/lib/analytics";
 
 // LeadForm подтягивает SmartCaptcha (~2 МБ) сразу при монтировании.
 // На блог-страницах форма открывается у ~3% посетителей — нет смысла
@@ -28,6 +33,8 @@ type LeadModalProps = {
   ariaLabel?: string;
   /** Pre-select a course in the form (e.g. on a course landing page) */
   defaultCourse?: string;
+  /** Non-PII context for Yandex Education offer funnel attribution. */
+  offerContext?: EducationOfferAnalyticsContext;
   /** Hide the global floating CTA while this trigger is visible in the viewport */
   suppressFloatingCta?: boolean;
 };
@@ -45,6 +52,7 @@ export default function LeadModal({
   source,
   ariaLabel,
   defaultCourse,
+  offerContext,
   suppressFloatingCta = false,
 }: LeadModalProps) {
   const dialogRef = useRef<HTMLDialogElement | null>(null);
@@ -68,9 +76,16 @@ export default function LeadModal({
       source: source ?? "modal",
       course: defaultCourse,
     });
+    if (offerContext) {
+      trackEducationOfferEvent(Goals.EDUCATION_OFFER_CTA_CLICK, {
+        source: source ?? "modal",
+        course: defaultCourse,
+        ...offerContext,
+      });
+    }
     setHasOpenedOnce(true);
     setOpen(true);
-  }, [defaultCourse, source]);
+  }, [defaultCourse, offerContext, source]);
 
   useEffect(() => {
     if (!open) return;
@@ -143,7 +158,12 @@ export default function LeadModal({
           ) : null}
           <div className="lead-dialog-form">
             {hasOpenedOnce ? (
-              <LeadForm compact source={source ?? "modal"} defaultCourse={defaultCourse} />
+              <LeadForm
+                compact
+                source={source ?? "modal"}
+                defaultCourse={defaultCourse}
+                offerContext={offerContext}
+              />
             ) : null}
           </div>
         </div>
