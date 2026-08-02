@@ -96,15 +96,13 @@ test("Education XML omits local categories and unmodeled sets", () => {
   assert.doesNotMatch(xml, /<categories\b|<sets\b|<set-ids\b/);
 });
 
-test("school classes use the provider-required RANGELIST type", () => {
+test("school classes use the provider-documented normalized string", () => {
   const xml = renderYandexEducationFeed({
     generatedAt: new Date("2026-07-30T20:15:00.000Z"),
     offers: [validOffer({ classes: "5–11" })],
   });
-  assert.match(
-    xml,
-    /<param name="Классы" type="RANGELIST">5-11<\/param>/,
-  );
+  assert.match(xml, /<param name="Классы">5-11<\/param>/);
+  assert.doesNotMatch(xml, /<param name="Классы"[^>]*\btype=/);
   assert.deepEqual(
     validateYandexEducationXml(xml, {
       expectedOffers: [validOffer({ classes: "5–11" })],
@@ -123,7 +121,10 @@ test("validator rejects the three structures reported by Yandex Webmaster", () =
     "    <categories><category id=\"20006\">Китайский язык</category></categories>\n    <offers>",
   );
   const withEmptySets = base.replace("    <offers>", "    <sets></sets>\n    <offers>");
-  const withoutRangeType = base.replace(' type="RANGELIST"', "");
+  const withUnsupportedRangeType = base.replace(
+    'name="Классы"',
+    'name="Классы" type="RANGELIST"',
+  );
   assert.ok(
     errorsContain(
       validateYandexEducationXml(withCategories, {
@@ -142,10 +143,10 @@ test("validator rejects the three structures reported by Yandex Webmaster", () =
   );
   assert.ok(
     errorsContain(
-      validateYandexEducationXml(withoutRangeType, {
+      validateYandexEducationXml(withUnsupportedRangeType, {
         expectedOffers: [validOffer({ classes: "5–11" })],
       }).errors,
-      "classes type must be RANGELIST",
+      "classes must not declare a type attribute",
     ),
   );
 });

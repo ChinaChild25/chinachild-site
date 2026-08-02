@@ -350,8 +350,8 @@ export function validateYandexEducationXml(
     }
     const classes = params.find((param) => param["@_name"] === "Классы");
     if (classes) {
-      if (text(classes["@_type"]) !== "RANGELIST") {
-        errors.push(`${prefix}.classes type must be RANGELIST`);
+      if (text(classes["@_type"])) {
+        errors.push(`${prefix}.classes must not declare a type attribute`);
       }
       if (!/^\d+(?:-\d+)?(?:,\d+(?:-\d+)?)*$/.test(text(classes["#text"]))) {
         errors.push(`${prefix}.classes value is not a normalized range list`);

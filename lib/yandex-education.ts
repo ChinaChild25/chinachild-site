@@ -321,7 +321,7 @@ function renderBooleanParam(name: string, value: boolean | undefined): string {
 function renderClassesParam(value: string | undefined): string {
   if (!value) return "";
   const rangeList = value.replace(/[–—]/g, "-");
-  return `        <param name="Классы" type="RANGELIST">${escapeYandexEducationXml(rangeList)}</param>\n`;
+  return `        <param name="Классы">${escapeYandexEducationXml(rangeList)}</param>\n`;
 }
 
 function renderOffer(offer: YandexEducationOffer): string {
