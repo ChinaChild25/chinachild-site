@@ -196,12 +196,12 @@
 .resultCopy h3 {
   margin: 0;
   color: #242424;
-  font-size: 32px;
+  font-size: 30px;
   font-weight: 400;
   line-height: 1.08;
   letter-spacing: 0;
   overflow-wrap: break-word;
-  text-wrap: balance;
+  text-wrap: pretty;
 }
 
 .resultBlue .resultCopy h3,
@@ -442,7 +442,7 @@
   }
 
   .resultCopy h3 {
-    font-size: 37px;
+    font-size: 34px;
     line-height: 1.08;
   }
 
@@ -505,7 +505,7 @@
   }
 
   .resultCard:not(.resultLead) .resultCopy h3 {
-    font-size: 30px;
+    font-size: 28px;
   }
 
   .resultCard:not(.resultLead) .resultCopy p {
@@ -555,7 +555,7 @@
   }
 
   .resultCopy h3 {
-    font-size: 34px;
+    font-size: 31px;
   }
 
   .resultCopy p {
@@ -582,7 +582,7 @@
   }
 
   .resultCard:not(.resultLead) .resultCopy h3 {
-    font-size: 27px;
+    font-size: 25px;
   }
 
   .resultCard:not(.resultLead) .resultCopy p {
@@ -635,7 +635,7 @@
   }
 
   .resultCard:not(.resultLead) .resultCopy h3 {
-    font-size: 31px;
+    font-size: 29px;
   }
 
   .resultCard:not(.resultLead) .resultCopy p {
@@ -734,12 +734,12 @@
   }
 
   .resultCopy h3 {
-    font-size: clamp(28px, 2.35vw, 32px);
+    font-size: clamp(25px, 2.05vw, 28px);
     line-height: 1.08;
   }
 
   .resultCard:not(.resultLead) .resultCopy h3 {
-    font-size: clamp(28px, 2.35vw, 32px);
+    font-size: clamp(25px, 2.05vw, 28px);
   }
 
   .resultCopy p {
@@ -869,11 +869,11 @@
   }
 
   .resultCopy h3 {
-    font-size: 37px;
+    font-size: 34px;
   }
 
   .resultCard:not(.resultLead) .resultCopy h3 {
-    font-size: 37px;
+    font-size: 34px;
   }
 
   .resultCopy p {
@@ -1050,7 +1050,7 @@
   }
 
   .resultCopy h3 {
-    font-size: 29px;
+    font-size: 28px;
   }
 
   .resultCopy p {

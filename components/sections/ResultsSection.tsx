@@ -8,23 +8,9 @@ const resultCards = [
   {
     key: "level",
     title: "Достигайте разговорного уровня",
-    subtitle: (
-      <>
-        Открывайте доступ к аутентичным
-        <br />
-        текстам.
-      </>
-    ),
+    subtitle: "Уверенная речь на повседневные темы.",
     value: "6 мес.",
-    text: (
-      <>
-        Программа выстроена так, чтобы
-        <br />
-        за полгода вы вышли
-        <br />
-        на уровень HSK 2
-      </>
-    ),
+    text: "За полгода регулярных занятий вы выходите на HSK 2",
     tone: styles.resultBlue,
     revealClassName: styles.resultLeadReveal,
     cardClassName: styles.resultLead,
@@ -38,23 +24,9 @@ const resultCards = [
   {
     key: "groups",
     title: "Проходите занятия в мини-группах",
-    subtitle: (
-      <>
-        Открывайте доступ к аутентичным
-        <br />
-        текстам
-      </>
-    ),
+    subtitle: "Живой диалог и поддержка одногруппников.",
     value: "До 5",
-    text: (
-      <>
-        В мини-группе у каждого хватает
-        <br />
-        времени на речь,
-        <br />
-        обратную связь и разбор ошибок
-      </>
-    ),
+    text: "Каждому хватает времени на речь и обратную связь",
     tone: styles.resultPhoto,
     revealClassName: "",
     cardClassName: "",
@@ -67,23 +39,9 @@ const resultCards = [
   {
     key: "cashback",
     title: "Оформляйте вычет за обучение",
-    subtitle: (
-      <>
-        Поможем с оформлением всех
-        <br />
-        документов об обучении
-      </>
-    ),
+    subtitle: "Поможем оформить документы для вычета.",
     value: "13%",
-    text: (
-      <>
-        При наличии права — до
-        <br />
-        19 500 ₽ за себя или
-        <br />
-        14 300 ₽ за ребёнка
-      </>
-    ),
+    text: "При наличии права — до 19 500 ₽ за себя или 14 300 ₽ за ребёнка",
     tone: styles.resultWarm,
     revealClassName: "",
     cardClassName: "",
