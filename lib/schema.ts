@@ -514,7 +514,7 @@ export function createHowToNode(): JsonLd {
     estimatedCost: {
       "@type": "MonetaryAmount",
       currency: "RUB",
-      value: "4999",
+      value: "4990",
     },
     step: processSteps.map((step, index) => ({
       "@type": "HowToStep",

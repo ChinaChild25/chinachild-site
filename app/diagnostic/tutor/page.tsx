@@ -139,7 +139,7 @@ export default function TutorPage() {
             className="d-chat-banner"
             onClick={() => track({ name: "course_cta_clicked" })}
           >
-            Курс HSK {nextHsk} · от 9 900 ₽
+            Курс HSK {nextHsk} · от 15 990 ₽
           </Link>
         </header>
 

@@ -220,7 +220,7 @@ function CourseRecommendation({ result }: { result: DiagnosticResult }) {
             router.push("/free-trial");
           }}
         >
-          Записаться · от 9 900 ₽
+          Записаться · от 15 990 ₽
         </button>
         <Link href="/courses/hsk-preparation" className="d-btn d-btn-secondary">
           Программа курса
