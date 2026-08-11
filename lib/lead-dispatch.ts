@@ -1,7 +1,8 @@
 import "server-only";
 
 import { sendEmail } from "@/lib/email/smtp";
-import { SITE_NAME, SITE_URL } from "@/lib/site-config";
+import { buildLeadEmail } from "@/lib/email/lead-template";
+import { SITE_URL } from "@/lib/site-config";
 
 export type LeadInput = {
   id: string;
@@ -34,53 +35,6 @@ export type DispatchResult = {
   detail?: string;
 };
 
-function appendLine(lines: string[], label: string, value?: string | boolean) {
-  if (value === undefined || value === "") return;
-  lines.push(`${label}: ${value}`);
-}
-
-function formatLead(lead: LeadInput): string {
-  const lines = [
-    `Новая заявка с ${SITE_URL}`,
-    "",
-    `ID лида: ${lead.id}`,
-    `Имя: ${lead.name}`,
-    `Телефон: ${lead.phone}`,
-  ];
-
-  appendLine(lines, "Email", lead.email);
-  appendLine(lines, "Курс", lead.course);
-  appendLine(lines, "Удобное время звонка", lead.call_time);
-  appendLine(lines, "Страница", lead.source_page);
-  appendLine(lines, "Referrer", lead.referrer);
-  appendLine(lines, "Согласие на обработку ПД", lead.consent_pd);
-  appendLine(lines, "Согласие на рассылку", lead.consent_marketing);
-  appendLine(lines, "Версия текста согласия", lead.consent_text_version);
-  appendLine(lines, "Время согласия", lead.consent_accepted_at);
-
-  const utm = [
-    ["utm_source", lead.utm_source],
-    ["utm_medium", lead.utm_medium],
-    ["utm_campaign", lead.utm_campaign],
-    ["utm_content", lead.utm_content],
-    ["utm_term", lead.utm_term],
-    ["yclid", lead.yclid],
-    ["gclid", lead.gclid],
-  ].filter(([, value]) => value);
-
-  if (utm.length > 0) {
-    lines.push("", "UTM:");
-    for (const [key, value] of utm) lines.push(`  ${key}=${value}`);
-  }
-
-  if (lead.message) lines.push("", "Сообщение:", lead.message);
-  appendLine(lines, "IP hash", lead.ip_hash);
-  appendLine(lines, "User-Agent", lead.user_agent);
-  lines.push("", `Получатель: ${SITE_NAME}`);
-
-  return lines.join("\n");
-}
-
 async function dispatchEmail(lead: LeadInput): Promise<DispatchResult> {
   const to = process.env.LEAD_EMAIL_TO;
   if (!to) {
@@ -91,11 +45,13 @@ async function dispatchEmail(lead: LeadInput): Promise<DispatchResult> {
     };
   }
 
+  const email = buildLeadEmail(lead, { siteUrl: SITE_URL, recipient: to });
   const result = await sendEmail({
     to,
     replyTo: lead.email,
     subject: `Новая заявка с сайта: ${lead.name}`,
-    text: formatLead(lead),
+    text: email.text,
+    html: email.html,
   });
 
   return {
