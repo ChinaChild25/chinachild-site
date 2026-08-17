@@ -1,12 +1,16 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { trackLeadSubmitted } from "@/lib/analytics";
 import {
   getCachedYandexClientId,
   startYandexClientIdCapture,
 } from "@/lib/analytics/yandex-client-id";
+import {
+  MarketingConsentLabelText,
+  PD_CONSENT_REQUIRED_MESSAGE,
+  PdConsentLabelText,
+} from "@/lib/legal/consent-copy";
 import { isPersistedLeadResponse } from "@/lib/leads/contact-response";
 import {
   beginLeadSubmission,
@@ -50,9 +54,10 @@ export default function HskTestLeadInline({
     if (!consent) {
       releaseLeadSubmission(submissionGate);
       setStatus("error");
-      setError("Подтвердите согласие на обработку персональных данных");
+      setError(PD_CONSENT_REQUIRED_MESSAGE);
       return;
     }
+    const consentMarketing = fd.get("consent_marketing") === "on";
 
     const payload = {
       name: String(fd.get("name") ?? ""),
@@ -61,12 +66,13 @@ export default function HskTestLeadInline({
       course: "hsk-preparation",
       call_time: "",
       message: `HSK-тест: выбран HSK ${level}, балл ${score}%, рекомендован HSK ${recommendedLevel}`,
-      consent_pd: true,
-      consent_marketing: false,
+      consent_pd: consent,
+      consent_marketing: consentMarketing,
       company: "",
       website: "",
       form_started_at: String(formStartedAt),
       source_page: `hsk-test-result-level-${recommendedLevel}`,
+      page_path: typeof window === "undefined" ? "" : window.location.pathname + window.location.search,
       referrer: typeof document === "undefined" ? "" : document.referrer,
       utm: {},
       yandex_client_id: getCachedYandexClientId(),
@@ -176,16 +182,15 @@ export default function HskTestLeadInline({
             />
           </label>
           <label className="hsk-test-lead-consent">
-            <input type="checkbox" name="consent_pd" defaultChecked />
+            <input type="checkbox" name="consent_pd" />
             <span>
-              Соглашаюсь с обработкой персональных данных согласно{" "}
-              <Link
-                href="/privacy-policy"
-                className="underline underline-offset-4"
-                target="_blank"
-              >
-                политике конфиденциальности
-              </Link>
+              <PdConsentLabelText />
+            </span>
+          </label>
+          <label className="hsk-test-lead-consent">
+            <input type="checkbox" name="consent_marketing" />
+            <span>
+              <MarketingConsentLabelText />
             </span>
           </label>
           {error ? (

@@ -12,6 +12,11 @@ import {
   getCachedYandexClientId,
   startYandexClientIdCapture,
 } from "@/lib/analytics/yandex-client-id";
+import {
+  MarketingConsentLabelText,
+  PD_CONSENT_REQUIRED_MESSAGE,
+  PdConsentLabelText,
+} from "@/lib/legal/consent-copy";
 import { isPersistedLeadResponse } from "@/lib/leads/contact-response";
 import {
   beginLeadSubmission,
@@ -145,7 +150,7 @@ export default function LeadForm({
       setStatus("error");
       setError({
         field: "consent_pd",
-        message: "Подтвердите согласие на обработку персональных данных",
+        message: PD_CONSENT_REQUIRED_MESSAGE,
       });
       return;
     }
@@ -164,6 +169,7 @@ export default function LeadForm({
       website: String(formData.get("website") ?? ""), // honeypot
       form_started_at: String(formStartedAt),
       source_page: source ?? pageHref,
+      page_path: pageHref,
       referrer: typeof document === "undefined" ? "" : document.referrer,
       utm: readUtm(),
       yandex_client_id: getCachedYandexClientId(),
@@ -365,7 +371,9 @@ export default function LeadForm({
           type="checkbox"
           className="lead-checkbox-input"
         />
-        <span>Согласен получать новости и предложения школы на email</span>
+        <span>
+          <MarketingConsentLabelText />
+        </span>
       </label>
 
       <label htmlFor={consentId} className="lead-checkbox">
@@ -381,10 +389,7 @@ export default function LeadForm({
           aria-invalid={error?.field === "consent_pd" || undefined}
         />
         <span>
-          Я даю согласие на обработку персональных данных в соответствии с{" "}
-          <a href="/privacy-policy" className="underline underline-offset-2">
-            Политикой конфиденциальности
-          </a>
+          <PdConsentLabelText />
         </span>
       </label>
 

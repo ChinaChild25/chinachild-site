@@ -8,9 +8,13 @@ export type LeadEmailTemplateInput = {
   message?: string;
   consent_pd: boolean;
   consent_marketing: boolean;
-  consent_text_version: string;
+  consent_pd_version: string;
+  consent_pd_content_hash: string;
+  consent_marketing_version: string;
+  consent_marketing_content_hash: string;
   consent_accepted_at: string;
   source_page?: string;
+  consent_page_path?: string;
   utm_source?: string;
   utm_medium?: string;
   utm_campaign?: string;
@@ -63,8 +67,9 @@ function buildPlainText(lead: LeadEmailTemplateInput, siteUrl: string, recipient
   appendLine(lines, "Страница", lead.source_page);
   appendLine(lines, "Referrer", lead.referrer);
   appendLine(lines, "Согласие на обработку ПД", lead.consent_pd);
+  appendLine(lines, "Версия согласия на ПД", lead.consent_pd_version);
   appendLine(lines, "Согласие на рассылку", lead.consent_marketing);
-  appendLine(lines, "Версия текста согласия", lead.consent_text_version);
+  appendLine(lines, "Версия рекламного согласия", lead.consent_marketing_version);
   appendLine(lines, "Время согласия", lead.consent_accepted_at);
 
   const utm = [
@@ -151,7 +156,7 @@ export function buildLeadEmail(
         <tr><td style="padding-bottom:16px;"><table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color:#ffffff;border-radius:16px;padding:18px 20px;">
           <tr><td style="padding-bottom:8px;"><span style="color:#1A1A1A;font-size:13px;font-weight:600;">${consentPdIcon}&nbsp;Согласие на обработку ПД: ${consentPdLabel}</span></td></tr>
           <tr><td style="padding-bottom:8px;"><span style="color:#1A1A1A;font-size:13px;font-weight:600;">${consentNewsletterIcon}&nbsp;Согласие на рассылку: ${consentNewsletterLabel}</span></td></tr>
-          <tr><td><span style="color:#7F7F83;font-size:12px;">Версия текста: ${escapeHtml(cleanInline(lead.consent_text_version))} · ${escapeHtml(cleanInline(lead.consent_accepted_at))}</span></td></tr>
+          <tr><td><span style="color:#7F7F83;font-size:12px;">Версия ПД: ${escapeHtml(cleanInline(lead.consent_pd_version))} · Версия рекламы: ${escapeHtml(cleanInline(lead.consent_marketing_version))} · ${escapeHtml(cleanInline(lead.consent_accepted_at))}</span></td></tr>
         </table></td></tr>
         <tr><td><table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="border:1px dashed #D9D9DC;border-radius:14px;padding:16px 18px;"><tr><td>
           <p style="margin:0 0 8px 0;color:#B3B3B7;font-size:11px;font-weight:600;letter-spacing:0.4px;">Технические данные</p>

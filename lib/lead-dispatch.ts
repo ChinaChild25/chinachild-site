@@ -14,9 +14,13 @@ export type LeadInput = {
   message?: string;
   consent_pd: boolean;
   consent_marketing: boolean;
-  consent_text_version: string;
+  consent_pd_version: string;
+  consent_pd_content_hash: string;
+  consent_marketing_version: string;
+  consent_marketing_content_hash: string;
   consent_accepted_at: string;
   source_page?: string;
+  consent_page_path?: string;
   utm_source?: string;
   utm_medium?: string;
   utm_campaign?: string;

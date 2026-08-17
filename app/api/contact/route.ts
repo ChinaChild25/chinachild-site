@@ -1,4 +1,11 @@
 import { dispatchLead, type LeadInput } from "@/lib/lead-dispatch";
+import {
+  getConsentMarketingContentHash,
+  getConsentPdContentHash,
+} from "@/lib/legal/consent-hash.server";
+import { CONSENT_MARKETING_VERSION } from "@/lib/legal/consent-marketing";
+import { CONSENT_PD_VERSION } from "@/lib/legal/consent-pd";
+import { PD_CONSENT_REQUIRED_MESSAGE } from "@/lib/legal/consent-copy";
 import { isSpamPayload } from "@/lib/leads/anti-abuse";
 import { checkRateLimit, hashIp } from "@/lib/leads/rate-limit";
 import { markLeadDelivered, storeLead, type LeadInsert } from "@/lib/leads/store";
@@ -8,7 +15,6 @@ import { after } from "next/server";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const CONSENT_TEXT_VERSION = "v1-2026-05-19";
 const PHONE_REGEX = /^\+?[\d\s()-]{10,20}$/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -23,6 +29,7 @@ type LeadPayload = {
   comment?: unknown;
   source_page?: unknown;
   source?: unknown;
+  page_path?: unknown;
   referrer?: unknown;
   utm?: unknown;
   company?: unknown;
@@ -137,10 +144,11 @@ export async function POST(request: Request) {
   const consentPd = body.consent_pd === true || body.consent === true;
   if (!consentPd) {
     return Response.json(
-      { ok: false, field: "consent_pd", error: "Подтвердите согласие на обработку данных" },
+      { ok: false, field: "consent_pd", error: PD_CONSENT_REQUIRED_MESSAGE },
       { status: 400 },
     );
   }
+  const consentMarketing = body.consent_marketing === true;
 
   const name = sanitize(body.name, 120);
   const phone = sanitize(body.phone, 32);
@@ -149,6 +157,7 @@ export async function POST(request: Request) {
   const callTime = sanitize(body.call_time || body.callTime, 120);
   const message = sanitize(body.message || body.comment, 2000);
   const sourcePage = sanitize(body.source_page || body.source, 300);
+  const pagePath = sanitize(body.page_path, 300);
   const referrer = sanitize(body.referrer || request.headers.get("referer"), 500);
   const userAgent = sanitize(request.headers.get("user-agent"), 500);
   const smartToken = sanitize(body.smart_token, 4000);
@@ -189,10 +198,16 @@ export async function POST(request: Request) {
     call_time: callTime || undefined,
     message: message || undefined,
     consent_pd: true,
-    consent_marketing: body.consent_marketing === true,
-    consent_text_version: CONSENT_TEXT_VERSION,
+    consent_marketing: consentMarketing,
+    // Version + hash are always computed server-side from the canonical documents —
+    // never trust a client-supplied version or hash for legal evidence.
+    consent_pd_version: CONSENT_PD_VERSION,
+    consent_pd_content_hash: getConsentPdContentHash(),
+    consent_marketing_version: CONSENT_MARKETING_VERSION,
+    consent_marketing_content_hash: getConsentMarketingContentHash(),
     consent_accepted_at: new Date().toISOString(),
     source_page: sourcePage || undefined,
+    consent_page_path: pagePath || undefined,
     utm_source: utm.utm_source,
     utm_medium: utm.utm_medium,
     utm_campaign: utm.utm_campaign,
