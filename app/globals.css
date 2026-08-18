@@ -11,6 +11,7 @@
   /* Surfaces / page backgrounds */
   --background: #ffffff;            /* Body — чистый белый */
   --background-2: #f8f7f2;          /* Карточки / чипы — мягкий крем */
+  --surface-neutral: #f5f5f7;       /* Нейтральный светло-серый — как на платформе my.chinachild.ru, не крем */
   --surface: #ffffff;
   --foreground: #262626;
   --muted: #6d6d6d;
@@ -298,6 +299,13 @@ a:focus-visible {
 
 .section-space {
   padding: 40px 0;
+}
+
+/* Legal reading pages get their own wider container tiers, scoped so the rest
+   of the site's .page-shell / .page-shell-wide widths are untouched. */
+.legal-reading-shell {
+  --container-default: 1180px;
+  --container-wide: 1680px;
 }
 
 @media (min-width: 768px) {
@@ -1412,6 +1420,32 @@ html[data-theme="dark"] .blog-preview-card.card-lime-soft:hover {
   }
 }
 
+/* Legal reading pages: the header pill grows a second, thinner row for the compact
+   section-nav (portaled in from LegalTableOfContentsMobile) instead of a separate card
+   floating below it — same glass, same rounded box, split only by a hairline. */
+.site-header-wrapper--stacked {
+  height: auto;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.site-header-wrapper__top {
+  display: flex;
+  width: 100%;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+}
+
+.site-header-wrapper__legal:not(:empty) {
+  /* No border here: it must collapse away together with the row it separates (see the
+     border-top on the row itself inside LegalTableOfContentsMobile), otherwise the hairline
+     stays visible as a stray line across the rounded corners while the row is hidden. */
+  margin: 0 -12px;
+  padding: 0 12px;
+}
+
 @media (min-width: 1448px) {
   .site-header {
     padding: 0 8px;
@@ -1744,7 +1778,7 @@ html[data-theme="dark"] .site-header-mark-image--dark {
   border-radius: 999px;
   padding: 0;
   cursor: pointer;
-  background: #e6e4de;
+  background: #f5f5f7;
   transition: background-color 200ms ease;
 }
 
@@ -4118,6 +4152,7 @@ html[data-theme="dark"] {
   /* Токены на самом <html> — вложенный :root здесь не срабатывает. */
   --background: #121212;
   --background-2: #262626;
+  --surface-neutral: rgba(255, 255, 255, 0.06);
   --surface: #262626;
   --foreground: #ededed;
   --muted: #9a9a9a;

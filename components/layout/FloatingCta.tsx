@@ -5,6 +5,7 @@ import LeadModal from "@/components/forms/LeadModal";
 import { useConsent } from "@/lib/consent/context";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { LEGAL_DOCUMENT_PATHS } from "@/lib/legal/document-paths";
 
 /**
  * Sticky bottom-of-viewport CTA — black pill on a translucent glass-pill
@@ -77,6 +78,11 @@ export default function FloatingCta() {
   // The immersive HSK-test runner is a full-screen overlay with its own
   // fixed bottom nav — never show the floating CTA over it.
   if (pathname === "/chinese/hsk-test/take") return null;
+
+  // Legal documents: keep the top glass header, but a conversion CTA fighting for
+  // attention while someone reads an offer/policy is out of place — and it would be a
+  // second floating glass surface on top of the reading UI's own chrome.
+  if (LEGAL_DOCUMENT_PATHS.has(pathname)) return null;
 
   // On the HSK-test landing the floating CTA starts the test («Начать тест»),
   // not the lead form. Same visibility logic: hidden while a page start-button

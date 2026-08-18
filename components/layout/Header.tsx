@@ -3,11 +3,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CircleUser } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import LeadModal from "@/components/forms/LeadModal";
 import ThemeToggle from "@/components/theme/ThemeToggle";
 import { platformBaseUrl } from "@/lib/content/platform-links";
+import { LEGAL_DOCUMENT_PATHS } from "@/lib/legal/document-paths";
+import { cn } from "@/lib/utils";
+import { ChinaChildWordmark } from "@/components/brand/ChinaChildWordmark";
 /**
  * Header navigation is split into three tiers:
  *
@@ -104,6 +108,8 @@ const drawerNav = [...mobilePrimaryNav, ...drawerOnly];
 const accountUrl = platformBaseUrl();
 
 export default function Header() {
+  const pathname = usePathname();
+  const isLegalPage = LEGAL_DOCUMENT_PATHS.has(pathname);
   const [menuOpen, setMenuOpen] = useState(false);
   const [openDesktopMenu, setOpenDesktopMenu] = useState<string | null>(null);
   const desktopMenuRef = useRef<HTMLElement | null>(null);
@@ -185,104 +191,111 @@ export default function Header() {
   return (
     <>
       <header className="site-header" role="banner">
-        <div className="site-header-wrapper">
-          <Link
-            href="/"
-            className="site-header-brand"
-            aria-label="ChinaChild — на главную"
-            onClick={() => setMenuOpen(false)}
-          >
-            <span aria-hidden className="site-header-mark">
-              <Image
-                src="/brand/logo.svg"
-                alt=""
-                width={28}
-                height={28}
-                className="site-header-mark-image site-header-mark-image--light"
-                priority
-              />
-              <Image
-                src="/brand/logo-black-mode.svg"
-                alt=""
-                width={28}
-                height={28}
-                className="site-header-mark-image site-header-mark-image--dark"
-                loading="lazy"
-              />
-            </span>
-            <span className="site-header-wordmark">ChinaChild</span>
-          </Link>
+        <div className={cn("site-header-wrapper", isLegalPage && "site-header-wrapper--stacked")}>
+          <div className="site-header-wrapper__top">
+            <Link
+              href="/"
+              className="site-header-brand"
+              aria-label="ChinaChild — на главную"
+              onClick={() => setMenuOpen(false)}
+            >
+              <span aria-hidden className="site-header-mark">
+                <Image
+                  src="/brand/chinachild-mark.svg"
+                  alt=""
+                  width={28}
+                  height={28}
+                  className="site-header-mark-image site-header-mark-image--light"
+                  priority
+                />
+                <Image
+                  src="/brand/chinachild-mark-dark.svg"
+                  alt=""
+                  width={28}
+                  height={28}
+                  className="site-header-mark-image site-header-mark-image--dark"
+                  loading="lazy"
+                />
+              </span>
+              <ChinaChildWordmark className="h-[13px] w-auto" />
+            </Link>
 
-          <nav
-            aria-label="Основная навигация"
-            className="site-header-menu"
-            ref={desktopMenuRef}
-          >
-            <ul className="site-header-nav">
-              {desktopDirectNav.map((item) => (
-                <li key={item.href}>
-                  <Link href={item.href} className="site-header-link">
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-              {desktopDropdowns.map((group) => {
-                const isOpen = openDesktopMenu === group.id;
-                return (
-                  <li key={group.id} className="site-header-dropdown">
-                    <button
-                      ref={(el) => {
-                        triggerRefs.current[group.id] = el;
-                      }}
-                      type="button"
-                      className="site-header-dropdown-trigger"
-                      aria-expanded={isOpen}
-                      aria-controls={`site-header-dropdown-${group.id}`}
-                      onClick={() => setOpenDesktopMenu(isOpen ? null : group.id)}
-                    >
-                      {group.label}
-                      <span className="site-header-chevron" aria-hidden />
-                    </button>
+            <nav
+              aria-label="Основная навигация"
+              className="site-header-menu"
+              ref={desktopMenuRef}
+            >
+              <ul className="site-header-nav">
+                {desktopDirectNav.map((item) => (
+                  <li key={item.href}>
+                    <Link href={item.href} className="site-header-link">
+                      {item.label}
+                    </Link>
                   </li>
-                );
-              })}
-              <li>
-                <a
-                  href={accountUrl}
-                  className="site-header-link site-header-account"
-                >
-                  <CircleUser size={18} strokeWidth={1.75} aria-hidden />
-                  <span>Личный кабинет</span>
-                </a>
-              </li>
-            </ul>
+                ))}
+                {desktopDropdowns.map((group) => {
+                  const isOpen = openDesktopMenu === group.id;
+                  return (
+                    <li key={group.id} className="site-header-dropdown">
+                      <button
+                        ref={(el) => {
+                          triggerRefs.current[group.id] = el;
+                        }}
+                        type="button"
+                        className="site-header-dropdown-trigger"
+                        aria-expanded={isOpen}
+                        aria-controls={`site-header-dropdown-${group.id}`}
+                        onClick={() => setOpenDesktopMenu(isOpen ? null : group.id)}
+                      >
+                        {group.label}
+                        <span className="site-header-chevron" aria-hidden />
+                      </button>
+                    </li>
+                  );
+                })}
+                <li>
+                  <a
+                    href={accountUrl}
+                    className="site-header-link site-header-account"
+                  >
+                    <CircleUser size={18} strokeWidth={1.75} aria-hidden />
+                    <span>Личный кабинет</span>
+                  </a>
+                </li>
+              </ul>
 
-            <ThemeToggle />
+              <ThemeToggle />
 
-            <LeadModal
-              triggerClassName="site-header-cta"
-              source="header"
-              ariaLabel="Заказать звонок — открыть форму"
-            >
-              Заказать звонок
-            </LeadModal>
-          </nav>
+              <LeadModal
+                triggerClassName="site-header-cta"
+                source="header"
+                ariaLabel="Заказать звонок — открыть форму"
+              >
+                Заказать звонок
+              </LeadModal>
+            </nav>
 
-          <div className="site-header-mobile-actions">
-            <ThemeToggle />
-            <button
-              type="button"
-              aria-label={menuOpen ? "Закрыть меню" : "Открыть меню"}
-              aria-expanded={menuOpen}
-              aria-controls="mobile-drawer"
-              className={`site-header-burger ${menuOpen ? "is-open" : ""}`}
-              onClick={() => setMenuOpen((v) => !v)}
-            >
-              <span />
-              <span />
-              <span />
-            </button>
+            <div className="site-header-mobile-actions">
+              <ThemeToggle />
+              <button
+                type="button"
+                aria-label={menuOpen ? "Закрыть меню" : "Открыть меню"}
+                aria-expanded={menuOpen}
+                aria-controls="mobile-drawer"
+                className={`site-header-burger ${menuOpen ? "is-open" : ""}`}
+                onClick={() => setMenuOpen((v) => !v)}
+              >
+                <span />
+                <span />
+                <span />
+              </button>
+            </div>
           </div>
+
+          {/* Legal reading pages portal their compact section-nav row in here (see
+              LegalTableOfContentsMobile) so it reads as one continuous glass pill with the
+              nav above it, split only by a hairline divider — not a second floating card. */}
+          {isLegalPage ? <div id="site-header-legal-slot" className="site-header-wrapper__legal lg:hidden" /> : null}
         </div>
       </header>
 
