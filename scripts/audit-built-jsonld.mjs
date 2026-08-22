@@ -6,6 +6,8 @@ const APP_BUILD_DIR = process.env.JSONLD_BUILD_APP_DIR
   : path.join(process.cwd(), ".next/server/app");
 const SNAPSHOT_PATH = path.join(process.cwd(), ".generated/public-content-snapshot.json");
 const PRERENDER_MANIFEST_PATH = path.join(process.cwd(), ".next/prerender-manifest.json");
+const ROUTES_MANIFEST_PATH = path.join(process.cwd(), ".next/routes-manifest.json");
+const MIDDLEWARE_MANIFEST_PATH = path.join(process.cwd(), ".next/server/middleware-manifest.json");
 const SITEMAP_PAGES_PATH = path.join(process.cwd(), ".next/server/app/sitemap-pages.xml.body");
 const STATIC_SOURCE_FILES = [
   "app/dictionary/page.tsx",
@@ -114,6 +116,8 @@ for (const file of files) {
 const snapshot = JSON.parse(await readFile(SNAPSHOT_PATH, "utf8"));
 const sitemapPages = await readFile(SITEMAP_PAGES_PATH, "utf8");
 const prerenderManifest = JSON.parse(await readFile(PRERENDER_MANIFEST_PATH, "utf8"));
+const routesManifest = JSON.parse(await readFile(ROUTES_MANIFEST_PATH, "utf8"));
+const middlewareManifest = JSON.parse(await readFile(MIDDLEWARE_MANIFEST_PATH, "utf8"));
 const staticPrefixes = ["/dictionary", "/grammar"];
 const staticRoutes = Object.entries(prerenderManifest.routes).filter(([route]) =>
   staticPrefixes.some((prefix) => route === prefix || route.startsWith(`${prefix}/`)),
@@ -128,6 +132,39 @@ for (const relativePath of STATIC_SOURCE_FILES) {
   const source = await readFile(path.join(process.cwd(), relativePath), "utf8");
   if (/export\s+const\s+revalidate\s*=\s*\d+/u.test(source)) {
     issues.push(`${relativePath}: numeric route revalidation`);
+  }
+}
+
+if (Object.keys(middlewareManifest.middleware ?? {}).length > 0) {
+  issues.push("runtime middleware is present in the public-site build");
+}
+
+const expectedStaticRedirects = [
+  {
+    source: "/",
+    destination: "https://chinachild.ru",
+    host: "chinachild-site.vercel.app",
+  },
+  {
+    source: "/:path((?!api|_next/static|_next/image|.*\\..*).*)",
+    destination: "https://chinachild.ru/:path",
+    host: "chinachild-site.vercel.app",
+  },
+  {
+    source: "/:path((?!api|_next/static|_next/image|.*\\..*).*)/",
+    destination: "/:path",
+  },
+];
+for (const expected of expectedStaticRedirects) {
+  const redirect = routesManifest.redirects.find(
+    (candidate) =>
+      candidate.source === expected.source &&
+      candidate.destination === expected.destination &&
+      candidate.statusCode === 308,
+  );
+  const hostCondition = redirect?.has?.find((condition) => condition.type === "host");
+  if (!redirect || hostCondition?.value !== expected.host) {
+    issues.push(`missing static 308 redirect ${expected.source} -> ${expected.destination}`);
   }
 }
 
@@ -166,7 +203,7 @@ for (const deck of snapshot.tables.vocabDecks) {
 }
 
 if (issues.length > 0) {
-  console.error("JSON-LD audit failed:");
+  console.error("JSON-LD/static audit failed:");
   for (const issue of issues) {
     console.error(`- ${issue}`);
   }

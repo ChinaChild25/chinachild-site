@@ -55,6 +55,10 @@ type RedirectRule = {
   source: string;
   destination: string;
   permanent: true;
+  has?: Array<{
+    type: "host";
+    value: string;
+  }>;
 };
 
 function parseCsvLine(line: string): string[] {
@@ -161,6 +165,27 @@ const nextConfig: NextConfig = {
     // Порядок важен: Next берёт первое совпадение. Точечные правила из CSV
     // (/guidebook/<slug> → конкретные /blog/...) должны идти РАНЬШЕ catch-all.
     return [
+      // Канонический host и URL без завершающего слэша прежде обслуживал runtime
+      // middleware. Статические redirects сохраняют те же 308, но не запускают
+      // middleware на каждом обычном page request. API, Next assets и URL файлов, как и
+      // прежде, в эти правила не попадают.
+      {
+        source: "/",
+        has: [{ type: "host", value: "chinachild-site.vercel.app" }],
+        destination: "https://chinachild.ru",
+        permanent: true,
+      },
+      {
+        source: "/:path((?!api|_next/static|_next/image|.*\\..*).*)",
+        has: [{ type: "host", value: "chinachild-site.vercel.app" }],
+        destination: "https://chinachild.ru/:path",
+        permanent: true,
+      },
+      {
+        source: "/:path((?!api|_next/static|_next/image|.*\\..*).*)/",
+        destination: "/:path",
+        permanent: true,
+      },
       // /home — старая главная прежнего (WordPress) сайта. Google всё ещё
       // помнит её с мая; 308 на актуальную главную вместо 404.
       { source: "/home", destination: "/", permanent: true },
