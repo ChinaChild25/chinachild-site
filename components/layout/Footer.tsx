@@ -83,6 +83,7 @@ export default function Footer() {
             <Link
               key={link.href}
               href={link.href}
+              prefetch={false}
               className="text-sm text-white/65 transition hover:text-white"
             >
               {link.title}
@@ -103,7 +104,11 @@ export default function Footer() {
             Образовательная лицензия № {LICENSE_DETAILS.registrationNumber} от 18.12.2025,
             выдана {LICENSE_REGION_INSTRUMENTAL}. Программа «{LICENSE_PROGRAM}».
             {" "}{TAX_DEDUCTION_COMPACT}{" "}
-            <Link href="/license" className="underline underline-offset-4 hover:text-white">
+            <Link
+              href="/license"
+              prefetch={false}
+              className="underline underline-offset-4 hover:text-white"
+            >
               Подробнее о лицензии
             </Link>
           </div>

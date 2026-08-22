@@ -5,6 +5,7 @@ export default function WordCard({ word }: { word: WordCardType }) {
   return (
     <Link
       href={`/dictionary/word/${word.slug}`}
+      prefetch={false}
       className="card-block card-cream-soft group flex h-full flex-col transition hover:-translate-y-0.5"
     >
       <p className="text-[2rem] font-medium leading-none text-[#1b1b1b]">{word.simplified}</p>
