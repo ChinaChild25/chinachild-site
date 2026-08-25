@@ -1,4 +1,5 @@
 import { getAllPosts } from "@/lib/blog";
+import { careers } from "@/lib/careers";
 import { renderSitemap, type UrlEntry } from "@/lib/sitemap-helpers";
 import { absoluteUrl } from "@/lib/site-config";
 import { resolveTeacherCertificates } from "@/lib/team-certificates";
@@ -126,6 +127,51 @@ export async function GET() {
     },
   ];
 
+  const careerImageEntries: UrlEntry[] = [
+    {
+      loc: absoluteUrl("/careers"),
+      lastmod: now,
+      images: [
+        {
+          loc: absoluteUrl("/careers/chinachild-online-teacher-hero-poster.webp"),
+          title: "Работа в онлайн-школе китайского языка ChinaChild",
+          caption: "Команда ChinaChild развивает онлайн-платформу для изучения китайского языка.",
+        },
+        {
+          loc: absoluteUrl("/careers/online-teacher-video-call.webp"),
+          title: "Работа преподавателем китайского языка онлайн",
+          caption: "Преподаватель проводит дистанционное занятие по китайскому языку.",
+        },
+        {
+          loc: absoluteUrl("/careers/chinachild-online-platform-workspace.webp"),
+          title: "Онлайн-платформа для преподавателей ChinaChild",
+          caption: "Рабочее место преподавателя с личным кабинетом ChinaChild на ноутбуке.",
+        },
+        {
+          loc: absoluteUrl("/careers/story-methodology.webp"),
+          title: "Методическая работа в онлайн-школе китайского языка",
+          caption: "Методист работает над программой и материалами для изучения китайского языка.",
+        },
+        {
+          loc: absoluteUrl("/careers/flexible-home.webp"),
+          title: "Удалённая работа в ChinaChild",
+          caption: "Специалист ChinaChild работает удалённо из домашнего кабинета.",
+        },
+      ],
+    },
+    ...careers.map((career): UrlEntry => ({
+      loc: absoluteUrl("/careers/" + career.slug),
+      lastmod: now,
+      images: [
+        {
+          loc: absoluteUrl(career.image),
+          title: career.title + " — вакансия в ChinaChild",
+          caption: career.summary,
+        },
+      ],
+    })),
+  ];
+
   const entries: UrlEntry[] = [
     {
       loc: absoluteUrl("/"),
@@ -133,6 +179,7 @@ export async function GET() {
       images: [{ loc: homeImg, title: "ChinaChild — онлайн-школа китайского языка" }],
     },
     ...pageHeroImages,
+    ...careerImageEntries,
     ...[
       "/about",
       "/methodology",

@@ -36,11 +36,13 @@ const mobilePrimaryNav = [
   { label: "HSK", href: "/learn/hsk" },
   { label: "Тест HSK", href: "/chinese/hsk-test" },
   { label: "Цены", href: "/price" },
+  { label: "Работа", href: "/careers" },
   { label: "О школе", href: "/about" },
 ];
 
 const desktopDirectNav = [
   { label: "Цены", href: "/price" },
+  { label: "Работа", href: "/careers" },
   { label: "О школе", href: "/about" },
 ];
 

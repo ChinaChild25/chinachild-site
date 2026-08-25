@@ -140,6 +140,7 @@ const nextConfig: NextConfig = {
   },
   images: {
     formats: ["image/avif", "image/webp"],
+    qualities: [75, 95],
     // Аватарки авторов отзывов из Яндекса. URL вида
     // https://avatars.mds.yandex.net/get-yapic/<id>/islands-retina-50 —
     // контентно-адресуемые, поэтому при смене фото в Яндексе меняется и URL

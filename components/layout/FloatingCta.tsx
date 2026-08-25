@@ -79,6 +79,9 @@ export default function FloatingCta() {
   // fixed bottom nav — never show the floating CTA over it.
   if (pathname === "/chinese/hsk-test/take") return null;
 
+  // Career pages have their own vacancy-specific apply actions and form.
+  if (pathname === "/careers" || pathname.startsWith("/careers/")) return null;
+
   // Legal documents: keep the top glass header, but a conversion CTA fighting for
   // attention while someone reads an offer/policy is out of place — and it would be a
   // second floating glass surface on top of the reading UI's own chrome.

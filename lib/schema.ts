@@ -603,6 +603,7 @@ const SITE_NAVIGATION: { name: string; path: string }[] = [
   { name: "Тест на уровень HSK", path: "/chinese/hsk-test" },
   { name: "О школе", path: "/about" },
   { name: "Команда", path: "/team" },
+  { name: "Работа в ChinaChild", path: "/careers" },
   { name: "Отзывы", path: "/reviews" },
   { name: "Лицензия", path: "/license" },
   { name: "Блог", path: "/blog" },

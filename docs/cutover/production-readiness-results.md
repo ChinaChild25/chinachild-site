@@ -1,6 +1,6 @@
 # Production Readiness Results
 
-Generated: 2026-07-31T08:05:24.509Z
+Generated: 2026-08-24T22:54:21.410Z
 Base URL: https://chinachild.ru
 Expected metadata origin: https://chinachild.ru
 Result: PASS
@@ -44,6 +44,7 @@ Result: PASS
 | Result | Href | HTTP | Notes |
 | --- | --- | ---: | --- |
 | PASS | /about | 200 | ok |
+| PASS | /advertising-consent | 200 | ok |
 | PASS | /blog | 200 | ok |
 | PASS | /blog/100-fraz-na-kitayskom | 200 | ok |
 | PASS | /blog/4-tona-kitayskogo-poshagovo | 200 | ok |
@@ -59,6 +60,7 @@ Result: PASS
 | PASS | /blog/category/shkola | 200 | ok |
 | PASS | /blog/chinese-for-beginners-guide | 200 | ok |
 | PASS | /blog/chinese-grammar-basics | 200 | ok |
+| PASS | /blog/delovaya-perepiska-na-kitayskom-shablony | 200 | ok |
 | PASS | /blog/gde-sdat-hsk-v-rossii-2026 | 200 | ok |
 | PASS | /blog/how-long-to-learn-chinese | 200 | ok |
 | PASS | /blog/how-to-learn-chinese-from-scratch | 200 | ok |
@@ -71,22 +73,28 @@ Result: PASS
 | PASS | /blog/hsk-6-bilingual | 200 | ok |
 | PASS | /blog/hsk-levels-explained | 200 | ok |
 | PASS | /blog/hskk-podgotovka-ustnyy-ekzamen | 200 | ok |
+| PASS | /blog/kak-vybrat-shkolu-kitayskogo-chek-list | 200 | ok |
 | PASS | /blog/kitayskiy-dlya-detey-igrovye-metody | 200 | ok |
+| PASS | /blog/kitayskiy-dlya-it-tekh-glossariy-200 | 200 | ok |
 | PASS | /blog/kitayskiy-podrostkam-12-15 | 200 | ok |
 | PASS | /blog/kitayskiy-v-shkole-kak-vtoroy-inostrannyy | 200 | ok |
 | PASS | /blog/kitayskiy-yazyk-dlya-puteshestvii | 200 | ok |
 | PASS | /blog/kitayskiy-yazyk-trudnyy-li | 200 | ok |
 | PASS | /blog/license-tax-deduction-chinese-school | 200 | ok |
+| PASS | /blog/marketplace-china-postavshchiki-1688-alibaba | 200 | ok |
 | PASS | /blog/nalogovyy-vychet-za-detey | 200 | ok |
 | PASS | /blog/online-platform-video-calls-chat | 200 | ok |
+| PASS | /blog/peregovory-s-kitaytsami-chek-list | 200 | ok |
 | PASS | /blog/pinyin-uchim-za-7-dney | 200 | ok |
 | PASS | /blog/podgotovka-k-hsk-1-za-3-mesyatsa | 200 | ok |
 | PASS | /blog/razgovornik-kitayskogo-dlya-puteshestviy | 200 | ok |
+| PASS | /blog/repetitor-vs-onlayn-shkola-kitayskiy | 200 | ok |
 | PASS | /blog/s-kakogo-vozrasta-uchit-kitayskiy | 200 | ok |
 | PASS | /blog/samouchitel-kitayskogo-rating-2026 | 200 | ok |
 | PASS | /blog/skolko-ieroglifov-nuzhno-znat | 200 | ok |
 | PASS | /blog/slovar-hsk-1-150-slov | 200 | ok |
 | PASS | /blog/teachers-chinese-school-real-team | 200 | ok |
+| PASS | /careers | 200 | ok |
 | PASS | /chinese/hsk-test | 200 | ok |
 | PASS | /chinese/hsk-test/level-1 | 200 | ok |
 | PASS | /chinese/hsk-test/level-2 | 200 | ok |
@@ -94,6 +102,7 @@ Result: PASS
 | PASS | /chinese/hsk-test/level-4 | 200 | ok |
 | PASS | /cities | 200 | ok |
 | PASS | /compare/mini-group-vs-individual | 200 | ok |
+| PASS | /consent-personal-data | 200 | ok |
 | PASS | /courses | 200 | ok |
 | PASS | /courses/business-chinese | 200 | ok |
 | PASS | /courses/chinese-for-adults | 200 | ok |

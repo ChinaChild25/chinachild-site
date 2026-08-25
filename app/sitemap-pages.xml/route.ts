@@ -2,6 +2,7 @@ import { renderSitemap, type UrlEntry } from "@/lib/sitemap-helpers";
 import { absoluteUrl } from "@/lib/site-config";
 import { getAllGlossaryTerms } from "@/lib/glossary";
 import { teachers } from "@/lib/site-data";
+import { careers } from "@/lib/careers";
 import { cities } from "@/lib/cities";
 import { hskLevels } from "@/lib/hsk-levels";
 import { hskTestLevels } from "@/lib/hsk-test/levels";
@@ -97,6 +98,14 @@ export async function GET() {
       priority: 0.65,
     })),
 
+    // Careers — employer-brand landing + indexable JobPosting pages.
+    { loc: absoluteUrl("/careers"), changefreq: "weekly", priority: 0.78 },
+    ...careers.map<UrlEntry>((career) => ({
+      loc: absoluteUrl(`/careers/${career.slug}`),
+      changefreq: "weekly" as const,
+      priority: 0.72,
+    })),
+
     // Glossary — long-tail informational lane
     { loc: absoluteUrl("/glossary"), changefreq: "monthly", priority: 0.7 },
     ...glossary.map<UrlEntry>((term) => ({
@@ -152,6 +161,7 @@ export async function GET() {
     { loc: absoluteUrl("/public-treaty"), changefreq: "yearly", priority: 0.25 },
     { loc: absoluteUrl("/user-agreement"), changefreq: "yearly", priority: 0.25 },
     { loc: absoluteUrl("/privacy-policy"), changefreq: "yearly", priority: 0.25 },
+    { loc: absoluteUrl("/consent-career-personal-data"), changefreq: "yearly", priority: 0.2 },
   ];
 
   return new Response(renderSitemap(entries), {

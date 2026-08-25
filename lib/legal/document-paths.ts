@@ -4,5 +4,6 @@ export const LEGAL_DOCUMENT_PATHS = new Set([
   "/privacy-policy",
   "/user-agreement",
   "/consent-personal-data",
+  "/consent-career-personal-data",
   "/advertising-consent",
 ]);

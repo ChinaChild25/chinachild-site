@@ -844,6 +844,7 @@ export const footerLinks = [
   { title: "Группа vs индивидуально", href: "/compare/mini-group-vs-individual" },
   { title: "О школе", href: "/about" },
   { title: "Команда", href: "/team" },
+  { title: "Работа в ChinaChild", href: "/careers" },
   { title: "Методика", href: "/methodology" },
   { title: "Результаты", href: "/results" },
   { title: "Отзывы", href: "/reviews" },

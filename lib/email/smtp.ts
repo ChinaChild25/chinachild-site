@@ -30,6 +30,12 @@ export type SendEmailInput = {
   text: string;
   html?: string;
   replyTo?: string;
+  attachments?: Array<{
+    filename: string;
+    content: Buffer;
+    contentType: string;
+  }>;
+  headers?: Record<string, string>;
 };
 
 export async function sendEmail(
@@ -49,6 +55,8 @@ export async function sendEmail(
       text: input.text,
       html: input.html,
       replyTo: input.replyTo,
+      attachments: input.attachments,
+      headers: input.headers,
     });
     return { ok: true, messageId: info.messageId };
   } catch (err) {

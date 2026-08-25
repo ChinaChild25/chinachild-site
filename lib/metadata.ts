@@ -26,6 +26,7 @@ type MetadataInput = {
 const EXACT_CUSTOM_OG_PATHS = new Set([
   "/about",
   "/blog",
+  "/careers",
   "/chinese/hsk-test",
   "/cities",
   "/courses",
@@ -48,6 +49,7 @@ const EXACT_CUSTOM_OG_PATHS = new Set([
 const DYNAMIC_CUSTOM_OG_PREFIXES = [
   "/blog/category/",
   "/blog/",
+  "/careers/",
   "/chinese/hsk-test/level-",
   "/cities/",
   "/glossary/",
