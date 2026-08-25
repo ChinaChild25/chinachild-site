@@ -57,7 +57,7 @@ export const COMMERCIAL_OWNERSHIP = [
   },
   {
     route: "/courses/chinese-for-kids",
-    primaryOwnership: "Chinese for children and schoolchildren aged 12+",
+    primaryOwnership: "Chinese for children aged 7+, schoolchildren, and teenagers",
   },
   {
     route: "/courses/hsk-preparation",

@@ -15,7 +15,7 @@ export default function AudienceSection() {
     <SectionShell
       id="dlya-kogo"
       title="Кому подходит ChinaChild"
-      description="Подростки от 12 лет, старшеклассники, взрослые с нуля и команды компаний — программа подбирается под темп и цель."
+      description="Дети от 7 лет, подростки, студенты, взрослые с нуля и команды компаний — программа подбирается под возраст, темп и цель."
     >
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
         {audienceSegments.map((segment) => (

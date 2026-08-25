@@ -13,7 +13,7 @@ export type CourseMedia = {
 export const courseMediaBySlug: Record<string, CourseMedia> = {
   "chinese-for-kids": {
     src: "/heroes/kitajskij-dlya-shkolnikov.webp",
-    alt: "Курс китайского языка для школьников 12+ с онлайн-занятиями в ChinaChild",
+    alt: "Курс китайского языка для детей от 7 лет с онлайн-занятиями в ChinaChild",
     width: 3024,
     height: 1730,
   },

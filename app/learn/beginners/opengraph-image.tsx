@@ -11,7 +11,7 @@ export default async function LearnBeginnersOgImage() {
     badge: "С нуля",
     title: "Китайский с нуля — всё в одном месте",
     subtitle:
-      "Пиньинь · Тоны · Иероглифы · Грамматика HSK 1 · Пошаговый план для взрослых и подростков 12+",
+      "Пиньинь · Тоны · Иероглифы · Грамматика HSK 1 · Пошаговый план для детей от 7 лет, подростков и взрослых",
     footer: "chinachild.ru / learn / beginners",
     background: "#f4f0e8",
   });

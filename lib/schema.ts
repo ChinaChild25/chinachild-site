@@ -421,7 +421,7 @@ export function createServiceNode(): JsonLd {
     areaServed: { "@type": "Country", name: "Russia" },
     audience: {
       "@type": "Audience",
-      audienceType: "Подростки 12+ и взрослые",
+      audienceType: "Дети от 7 лет, подростки, студенты и взрослые",
     },
     offers: courses.map((c) => ({
       "@type": "Offer",

@@ -119,9 +119,9 @@ export async function GET() {
       images: [
         {
           loc: absoluteUrl("/heroes/kitajskij-dlya-shkolnikov.webp"),
-          title: "Китайский язык для школьников 12+",
+          title: "Китайский язык для детей от 7 лет",
           caption:
-            "Иллюстрация онлайн-курса китайского языка для школьников 12+ в ChinaChild.",
+            "Иллюстрация онлайн-курса китайского языка для детей от 7 лет в ChinaChild.",
         },
       ],
     },

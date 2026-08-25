@@ -81,7 +81,7 @@ const desktopDropdowns: Array<{
       { label: "Репетитор китайского", href: "/repetitor-kitayskogo", span: "full" },
       { label: "Подготовка к HSK", href: "/courses/hsk-preparation" },
       { label: "Онлайн-курсы", href: "/courses/online-chinese" },
-      { label: "Школьникам 12+", href: "/courses/chinese-for-kids" },
+      { label: "Детям от 7 лет", href: "/courses/chinese-for-kids" },
       { label: "Взрослым с нуля", href: "/courses/chinese-for-adults" },
       { label: "Бизнес-китайский", href: "/courses/business-chinese", span: "full" },
       {

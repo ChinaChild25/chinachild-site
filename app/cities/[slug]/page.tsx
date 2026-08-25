@@ -155,7 +155,7 @@ export default async function CityLandingPage({ params }: CityPageProps) {
               href="/courses/chinese-for-kids"
               className={buttonStyles({ variant: "secondary" })}
             >
-              Школьникам 12+
+              Детям от 7 лет
             </Link>
           </div>
         </div>

@@ -27,7 +27,7 @@ export default function Footer() {
           <p className="mt-4 text-sm leading-[1.55] text-white/65">
             Онлайн-школа китайского языка ChinaChild (HSK+). Лицензированная
             программа по достижению разговорного уровня уже через 6 месяцев
-            обучения. Обучение для подростков с 12 лет и взрослых.
+            обучения. Программы для детей от 7 лет, подростков, студентов и взрослых.
           </p>
           <div className="mt-6 grid gap-2 text-sm text-white">
             <a href={`tel:${CONTACT_PHONE_TEL}`} className="font-medium transition hover:opacity-70">

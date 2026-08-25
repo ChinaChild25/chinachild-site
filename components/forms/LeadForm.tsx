@@ -54,7 +54,7 @@ const COURSE_OPTIONS = [
   { value: "online-chinese", label: "Онлайн-курс с нуля (HSK 1–2)" },
   { value: "hsk-preparation", label: "Подготовка к HSK" },
   { value: "chinese-for-adults", label: "Китайский для взрослых" },
-  { value: "chinese-for-kids", label: "Китайский для школьников 12+" },
+  { value: "chinese-for-kids", label: "Китайский для детей от 7 лет" },
   { value: "business-chinese", label: "Бизнес-китайский" },
   { value: "consultation", label: "Просто проконсультироваться" },
 ] as const;

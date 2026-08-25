@@ -61,15 +61,15 @@ const defaultItems: LinkItem[] = [
     imageClassName: "-bottom-4 -right-1 w-[36%] max-w-[155px] md:bottom-0 md:w-[40%] md:max-w-[178px]",
   },
   {
-    title: "Школьникам 12+",
+    title: "Детям от 7 лет",
     href: "/courses/chinese-for-kids",
-    description: "Индивидуальный модуль для школьников 12+: от 17 990 ₽ за месяц и 8 занятий по 60 минут. Следующий модуль оплачивается отдельно; автоматического списания нет.",
+    description: "Индивидуальный модуль для детей от 7 лет и подростков: от 17 990 ₽ за месяц и 8 занятий по 60 минут. Следующий модуль оплачивается отдельно; автоматического списания нет.",
     tone: "card-sky",
     icon: "backpack",
     image: "/related/kids.svg",
     imageW: 80,
     imageH: 72,
-    imageAlt: "Хай-файв — индивидуальный курс китайского для школьников 12+ в ChinaChild",
+    imageAlt: "Хай-файв — индивидуальный курс китайского для детей от 7 лет в ChinaChild",
     imageClassName: "-bottom-4 -right-2 w-[40%] max-w-[180px] md:bottom-0 md:w-[44%] md:max-w-[202px]",
   },
   {

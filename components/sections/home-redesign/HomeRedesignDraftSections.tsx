@@ -284,7 +284,7 @@ export function AudienceRedesignDraftSection() {
         <div className="section-head-center mx-auto max-w-3xl">
           <h2 className="section-title">Кому подходит ChinaChild</h2>
           <p className="section-description">
-            Подростки от 12 лет, старшеклассники, взрослые с нуля и команды компаний —
+            Дети от 7 лет, подростки, студенты, взрослые с нуля и команды компаний —
             программа подбирается под темп и цель.
           </p>
         </div>

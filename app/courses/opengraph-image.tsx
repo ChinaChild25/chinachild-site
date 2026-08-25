@@ -10,7 +10,7 @@ export default function Image() {
   return renderSectionOg({
     badge: "Курсы",
     title: "Курсы китайского онлайн",
-    subtitle: "HSK 1-6, школьникам 12+, взрослым и корпоративным командам.",
+    subtitle: "HSK 1–6, детям от 7 лет, подросткам, студентам, взрослым и командам.",
     footer: "chinachild.ru / courses",
     background: "#e7e6ff",
     imagePath: "/og/courses.png",

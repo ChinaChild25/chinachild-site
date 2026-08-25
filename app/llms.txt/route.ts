@@ -37,7 +37,7 @@ export async function GET() {
 - [Онлайн-курс с нуля](${absoluteUrl("/courses/online-chinese")}): HSK 1–2 за 6 месяцев, мини-группа
 - [Подготовка к HSK](${absoluteUrl("/courses/hsk-preparation")}): целевая подготовка к экзамену
 - [Китайский для взрослых](${absoluteUrl("/courses/chinese-for-adults")}): HSK 1–2 для взрослой аудитории
-- [Китайский для школьников 12+](${absoluteUrl("/courses/chinese-for-kids")}): индивидуальный формат
+- [Китайский для детей от 7 лет](${absoluteUrl("/courses/chinese-for-kids")}): индивидуальные занятия и мини-группы по возрасту
 - [Бизнес-китайский](${absoluteUrl("/courses/business-chinese")}): корпоративные программы
 - [Цены и тарифы](${absoluteUrl("/price")}): стоимость, оплата, налоговый вычет
 - [Бесплатный пробный урок](${absoluteUrl("/free-trial")}): первое занятие — бесплатно
