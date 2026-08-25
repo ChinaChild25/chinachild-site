@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ChinaChildWordmark } from "@/components/brand/ChinaChildWordmark";
 import CookieSettingsButton from "@/components/consent/CookieSettingsButton";
 import TrustProfileLogo from "@/components/layout/TrustProfileLogo";
 import { footerLinks } from "@/lib/site-data";
@@ -22,7 +23,7 @@ export default function Footer() {
     <footer className="site-footer rounded-t-[60px] bg-[#1E1E1E] py-16 text-[#ededed]">
       <div className="page-shell-wide grid gap-12 pb-12 sm:pb-16 md:grid-cols-[1.2fr_0.8fr]">
         <div className="max-w-xl">
-          <div className="text-[1.5rem] font-medium tracking-[-0.01em] text-white">ChinaChild</div>
+          <ChinaChildWordmark className="h-6 w-auto text-white" />
           <p className="mt-4 text-sm leading-[1.55] text-white/65">
             Онлайн-школа китайского языка ChinaChild (HSK+). Лицензированная
             программа по достижению разговорного уровня уже через 6 месяцев

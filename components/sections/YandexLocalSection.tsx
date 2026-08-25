@@ -6,9 +6,9 @@ import {
   YANDEX_BUSINESS_REVIEWS_URL,
 } from "@/lib/site-config";
 
-const YANDEX_RATING = "4,4";
-const YANDEX_RATING_NUMERIC = 4.4;
-const YANDEX_REVIEW_COUNT = 7;
+const YANDEX_RATING = "4,8";
+const YANDEX_RATING_NUMERIC = 4.8;
+const YANDEX_REVIEW_COUNT = 9;
 
 /**
  * Yandex Local block: map + reviews from Yandex Business profile.

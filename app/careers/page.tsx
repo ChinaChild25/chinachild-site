@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import CareersHero from "@/components/careers/CareersHero";
+import CareersProcess from "@/components/careers/CareersProcess";
 import CareersStory from "@/components/careers/CareersStory";
 import HanddrawnNumber from "@/components/careers/HanddrawnNumber";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
@@ -22,21 +23,6 @@ export const metadata: Metadata = buildMetadata({
     "работа в онлайн школе",
   ],
 });
-
-const processSteps = [
-  {
-    title: "Отклик",
-    body: "Расскажите о себе, приложите резюме и, если есть, дипломы или сертификаты.",
-  },
-  {
-    title: "Знакомство",
-    body: "Созвонимся и спокойно обсудим опыт, ожидания, нагрузку и формат сотрудничества.",
-  },
-  {
-    title: "Решение",
-    body: "Если подходим друг другу, согласуем условия и начнём без длинной цепочки согласований.",
-  },
-] as const;
 
 export default function CareersPage() {
   return (
@@ -142,15 +128,7 @@ export default function CareersPage() {
               Короткий, человеческий процесс без CRM-лабиринта и ожидания ради ожидания.
             </p>
           </div>
-          <div className={styles.processGrid}>
-            {processSteps.map((step, index) => (
-              <article key={step.title} className={styles.processCard}>
-                <HanddrawnNumber value={`0${index + 1}`} className={styles.handdrawnNumber} />
-                <h3 className={styles.processTitle}>{step.title}</h3>
-                <p className={styles.processBody}>{step.body}</p>
-              </article>
-            ))}
-          </div>
+          <CareersProcess />
         </div>
       </section>
     </main>

@@ -20,6 +20,13 @@ type CareerPageProps = {
   params: Promise<{ slug: string }>;
 };
 
+const CAREER_SEO_TITLES: Record<string, string> = {
+  "chinese-teacher": "Преподаватель китайского — вакансия ChinaChild",
+  "native-chinese-teacher": "Носитель китайского языка — вакансия ChinaChild",
+  "chinese-methodologist": "Методист китайского языка — вакансия ChinaChild",
+  "junior-lawyer": "Младший юрист — вакансия ChinaChild",
+};
+
 const CAREER_TITLE_LINES: Record<string, string[]> = {
   "chinese-teacher": ["Преподаватель", "китайского", "языка"],
   "native-chinese-teacher": ["Преподаватель —", "носитель китайского", "языка"],
@@ -42,7 +49,7 @@ export async function generateMetadata({ params }: CareerPageProps): Promise<Met
     });
   }
   return buildMetadata({
-    title: `${career.title} — вакансия в ChinaChild`,
+    title: CAREER_SEO_TITLES[career.slug] ?? `${career.title} — вакансия ChinaChild`,
     description: `${career.summary} ${career.format}. Отклик с резюме на сайте ChinaChild.`,
     path: `/careers/${career.slug}`,
     keywords: [

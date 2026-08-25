@@ -66,8 +66,8 @@ export const careers: Career[] = [
     experience: "Опыт преподавания иностранцам от 1 года",
     eligibleCountries: ["Россия", "Китай"],
     employmentType: ["CONTRACTOR", "PART_TIME"],
-    image: "/careers/native-chinese-teacher.webp",
-    imageAlt: "Преподаватель — носитель китайского языка проводит онлайн-занятие",
+    image: "/careers/native-chinese-teacher-online.avif",
+    imageAlt: "Преподаватель — носитель китайского языка проводит онлайн-занятие по видеосвязи",
     tasks: [
       "Проводить разговорные занятия и отдельные фонетические модули онлайн.",
       "Корректировать тоны, ритм и естественность речи без лишнего давления.",
