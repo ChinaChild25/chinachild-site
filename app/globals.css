@@ -101,8 +101,8 @@
   --fs-body-large: 1.375rem;        /* 22px — крупный лид-параграф */
   --lh-base: 1.2;                   /* 120% */
   --lh-tight: 1;
-  --tracking-h2: -0.42px;
-  --tracking-h2-mobile: -0.24px;
+  --tracking-h2: -0.02em;
+  --tracking-h2-mobile: -0.02em;
   --tracking-body: -0.01em;
 
   /* Radii — Yandex шкала */
@@ -456,7 +456,7 @@ a:focus-visible {
   font-size: 60px;
   font-weight: 500;
   line-height: 1.08;
-  letter-spacing: 0;
+  letter-spacing: var(--tracking-h2);
 }
 
 .home-hero-title span {

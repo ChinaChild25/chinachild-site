@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import ChineseCareerDemandSection from "@/components/sections/ChineseCareerDemandSection";
 import CourseLanding from "@/components/sections/CourseLanding";
 import Reveal from "@/components/ui/Reveal";
 import { buttonStyles } from "@/components/ui/button";
@@ -206,6 +207,8 @@ export default function BusinessChinesePage() {
               ))}
             </div>
           </section>
+
+          <ChineseCareerDemandSection />
 
           {/* === БЛОК №3: ВЭД-СЦЕНАРИИ И ЛЕКСИКА ============================ */}
           <section className="page-shell-wide section-space">

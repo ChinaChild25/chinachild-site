@@ -1,0 +1,340 @@
+.section :global(.page-shell-wide) {
+  width: min(calc(100% - 80px), 1120px);
+  max-width: none;
+}
+
+.card {
+  position: relative;
+  min-height: 0;
+  aspect-ratio: 1.68;
+  overflow: hidden;
+  border-radius: 26px;
+  background: #171717;
+  color: #fff;
+  isolation: isolate;
+}
+
+.media,
+.scrim {
+  position: absolute;
+  inset: 0;
+}
+
+.media {
+  z-index: -2;
+}
+
+.photo {
+  object-fit: cover;
+  object-position: center;
+}
+
+.scrim {
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(12, 12, 12, 0.95) 0%, rgba(12, 12, 12, 0.82) 30%, rgba(12, 12, 12, 0.35) 52%, rgba(12, 12, 12, 0.03) 78%),
+    linear-gradient(0deg, rgba(12, 12, 12, 0.86) 0%, rgba(12, 12, 12, 0.1) 30%, transparent 52%);
+}
+
+.contentColumn {
+  position: absolute;
+  top: clamp(28px, 3.2vw, 36px);
+  bottom: clamp(28px, 3.2vw, 36px);
+  left: clamp(28px, 3.2vw, 36px);
+  display: flex;
+  width: min(30.5%, 342px);
+  flex-direction: column;
+  gap: 10px;
+}
+
+.panel {
+  border: 0;
+  border-radius: 20px;
+  background: rgba(28, 28, 28, 0.56);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 18px 34px rgba(0, 0, 0, 0.24);
+  -webkit-backdrop-filter: blur(22px) saturate(128%);
+  backdrop-filter: blur(22px) saturate(128%);
+}
+
+.statPanel {
+  display: flex;
+  min-height: 0;
+  flex: 0 0 31.3%;
+  flex-direction: column;
+  justify-content: center;
+  padding: 28px;
+}
+
+.stat {
+  display: flex;
+  align-items: baseline;
+  gap: 0.12em;
+  font-size: clamp(4.75rem, 5.5vw, 5.5rem);
+  font-weight: 400;
+  line-height: 0.88;
+  letter-spacing: -0.065em;
+}
+
+.statPrefix {
+  font-size: 0.34em;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.statDescription {
+  max-width: 16em;
+  margin: 22px 0 0;
+  font-size: clamp(1.05rem, 1.15vw, 1.25rem);
+  font-weight: 400;
+  line-height: 1.22;
+  letter-spacing: -0.025em;
+}
+
+.areasPanel {
+  flex: 1;
+  padding: 28px;
+}
+
+.areasTitle {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.52);
+  font-size: clamp(1.05rem, 1.1vw, 1.18rem);
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tags li {
+  padding: 11px 18px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.075);
+  font-size: clamp(1rem, 1.05vw, 1.08rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.source {
+  position: absolute;
+  right: clamp(28px, 3.2vw, 36px);
+  bottom: clamp(28px, 3.2vw, 36px);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: clamp(0.95rem, 1.05vw, 1.08rem);
+  line-height: 1.15;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.38);
+  text-underline-offset: 5px;
+  transition: color 160ms ease;
+}
+
+.source:hover {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.source:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid #fff;
+  outline-offset: 5px;
+}
+
+@media (min-width: 900px) and (max-width: 1179px) {
+  .section :global(.page-shell-wide) {
+    width: calc(100% - 40px);
+  }
+
+  .card {
+    width: 100%;
+    min-height: 630px;
+    aspect-ratio: auto;
+    border-radius: 26px;
+  }
+
+  .contentColumn {
+    width: min(42%, 420px);
+  }
+
+  .statPanel {
+    min-height: 210px;
+    flex-basis: 34%;
+  }
+
+  .stat {
+    font-size: clamp(4.7rem, 9vw, 6.3rem);
+  }
+
+  .statDescription,
+  .areasTitle {
+    font-size: clamp(1.05rem, 2vw, 1.3rem);
+  }
+
+  .tags li {
+    padding: 10px 14px;
+    font-size: clamp(0.92rem, 1.6vw, 1.05rem);
+  }
+}
+
+@media (max-width: 899px) {
+  .section :global(.page-shell-wide) {
+    width: 100%;
+  }
+
+  .card {
+    width: calc(100% - 32px);
+    height: clamp(520px, 83vw, 630px);
+    min-height: 0;
+    margin: 0 auto;
+    aspect-ratio: auto;
+    border-radius: 24px;
+  }
+
+  .media {
+    height: 56%;
+    bottom: auto;
+  }
+
+  .photo {
+    object-position: 58% center;
+  }
+
+  .scrim {
+    background:
+      linear-gradient(0deg, #111 0%, #111 43%, rgba(17, 17, 17, 0.94) 50%, rgba(17, 17, 17, 0.2) 67%, rgba(17, 17, 17, 0.04) 100%),
+      linear-gradient(90deg, rgba(15, 15, 15, 0.18), transparent 50%);
+  }
+
+  .contentColumn {
+    top: 42%;
+    right: 16px;
+    bottom: 8.7%;
+    left: 16px;
+    display: grid;
+    width: auto;
+    grid-template-rows: 28% minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .panel {
+    border-radius: 16px;
+  }
+
+  .statPanel {
+    display: grid;
+    min-height: 0;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+  }
+
+  .stat {
+    font-size: clamp(3.6rem, 10vw, 4.25rem);
+    line-height: 0.9;
+  }
+
+  .statDescription {
+    margin: 0;
+    font-size: clamp(0.88rem, 2.4vw, 1.08rem);
+    line-height: 1.16;
+  }
+
+  .areasPanel {
+    min-height: 0;
+    padding: 14px 16px;
+  }
+
+  .areasTitle {
+    font-size: clamp(0.95rem, 2.4vw, 1.08rem);
+    line-height: 1.18;
+  }
+
+  .tags {
+    gap: 7px;
+    margin-top: 10px;
+  }
+
+  .tags li {
+    padding: 6px 10px;
+    border-radius: 10px;
+    font-size: clamp(0.82rem, 2.3vw, 0.95rem);
+  }
+
+  .source {
+    right: auto;
+    bottom: 3%;
+    left: 50%;
+    font-size: clamp(0.9rem, 2.2vw, 0.98rem);
+    text-underline-offset: 4px;
+    white-space: nowrap;
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 479px) {
+  .card {
+    width: calc(100% - 36px);
+    height: auto;
+    aspect-ratio: 0.5;
+    border-radius: 22px;
+  }
+
+  .contentColumn {
+    right: 18px;
+    left: 18px;
+  }
+
+  .panel {
+    border-radius: 15px;
+  }
+
+  .statPanel {
+    gap: 10px;
+    padding: 12px 14px;
+  }
+
+  .stat {
+    font-size: clamp(3.4rem, 15vw, 3.8rem);
+  }
+
+  .statDescription {
+    font-size: clamp(0.86rem, 3.7vw, 0.95rem);
+    line-height: 1.18;
+  }
+
+  .areasPanel {
+    padding: 16px;
+  }
+
+  .areasTitle {
+    font-size: clamp(0.98rem, 4.2vw, 1.08rem);
+  }
+
+  .tags {
+    gap: 7px;
+    margin-top: 14px;
+  }
+
+  .tags li {
+    padding: 8px 11px;
+    font-size: clamp(0.82rem, 3.8vw, 0.96rem);
+  }
+
+  .source {
+    font-size: 0.92rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .source {
+    transition: none;
+  }
+}
