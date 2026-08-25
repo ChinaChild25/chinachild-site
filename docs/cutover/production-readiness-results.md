@@ -1,6 +1,6 @@
 # Production Readiness Results
 
-Generated: 2026-08-24T22:54:21.410Z
+Generated: 2026-08-25T15:46:57.265Z
 Base URL: https://chinachild.ru
 Expected metadata origin: https://chinachild.ru
 Result: PASS
@@ -82,6 +82,7 @@ Result: PASS
 | PASS | /blog/kitayskiy-yazyk-trudnyy-li | 200 | ok |
 | PASS | /blog/license-tax-deduction-chinese-school | 200 | ok |
 | PASS | /blog/marketplace-china-postavshchiki-1688-alibaba | 200 | ok |
+| PASS | /blog/mozno-li-uchit-kitayskiy-s-pereryvami | 200 | ok |
 | PASS | /blog/nalogovyy-vychet-za-detey | 200 | ok |
 | PASS | /blog/online-platform-video-calls-chat | 200 | ok |
 | PASS | /blog/peregovory-s-kitaytsami-chek-list | 200 | ok |

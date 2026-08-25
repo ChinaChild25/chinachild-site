@@ -19,6 +19,11 @@ import {
 } from "@/lib/legal/consent-copy";
 import { isPersistedLeadResponse } from "@/lib/leads/contact-response";
 import {
+  formatPhoneInput,
+  normalizeEmail,
+  normalizePhone,
+} from "@/lib/leads/contact-validation";
+import {
   beginLeadSubmission,
   releaseLeadSubmission,
 } from "@/lib/leads/submission-gate";
@@ -113,6 +118,8 @@ export default function LeadForm({
   const [formStartedAt, setFormStartedAt] = useState<number>(() => Date.now());
   const [captchaToken, setCaptchaToken] = useState<string>("");
   const [captchaResetKey, setCaptchaResetKey] = useState<number>(0);
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const captchaTheme = useSiteTheme();
 
   useEffect(() => {
@@ -155,10 +162,27 @@ export default function LeadForm({
       return;
     }
 
+    const normalizedPhone = normalizePhone(String(formData.get("phone") ?? ""));
+    if (!normalizedPhone) {
+      releaseLeadSubmission(submissionGate);
+      setStatus("error");
+      setError({ field: "phone", message: "Укажите корректный номер телефона." });
+      return;
+    }
+
+    const rawEmail = String(formData.get("email") ?? "").trim();
+    const normalizedEmail = rawEmail ? normalizeEmail(rawEmail) : "";
+    if (rawEmail && !normalizedEmail) {
+      releaseLeadSubmission(submissionGate);
+      setStatus("error");
+      setError({ field: "email", message: "Укажите корректный email." });
+      return;
+    }
+
     const payload = {
       name: String(formData.get("name") ?? ""),
-      phone: String(formData.get("phone") ?? ""),
-      email: String(formData.get("email") ?? ""),
+      phone: normalizedPhone,
+      email: normalizedEmail,
       course: String(formData.get("course") ?? ""),
       call_time: String(formData.get("callTime") ?? ""),
       message: String(formData.get("message") ?? ""),
@@ -209,6 +233,8 @@ export default function LeadForm({
         offerContext,
       });
       form.reset();
+      setPhone("");
+      setEmail("");
       setFormStartedAt(Date.now());
       setCaptchaToken("");
       setCaptchaResetKey((k) => k + 1);
@@ -282,8 +308,14 @@ export default function LeadForm({
           required
           inputMode="tel"
           autoComplete="tel"
+          maxLength={18}
           placeholder="+7 999 000 00 00"
           className="lead-input"
+          value={phone}
+          onChange={(event) => {
+            setPhone(formatPhoneInput(event.target.value));
+            if (error?.field === "phone") setError(null);
+          }}
           aria-invalid={error?.field === "phone" || undefined}
         />
       </div>
@@ -299,6 +331,12 @@ export default function LeadForm({
           maxLength={200}
           autoComplete="email"
           className="lead-input"
+          value={email}
+          onChange={(event) => {
+            setEmail(event.target.value);
+            if (error?.field === "email") setError(null);
+          }}
+          onBlur={() => setEmail(normalizeEmail(email) ?? email.trim())}
           aria-invalid={error?.field === "email" || undefined}
         />
       </div>

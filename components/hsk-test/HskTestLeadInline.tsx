@@ -13,6 +13,10 @@ import {
 } from "@/lib/legal/consent-copy";
 import { isPersistedLeadResponse } from "@/lib/leads/contact-response";
 import {
+  formatPhoneInput,
+  normalizePhone,
+} from "@/lib/leads/contact-validation";
+import {
   beginLeadSubmission,
   releaseLeadSubmission,
 } from "@/lib/leads/submission-gate";
@@ -41,6 +45,7 @@ export default function HskTestLeadInline({
   const submissionGate = useRef(false);
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
+  const [phone, setPhone] = useState("");
   const [formStartedAt] = useState(() => Date.now());
 
   useEffect(() => startYandexClientIdCapture(), []);
@@ -58,10 +63,17 @@ export default function HskTestLeadInline({
       return;
     }
     const consentMarketing = fd.get("consent_marketing") === "on";
+    const normalizedPhone = normalizePhone(String(fd.get("phone") ?? ""));
+    if (!normalizedPhone) {
+      releaseLeadSubmission(submissionGate);
+      setStatus("error");
+      setError("Укажите корректный номер телефона.");
+      return;
+    }
 
     const payload = {
       name: String(fd.get("name") ?? ""),
-      phone: String(fd.get("phone") ?? ""),
+      phone: normalizedPhone,
       email: "",
       course: "hsk-preparation",
       call_time: "",
@@ -179,6 +191,12 @@ export default function HskTestLeadInline({
               autoComplete="tel"
               placeholder="+7"
               inputMode="tel"
+              maxLength={18}
+              value={phone}
+              onChange={(event) => {
+                setPhone(formatPhoneInput(event.target.value));
+                if (error) setError(null);
+              }}
             />
           </label>
           <label className="hsk-test-lead-consent">

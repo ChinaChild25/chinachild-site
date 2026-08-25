@@ -7,6 +7,7 @@ import { CONSENT_MARKETING_VERSION } from "@/lib/legal/consent-marketing";
 import { CONSENT_PD_VERSION } from "@/lib/legal/consent-pd";
 import { PD_CONSENT_REQUIRED_MESSAGE } from "@/lib/legal/consent-copy";
 import { isSpamPayload } from "@/lib/leads/anti-abuse";
+import { normalizeEmail, normalizePhone } from "@/lib/leads/contact-validation";
 import { checkRateLimit, hashIp } from "@/lib/leads/rate-limit";
 import { markLeadDelivered, storeLead, type LeadInsert } from "@/lib/leads/store";
 import { trackServerLead } from "@/lib/analytics/yandex-metrika-server";
@@ -14,9 +15,6 @@ import { after } from "next/server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-const PHONE_REGEX = /^\+?[\d\s()-]{10,20}$/;
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type LeadPayload = {
   name?: unknown;
@@ -151,8 +149,9 @@ export async function POST(request: Request) {
   const consentMarketing = body.consent_marketing === true;
 
   const name = sanitize(body.name, 120);
-  const phone = sanitize(body.phone, 32);
-  const email = sanitize(body.email, 200);
+  const phone = normalizePhone(sanitize(body.phone, 32));
+  const rawEmail = sanitize(body.email, 200);
+  const email = rawEmail ? normalizeEmail(rawEmail) : "";
   const course = sanitize(body.course, 120);
   const callTime = sanitize(body.call_time || body.callTime, 120);
   const message = sanitize(body.message || body.comment, 2000);
@@ -169,13 +168,13 @@ export async function POST(request: Request) {
       { status: 400 },
     );
   }
-  if (!PHONE_REGEX.test(phone)) {
+  if (!phone) {
     return Response.json(
       { ok: false, field: "phone", error: "Укажите корректный телефон" },
       { status: 400 },
     );
   }
-  if (email && !EMAIL_REGEX.test(email)) {
+  if (rawEmail && !email) {
     return Response.json(
       { ok: false, field: "email", error: "Email указан некорректно" },
       { status: 400 },

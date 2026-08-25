@@ -14,6 +14,7 @@ import {
   normalizeEmail,
   normalizePhone,
 } from "@/lib/careers/application-validation";
+import { formatPhoneInput } from "@/lib/leads/contact-validation";
 
 const InvisibleSmartCaptcha = dynamic(
   () => import("@yandex/smart-captcha").then((module) => module.InvisibleSmartCaptcha),
@@ -291,7 +292,7 @@ export default function CareerApplicationForm({ careerSlug }: { careerSlug: stri
           </div>
           <div className={styles.field}>
             <label className={styles.label} htmlFor={phoneId}>Телефон для связи</label>
-            <input id={phoneId} name="phone" type="tel" required maxLength={32} autoComplete="tel" placeholder="+7 999 000 00 00" className={styles.input} value={phone} onChange={(event) => setPhone(event.target.value)} aria-invalid={(Boolean(phone) && !validPhone) || error?.field === "phone" || undefined} />
+            <input id={phoneId} name="phone" type="tel" required maxLength={18} autoComplete="tel" placeholder="+7 999 000 00 00" className={styles.input} value={phone} onChange={(event) => setPhone(formatPhoneInput(event.target.value))} aria-invalid={(Boolean(phone) && !validPhone) || error?.field === "phone" || undefined} />
           </div>
           <div className={styles.field}>
             <label className={styles.label} htmlFor={emailId}>Почта для связи</label>
