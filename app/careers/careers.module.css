@@ -1271,3 +1271,204 @@
     min-height: 670px;
   }
 }
+
+/* Careers responsive hardening and unique educational story canvases */
+.storyCanvas {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  transition:
+    border-radius 700ms cubic-bezier(0.2, 0.7, 0.2, 1),
+    background-image 700ms ease;
+}
+
+.storyCanvasArch {
+  border-radius: 50% 50% 36px 36px;
+  background-image: url("/careers/story-gradient-people.avif");
+}
+
+.storyCanvasRound {
+  border-radius: 44% 56% 48% 52% / 53% 43% 57% 47%;
+  background-image: url("/careers/story-gradient-platform.avif");
+}
+
+.storyCanvasTilt {
+  border-radius: 46% 18% 46% 18% / 18% 46% 18% 46%;
+  background-image: url("/careers/story-gradient-method.avif");
+}
+
+.storyCanvasSoft {
+  border-radius: 24% / 16%;
+  background-image: url("/careers/story-gradient-balance.avif");
+}
+
+.storyOrb,
+.storyRing {
+  display: none;
+}
+
+.shapeArch {
+  border-radius: 50% 50% 28px 28px;
+}
+
+.shapeRound {
+  border-radius: 44% 56% 48% 52% / 53% 43% 57% 47%;
+}
+
+.shapeTilt {
+  inset: 8%;
+  border-radius: 46% 18% 46% 18% / 18% 46% 18% 46%;
+}
+
+.shapeSoft {
+  inset: 8% 9%;
+  border-radius: 22% / 14%;
+}
+
+.detailIntro {
+  background: #f5f5f5;
+}
+
+.detailTitle {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.detailTitle span {
+  white-space: normal;
+  overflow-wrap: normal;
+  word-break: keep-all;
+  hyphens: none;
+  text-wrap: balance;
+}
+
+.detailMeta span {
+  max-width: 100%;
+}
+
+:global(html[data-theme="dark"]) .detailIntro {
+  background: var(--background-2);
+}
+
+@media (max-width: 960px) {
+  .detailHero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .detailImageWrap {
+    min-height: 0;
+    aspect-ratio: 4 / 3;
+  }
+
+  .detailGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .detailNav {
+    position: static;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    grid-template-columns: repeat(4, max-content);
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: none;
+  }
+
+  .detailNav::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .detailHero,
+  .detailIntro,
+  .detailImageWrap,
+  .detailGrid,
+  .detailContent {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .detailHero {
+    gap: 34px;
+    padding: 8px 0 48px;
+  }
+
+  .detailIntro {
+    overflow: hidden;
+    border-radius: 24px;
+    padding: 28px 20px 30px;
+  }
+
+  .detailTitle {
+    margin-top: 24px;
+    font-size: clamp(2.25rem, 11.4vw, 2.8rem);
+    line-height: 0.98;
+    letter-spacing: -0.05em;
+  }
+
+  .detailLead {
+    margin-top: 24px;
+    font-size: 1rem;
+    line-height: 1.52;
+  }
+
+  .detailMeta {
+    margin-top: 22px;
+  }
+
+  .detailMeta span {
+    white-space: normal;
+  }
+
+  .detailIntro .heroActions {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 30px;
+  }
+
+  .detailHeroPrimary,
+  .detailHeroSecondary {
+    width: 100%;
+    min-width: 0;
+    padding-inline: 10px;
+    font-size: clamp(0.84rem, 3.8vw, 1rem);
+    white-space: nowrap;
+  }
+
+  .detailImageWrap {
+    min-height: 0;
+    aspect-ratio: 4 / 3;
+    border-radius: 92px 24px 24px 24px;
+  }
+
+  .detailNav {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    justify-content: start;
+    padding: 4px 2px 8px 16px;
+    scroll-padding-inline: 16px;
+  }
+
+  .detailContent {
+    gap: 56px;
+  }
+
+  .detailSection h2 {
+    font-size: clamp(2rem, 10vw, 2.7rem);
+    overflow-wrap: normal;
+    word-break: keep-all;
+    hyphens: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .storyCanvas {
+    transition: none;
+  }
+}
