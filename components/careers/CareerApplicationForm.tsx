@@ -9,10 +9,10 @@ import {
   isValidCandidateName,
   isValidEmail,
   isValidHttpUrl,
-  isValidRussianPhone,
+  isValidPhone,
   normalizeCandidateName,
   normalizeEmail,
-  normalizeRussianPhone,
+  normalizePhone,
 } from "@/lib/careers/application-validation";
 
 const InvisibleSmartCaptcha = dynamic(
@@ -82,7 +82,7 @@ export default function CareerApplicationForm({ careerSlug }: { careerSlug: stri
   const captchaSiteKey = process.env.NEXT_PUBLIC_YANDEX_SMARTCAPTCHA_SITE_KEY;
   const validFirstName = isValidCandidateName(firstName);
   const validLastName = isValidCandidateName(lastName);
-  const validPhone = isValidRussianPhone(phone);
+  const validPhone = isValidPhone(phone);
   const validEmail = isValidEmail(email);
   const hasValidResume = resumeMode === "file"
     ? Boolean(resumeFileName)
@@ -159,7 +159,7 @@ export default function CareerApplicationForm({ careerSlug }: { careerSlug: stri
     }
     const normalizedFirstName = normalizeCandidateName(firstName);
     const normalizedLastName = normalizeCandidateName(lastName);
-    const normalizedPhone = normalizeRussianPhone(phone);
+    const normalizedPhone = normalizePhone(phone);
     const normalizedEmail = normalizeEmail(email);
     if (!normalizedFirstName) {
       setStatus("error");
@@ -173,7 +173,7 @@ export default function CareerApplicationForm({ careerSlug }: { careerSlug: stri
     }
     if (!normalizedPhone) {
       setStatus("error");
-      setError({ field: "phone", message: "Укажите российский номер телефона." });
+      setError({ field: "phone", message: "Укажите корректный номер телефона с кодом страны." });
       return;
     }
     if (!normalizedEmail) {

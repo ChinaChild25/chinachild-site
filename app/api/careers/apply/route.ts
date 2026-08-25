@@ -6,7 +6,7 @@ import {
   isValidHttpUrl,
   normalizeCandidateName,
   normalizeEmail,
-  normalizeRussianPhone,
+  normalizePhone,
 } from "@/lib/careers/application-validation";
 import type {
   CareerApplication,
@@ -243,7 +243,7 @@ export async function POST(request: Request) {
 
   const firstName = normalizeCandidateName(textValue(form, "first_name", 60));
   const lastName = normalizeCandidateName(textValue(form, "last_name", 60));
-  const phone = normalizeRussianPhone(textValue(form, "phone", 32));
+  const phone = normalizePhone(textValue(form, "phone", 32));
   const email = normalizeEmail(textValue(form, "email", 200));
   const experience = textValue(form, "experience", 2500);
   const salaryExpectations = textValue(form, "salary_expectations", 200);
@@ -260,7 +260,7 @@ export async function POST(request: Request) {
     return Response.json({ ok: false, field: "last_name", error: "Укажите корректную фамилию" }, { status: 400 });
   }
   if (!phone) {
-    return Response.json({ ok: false, field: "phone", error: "Укажите российский номер телефона" }, { status: 400 });
+    return Response.json({ ok: false, field: "phone", error: "Укажите корректный номер телефона с кодом страны" }, { status: 400 });
   }
   if (!email) {
     return Response.json({ ok: false, field: "email", error: "Укажите корректный email" }, { status: 400 });

@@ -9,7 +9,7 @@ import {
 import {
   isValidCandidateName,
   isValidEmail,
-  normalizeRussianPhone,
+  normalizePhone,
 } from "../../lib/careers/application-validation.ts";
 
 const ROOT = process.cwd();
@@ -17,10 +17,12 @@ const ROOT = process.cwd();
 test("career contact validation rejects malformed submissions", () => {
   assert.equal(isValidCandidateName("Анна-Мария"), true);
   assert.equal(isValidCandidateName("12345"), false);
-  assert.equal(normalizeRussianPhone("+7 (999) 123-45-67"), "+79991234567");
-  assert.equal(normalizeRussianPhone("8 495 123-45-67"), "+74951234567");
-  assert.equal(normalizeRussianPhone("1234567890"), null);
-  assert.equal(normalizeRussianPhone("+7 999 999-99-99"), null);
+  assert.equal(normalizePhone("+7 (999) 123-45-67"), "+79991234567");
+  assert.equal(normalizePhone("8 495 123-45-67"), "+74951234567");
+  assert.equal(normalizePhone("+36 70 789 3622"), "+36707893622");
+  assert.equal(normalizePhone("1234567890"), null);
+  assert.equal(normalizePhone("+7 999 999-99-99"), null);
+  assert.equal(normalizePhone("+00000000"), null);
   assert.equal(isValidEmail("candidate@gmail.com"), true);
   assert.equal(isValidEmail("candidate@yandex.ru"), true);
   assert.equal(isValidEmail("candidate@company.travel"), true);

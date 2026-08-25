@@ -1,6 +1,7 @@
 const CANDIDATE_NAME_REGEX = /^(?=.{2,60}$)[\p{L}\p{M}]+(?:[ '\u2019-][\p{L}\p{M}]+)*$/u;
 const PHONE_CHARACTERS_REGEX = /^\+?[\d\s().-]+$/;
 const RUSSIAN_PHONE_REGEX = /^7[3489]\d{9}$/;
+const INTERNATIONAL_PHONE_REGEX = /^[1-9]\d{7,14}$/;
 const EMAIL_LOCAL_REGEX = /^[A-Z0-9!#$%&'*+/=?^_`{|}~.-]+$/i;
 const EMAIL_DOMAIN_LABEL_REGEX = /^[\p{L}\p{N}](?:[\p{L}\p{N}-]{0,61}[\p{L}\p{N}])?$/u;
 const EMAIL_TLD_REGEX = /^(?:[\p{L}]{2,63}|xn--[a-z0-9-]{2,59})$/iu;
@@ -14,22 +15,31 @@ export function isValidCandidateName(value: string): boolean {
   return normalizeCandidateName(value) !== null;
 }
 
-export function normalizeRussianPhone(value: string): string | null {
+export function normalizePhone(value: string): string | null {
   const normalized = value.trim();
   if (!PHONE_CHARACTERS_REGEX.test(normalized)) return null;
 
+  const hasInternationalPrefix = normalized.startsWith("+");
   let digits = normalized.replace(/\D/g, "");
-  if (digits.length === 10) digits = `7${digits}`;
-  if (digits.length === 11 && digits.startsWith("8")) digits = `7${digits.slice(1)}`;
-  if (!RUSSIAN_PHONE_REGEX.test(digits)) return null;
+  if (!hasInternationalPrefix) {
+    if (digits.length === 10) digits = `7${digits}`;
+    else if (digits.length === 11 && digits.startsWith("8")) digits = `7${digits.slice(1)}`;
+    else return null;
+  }
+  if (!INTERNATIONAL_PHONE_REGEX.test(digits)) return null;
 
-  const nationalNumber = digits.slice(1);
-  if (/^(\d)\1{9}$/.test(nationalNumber)) return null;
+  if (digits.startsWith("7")) {
+    if (!RUSSIAN_PHONE_REGEX.test(digits)) return null;
+    const nationalNumber = digits.slice(1);
+    if (/^(\d)\1{9}$/.test(nationalNumber)) return null;
+  } else if (/^(\d)\1{7,14}$/.test(digits)) {
+    return null;
+  }
   return `+${digits}`;
 }
 
-export function isValidRussianPhone(value: string): boolean {
-  return normalizeRussianPhone(value) !== null;
+export function isValidPhone(value: string): boolean {
+  return normalizePhone(value) !== null;
 }
 
 export function normalizeEmail(value: string): string | null {
