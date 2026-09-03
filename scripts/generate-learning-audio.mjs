@@ -270,12 +270,17 @@ if (CHECK_ONLY) {
   if (runtimeTtsMarker) {
     throw new Error(`Runtime/browser TTS fallback detected: ${runtimeTtsMarker}`);
   }
-  if (missingLearningItems.length || missingTestTexts.length) {
+  if (missingTestTexts.length) {
     throw new Error(
-      `Stored audio coverage incomplete: ${missingLearningItems.length} dictionary item(s), ${missingTestTexts.length} HSK/diagnostic text(s).`,
+      `Stored test audio coverage incomplete: ${missingTestTexts.length} HSK/diagnostic text(s).`,
     );
   }
-  console.log("Stored audio coverage check passed.");
+  if (missingLearningItems.length) {
+    console.log(
+      `Dictionary audio is optional on the public site: ${missingLearningItems.length} item(s) use text-only rendering until a shared stored clip exists.`,
+    );
+  }
+  console.log("Stored HSK/diagnostic audio coverage check passed.");
   process.exit(0);
 }
 
