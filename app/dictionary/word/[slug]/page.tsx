@@ -145,19 +145,18 @@ export default async function WordDetailPage({ params }: Props) {
                 Традиционное написание: <span className="text-[#4b4b4b]">{word.traditional}</span>
               </p>
             ) : null}
-            {word.primaryPinyin || word.audioUrl ? (
+            {word.primaryPinyin || word.id ? (
               <div className="mt-auto flex flex-wrap items-center justify-center gap-3 pt-4 lg:justify-end">
                 {word.primaryPinyin ? (
                   <p className="text-2xl font-medium text-[#262626]">{word.primaryPinyin}</p>
                 ) : null}
-                {word.audioUrl ? (
-                  <AudioButton
-                    src={word.audioUrl}
-                    ariaLabel="Прослушать слово"
-                    size="md"
-                    variant="primary"
-                  />
-                ) : null}
+                <AudioButton
+                  src={word.audioUrl}
+                  lazyRequest={{ ownerType: "term", ownerId: word.id }}
+                  ariaLabel="Прослушать слово"
+                  size="md"
+                  variant="primary"
+                />
               </div>
             ) : null}
           </header>
@@ -229,7 +228,7 @@ export default async function WordDetailPage({ params }: Props) {
               <ol className="mt-4 space-y-3">
                 {word.examples.map((example, index) => (
                   <li
-                    key={index}
+                    key={example.id ?? index}
                     className="content-surface-card flex items-start justify-between gap-3 rounded-[var(--radius-card-md)] bg-white px-5 py-4"
                   >
                     <div className="min-w-0 flex-1">
@@ -245,15 +244,18 @@ export default async function WordDetailPage({ params }: Props) {
                         </p>
                       ) : null}
                     </div>
-                    {example.audioUrl ? (
-                      <AudioButton
-                        src={example.audioUrl}
-                        ariaLabel="Прослушать пример"
-                        size="md"
-                        variant="primary"
-                        className="mt-1"
-                      />
-                    ) : null}
+                    <AudioButton
+                      src={example.audioUrl}
+                      lazyRequest={
+                        example.id
+                          ? { ownerType: "example", ownerId: example.id }
+                          : undefined
+                      }
+                      ariaLabel="Прослушать пример"
+                      size="md"
+                      variant="primary"
+                      className="mt-1"
+                    />
                   </li>
                 ))}
               </ol>

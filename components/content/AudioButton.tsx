@@ -37,9 +37,13 @@ function SpeakerIcon({ className }: { className?: string }) {
 
 type AudioState = "idle" | "loading" | "playing" | "error";
 
-// Site-native audio button. Used for cached Mandarin TTS clips on dictionary
-// word pages and grammar example cards. Always streams a pre-generated URL
-// (Supabase public storage) — never calls OpenAI from the client.
+export type LazyAudioRequest =
+  | { ownerType: "term" | "example"; ownerId: string }
+  | { ownerType: "grammar_example"; ownerId: string; index: number };
+
+// Site-native audio button. A persisted Supabase URL is always the fast path.
+// If it does not exist yet, the first explicit click asks the platform for the
+// canonical owner ID; that endpoint stores the result before returning its URL.
 //
 // All buttons subscribe to a tiny window-scoped event bus so that starting
 // one clip stops any other playing clip. Keeps the page calm.
@@ -73,12 +77,14 @@ const primaryShapeClasses: Record<Size, string> = {
 
 export default function AudioButton({
   src,
+  lazyRequest,
   ariaLabel,
   size = "md",
   variant = "neutral",
   className,
 }: {
-  src: string;
+  src?: string | null;
+  lazyRequest?: LazyAudioRequest;
   ariaLabel: string;
   size?: Size;
   variant?: "neutral" | "primary";
@@ -86,6 +92,7 @@ export default function AudioButton({
 }) {
   const [state, setState] = useState<AudioState>("idle");
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const resolvedSrcRef = useRef<string | null>(null);
   const idRef = useRef<string>(`audio-${Math.random().toString(36).slice(2)}`);
 
   // Stop this button if another button starts.
@@ -103,8 +110,25 @@ export default function AudioButton({
     return () => window.removeEventListener(STOP_EVENT, handle);
   }, []);
 
+  async function resolveSrc(): Promise<string | null> {
+    if (src?.trim()) return src.trim();
+    if (resolvedSrcRef.current) return resolvedSrcRef.current;
+    if (!lazyRequest) return null;
+
+    const base = (process.env.NEXT_PUBLIC_APP_URL || "https://my.chinachild.ru").replace(/\/$/u, "");
+    const response = await fetch(`${base}/api/public/learning-audio`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(lazyRequest),
+    });
+    if (!response.ok) return null;
+    const payload = (await response.json()) as { url?: unknown };
+    if (typeof payload.url !== "string" || !payload.url.trim()) return null;
+    resolvedSrcRef.current = payload.url.trim();
+    return resolvedSrcRef.current;
+  }
+
   async function toggle() {
-    if (!src) return;
     const audio = audioRef.current;
 
     if (audio && !audio.paused) {
@@ -117,7 +141,12 @@ export default function AudioButton({
     emitStop(idRef.current);
     try {
       setState("loading");
-      const el = audio ?? new Audio(src);
+      const resolvedSrc = await resolveSrc();
+      if (!resolvedSrc) {
+        setState("error");
+        return;
+      }
+      const el = audio ?? new Audio(resolvedSrc);
       audioRef.current = el;
       el.onended = () => setState("idle");
       el.onerror = () => setState("error");
@@ -147,7 +176,7 @@ export default function AudioButton({
       onClick={toggle}
       aria-label={state === "error" ? "Озвучка недоступна" : ariaLabel}
       title={state === "error" ? "Озвучка недоступна" : ariaLabel}
-      disabled={!src}
+      disabled={!src && !lazyRequest}
       className={[
         "inline-flex shrink-0 items-center justify-center transition-colors",
         variant === "primary" ? primaryShapeClasses[size] : "rounded-full",

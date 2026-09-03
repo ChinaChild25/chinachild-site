@@ -75,7 +75,7 @@ function BlockSwitch({ block }: { block: GrammarBlock }) {
     case "callout":
       return <CalloutBlock content={content} />;
     case "examples":
-      return <ExamplesBlock content={content} />;
+      return <ExamplesBlock blockId={block.id} content={content} />;
     case "related":
       return <RelatedBlock content={content} />;
     case "vocabulary_links":
@@ -337,7 +337,7 @@ function renderHighlightedHanzi(text: string, ranges: HighlightRange[]): React.R
   return out;
 }
 
-function ExamplesBlock({ content }: { content: AnyRecord }) {
+function ExamplesBlock({ blockId, content }: { blockId: string; content: AnyRecord }) {
   const items = asArray<ExampleEntry>(content.items ?? content.examples);
   const cleanItems = items
     .map((item) => ({
@@ -386,15 +386,14 @@ function ExamplesBlock({ content }: { content: AnyRecord }) {
                 </Link>
               ) : null}
             </div>
-            {item.audioUrl ? (
-              <AudioButton
-                src={item.audioUrl}
-                ariaLabel="Прослушать пример"
-                size="md"
-                variant="primary"
-                className="mt-1 shrink-0"
-              />
-            ) : null}
+            <AudioButton
+              src={item.audioUrl}
+              lazyRequest={{ ownerType: "grammar_example", ownerId: blockId, index }}
+              ariaLabel="Прослушать пример"
+              size="md"
+              variant="primary"
+              className="mt-1 shrink-0"
+            />
           </li>
         ))}
       </ol>

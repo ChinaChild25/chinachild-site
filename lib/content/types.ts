@@ -117,6 +117,7 @@ export type WordSense = {
 };
 
 export type WordExample = {
+  id: string | null;
   hanzi: string;
   pinyin: string | null;
   translationRu: string | null;

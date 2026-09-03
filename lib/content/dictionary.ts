@@ -355,6 +355,7 @@ export async function getPublicWordBySlug(slug: string): Promise<WordDetail | nu
       .map((row) => [row.owner_id, row.public_url as string]),
   );
   const examples = exampleRows.map((e) => ({
+    id: e.id ?? null,
     hanzi: e.hanzi,
     pinyin: e.pinyin,
     translationRu: e.translation_ru,

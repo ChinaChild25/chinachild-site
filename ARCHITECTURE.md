@@ -90,9 +90,12 @@ privacy behavior and the event names configured in external dashboards.
 ### Diagnostics and generated media
 
 `app/api/diagnose`, `app/api/tutor`, and `app/api/speech-eval` are dynamic,
-server-only OpenAI-backed routes. Blog/learning image and audio scripts are
-offline generation tools: visitors consume persisted assets and do not trigger
-generation API costs.
+server-only OpenAI-backed routes. Blog image/audio scripts remain offline
+generation tools. Dictionary words, vocabulary examples and grammar examples
+use existing persisted audio first; when none exists, an explicit play click
+calls the platform's canonical-owner endpoint. That endpoint renders once,
+persists the MP3 in shared Supabase Storage, and reuses it on later playback.
+Page views and builds never trigger learning-audio generation.
 
 ## 3. Sources of truth
 
@@ -119,8 +122,8 @@ be reused.
 
 `npm run build` executes:
 
-1. `prebuild`: generate the paginated public-content snapshot and verify
-   generated blog/learning audio.
+1. `prebuild`: generate the paginated public-content snapshot, verify required
+   blog audio and report optional learning-audio cache coverage.
 2. `next build`: statically generate eligible routes.
 3. `postbuild`: audit built JSON-LD.
 
