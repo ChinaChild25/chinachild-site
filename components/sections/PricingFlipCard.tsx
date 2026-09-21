@@ -83,25 +83,40 @@ export default function PricingFlipCard({ tier }: { tier: PricingTier }) {
   // центру, а стрелку — у правого края. Стрелка видна только на тач-устройствах
   // (нет hover) — см. .flipHint в CSS.
   const price = (
-    <div className={styles.price}>
-      <span aria-hidden="true" />
-      <span className={styles.priceValue}>{tier.price}</span>
-      <span className={styles.flipHint} aria-hidden="true">
-        <FlipArrowIcon />
-      </span>
-    </div>
+    <>
+      <div className={styles.price}>
+        <span aria-hidden="true" />
+        <span className={styles.priceAmounts}>
+          {tier.regularPrice ? <span className={styles.regularPrice}>{tier.regularPrice}</span> : null}
+          <span className={styles.priceValue}>{tier.price}</span>
+        </span>
+        <span className={styles.flipHint} aria-hidden="true">
+          <FlipArrowIcon />
+        </span>
+      </div>
+      {tier.priceNote ? <p className={styles.priceNote}>{tier.priceNote}</p> : null}
+    </>
   );
 
-  // stopPropagation: клик по кнопке открывает модалку и не переворачивает карточку.
+  // stopPropagation: CTA запускает свой сценарий и не переворачивает карточку.
   const cta = (
     <div className={styles.cta} onClick={(event) => event.stopPropagation()}>
-      <LeadModal
-        triggerClassName={buttonStyles({ variant: "primary", className: "w-full" })}
-        source={`pricing-${tier.title}`}
-        suppressFloatingCta
-      >
-        Оставить заявку
-      </LeadModal>
+      {tier.cta ? (
+        <a
+          className={buttonStyles({ variant: "primary", className: "w-full" })}
+          href={tier.cta.href}
+        >
+          {tier.cta.label}
+        </a>
+      ) : (
+        <LeadModal
+          triggerClassName={buttonStyles({ variant: "primary", className: "w-full" })}
+          source={`pricing-${tier.title}`}
+          suppressFloatingCta
+        >
+          Оставить заявку
+        </LeadModal>
+      )}
     </div>
   );
 

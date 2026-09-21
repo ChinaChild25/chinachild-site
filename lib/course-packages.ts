@@ -1,9 +1,10 @@
 export const COURSE_PACKAGES = {
   introduction: {
-    title: "Введение",
-    priceRub: 4_990,
-    priceLabel: "4 990 ₽",
-    lessonCount: 80,
+    title: "Китайский с нуля",
+    priceRub: 9_990,
+    priceLabel: "9 990 ₽",
+    regularPriceLabel: "12 990 ₽",
+    lessonCount: 24,
   },
   individual: {
     title: "Индивидуальный",

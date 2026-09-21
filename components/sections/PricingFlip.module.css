@@ -240,8 +240,25 @@
   color: #262626;
 }
 
-.priceValue {
+.priceAmounts {
   grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px 12px;
+}
+
+.regularPrice {
+  font-size: 1.05rem;
+  font-weight: 500;
+  line-height: 1;
+  opacity: 0.48;
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+
+.priceValue {
   font-size: clamp(1.9rem, 1.4rem + 1.6vw, 2.4rem);
   font-weight: 500;
   letter-spacing: -0.02em;
@@ -250,6 +267,18 @@
 
 .card[data-featured="true"] .price {
   color: #ffffff;
+}
+
+.priceNote {
+  margin: 9px 0 0;
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: #686868;
+}
+
+.card[data-featured="true"] .priceNote {
+  color: rgba(255, 255, 255, 0.72);
 }
 
 .cta {
@@ -320,6 +349,10 @@ html[data-theme="dark"] .feature {
 
 html[data-theme="dark"] .price {
   color: #ededed;
+}
+
+html[data-theme="dark"] .priceNote {
+  color: #a6a6a6;
 }
 
 html[data-theme="dark"] .badge {
