@@ -161,6 +161,7 @@ export async function GET() {
     { loc: absoluteUrl("/public-treaty"), changefreq: "yearly", priority: 0.25 },
     { loc: absoluteUrl("/user-agreement"), changefreq: "yearly", priority: 0.25 },
     { loc: absoluteUrl("/privacy-policy"), changefreq: "yearly", priority: 0.25 },
+    { loc: absoluteUrl("/data-deletion"), changefreq: "yearly", priority: 0.2 },
     { loc: absoluteUrl("/consent-career-personal-data"), changefreq: "yearly", priority: 0.2 },
   ];
 
