@@ -45,7 +45,6 @@ export default function HskTestLeadInline({
   const submissionGate = useRef(false);
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
-  const [phone, setPhone] = useState("");
   const [formStartedAt] = useState(() => Date.now());
 
   useEffect(() => startYandexClientIdCapture(), []);
@@ -191,11 +190,12 @@ export default function HskTestLeadInline({
               autoComplete="tel"
               placeholder="+7"
               inputMode="tel"
-              maxLength={18}
-              value={phone}
-              onChange={(event) => {
-                setPhone(formatPhoneInput(event.target.value));
+              maxLength={25}
+              onChange={() => {
                 if (error) setError(null);
+              }}
+              onBlur={(event) => {
+                event.target.value = formatPhoneInput(event.target.value);
               }}
             />
           </label>

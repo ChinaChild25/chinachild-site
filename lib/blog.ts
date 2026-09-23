@@ -157,6 +157,22 @@ export async function getLatestPosts(limit = 3): Promise<BlogPost[]> {
   return posts.slice(0, limit);
 }
 
+/**
+ * Похожие статьи для конца материала: сначала та же рубрика, затем свежие.
+ * Нужно, чтобы читатель не упирался в конец текста — 78% визитов из поиска
+ * одностраничные, а вторая страница поднимает конверсию примерно в семь раз.
+ */
+export async function getRelatedPosts(
+  slug: string,
+  category: string,
+  limit = 3,
+): Promise<BlogPost[]> {
+  const posts = (await getAllPosts()).filter((post) => post.slug !== slug);
+  const sameCategory = posts.filter((post) => post.category === category);
+  const rest = posts.filter((post) => post.category !== category);
+  return [...sameCategory, ...rest].slice(0, limit);
+}
+
 export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> {
   try {
     const source = await readFile(path.join(BLOG_DIRECTORY, `${slug}.mdx`), "utf8");

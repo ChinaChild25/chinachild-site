@@ -13,10 +13,13 @@ import TLDRBox from "@/components/content/article-blocks/TLDRBox";
 import ArticleToc, { type TocItem } from "@/components/content/article-blocks/ArticleToc";
 import InlineAudio from "@/components/content/article-blocks/InlineAudio";
 import ScrollDepthTracker from "@/components/analytics/ScrollDepthTracker";
+import ArticleEndCta from "@/components/content/ArticleEndCta";
+import RelatedPosts from "@/components/content/RelatedPosts";
 import {
   formatPostDate,
   getBlogPostBySlug,
   getBlogPostSlugs,
+  getRelatedPosts,
   parseArticleBlocks,
   slugifyHeading,
   type ArticleBlock,
@@ -294,6 +297,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   const author = teachers.find((t) => t.slug === post.authorSlug) ?? teachers[0];
+  const relatedPosts = await getRelatedPosts(post.slug, post.category);
   const blocks = parseArticleBlocks(post.content);
   const autolink = makeAutolinker(post.slug);
   const howto = getBlogHowTo(post.slug);
@@ -402,7 +406,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           {showToc ? <ArticleToc items={tocItems} /> : null}
           {blocks.map((block, index) => renderBlock(block, index, autolink, firstImageIndex))}
         </div>
+
+        <ArticleEndCta slug={post.slug} category={post.category} />
       </article>
+
+      <RelatedPosts posts={relatedPosts} />
       <ScrollDepthTracker slug={post.slug} />
     </main>
   );
