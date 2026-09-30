@@ -10,6 +10,7 @@ import { isSpamPayload } from "@/lib/leads/anti-abuse";
 import { normalizeEmail, normalizePhone } from "@/lib/leads/contact-validation";
 import { checkRateLimit, hashIp } from "@/lib/leads/rate-limit";
 import { markLeadDelivered, storeLead, type LeadInsert } from "@/lib/leads/store";
+import { issueApplicationMessengerLinks } from "@/lib/leads/application-messenger-handoff";
 import { trackServerLead } from "@/lib/analytics/yandex-metrika-server";
 import { after } from "next/server";
 
@@ -233,7 +234,19 @@ export async function POST(request: Request) {
     ...leadInsert,
   };
 
-  const result = await dispatchLead(lead);
+  // The stored application is the canonical CRM lead. The optional «continue in a messenger»
+  // links are bound to it server-side; failing to issue them never fails the application.
+  const [result, messengers] = await Promise.all([
+    dispatchLead(lead),
+    issueApplicationMessengerLinks({ leadId: stored.id, sourcePage: sourcePage || pagePath || "/" })
+      .catch((error: unknown) => {
+        console.error(
+          "[lead] messenger handoff not issued",
+          error instanceof Error ? error.message : "unknown error",
+        );
+        return null;
+      }),
+  ]);
   const emailResult = result.delivered.find((item) => item.channel === "email");
   await markLeadDelivered(stored.id, emailResult?.ok === true, emailResult?.ok ? undefined : emailResult?.detail);
 
@@ -270,6 +283,7 @@ export async function POST(request: Request) {
       id: stored.id,
       delivered: result.delivered.filter((item) => item.ok).length,
       attempted: result.attempted,
+      ...(messengers && Object.keys(messengers).length ? { messengers } : {}),
     },
     { status: 200 },
   );

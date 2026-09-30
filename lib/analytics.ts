@@ -42,6 +42,8 @@ export const Goals = {
 
   // — Lead form —
   LEAD_SUBMITTED: "lead_submitted",
+  // Шлётся с params { channel: telegram|whatsapp|max } — переход из «Заявка отправлена» в мессенджер.
+  MESSENGER_HANDOFF_CLICK: "messenger_handoff_click",
 
   // — HSK self-test (/chinese/hsk-test) —
   HSK_TEST_STARTED: "hsk_test_started",

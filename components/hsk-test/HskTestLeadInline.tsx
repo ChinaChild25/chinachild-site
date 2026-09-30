@@ -13,6 +13,11 @@ import {
 } from "@/lib/legal/consent-copy";
 import { isPersistedLeadResponse } from "@/lib/leads/contact-response";
 import {
+  parseApplicationMessengerLinks,
+  type ApplicationMessengerLinks,
+} from "@/lib/leads/application-messenger-links";
+import LeadMessengerStep from "@/components/forms/LeadMessengerStep";
+import {
   formatPhoneInput,
   normalizePhone,
 } from "@/lib/leads/contact-validation";
@@ -45,6 +50,7 @@ export default function HskTestLeadInline({
   const submissionGate = useRef(false);
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
+  const [messengerLinks, setMessengerLinks] = useState<ApplicationMessengerLinks | null>(null);
   const [formStartedAt] = useState(() => Date.now());
 
   useEffect(() => startYandexClientIdCapture(), []);
@@ -104,6 +110,7 @@ export default function HskTestLeadInline({
         persisted?: boolean;
         id?: string;
         error?: string;
+        messengers?: unknown;
       };
       if (!res.ok || !isPersistedLeadResponse(data)) {
         releaseLeadSubmission(submissionGate);
@@ -111,6 +118,7 @@ export default function HskTestLeadInline({
         setError(data.error ?? "Что-то пошло не так. Попробуйте ещё раз.");
         return;
       }
+      setMessengerLinks(parseApplicationMessengerLinks(data.messengers));
       setStatus("success");
       trackLeadSubmitted({
         leadId: data.id,
@@ -139,15 +147,21 @@ export default function HskTestLeadInline({
             Ежедневно с 09:00 до 21:00 МСК обычно отвечаем в течение 1–2 часов
             и подсказываем, с какой группы на HSK&nbsp;{recommendedLevel} начать.
           </p>
-          <p className="mt-4 text-sm leading-[1.5] text-[#4b4b4b]">
-            Хотите быстрее?{" "}
-            <a
-              href={`tel:${CONTACT_PHONE_TEL}`}
-              className="underline underline-offset-4"
-            >
-              Позвонить {CONTACT_PHONE}
-            </a>
-          </p>
+          {messengerLinks ? (
+            <div className="mt-5">
+              <LeadMessengerStep links={messengerLinks} />
+            </div>
+          ) : (
+            <p className="mt-4 text-sm leading-[1.5] text-[#4b4b4b]">
+              Хотите быстрее?{" "}
+              <a
+                href={`tel:${CONTACT_PHONE_TEL}`}
+                className="underline underline-offset-4"
+              >
+                Позвонить {CONTACT_PHONE}
+              </a>
+            </p>
+          )}
         </div>
       </div>
     );

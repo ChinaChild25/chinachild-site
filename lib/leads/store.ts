@@ -4,7 +4,8 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 let cachedClient: SupabaseClient | null = null;
 
-function getClient(): SupabaseClient | null {
+/** Service-role client for server-side lead writes; null when Supabase is not configured. */
+export function getClient(): SupabaseClient | null {
   if (cachedClient) return cachedClient;
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;

@@ -19,6 +19,11 @@ import {
 } from "@/lib/legal/consent-copy";
 import { isPersistedLeadResponse } from "@/lib/leads/contact-response";
 import {
+  parseApplicationMessengerLinks,
+  type ApplicationMessengerLinks,
+} from "@/lib/leads/application-messenger-links";
+import LeadMessengerStep from "@/components/forms/LeadMessengerStep";
+import {
   formatPhoneInput,
   normalizeEmail,
   normalizePhone,
@@ -118,6 +123,7 @@ export default function LeadForm({
   const [formStartedAt, setFormStartedAt] = useState<number>(() => Date.now());
   const [captchaToken, setCaptchaToken] = useState<string>("");
   const [captchaResetKey, setCaptchaResetKey] = useState<number>(0);
+  const [messengerLinks, setMessengerLinks] = useState<ApplicationMessengerLinks | null>(null);
   const captchaTheme = useSiteTheme();
 
   useEffect(() => {
@@ -213,6 +219,7 @@ export default function LeadForm({
         id?: string;
         error?: string;
         field?: string;
+        messengers?: unknown;
       };
       if (!res.ok || !isPersistedLeadResponse(data)) {
         releaseLeadSubmission(submissionGate);
@@ -223,6 +230,7 @@ export default function LeadForm({
         });
         return;
       }
+      setMessengerLinks(parseApplicationMessengerLinks(data.messengers));
       setStatus("success");
       trackLeadSubmitted({
         leadId: data.id,
@@ -244,6 +252,18 @@ export default function LeadForm({
             : "Сетевая ошибка. Проверьте соединение.",
       });
     }
+  }
+
+  if (status === "success" && messengerLinks) {
+    return (
+      <div role="status" aria-live="polite" className="lead-success">
+        <div className="lead-success-title">Заявка отправлена</div>
+        <p className="lead-success-text">
+          {LEAD_RESPONSE_FULL}
+        </p>
+        <LeadMessengerStep links={messengerLinks} />
+      </div>
+    );
   }
 
   if (status === "success") {

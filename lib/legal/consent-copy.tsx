@@ -19,7 +19,7 @@ export function PdConsentLabelText() {
       <a href={CONSENT_PD_PATH} target="_blank" rel="noreferrer" className="underline underline-offset-2">
         согласие на обработку персональных данных
       </a>{" "}
-      для обработки заявки, проведения пробного занятия и организации обучения в ChinaChild.{" "}
+      для обработки заявки и связи со мной по ней по телефону, email и в мессенджерах (Telegram, WhatsApp, MAX), проведения пробного занятия и организации обучения в ChinaChild.{" "}
       <a href="/privacy-policy" target="_blank" rel="noreferrer" className="underline underline-offset-2">
         Политика обработки персональных данных
       </a>

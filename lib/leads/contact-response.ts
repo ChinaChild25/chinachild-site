@@ -3,6 +3,8 @@ export type PersistedLeadResponse = {
   accepted: true;
   persisted: true;
   id: string;
+  /** Optional post-submit messenger links; validate with parseApplicationMessengerLinks. */
+  messengers?: unknown;
 };
 
 export function isPersistedLeadResponse(
