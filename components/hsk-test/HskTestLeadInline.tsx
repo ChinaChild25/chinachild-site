@@ -82,6 +82,7 @@ export default function HskTestLeadInline({
       email: "",
       course: "hsk-preparation",
       call_time: "",
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       message: `HSK-тест: выбран HSK ${level}, балл ${score}%, рекомендован HSK ${recommendedLevel}`,
       consent_pd: consent,
       consent_marketing: consentMarketing,

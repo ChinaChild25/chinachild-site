@@ -5,6 +5,7 @@ export type LeadEmailTemplateInput = {
   email?: string;
   course?: string;
   call_time?: string;
+  timezone?: string;
   message?: string;
   consent_pd: boolean;
   consent_marketing: boolean;
@@ -64,6 +65,7 @@ function buildPlainText(lead: LeadEmailTemplateInput, siteUrl: string, recipient
   appendLine(lines, "Email", lead.email);
   appendLine(lines, "Курс", lead.course);
   appendLine(lines, "Удобное время звонка", lead.call_time);
+  appendLine(lines, "Часовой пояс браузера", lead.timezone);
   appendLine(lines, "Страница", lead.source_page);
   appendLine(lines, "Referrer", lead.referrer);
   appendLine(lines, "Согласие на обработку ПД", lead.consent_pd);
@@ -108,6 +110,7 @@ export function buildLeadEmail(
   const page = cleanInline(lead.source_page);
   const email = cleanInline(lead.email);
   const callTime = cleanInline(lead.call_time);
+  const timeZone = cleanInline(lead.timezone);
   const consentPdLabel = lead.consent_pd ? "Да" : "Нет";
   const consentNewsletterLabel = lead.consent_marketing ? "Да" : "Нет";
   const consentPdIcon = lead.consent_pd ? "✅" : "❌";
@@ -150,6 +153,7 @@ export function buildLeadEmail(
             ${infoRow("📞&nbsp;Телефон", cleanInline(lead.phone), { href: `tel:${cleanInline(lead.phone)}` })}
             ${infoRow("✉️&nbsp;Email", email, lead.email ? { href: `mailto:${lead.email}` } : undefined)}
             ${infoRow("🕒&nbsp;Удобное время звонка", callTime)}
+            ${infoRow("🌍&nbsp;Часовой пояс браузера", timeZone)}
             <tr><td style="border-top:1px solid #F0F0F2;padding-top:14px;"><span style="color:#B3B3B7;font-size:12px;font-weight:600;letter-spacing:0.4px;">💬&nbsp;Сообщение</span><br><span style="color:#4A4A4D;font-size:15px;line-height:21px;">${multilineHtml(lead.message)}</span></td></tr>
           </table>
         </td></tr>

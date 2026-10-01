@@ -11,6 +11,7 @@ export type LeadInput = {
   email?: string;
   course?: string;
   call_time?: string;
+  timezone?: string;
   message?: string;
   consent_pd: boolean;
   consent_marketing: boolean;

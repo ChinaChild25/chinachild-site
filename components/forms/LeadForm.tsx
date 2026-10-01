@@ -189,6 +189,7 @@ export default function LeadForm({
       email: normalizedEmail,
       course: String(formData.get("course") ?? ""),
       call_time: String(formData.get("callTime") ?? ""),
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       message: String(formData.get("message") ?? ""),
       smart_token: captchaToken,
       consent_pd: consentPd,

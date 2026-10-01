@@ -24,6 +24,7 @@ type LeadPayload = {
   course?: unknown;
   call_time?: unknown;
   callTime?: unknown;
+  timezone?: unknown;
   message?: unknown;
   comment?: unknown;
   source_page?: unknown;
@@ -46,6 +47,18 @@ type LeadPayload = {
 function sanitize(value: unknown, max: number): string {
   if (typeof value !== "string") return "";
   return value.trim().slice(0, max);
+}
+
+function normalizeTimeZone(value: unknown): string {
+  const timeZone = sanitize(value, 80);
+  if (!timeZone) return "";
+
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone }).format();
+    return timeZone;
+  } catch {
+    return "";
+  }
 }
 
 function sanitizeUtm(value: unknown): Record<string, string> {
@@ -155,6 +168,7 @@ export async function POST(request: Request) {
   const email = rawEmail ? normalizeEmail(rawEmail) : "";
   const course = sanitize(body.course, 120);
   const callTime = sanitize(body.call_time || body.callTime, 120);
+  const timeZone = normalizeTimeZone(body.timezone);
   const message = sanitize(body.message || body.comment, 2000);
   const sourcePage = sanitize(body.source_page || body.source, 300);
   const pagePath = sanitize(body.page_path, 300);
@@ -196,6 +210,7 @@ export async function POST(request: Request) {
     email: email || undefined,
     course: course || undefined,
     call_time: callTime || undefined,
+    timezone: timeZone || undefined,
     message: message || undefined,
     consent_pd: true,
     consent_marketing: consentMarketing,

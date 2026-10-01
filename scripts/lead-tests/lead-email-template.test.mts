@@ -11,6 +11,7 @@ test("lead email renders the branded HTML and preserves the plain-text fallback"
       email: "anna@example.test",
       course: "HSK <3>",
       call_time: "После 18:00",
+      timezone: "Asia/Vladivostok",
       message: "Первая строка\nВторая <b>строка</b>",
       consent_pd: true,
       consent_marketing: false,
@@ -34,11 +35,13 @@ test("lead email renders the branded HTML and preserves the plain-text fallback"
   assert.doesNotMatch(email.html, /<script>alert/);
   assert.match(email.html, /Первая строка<br>Вторая &lt;b&gt;строка&lt;\/b&gt;/);
   assert.match(email.html, /mailto:anna@example\.test/);
+  assert.match(email.html, /Часовой пояс браузера[\s\S]*Asia\/Vladivostok/);
   assert.match(email.html, /Согласие на рассылку: Нет/);
   assert.match(email.html, /utm_campaign: hsk &lt;summer&gt;/);
   assert.match(email.text, /Новая заявка с https:\/\/chinachild\.ru/);
   assert.match(email.text, /Имя: Анна <script>alert\(1\)<\/script>/);
   assert.match(email.text, /utm_source=yandex/);
+  assert.match(email.text, /Часовой пояс браузера: Asia\/Vladivostok/);
 });
 
 test("lead email renders explicit placeholders for omitted optional fields", () => {
