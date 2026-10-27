@@ -68,7 +68,7 @@
     "autoprefixer": "^10.5.0",
     "eslint": "^9",
     "eslint-config-next": "^15.5.15",
-    "lighthouse": "^13.4.0",
+    "lighthouse": "13.4.1",
     "postcss": "^8.5.12",
     "tailwindcss": "^4.2.4",
     "typescript": "^5"
