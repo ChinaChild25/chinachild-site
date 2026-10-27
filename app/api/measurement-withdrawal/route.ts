@@ -5,8 +5,10 @@ import { validSubmissionId } from "@/lib/leads/submission-identity";
 
 export async function POST(request: Request) {
   const origin = request.headers.get("origin");
-  const expected = new URL(request.url).origin;
-  if (origin !== expected || !request.headers.get("content-type")?.startsWith("application/json")) return Response.json({ ok: false }, { status: 403 });
+  const site = new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://chinachild.ru");
+  const origins = new Set([site.origin]);
+  if (site.hostname === "chinachild.ru") origins.add("https://www.chinachild.ru");
+  if (!origin || !origins.has(origin) || !request.headers.get("content-type")?.startsWith("application/json")) return Response.json({ ok: false }, { status: 403 });
   if (Number(request.headers.get("content-length") || 0) > 8192) return Response.json({ ok: false }, { status: 413 });
   const reader = request.body?.getReader();
   if (!reader) return Response.json({ ok: false }, { status: 400 });
