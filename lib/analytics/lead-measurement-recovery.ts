@@ -1,6 +1,6 @@
 import type { LeadMeasurementEvent } from "./lead-measurement.ts";
 
-export const MEASUREMENT_REVIEW_STATES = ["pending", "retryable", "sending", "unknown", "failed", "expired"];
+export const MEASUREMENT_REVIEW_STATES = ["pending", "retryable", "sending", "unknown", "failed", "expired", "cancelled"];
 export const MEASUREMENT_RECOVERY_LIMIT = 25;
 
 /** Diagnostic output deliberately omits ClientID, source URLs, tokens and lead contact data. */

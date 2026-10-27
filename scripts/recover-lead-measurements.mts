@@ -5,7 +5,7 @@ import { validateYandexMeasurementConfig } from "../lib/analytics/yandex-metrika
 import { MEASUREMENT_RECOVERY_LIMIT, MEASUREMENT_REVIEW_STATES, measurementRecoveryStatus } from "../lib/analytics/lead-measurement-recovery.ts";
 
 // Manual recovery only. Default is read-only. Budget: one preflight, <=25 events,
-// <=25 provider requests, <=100 state queries. No schedule, loops beyond this batch, or retries.
+// <=25 provider requests, <=125 state/preflight queries. No schedule, loops beyond this batch, or retries.
 const apply = process.argv.includes("--apply");
 if (apply) {
   const config = validateYandexMeasurementConfig(process.env);

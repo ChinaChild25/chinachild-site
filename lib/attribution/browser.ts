@@ -48,6 +48,7 @@ export function getLeadAttribution() {
   const history = captureAttribution();
   return {
     analytics_consent: analyticsConsent,
+    ...(analyticsConsent ? { direct_visit: !history?.last && typeof document !== "undefined" && !document.referrer } : {}),
     ...(analyticsConsent ? { analytics_consent_version: consentVersion, analytics_consent_at: consentAt, attribution: history } : {}),
     utm: history?.last?.tags ?? {},
   };

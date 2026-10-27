@@ -1,5 +1,7 @@
 "use client";
 
+import { prepareLeadMeasurement, flushMeasurementWithdrawals } from "@/lib/analytics/measurement-withdrawal-browser";
+
 import { getLeadPageContext } from "@/lib/attribution/browser";
 
 import { SmartCaptcha } from "@yandex/smart-captcha";
@@ -194,8 +196,9 @@ export default function LeadForm({
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ ...payload, ...prepareLeadMeasurement(payload.submission_id) }),
       });
+      void flushMeasurementWithdrawals();
       const data = (await res.json()) as {
         ok?: boolean;
         accepted?: boolean;

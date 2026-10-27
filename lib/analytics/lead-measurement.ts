@@ -3,7 +3,7 @@ import type { YandexLeadDeliveryInput } from "./yandex-metrika-delivery.ts";
 import { ANALYTICS_CONSENT_VERSION } from "../consent/value.ts";
 import { validateYandexClientId } from "./yandex-client-id-value.ts";
 
-export type LeadMeasurementState = "pending" | "sending" | "delivered" | "retryable" | "failed" | "unknown" | "expired";
+export type LeadMeasurementState = "pending" | "sending" | "delivered" | "retryable" | "failed" | "unknown" | "expired" | "cancelled";
 export type LeadMeasurementEvent = {
   state: LeadMeasurementState;
   clientId: string;

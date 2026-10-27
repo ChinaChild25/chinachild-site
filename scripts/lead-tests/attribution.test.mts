@@ -65,7 +65,7 @@ test("no consent means no optional storage or payload; grant captures, withdrawa
     assert.equal(context.page_path, "/free-trial");
     assert.equal(context.referrer, undefined);
     assert.equal(values.has(ATTRIBUTION_STORAGE_KEY), false);
-    applyAttributionConsent(true, "v2", new Date().toISOString());
+    applyAttributionConsent(true, "v3", new Date().toISOString());
     assert.equal(getLeadAttribution().utm.yclid, "42");
     assert.equal(values.has(ATTRIBUTION_STORAGE_KEY), true);
     // Same document navigation doesn't add a source or erase the original one.
@@ -79,7 +79,7 @@ test("no consent means no optional storage or payload; grant captures, withdrawa
   }
 });
 
-const event: LeadMeasurementEvent = { state: "pending", clientId: "12345", sourceUrl: "https://chinachild.ru/", eventTimeSeconds: Math.floor(now / 1000), consentVersion: "v2" };
+const event: LeadMeasurementEvent = { state: "pending", clientId: "12345", sourceUrl: "https://chinachild.ru/", eventTimeSeconds: Math.floor(now / 1000), consentVersion: "v3" };
 function memoryStore(initial: LeadMeasurementState = "pending") {
   let state = initial;
   return { get state() { return state; }, async transition(_id: string, expected: LeadMeasurementState, next: LeadMeasurementState) {
@@ -158,7 +158,7 @@ test("withdrawal clears pending vendor commands, disables GA, and removes only a
   const removed: string[] = [];
   const queue = [[123, "init"], [123, "hit"]];
   const vendor = Object.assign(() => {}, { a: queue });
-  const fake = { location: { hostname: "chinachild.ru", href: "https://chinachild.ru/" },
+  const fake = { addEventListener: () => {}, location: { hostname: "chinachild.ru", href: "https://chinachild.ru/" },
     localStorage: { getItem: () => null, removeItem: () => {}, setItem: () => {} },
     ym: vendor, __ccYmLoaderPending: true };
   Object.defineProperty(globalThis, "window", { configurable: true, value: fake });

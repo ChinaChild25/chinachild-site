@@ -11,22 +11,12 @@ import {
 
 import { initConsentMode, updateConsent } from "./gtag";
 import { syncAnalyticsConsent } from "./analytics";
-import { ANALYTICS_CONSENT_VERSION } from "./value";
+import { readConsent, ANALYTICS_CONSENT_VERSION } from "./value";
 
-// Keep existing granular v2 choices. Optional scripts require analytics=true.
+// Keep explicit legacy refusals; renew all legacy analytics grants in the unchanged banner.
 const STORAGE_KEY = "cookie-consent-v2";
 const VERSION = ANALYTICS_CONSENT_VERSION;
 
-function readConsent(raw: string | null): ConsentState | null {
-  try {
-    const value = raw ? JSON.parse(raw) : null;
-    if (!value || value.version !== VERSION || typeof value.analytics !== "boolean" ||
-      typeof value.marketing !== "boolean" || typeof value.timestamp !== "string" ||
-      !Number.isFinite(Date.parse(value.timestamp))) return null;
-    return { necessary: true, analytics: value.analytics, marketing: value.marketing,
-      timestamp: value.timestamp, version: VERSION };
-  } catch { return null; }
-}
 
 export type ConsentState = {
   necessary: true;

@@ -25,7 +25,7 @@ function getClient(): SupabaseClient | null {
   return cachedClient;
 }
 
-export async function checkRateLimit(ipHash: string): Promise<{
+export async function checkRateLimit(ipHash: string, maximumAttempts = MAX_ATTEMPTS_PER_HOUR): Promise<{
   allowed: boolean;
   attempts: number;
 }> {
@@ -73,7 +73,7 @@ export async function checkRateLimit(ipHash: string): Promise<{
     .eq("ip_hash", ipHash);
 
   return {
-    allowed: newAttempts <= MAX_ATTEMPTS_PER_HOUR,
+    allowed: newAttempts <= maximumAttempts,
     attempts: newAttempts,
   };
 }

@@ -15,6 +15,7 @@ import { sendStoredLeadMeasurement } from "@/lib/analytics/lead-measurement.serv
 import type { LeadMeasurementEvent } from "@/lib/analytics/lead-measurement";
 import { resolveYandexClientId } from "@/lib/analytics/yandex-metrika-measurement-request";
 import { attributionHistory, sanitizeAttributionTags } from "@/lib/attribution/history";
+import { createHash } from "node:crypto";
 import { validSubmissionId } from "@/lib/leads/submission-identity";
 import { after } from "next/server";
 import { hasAnalyticsConsentEvidence, ANALYTICS_CONSENT_VERSION } from "@/lib/consent/value";
@@ -48,6 +49,9 @@ type LeadPayload = {
   consent_marketing?: unknown;
   yandex_client_id?: unknown;
   submission_id?: unknown;
+  measurement_withdrawal_token?: unknown;
+  measurement_created_at?: unknown;
+  direct_visit?: unknown;
   analytics_consent?: unknown;
   analytics_consent_version?: unknown;
   analytics_consent_at?: unknown;
@@ -165,7 +169,10 @@ export async function POST(request: Request) {
   const referrer = sanitize(body.referrer || request.headers.get("referer"), 500);
   const userAgent = sanitize(request.headers.get("user-agent"), 500);
   const smartToken = sanitize(body.smart_token, 4000);
-  const analyticsConsent = hasAnalyticsConsentEvidence(body);
+  const createdAt = typeof body.measurement_created_at === "number" ? body.measurement_created_at : NaN;
+  const freshSubmission = Number.isFinite(createdAt) && createdAt > Date.now() - 12 * 3600_000 && createdAt <= Date.now() + 300_000;
+  const withdrawalToken = typeof body.measurement_withdrawal_token === "string" && /^[0-9a-f]{64}$/.test(body.measurement_withdrawal_token) ? body.measurement_withdrawal_token : null;
+  const analyticsConsent = hasAnalyticsConsentEvidence(body) && freshSubmission && Boolean(withdrawalToken) && Boolean(validSubmissionId(body.submission_id));
   const attribution = analyticsConsent ? attributionHistory(body.attribution, null) : undefined;
   const utm = analyticsConsent ? sanitizeAttributionTags(attribution?.last?.tags ?? body.utm) : {};
   const clientId = analyticsConsent ? resolveYandexClientId({
@@ -175,7 +182,7 @@ export async function POST(request: Request) {
   const measurement: LeadMeasurementEvent | undefined = clientId && analyticsConsentVersion ? {
     state: "pending", clientId,
     sourceUrl: `https://chinachild.ru${pagePath.split(/[?#]/, 1)[0].startsWith("/") && !pagePath.startsWith("//") ? pagePath.split(/[?#]/, 1)[0] : "/"}`,
-    eventTimeSeconds: Math.floor(Date.now() / 1000), consentVersion: analyticsConsentVersion,
+    eventTimeSeconds: Math.floor(createdAt / 1000), consentVersion: analyticsConsentVersion,
   } : undefined;
 
   if (name.length < 2) {
@@ -213,7 +220,8 @@ export async function POST(request: Request) {
         at: analyticsConsent ? sanitize(body.analytics_consent_at, 50) : undefined },
       ...(attribution ? { attribution } : {}),
       ...(clientId ? { yandex_client_id: clientId } : {}),
-      ...(measurement ? { leadMeasurement: measurement } : {}),
+      attributionSummary: { version: 1, channel: !analyticsConsent ? "unknown" : attribution?.last?.kind === "paid" ? "paid" : attribution?.last?.kind !== "conflicting" && attribution?.last?.tags.utm_medium?.toLowerCase() === "organic" ? "organic" : attribution?.last?.kind === "referral" ? "referral" : !attribution?.last && body.direct_visit === true ? "direct" : "unknown" },
+      ...(measurement && withdrawalToken ? { leadMeasurement: measurement, measurementWithdrawalHash: createHash("sha256").update(withdrawalToken).digest("hex") } : {}),
     },
     name,
     phone,

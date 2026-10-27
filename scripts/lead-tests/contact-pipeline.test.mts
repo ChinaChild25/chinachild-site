@@ -64,7 +64,7 @@ globalThis.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
   const url = new URL(request.url);
   if (url.host === "mc.yandex.ru") { providerCalls++; return new Response("", { status: providerStatus }); }
   assert.equal(url.host, "local-fixture.invalid", "test attempted an external request");
-  if (url.pathname.includes("/rpc/")) return Response.json(null);
+  if (url.pathname.includes("/rpc/")) return Response.json(true);
   assert.equal(url.pathname, "/rest/v1/leads");
   const id = url.searchParams.get("id")?.slice(3);
   if (request.method === "POST") {
@@ -97,12 +97,12 @@ globalThis.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
     const expected = url.searchParams.get("metadata")?.slice(3);
     if (!row || (expected && JSON.stringify(row.metadata) !== expected)) return Response.json([]);
     Object.assign(row, patch);
-    return Response.json([{ id }]);
+    return Response.json([{ id, metadata: row.metadata }]);
   }
   throw new Error(`Unexpected fixture request ${request.method}`);
 };
 const { POST } = await import("../../app/api/contact/route.ts");
-const base = { name: "Fixture person", phone: "+79991234567", consent_pd: true, consent_marketing: false, form_started_at: String(Date.now() - 10_000), page_path: "/free-trial?yclid=42", source_page: "modal", utm: { utm_source: "yandex", utm_medium: "cpc", yclid: "42" }, yandex_client_id: "987654321" };
+const base = { measurement_withdrawal_token: "a".repeat(64), measurement_created_at: Date.now(), name: "Fixture person", phone: "+79991234567", consent_pd: true, consent_marketing: false, form_started_at: String(Date.now() - 10_000), page_path: "/free-trial?yclid=42", source_page: "modal", utm: { utm_source: "yandex", utm_medium: "cpc", yclid: "42" }, yandex_client_id: "987654321" };
 const submit = (body: object) => POST(new Request("https://chinachild.ru/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }));
 
 test("persisted contact pipeline handles opt-out, failure, duplicate retry and recoverable delivery", async (t) => {
@@ -110,7 +110,7 @@ test("persisted contact pipeline handles opt-out, failure, duplicate retry and r
     let response = await submit({ ...base, consent_pd: false });
     assert.equal(response.status, 400); assert.equal(rows.size, 0); assert.equal(afterTasks.length, 0);
     failPersistence = true;
-    response = await submit({ ...base, analytics_consent: true, analytics_consent_version: "v2", analytics_consent_at: new Date().toISOString() });
+    response = await submit({ ...base, analytics_consent: true, analytics_consent_version: "v3", analytics_consent_at: new Date().toISOString() });
     assert.equal(response.status, 500); assert.equal(afterTasks.length, 0);
     failPersistence = false;
     const noTracking = await (await submit({ ...base, source_page: "/free-trial?yclid=42", analytics_consent: false })).json();
@@ -120,7 +120,7 @@ test("persisted contact pipeline handles opt-out, failure, duplicate retry and r
     assert.equal(untracked.source_page, "/free-trial");
     assert.equal(untracked.metadata.leadMeasurement, undefined); assert.equal(afterTasks.length, 0);
     const submission_id = crypto.randomUUID();
-    const tracked = { ...base, submission_id, analytics_consent: true, analytics_consent_version: "v2", analytics_consent_at: new Date().toISOString() };
+    const tracked = { ...base, submission_id, analytics_consent: true, analytics_consent_version: "v3", analytics_consent_at: new Date().toISOString() };
     const success = await (await submit(tracked)).json();
     assert.equal(success.id, submission_id); assert.equal(afterTasks.length, 1);
     const emailsBefore = emailCount;
@@ -138,11 +138,11 @@ test("persisted contact pipeline handles opt-out, failure, duplicate retry and r
     assert.equal(providerCalls, 2);
     await t.test("invalid analytics evidence preserves the lead but drops all advertising identifiers", async () => {
       for (const evidence of [
-        { analytics_consent: "true", analytics_consent_version: "v2", analytics_consent_at: new Date().toISOString() },
+        { analytics_consent: "true", analytics_consent_version: "v3", analytics_consent_at: new Date().toISOString() },
         { analytics_consent: true, analytics_consent_version: "v1", analytics_consent_at: new Date().toISOString() },
-        { analytics_consent: true, analytics_consent_version: "v2" },
-        { analytics_consent: true, analytics_consent_version: "v2", analytics_consent_at: "invalid" },
-        { analytics_consent: true, analytics_consent_version: "v2", analytics_consent_at: new Date(Date.now() + 3600_000).toISOString() },
+        { analytics_consent: true, analytics_consent_version: "v3" },
+        { analytics_consent: true, analytics_consent_version: "v3", analytics_consent_at: "invalid" },
+        { analytics_consent: true, analytics_consent_version: "v3", analytics_consent_at: new Date(Date.now() + 3600_000).toISOString() },
       ]) {
         const result = await (await submit({ ...base, ...evidence, submission_id: crypto.randomUUID() })).json();
         assert.equal(result.persisted, true);
