@@ -100,7 +100,7 @@ export default function HskTestLeadInline({
 
     const payload = {
       submission_id: "",
-      "smart-token": verifiedToken,
+      smart_token: verifiedToken,
       ...getLeadPageContext(`hsk-test-result-level-${recommendedLevel}`, typeof window === "undefined" ? "" : window.location.pathname),
       name: String(fd.get("name") ?? ""),
       phone: normalizedPhone,

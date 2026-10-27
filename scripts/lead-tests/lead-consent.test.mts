@@ -207,3 +207,14 @@ test("legal links in the shared consent copy point at pages that exist in this r
     ),
   );
 });
+
+// Both public clients must satisfy the same production anti-bot API contract.
+test("all lead clients send the CAPTCHA field required by the contact endpoint", async () => {
+  const route = await readFile(path.join(ROOT, "app/api/contact/route.ts"), "utf8");
+  assert.match(route, /sanitize\(body\.smart_token,/);
+  for (const file of ["components/forms/LeadForm.tsx", "components/hsk-test/HskTestLeadInline.tsx"]) {
+    const source = await readFile(path.join(ROOT, file), "utf8");
+    assert.match(source, /\bsmart_token:\s*\w+/, `${file} must supply the server CAPTCHA field`);
+    assert.doesNotMatch(source, /["']smart-token["']\s*:/, "a DOM error label is not the JSON contract");
+  }
+});
