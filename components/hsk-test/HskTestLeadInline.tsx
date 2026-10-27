@@ -5,6 +5,7 @@ import { prepareLeadMeasurement, flushMeasurementWithdrawals } from "@/lib/analy
 import { getLeadPageContext } from "@/lib/attribution/browser";
 
 import { useRef, useState } from "react";
+import { InvisibleSmartCaptcha } from "@yandex/smart-captcha";
 import { trackLeadSubmitted } from "@/lib/analytics";
 import {
   getCachedYandexClientId,
@@ -52,6 +53,11 @@ export default function HskTestLeadInline({
   score,
 }: Props) {
   const submissionGate = useRef(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  const captchaToken = useRef("");
+  const [captchaVisible, setCaptchaVisible] = useState(false);
+  const [captchaResetKey, setCaptchaResetKey] = useState(0);
+  const smartCaptchaSiteKey = process.env.NEXT_PUBLIC_YANDEX_SMARTCAPTCHA_SITE_KEY?.trim();
   const submissionId = useRef<{ id: string; signature: string } | null>(null);
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
@@ -80,8 +86,21 @@ export default function HskTestLeadInline({
       return;
     }
 
+    // The shared contact endpoint requires a single-use CAPTCHA token in production.
+    // Re-enter through the form after verification so consent/phone are read again.
+    if (smartCaptchaSiteKey && !captchaToken.current) {
+      releaseLeadSubmission(submissionGate);
+      setError(null);
+      setCaptchaVisible(true);
+      return;
+    }
+    const verifiedToken = captchaToken.current;
+    captchaToken.current = "";
+    setCaptchaVisible(false);
+
     const payload = {
       submission_id: "",
+      "smart-token": verifiedToken,
       ...getLeadPageContext(`hsk-test-result-level-${recommendedLevel}`, typeof window === "undefined" ? "" : window.location.pathname),
       name: String(fd.get("name") ?? ""),
       phone: normalizedPhone,
@@ -118,6 +137,7 @@ export default function HskTestLeadInline({
         messengers?: unknown;
       };
       if (!res.ok || !isPersistedLeadResponse(data)) {
+        setCaptchaResetKey((key) => key + 1);
         releaseLeadSubmission(submissionGate);
         setStatus("error");
         setError(data.error ?? "Что-то пошло не так. Попробуйте ещё раз.");
@@ -131,6 +151,7 @@ export default function HskTestLeadInline({
         source: payload.source_page,
       });
     } catch (err) {
+      setCaptchaResetKey((key) => key + 1);
       releaseLeadSubmission(submissionGate);
       setStatus("error");
       setError(
@@ -185,6 +206,7 @@ export default function HskTestLeadInline({
           </p>
         </div>
         <form
+          ref={formRef}
           onSubmit={handleSubmit}
           noValidate
           className="hsk-test-lead-form"
@@ -230,6 +252,32 @@ export default function HskTestLeadInline({
               <MarketingConsentLabelText />
             </span>
           </label>
+          {smartCaptchaSiteKey ? (
+            <InvisibleSmartCaptcha
+              key={captchaResetKey}
+              sitekey={smartCaptchaSiteKey}
+              visible={captchaVisible}
+              language="ru"
+              onSuccess={(token) => {
+                captchaToken.current = token;
+                setCaptchaVisible(false);
+                formRef.current?.requestSubmit();
+              }}
+              onChallengeHidden={() => setCaptchaVisible(false)}
+              onTokenExpired={() => { captchaToken.current = ""; }}
+              onNetworkError={() => {
+                setCaptchaVisible(false);
+                setCaptchaResetKey((key) => key + 1);
+                setStatus("error");
+                setError("Не удалось проверить CAPTCHA. Попробуйте ещё раз.");
+              }}
+              onJavascriptError={() => {
+                setCaptchaVisible(false);
+                setStatus("error");
+                setError("Не удалось загрузить CAPTCHA. Обновите страницу.");
+              }}
+            />
+          ) : null}
           {error ? (
             <p role="alert" className="hsk-test-lead-error">
               {error}
