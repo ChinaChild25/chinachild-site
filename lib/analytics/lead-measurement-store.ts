@@ -16,4 +16,3 @@ export function measurementStore(client: SupabaseClient): MeasurementStore { ret
     return result.data.length === 1;
   },
 }; }
-

@@ -1,14 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useConsent } from "@/lib/consent/context";
 
 export default function CookieBanner() {
-  const { isBannerOpen, acceptAll, acceptNecessaryOnly, updatePreferences } = useConsent();
+  const { consent, isBannerOpen, acceptAll, acceptNecessaryOnly, updatePreferences } = useConsent();
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [analyticsPref, setAnalyticsPref] = useState(true);
+  const [analyticsPref, setAnalyticsPref] = useState(false);
   const [marketingPref, setMarketingPref] = useState(false);
+
+  useEffect(() => {
+    if (!isBannerOpen) return;
+    setAnalyticsPref(consent?.analytics === true);
+    setMarketingPref(consent?.marketing === true);
+  }, [isBannerOpen, consent]);
 
   if (!isBannerOpen) return null;
 
