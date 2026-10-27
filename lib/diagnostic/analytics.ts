@@ -1,4 +1,6 @@
 "use client";
+import { hasAnalyticsConsent } from "../attribution/browser.ts";
+
 
 /**
  * Точки аналитики для /diagnostic.
@@ -31,7 +33,7 @@ declare global {
 }
 
 export function track(event: DiagnosticEvent) {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined" || !hasAnalyticsConsent()) return;
 
   // eslint-disable-next-line no-console
   console.log(`[diagnostic] ${event.name}`, "params" in event ? event.params : "");

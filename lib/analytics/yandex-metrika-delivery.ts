@@ -12,6 +12,7 @@ export type YandexLeadDeliveryInput = {
   cookieHeader?: string | null;
   userAgent?: string | null;
   clientIp?: string | null;
+  eventTimeSeconds?: number;
 };
 
 export type ServerLeadTrackingResult =
@@ -56,6 +57,7 @@ export async function deliverYandexLeadEvent(
     config: configuration.config,
     clientId,
     sourceUrl: input.sourceUrl,
+    eventTimeSeconds: input.eventTimeSeconds,
   });
   const headers: Record<string, string> = {
     Accept: "text/plain,*/*;q=0.8",

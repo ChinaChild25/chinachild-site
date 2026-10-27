@@ -1,5 +1,7 @@
 "use client";
 
+import { getLeadPageContext } from "@/lib/attribution/browser";
+
 import { SmartCaptcha } from "@yandex/smart-captcha";
 import { useEffect, useId, useRef, useState } from "react";
 import {
@@ -10,7 +12,6 @@ import {
 } from "@/lib/analytics";
 import {
   getCachedYandexClientId,
-  startYandexClientIdCapture,
 } from "@/lib/analytics/yandex-client-id";
 import {
   MarketingConsentLabelText,
@@ -30,6 +31,7 @@ import {
 } from "@/lib/leads/contact-validation";
 import {
   beginLeadSubmission,
+  leadSubmissionIdentity,
   releaseLeadSubmission,
 } from "@/lib/leads/submission-gate";
 import {
@@ -79,24 +81,6 @@ export type LeadFormProps = {
   offerContext?: EducationOfferAnalyticsContext;
 };
 
-function readUtm(): Record<string, string> {
-  if (typeof window === "undefined") return {};
-  const params = new URLSearchParams(window.location.search);
-  const out: Record<string, string> = {};
-  for (const key of [
-    "utm_source",
-    "utm_medium",
-    "utm_campaign",
-    "utm_content",
-    "utm_term",
-    "yclid",
-    "gclid",
-  ]) {
-    const v = params.get(key);
-    if (v) out[key] = v;
-  }
-  return out;
-}
 
 export default function LeadForm({
   defaultCourse,
@@ -115,6 +99,7 @@ export default function LeadForm({
   const honeypotId = useId();
   const websiteHoneypotId = useId();
   const submissionGate = useRef(false);
+  const submissionId = useRef<{ id: string; signature: string } | null>(null);
   const formStartTracked = useRef(false);
 
   const [status, setStatus] = useState<Status>("idle");
@@ -132,7 +117,6 @@ export default function LeadForm({
     }
   }, []);
 
-  useEffect(() => startYandexClientIdCapture(), []);
 
   function trackFormStart() {
     if (!offerContext || formStartTracked.current) return;
@@ -184,6 +168,8 @@ export default function LeadForm({
     }
 
     const payload = {
+      submission_id: "",
+      ...getLeadPageContext(source ?? pageHref, pageHref),
       name: String(formData.get("name") ?? ""),
       phone: normalizedPhone,
       email: normalizedEmail,
@@ -197,13 +183,10 @@ export default function LeadForm({
       company: String(formData.get("company") ?? ""), // honeypot
       website: String(formData.get("website") ?? ""), // honeypot
       form_started_at: String(formStartedAt),
-      source_page: source ?? pageHref,
-      page_path: pageHref,
-      referrer: typeof document === "undefined" ? "" : document.referrer,
-      utm: readUtm(),
       yandex_client_id: getCachedYandexClientId(),
     };
 
+    payload.submission_id = leadSubmissionIdentity(submissionId, payload);
     setStatus("submitting");
     setError(null);
 

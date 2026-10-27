@@ -11,8 +11,13 @@ import { normalizeEmail, normalizePhone } from "@/lib/leads/contact-validation";
 import { checkRateLimit, hashIp } from "@/lib/leads/rate-limit";
 import { markLeadDelivered, storeLead, type LeadInsert } from "@/lib/leads/store";
 import { issueApplicationMessengerLinks } from "@/lib/leads/application-messenger-handoff";
-import { trackServerLead } from "@/lib/analytics/yandex-metrika-server";
+import { sendStoredLeadMeasurement } from "@/lib/analytics/lead-measurement.server";
+import type { LeadMeasurementEvent } from "@/lib/analytics/lead-measurement";
+import { resolveYandexClientId } from "@/lib/analytics/yandex-metrika-measurement-request";
+import { attributionHistory, sanitizeAttributionTags } from "@/lib/attribution/history";
+import { validSubmissionId } from "@/lib/leads/submission-identity";
 import { after } from "next/server";
+import { hasAnalyticsConsentEvidence, ANALYTICS_CONSENT_VERSION } from "@/lib/consent/value";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -42,6 +47,11 @@ type LeadPayload = {
   consent_pd?: unknown;
   consent_marketing?: unknown;
   yandex_client_id?: unknown;
+  submission_id?: unknown;
+  analytics_consent?: unknown;
+  analytics_consent_version?: unknown;
+  analytics_consent_at?: unknown;
+  attribution?: unknown;
 };
 
 function sanitize(value: unknown, max: number): string {
@@ -61,26 +71,6 @@ function normalizeTimeZone(value: unknown): string {
   }
 }
 
-function sanitizeUtm(value: unknown): Record<string, string> {
-  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
-
-  const allowed = new Set([
-    "utm_source",
-    "utm_medium",
-    "utm_campaign",
-    "utm_content",
-    "utm_term",
-    "yclid",
-    "gclid",
-  ]);
-
-  return Object.fromEntries(
-    Object.entries(value as Record<string, unknown>)
-      .filter(([key, v]) => allowed.has(key) && typeof v === "string")
-      .map(([key, v]) => [key, sanitize(v, 200)] as [string, string])
-      .filter(([, v]) => v),
-  );
-}
 
 function getClientIp(request: Request): string {
   const forwardedFor = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
@@ -170,12 +160,23 @@ export async function POST(request: Request) {
   const callTime = sanitize(body.call_time || body.callTime, 120);
   const timeZone = normalizeTimeZone(body.timezone);
   const message = sanitize(body.message || body.comment, 2000);
-  const sourcePage = sanitize(body.source_page || body.source, 300);
+  const sourcePage = sanitize(body.source_page || body.source, 300).split(/[?#]/, 1)[0];
   const pagePath = sanitize(body.page_path, 300);
   const referrer = sanitize(body.referrer || request.headers.get("referer"), 500);
   const userAgent = sanitize(request.headers.get("user-agent"), 500);
   const smartToken = sanitize(body.smart_token, 4000);
-  const utm = sanitizeUtm(body.utm);
+  const analyticsConsent = hasAnalyticsConsentEvidence(body);
+  const attribution = analyticsConsent ? attributionHistory(body.attribution, null) : undefined;
+  const utm = analyticsConsent ? sanitizeAttributionTags(attribution?.last?.tags ?? body.utm) : {};
+  const clientId = analyticsConsent ? resolveYandexClientId({
+    explicitClientId: body.yandex_client_id, cookieHeader: request.headers.get("cookie"),
+  }) : null;
+  const analyticsConsentVersion = analyticsConsent ? ANALYTICS_CONSENT_VERSION : "";
+  const measurement: LeadMeasurementEvent | undefined = clientId && analyticsConsentVersion ? {
+    state: "pending", clientId,
+    sourceUrl: `https://chinachild.ru${pagePath.split(/[?#]/, 1)[0].startsWith("/") && !pagePath.startsWith("//") ? pagePath.split(/[?#]/, 1)[0] : "/"}`,
+    eventTimeSeconds: Math.floor(Date.now() / 1000), consentVersion: analyticsConsentVersion,
+  } : undefined;
 
   if (name.length < 2) {
     return Response.json(
@@ -205,6 +206,15 @@ export async function POST(request: Request) {
   }
 
   const leadInsert: LeadInsert = {
+    id: validSubmissionId(body.submission_id),
+    metadata: {
+      attributionStatus: !analyticsConsent ? "tracking_not_allowed" : attribution?.history.length ? "source_evidence" : "direct_or_unknown",
+      analyticsConsent: { allowed: analyticsConsent, version: analyticsConsent ? analyticsConsentVersion : undefined,
+        at: analyticsConsent ? sanitize(body.analytics_consent_at, 50) : undefined },
+      ...(attribution ? { attribution } : {}),
+      ...(clientId ? { yandex_client_id: clientId } : {}),
+      ...(measurement ? { leadMeasurement: measurement } : {}),
+    },
     name,
     phone,
     email: email || undefined,
@@ -222,7 +232,7 @@ export async function POST(request: Request) {
     consent_marketing_content_hash: getConsentMarketingContentHash(),
     consent_accepted_at: new Date().toISOString(),
     source_page: sourcePage || undefined,
-    consent_page_path: pagePath || undefined,
+    consent_page_path: pagePath.split(/[?#]/, 1)[0] || undefined,
     utm_source: utm.utm_source,
     utm_medium: utm.utm_medium,
     utm_campaign: utm.utm_campaign,
@@ -230,7 +240,7 @@ export async function POST(request: Request) {
     utm_term: utm.utm_term,
     yclid: utm.yclid,
     gclid: utm.gclid,
-    referrer: referrer || undefined,
+    referrer: analyticsConsent ? referrer || undefined : undefined,
     ip_hash: ipHash,
     user_agent: userAgent || undefined,
   };
@@ -244,15 +254,32 @@ export async function POST(request: Request) {
     );
   }
 
+  if (measurement && !stored.duplicate) {
+    try {
+      after(async () => {
+        try { await sendStoredLeadMeasurement(stored.id, measurement); }
+        catch { console.error("[ym-server] durable event needs recovery", { leadId: stored.id }); }
+      });
+    } catch { console.error("[ym-server] durable event not scheduled", { leadId: stored.id }); }
+  }
+  if (stored.duplicate) {
+    const messengers = await issueApplicationMessengerLinks({ leadId: stored.id, sourcePage: sourcePage || "/" }).catch(() => null);
+    return Response.json({ ok: true, accepted: true, persisted: true, id: stored.id,
+      delivered: 0, attempted: 0, ...(messengers ? { messengers } : {}) });
+  }
+
   const lead: LeadInput = {
-    id: stored.id,
     ...leadInsert,
+    id: stored.id,
   };
 
   // The stored application is the canonical CRM lead. The optional «continue in a messenger»
   // links are bound to it server-side; failing to issue them never fails the application.
   const [result, messengers] = await Promise.all([
-    dispatchLead(lead),
+    dispatchLead(lead).catch(() => {
+      console.error("[lead] notification failed after storage", { leadId: stored.id });
+      return { delivered: [{ channel: "email", ok: false, detail: "dispatch_failed" }], attempted: 1 };
+    }),
     issueApplicationMessengerLinks({ leadId: stored.id, sourcePage: sourcePage || pagePath || "/" })
       .catch((error: unknown) => {
         console.error(
@@ -263,32 +290,9 @@ export async function POST(request: Request) {
       }),
   ]);
   const emailResult = result.delivered.find((item) => item.channel === "email");
-  await markLeadDelivered(stored.id, emailResult?.ok === true, emailResult?.ok ? undefined : emailResult?.detail);
+  await markLeadDelivered(stored.id, emailResult?.ok === true, emailResult?.ok ? undefined : emailResult?.detail)
+    .catch(() => { console.error("[lead] delivery status write failed", { leadId: stored.id }); });
 
-  const serverTrackingInput = {
-    explicitClientId: body.yandex_client_id,
-    sourceUrl: request.headers.get("referer") || sourcePage || undefined,
-    cookieHeader: request.headers.get("cookie"),
-    userAgent: userAgent || null,
-    clientIp,
-  };
-  try {
-    after(async () => {
-      const tracking = await trackServerLead(serverTrackingInput);
-      if (!tracking.ok) {
-        console.error("[ym-server] stored lead event not sent", {
-          kind: tracking.kind,
-          status: tracking.status,
-          error: tracking.error,
-        });
-      }
-    });
-  } catch (error) {
-    console.error(
-      "[ym-server] could not schedule stored lead event",
-      error instanceof Error ? error.message : "unknown error",
-    );
-  }
 
   return Response.json(
     {

@@ -1,3 +1,4 @@
+import { hasAnalyticsConsent } from "./attribution/browser.ts";
 type Params = Record<string, string | number | boolean | undefined>;
 
 export type EducationOfferAnalyticsContext = {
@@ -77,7 +78,7 @@ declare global {
 }
 
 export function trackEvent(name: string, params?: Params) {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined" || !hasAnalyticsConsent() || name === Goals.LEAD_SUBMITTED) return;
 
   const ymId = Number(process.env.NEXT_PUBLIC_YM_ID);
   if (ymId && window.ym) {
@@ -104,7 +105,7 @@ export function trackEducationOfferEvent(
     | typeof Goals.EDUCATION_OFFER_FORM_START,
   params: Params,
 ) {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined" || !hasAnalyticsConsent()) return;
 
   const ymId = Number(process.env.NEXT_PUBLIC_YM_ID);
   if (ymId && window.ym) {
@@ -126,7 +127,7 @@ export function trackLeadSubmitted(input: {
   source?: string;
   offerContext?: EducationOfferAnalyticsContext;
 }): boolean {
-  if (typeof window === "undefined" || trackedLeadIds.has(input.leadId)) {
+  if (typeof window === "undefined" || !hasAnalyticsConsent() || trackedLeadIds.has(input.leadId)) {
     return false;
   }
   trackedLeadIds.add(input.leadId);

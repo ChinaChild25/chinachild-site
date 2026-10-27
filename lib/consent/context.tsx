@@ -10,13 +10,23 @@ import {
 } from "react";
 
 import { initConsentMode, updateConsent } from "./gtag";
+import { syncAnalyticsConsent } from "./analytics";
+import { ANALYTICS_CONSENT_VERSION } from "./value";
 
-// v2: switched from hard-blocking analytics scripts to Consent Mode v2 +
-// Yandex.Metrika cookieless-then-upgrade. The contract changed enough that
-// existing v1 decisions must be re-collected (granular analytics/marketing
-// flags are now load-bearing). v1 entries in localStorage are ignored.
+// Keep existing granular v2 choices. Optional scripts require analytics=true.
 const STORAGE_KEY = "cookie-consent-v2";
-const VERSION = "v2";
+const VERSION = ANALYTICS_CONSENT_VERSION;
+
+function readConsent(raw: string | null): ConsentState | null {
+  try {
+    const value = raw ? JSON.parse(raw) : null;
+    if (!value || value.version !== VERSION || typeof value.analytics !== "boolean" ||
+      typeof value.marketing !== "boolean" || typeof value.timestamp !== "string" ||
+      !Number.isFinite(Date.parse(value.timestamp))) return null;
+    return { necessary: true, analytics: value.analytics, marketing: value.marketing,
+      timestamp: value.timestamp, version: VERSION };
+  } catch { return null; }
+}
 
 export type ConsentState = {
   necessary: true;
@@ -56,19 +66,32 @@ export function ConsentProvider({ children }: { children: ReactNode }) {
     initConsentMode();
     setHydrated(true);
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw) as ConsentState;
-        if (parsed && parsed.version === VERSION) {
-          setConsent(parsed);
-          updateConsent({ analytics: parsed.analytics, marketing: parsed.marketing });
+      const parsed = readConsent(localStorage.getItem(STORAGE_KEY));
+      if (parsed) {
+          syncAnalyticsConsent(parsed.analytics === true, VERSION, parsed.timestamp);
+          setConsent({ ...parsed, analytics: parsed.analytics === true, marketing: parsed.marketing === true });
+          updateConsent({ analytics: parsed.analytics === true, marketing: parsed.marketing === true });
           return;
-        }
       }
+      syncAnalyticsConsent(false);
       setIsBannerOpen(true);
     } catch {
+      syncAnalyticsConsent(false);
       setIsBannerOpen(true);
     }
+  }, []);
+
+  useEffect(() => {
+    const onStorage = (event: StorageEvent) => {
+      if (event.key !== STORAGE_KEY && event.key !== null) return;
+      const next = readConsent(event.key === null ? null : event.newValue);
+      syncAnalyticsConsent(next?.analytics === true, next?.version, next?.timestamp);
+      setConsent(next);
+      setIsBannerOpen(!next);
+      updateConsent({ analytics: next?.analytics === true, marketing: next?.marketing === true });
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
   }, []);
 
   const save = useCallback((analytics: boolean, marketing: boolean) => {
@@ -79,6 +102,7 @@ export function ConsentProvider({ children }: { children: ReactNode }) {
       timestamp: new Date().toISOString(),
       version: VERSION,
     };
+    syncAnalyticsConsent(analytics, VERSION, state.timestamp);
     setConsent(state);
     setIsBannerOpen(false);
     updateConsent({ analytics, marketing });

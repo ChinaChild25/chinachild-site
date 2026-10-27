@@ -2,9 +2,13 @@
 
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
+import { useConsent } from "@/lib/consent/context";
+import { captureAttribution } from "@/lib/attribution/browser";
 import { trackEvent } from "@/lib/analytics";
 
 export default function AnalyticsEvents() {
+  const { consent } = useConsent();
+  useEffect(() => { if (consent?.analytics) captureAttribution(); }, [consent]);
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -15,7 +19,7 @@ export default function AnalyticsEvents() {
     if (pathname === "/free-trial") {
       trackEvent("free_trial_view", { path: pathname });
     }
-  }, [pathname, searchParams]);
+  }, [pathname, searchParams, consent?.analytics]);
 
   useEffect(() => {
     const onClick = (event: MouseEvent) => {
