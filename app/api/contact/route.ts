@@ -14,7 +14,7 @@ import { issueApplicationMessengerLinks } from "@/lib/leads/application-messenge
 import { sendStoredLeadMeasurement } from "@/lib/analytics/lead-measurement.server";
 import type { LeadMeasurementEvent } from "@/lib/analytics/lead-measurement";
 import { resolveYandexClientId } from "@/lib/analytics/yandex-metrika-measurement-request";
-import { attributionHistory, sanitizeAttributionTags } from "@/lib/attribution/history";
+import { attributionHistory, sanitizeAttributionTags, summarizeAttribution, type AttributionConsentStatus } from "@/lib/attribution/history";
 import { createHash } from "node:crypto";
 import { validSubmissionId } from "@/lib/leads/submission-identity";
 import { after } from "next/server";
@@ -53,6 +53,7 @@ type LeadPayload = {
   measurement_created_at?: unknown;
   direct_visit?: unknown;
   analytics_consent?: unknown;
+  analytics_consent_status?: unknown;
   analytics_consent_version?: unknown;
   analytics_consent_at?: unknown;
   attribution?: unknown;
@@ -172,17 +173,27 @@ export async function POST(request: Request) {
   const createdAt = typeof body.measurement_created_at === "number" ? body.measurement_created_at : NaN;
   const freshSubmission = Number.isFinite(createdAt) && createdAt > Date.now() - 12 * 3600_000 && createdAt <= Date.now() + 300_000;
   const withdrawalToken = typeof body.measurement_withdrawal_token === "string" && /^[0-9a-f]{64}$/.test(body.measurement_withdrawal_token) ? body.measurement_withdrawal_token : null;
-  const analyticsConsent = hasAnalyticsConsentEvidence(body) && freshSubmission && Boolean(withdrawalToken) && Boolean(validSubmissionId(body.submission_id));
+  // Source capture needs valid consent. Missing measurement credentials must not
+  // erase consented source evidence or pretend that the visitor declined it.
+  const analyticsConsent = hasAnalyticsConsentEvidence(body);
+  const consentStatus: AttributionConsentStatus = analyticsConsent ? "granted" : body.analytics_consent === true ? "invalid"
+    : body.analytics_consent_status === "declined" ? "declined"
+    : body.analytics_consent_status === "not_decided" ? "not_decided" : "unavailable";
   const attribution = analyticsConsent ? attributionHistory(body.attribution, null) : undefined;
   const utm = analyticsConsent ? sanitizeAttributionTags(attribution?.last?.tags ?? body.utm) : {};
   const clientId = analyticsConsent ? resolveYandexClientId({
     explicitClientId: body.yandex_client_id, cookieHeader: request.headers.get("cookie"),
   }) : null;
   const analyticsConsentVersion = analyticsConsent ? ANALYTICS_CONSENT_VERSION : "";
-  const measurement: LeadMeasurementEvent | undefined = clientId && analyticsConsentVersion ? {
+  const skipReason = !analyticsConsent ? `consent_${consentStatus}` : !clientId ? "client_id_missing"
+    : !validSubmissionId(body.submission_id) ? "submission_identity_missing"
+    : !freshSubmission ? "invalid_event_window" : !withdrawalToken ? "withdrawal_token_missing" : null;
+  const measurement: LeadMeasurementEvent | undefined = !skipReason && clientId ? {
     state: "pending", clientId,
     sourceUrl: `https://chinachild.ru${pagePath.split(/[?#]/, 1)[0].startsWith("/") && !pagePath.startsWith("//") ? pagePath.split(/[?#]/, 1)[0] : "/"}`,
-    eventTimeSeconds: Math.floor(createdAt / 1000), consentVersion: analyticsConsentVersion,
+    // The conversion happens when the server accepts the application. Client
+    // clock skew must not turn a saved lead into an invalid future event.
+    eventTimeSeconds: Math.floor(Date.now() / 1000), consentVersion: analyticsConsentVersion,
   } : undefined;
 
   if (name.length < 2) {
@@ -216,12 +227,13 @@ export async function POST(request: Request) {
     id: validSubmissionId(body.submission_id),
     metadata: {
       attributionStatus: !analyticsConsent ? "tracking_not_allowed" : attribution?.history.length ? "source_evidence" : "direct_or_unknown",
-      analyticsConsent: { allowed: analyticsConsent, version: analyticsConsent ? analyticsConsentVersion : undefined,
+      analyticsConsent: { allowed: analyticsConsent, status: consentStatus, version: analyticsConsent ? analyticsConsentVersion : undefined,
         at: analyticsConsent ? sanitize(body.analytics_consent_at, 50) : undefined },
       ...(attribution ? { attribution } : {}),
       ...(clientId ? { yandex_client_id: clientId } : {}),
-      attributionSummary: { version: 1, channel: !analyticsConsent ? "unknown" : attribution?.last?.kind === "paid" ? "paid" : attribution?.last?.kind !== "conflicting" && attribution?.last?.tags.utm_medium?.toLowerCase() === "organic" ? "organic" : attribution?.last?.kind === "referral" ? "referral" : !attribution?.last && body.direct_visit === true ? "direct" : "unknown" },
-      ...(measurement && withdrawalToken ? { leadMeasurement: measurement, measurementWithdrawalHash: createHash("sha256").update(withdrawalToken).digest("hex") } : {}),
+      attributionSummary: summarizeAttribution(attribution, body.direct_visit === true, consentStatus),
+      leadMeasurement: measurement ?? { state: "skipped", detail: skipReason },
+      ...(measurement && withdrawalToken ? { measurementWithdrawalHash: createHash("sha256").update(withdrawalToken).digest("hex") } : {}),
     },
     name,
     phone,

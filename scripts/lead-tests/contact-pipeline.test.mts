@@ -105,6 +105,22 @@ const { POST } = await import("../../app/api/contact/route.ts");
 const base = { measurement_withdrawal_token: "a".repeat(64), measurement_created_at: Date.now(), name: "Fixture person", phone: "+79991234567", consent_pd: true, consent_marketing: false, form_started_at: String(Date.now() - 10_000), page_path: "/free-trial?yclid=42", source_page: "modal", utm: { utm_source: "yandex", utm_medium: "cpc", yclid: "42" }, yandex_client_id: "987654321" };
 const submit = (body: object) => POST(new Request("https://chinachild.ru/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }));
 
+test("client clocks ahead by 67 seconds or four minutes cannot invalidate a saved conversion", async () => {
+  for (const skew of [67_000, 240_000, -3_600_000]) {
+    const before = Math.floor(Date.now() / 1000);
+    const result = await (await submit({ ...base, submission_id: crypto.randomUUID(),
+      measurement_created_at: Date.now() + skew, analytics_consent: true,
+      analytics_consent_version: "v3", analytics_consent_at: new Date().toISOString(),
+    })).json();
+    assert.equal(result.persisted, true);
+    assert.ok(rows.get(result.id)!.metadata.leadMeasurement.eventTimeSeconds >= before);
+    assert.ok(rows.get(result.id)!.metadata.leadMeasurement.eventTimeSeconds <= Math.floor(Date.now() / 1000));
+    await afterTasks.shift()!();
+    assert.equal(rows.get(result.id)!.metadata.leadMeasurement.state, "delivered");
+  }
+  rows.clear(); afterTasks.length = 0; providerCalls = 0; emailCount = 0;
+});
+
 test("persisted contact pipeline handles opt-out, failure, duplicate retry and recoverable delivery", async (t) => {
   try {
     let response = await submit({ ...base, consent_pd: false });
@@ -118,7 +134,7 @@ test("persisted contact pipeline handles opt-out, failure, duplicate retry and r
     const untracked = rows.get(noTracking.id)!;
     assert.equal(untracked.yclid, undefined); assert.equal(untracked.metadata.yandex_client_id, undefined);
     assert.equal(untracked.source_page, "/free-trial");
-    assert.equal(untracked.metadata.leadMeasurement, undefined); assert.equal(afterTasks.length, 0);
+    assert.equal(untracked.metadata.leadMeasurement.state, "skipped"); assert.equal(afterTasks.length, 0);
     const submission_id = crypto.randomUUID();
     const tracked = { ...base, submission_id, analytics_consent: true, analytics_consent_version: "v3", analytics_consent_at: new Date().toISOString() };
     const success = await (await submit(tracked)).json();
@@ -150,15 +166,39 @@ test("persisted contact pipeline handles opt-out, failure, duplicate retry and r
         assert.equal(row.metadata.analyticsConsent && (row.metadata.analyticsConsent as { allowed: boolean }).allowed, false);
         assert.equal(row.metadata.yandex_client_id, undefined);
         assert.equal(row.yclid, undefined);
-        assert.equal(row.metadata.leadMeasurement, undefined);
+        assert.equal(row.metadata.leadMeasurement.state, "skipped");
       }
       assert.equal(afterTasks.length, 0);
     });
     await t.test("missing ClientID never becomes a fabricated identity or a conversion", async () => {
       const result = await (await submit({ ...tracked, submission_id: crypto.randomUUID(), yandex_client_id: "invalid" })).json();
       assert.equal(result.persisted, true);
-      assert.equal(rows.get(result.id)!.metadata.leadMeasurement, undefined);
+      assert.equal(rows.get(result.id)!.metadata.leadMeasurement.state, "skipped");
+      assert.equal((rows.get(result.id)!.metadata.leadMeasurement as unknown as { detail: string }).detail, "client_id_missing");
       assert.equal(afterTasks.length, 0);
+    });
+    await t.test("missing measurement credentials preserve valid consent and paid source evidence", async () => {
+      for (const credentials of [{ measurement_withdrawal_token: undefined }, { measurement_created_at: Date.now() + 3600_000 }]) {
+        const result = await (await submit({ ...tracked, ...credentials, submission_id: crypto.randomUUID(),
+          attribution: { version: 1, history: [{ at: Date.now(), kind: "paid", source: "yandex", landingPath: "/courses/online-chinese", tags: { yclid: "42", utm_source: "yandex", utm_medium: "cpc" } }] },
+        })).json();
+        const row = rows.get(result.id)!;
+        assert.equal((row.metadata.analyticsConsent as { allowed: boolean }).allowed, true);
+        assert.equal((row.metadata.attributionSummary as { channel: string }).channel, "paid");
+        assert.equal(row.yclid, "42");
+        assert.equal(row.metadata.leadMeasurement.state, "skipped");
+        assert.equal(afterTasks.length, 0);
+      }
+    });
+    await t.test("declined, undecided and invalid consent remain distinguishable without tracking data", async () => {
+      for (const status of ["declined", "not_decided"]) {
+        const result = await (await submit({ ...base, submission_id: crypto.randomUUID(), analytics_consent: false, analytics_consent_status: status })).json();
+        const row = rows.get(result.id)!;
+        assert.equal((row.metadata.analyticsConsent as { status: string }).status, status);
+        assert.equal((row.metadata.attributionSummary as { reason: string }).reason, `consent_${status}`);
+        assert.equal(row.yclid, undefined);
+        assert.equal(row.metadata.yandex_client_id, undefined);
+      }
     });
     await t.test("concurrent POST retries create one row, one notification and one goal task", async () => {
       const input = { ...tracked, submission_id: crypto.randomUUID() };

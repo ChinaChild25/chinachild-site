@@ -80,7 +80,7 @@ export async function markLeadDelivered(
   const supabase = getClient();
   if (!supabase) return;
 
-  await supabase
+  const { error } = await supabase
     .from("leads")
     .update({
       delivered_email: success,
@@ -88,4 +88,5 @@ export async function markLeadDelivered(
       delivered_at: new Date().toISOString(),
     })
     .eq("id", id);
+  if (error) throw new Error(`Lead notification status write failed: ${error.code}`);
 }

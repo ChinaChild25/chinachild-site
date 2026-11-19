@@ -4,6 +4,7 @@ import { attributionHistory, sourceTouch, type AttributionHistory, type SourceTo
 
 export const ATTRIBUTION_STORAGE_KEY = "cc-attribution-v1";
 let analyticsConsent = false;
+let consentStatus: "granted" | "declined" | "not_decided" = "not_decided";
 let consentVersion: string | undefined;
 let consentAt: string | undefined;
 let arrival: SourceTouch | null | undefined;
@@ -23,6 +24,7 @@ export function rememberDocumentArrival(): void {
 
 export function applyAttributionConsent(allowed: boolean, version?: string, timestamp?: string): void {
   analyticsConsent = allowed;
+  consentStatus = allowed ? "granted" : version && timestamp ? "declined" : "not_decided";
   consentVersion = allowed ? version : undefined;
   consentAt = allowed ? timestamp : undefined;
   if (allowed) { captureAttribution(); return; }
@@ -48,6 +50,7 @@ export function getLeadAttribution() {
   const history = captureAttribution();
   return {
     analytics_consent: analyticsConsent,
+    analytics_consent_status: consentStatus,
     ...(analyticsConsent ? { direct_visit: !history?.last && typeof document !== "undefined" && !document.referrer } : {}),
     ...(analyticsConsent ? { analytics_consent_version: consentVersion, analytics_consent_at: consentAt, attribution: history } : {}),
     utm: history?.last?.tags ?? {},

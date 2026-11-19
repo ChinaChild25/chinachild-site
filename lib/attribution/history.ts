@@ -22,6 +22,20 @@ export type AttributionHistory = {
   truncated: boolean;
 };
 
+export type AttributionConsentStatus = "granted" | "declined" | "not_decided" | "invalid" | "unavailable";
+
+/** The summary is evidence, not a guess that an untagged search visit is SEO. */
+export function summarizeAttribution(history: AttributionHistory | undefined, directVisit: boolean, consent: AttributionConsentStatus) {
+  const last = history?.last;
+  const channel = consent !== "granted" ? "unknown" : last?.kind === "paid" ? "paid"
+    : last?.kind !== "conflicting" && last?.tags.utm_medium?.toLowerCase() === "organic" ? "organic"
+    : last?.kind === "referral" ? "referral" : !last && directVisit ? "direct" : "unknown";
+  const reason = consent !== "granted" ? `consent_${consent}` : last?.kind === "conflicting" ? "conflicting_tags"
+    : last?.kind === "search_unclassified" ? "search_unclassified" : channel !== "unknown" ? "source_recorded"
+    : last?.kind === "tagged" ? "unclassified_tags" : "source_not_detected";
+  return { version: 1, channel, reason, ...(last ? { source: last.source } : {}) };
+}
+
 export function sanitizeAttributionTags(value: unknown): Record<string, string> {
   if (!value || typeof value !== "object" || Array.isArray(value)) return {};
   const input = value as Record<string, unknown>;

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { attributionHistory, sourceTouch, sanitizeAttributionTags, ATTRIBUTION_TTL_MS } from "../../lib/attribution/history.ts";
+import { attributionHistory, sourceTouch, sanitizeAttributionTags, summarizeAttribution, ATTRIBUTION_TTL_MS } from "../../lib/attribution/history.ts";
 import { applyAttributionConsent, captureAttribution, getLeadAttribution, getLeadPageContext, ATTRIBUTION_STORAGE_KEY } from "../../lib/attribution/browser.ts";
 import { deliverStoredLeadMeasurement, type LeadMeasurementEvent, type LeadMeasurementState } from "../../lib/analytics/lead-measurement.ts";
 import { validSubmissionId, submissionFingerprint } from "../../lib/leads/submission-identity.ts";
@@ -36,6 +36,29 @@ test("history retains first and last significant sources separately from last pa
   assert.deepEqual(attributionHistory(h, null, now + ATTRIBUTION_TTL_MS + 3).history, []);
 });
 
+test("source summaries explain every channel and never turn absent tracking into SEO", () => {
+  const scenarios = [
+    ["https://chinachild.ru/?yclid=42", "https://yandex.ru", "paid", "source_recorded"],
+    ["https://chinachild.ru/?utm_source=yandex&utm_medium=cpc", "", "paid", "source_recorded"],
+    ["https://chinachild.ru/?gclid=GoogleClick", "", "paid", "source_recorded"],
+    ["https://chinachild.ru/?utm_source=google&utm_medium=organic", "", "organic", "source_recorded"],
+    ["https://chinachild.ru/", "https://yandex.ru/search", "unknown", "search_unclassified"],
+    ["https://chinachild.ru/", "https://www.google.com/search", "unknown", "search_unclassified"],
+    ["https://chinachild.ru/", "https://school.example/article", "referral", "source_recorded"],
+    ["https://chinachild.ru/?yclid=42&utm_source=google", "", "unknown", "conflicting_tags"],
+  ];
+  for (const [url, referrer, channel, reason] of scenarios) {
+    const summary = summarizeAttribution(attributionHistory(null, sourceTouch(url, referrer, now), now), false, "granted");
+    assert.equal(summary.channel, channel, url); assert.equal(summary.reason, reason, url);
+  }
+  assert.equal(summarizeAttribution(attributionHistory(null, null, now), true, "granted").channel, "direct");
+  for (const status of ["declined", "not_decided", "invalid", "unavailable"] as const) {
+    const summary = summarizeAttribution(undefined, true, status);
+    assert.equal(summary.channel, "unknown"); assert.equal(summary.reason, `consent_${status}`);
+    assert.equal(summary.source, undefined);
+  }
+});
+
 test("duplicate arrivals, malformed values, unresolved macros, and oversized history are bounded", () => {
   let h = attributionHistory(null, paid, now);
   assert.equal(attributionHistory(h, paid, now).history.length, 1);
@@ -59,7 +82,7 @@ test("no consent means no optional storage or payload; grant captures, withdrawa
   try {
     applyAttributionConsent(false);
     assert.equal(captureAttribution(), undefined);
-    assert.deepEqual(getLeadAttribution(), { analytics_consent: false, utm: {} });
+    assert.deepEqual(getLeadAttribution(), { analytics_consent: false, analytics_consent_status: "not_decided", utm: {} });
     const context = getLeadPageContext("/free-trial?yclid=42", "/free-trial?utm_source=yandex");
     assert.equal(context.source_page, "/free-trial");
     assert.equal(context.page_path, "/free-trial");
