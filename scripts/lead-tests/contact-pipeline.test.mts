@@ -121,6 +121,37 @@ test("client clocks ahead by 67 seconds or four minutes cannot invalidate a save
   rows.clear(); afterTasks.length = 0; providerCalls = 0; emailCount = 0;
 });
 
+test("submission context survives declined analytics but never enables a counter or bypasses form consent", async () => {
+  try {
+    const lead_context = { version: 1, basis: "form_submission", consentVersion: "forged", landingPath: "/course?email=private",
+      referrerHost: "yandex.ru", tags: { yclid: "42", utm_source: "yandex", utm_medium: "cpc", utm_campaign: "118621798", ad_id: "123" } };
+    const input = { ...base, submission_id: crypto.randomUUID(), analytics_consent: false, analytics_consent_status: "declined", lead_context };
+    const rejected = await submit({ ...input, consent_pd: false });
+    assert.equal(rejected.status, 400); assert.equal(rows.size, 0);
+    const result = await (await submit(input)).json();
+    const row = rows.get(result.id)!;
+    assert.equal(row.yclid, "42"); assert.equal(row.utm_campaign, "118621798"); assert.equal(row.referrer, "https://yandex.ru/");
+    assert.equal(row.metadata.attributionStatus, "source_evidence");
+    assert.equal((row.metadata.attributionSummary as { channel: string }).channel, "paid");
+    assert.equal((row.metadata.leadContext as { landingPath: string }).landingPath, "/course");
+    assert.notEqual((row.metadata.leadContext as { consentVersion: string }).consentVersion, "forged");
+    assert.equal((row.metadata.analyticsConsent as { allowed: boolean }).allowed, false);
+    assert.equal(row.metadata.attribution, undefined); assert.equal(row.metadata.yandex_client_id, undefined);
+    assert.equal(row.metadata.leadMeasurement.state, "skipped"); assert.equal(afterTasks.length, 0); assert.equal(providerCalls, 0);
+    const emails = emailCount;
+    const retry = await (await submit(input)).json();
+    assert.equal(retry.id, result.id); assert.equal(rows.size, 1); assert.equal(emailCount, emails);
+    for (const [referrerHost, expected] of [["google.com", "search"], ["school.example", "referral"], [undefined, "unknown"]]) {
+      const response = await (await submit({ ...input, submission_id: crypto.randomUUID(), analytics_consent_status: "not_decided",
+        lead_context: { version: 1, basis: "form_submission", landingPath: "/course", referrerHost, tags: {} } })).json();
+      const saved = rows.get(response.id)!;
+      assert.equal((saved.metadata.attributionSummary as { channel: string }).channel, expected);
+      assert.equal(saved.metadata.leadMeasurement.state, "skipped");
+    }
+    assert.equal(providerCalls, 0); assert.equal(afterTasks.length, 0);
+  } finally { rows.clear(); afterTasks.length = 0; providerCalls = 0; emailCount = 0; }
+});
+
 test("persisted contact pipeline handles opt-out, failure, duplicate retry and recoverable delivery", async (t) => {
   try {
     let response = await submit({ ...base, consent_pd: false });

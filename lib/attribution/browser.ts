@@ -1,6 +1,7 @@
 "use client";
 
 import { attributionHistory, sourceTouch, type AttributionHistory, type SourceTouch } from "./history.ts";
+import { documentLeadContext } from "./lead-context.ts";
 
 export const ATTRIBUTION_STORAGE_KEY = "cc-attribution-v1";
 let analyticsConsent = false;
@@ -58,8 +59,14 @@ export function getLeadAttribution() {
 }
 
 export function getLeadPageContext(sourcePage: string, pagePath: string) {
+  // Both callers invoke this only after the form's personal-data consent check.
+  // Read the original document URL at submission; do not create pre-consent storage.
+  const navigation = typeof window !== "undefined" ? window.performance?.getEntriesByType("navigation")[0] : undefined;
+  const leadContext = typeof window !== "undefined" && typeof document !== "undefined"
+    ? documentLeadContext(navigation?.name || window.location.href, document.referrer) : undefined;
   return {
     ...getLeadAttribution(),
+    ...(leadContext ? { lead_context: leadContext } : {}),
     source_page: sourcePage.split(/[?#]/, 1)[0],
     page_path: pagePath.split(/[?#]/, 1)[0],
     referrer: analyticsConsent && typeof document !== "undefined" ? document.referrer : undefined,

@@ -15,6 +15,7 @@ import { sendStoredLeadMeasurement } from "@/lib/analytics/lead-measurement.serv
 import type { LeadMeasurementEvent } from "@/lib/analytics/lead-measurement";
 import { resolveYandexClientId } from "@/lib/analytics/yandex-metrika-measurement-request";
 import { attributionHistory, sanitizeAttributionTags, summarizeAttribution, type AttributionConsentStatus } from "@/lib/attribution/history";
+import { sanitizeLeadContext, summarizeLeadContext } from "@/lib/attribution/lead-context";
 import { createHash } from "node:crypto";
 import { validSubmissionId } from "@/lib/leads/submission-identity";
 import { after } from "next/server";
@@ -57,6 +58,7 @@ type LeadPayload = {
   analytics_consent_version?: unknown;
   analytics_consent_at?: unknown;
   attribution?: unknown;
+  lead_context?: unknown;
 };
 
 function sanitize(value: unknown, max: number): string {
@@ -180,7 +182,10 @@ export async function POST(request: Request) {
     : body.analytics_consent_status === "declined" ? "declined"
     : body.analytics_consent_status === "not_decided" ? "not_decided" : "unavailable";
   const attribution = analyticsConsent ? attributionHistory(body.attribution, null) : undefined;
-  const utm = analyticsConsent ? sanitizeAttributionTags(attribution?.last?.tags ?? body.utm) : {};
+  // A submitted application's own context is covered by its separate PD consent.
+  // This never grants analytics consent or enables a counter/history/ClientID.
+  const leadContext = sanitizeLeadContext(body.lead_context);
+  const utm = sanitizeAttributionTags(attribution?.last?.tags ?? leadContext?.tags ?? (analyticsConsent ? body.utm : {}));
   const clientId = analyticsConsent ? resolveYandexClientId({
     explicitClientId: body.yandex_client_id, cookieHeader: request.headers.get("cookie"),
   }) : null;
@@ -226,12 +231,14 @@ export async function POST(request: Request) {
   const leadInsert: LeadInsert = {
     id: validSubmissionId(body.submission_id),
     metadata: {
-      attributionStatus: !analyticsConsent ? "tracking_not_allowed" : attribution?.history.length ? "source_evidence" : "direct_or_unknown",
+      attributionStatus: leadContext || attribution?.history.length ? "source_evidence" : !analyticsConsent ? "tracking_not_allowed" : "direct_or_unknown",
       analyticsConsent: { allowed: analyticsConsent, status: consentStatus, version: analyticsConsent ? analyticsConsentVersion : undefined,
         at: analyticsConsent ? sanitize(body.analytics_consent_at, 50) : undefined },
       ...(attribution ? { attribution } : {}),
+      ...(leadContext ? { leadContext: { ...leadContext, consentVersion: CONSENT_PD_VERSION } } : {}),
       ...(clientId ? { yandex_client_id: clientId } : {}),
-      attributionSummary: summarizeAttribution(attribution, body.direct_visit === true, consentStatus),
+      attributionSummary: attribution?.last ? summarizeAttribution(attribution, false, consentStatus)
+        : leadContext ? summarizeLeadContext(leadContext) : summarizeAttribution(attribution, body.direct_visit === true, consentStatus),
       leadMeasurement: measurement ?? { state: "skipped", detail: skipReason },
       ...(measurement && withdrawalToken ? { measurementWithdrawalHash: createHash("sha256").update(withdrawalToken).digest("hex") } : {}),
     },
@@ -260,7 +267,7 @@ export async function POST(request: Request) {
     utm_term: utm.utm_term,
     yclid: utm.yclid,
     gclid: utm.gclid,
-    referrer: analyticsConsent ? referrer || undefined : undefined,
+    referrer: leadContext?.referrerHost ? `https://${leadContext.referrerHost}/` : analyticsConsent ? referrer || undefined : undefined,
     ip_hash: ipHash,
     user_agent: userAgent || undefined,
   };
