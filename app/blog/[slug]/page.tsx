@@ -12,6 +12,8 @@ import StatsStrip from "@/components/content/article-blocks/StatsStrip";
 import TLDRBox from "@/components/content/article-blocks/TLDRBox";
 import ArticleToc, { type TocItem } from "@/components/content/article-blocks/ArticleToc";
 import InlineAudio from "@/components/content/article-blocks/InlineAudio";
+import HanziCards from "@/components/content/article-blocks/HanziCards";
+import { BarChart, StepsBlock } from "@/components/content/article-blocks/ArticleVisuals";
 import ScrollDepthTracker from "@/components/analytics/ScrollDepthTracker";
 import ArticleEndCta from "@/components/content/ArticleEndCta";
 import RelatedPosts from "@/components/content/RelatedPosts";
@@ -236,6 +238,33 @@ function renderBlock(
   }
   if (block.type === "stats") {
     return <StatsStrip key={`stats-${index}`} items={block.items} />;
+  }
+  if (block.type === "cards") {
+    return (
+      <HanziCards
+        key={`cards-${index}`}
+        title={block.title}
+        subtitle={block.subtitle}
+        caption={block.caption}
+        columns={block.columns}
+        quiz={block.quiz}
+        items={block.items}
+      />
+    );
+  }
+  if (block.type === "bars") {
+    return (
+      <BarChart
+        key={`bars-${index}`}
+        title={block.title}
+        subtitle={block.subtitle}
+        caption={block.caption}
+        items={block.items}
+      />
+    );
+  }
+  if (block.type === "steps") {
+    return <StepsBlock key={`steps-${index}`} title={block.title} caption={block.caption} items={block.items} />;
   }
   if (block.type === "faq") {
     return (

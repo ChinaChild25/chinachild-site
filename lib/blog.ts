@@ -70,7 +70,48 @@ export type ArticleBlock =
       description?: string;
       items: FaqEntry[];
       jsonLd?: boolean;
+    }
+  | {
+      type: "cards";
+      title?: string;
+      subtitle?: string;
+      caption?: string;
+      /** Desktop column count (2–6); mobile collapses automatically. */
+      columns?: number;
+      /** Adds the «Проверить себя» toggle that hides pinyin and translation. */
+      quiz?: boolean;
+      items: HanziCardItem[];
+    }
+  | {
+      type: "bars";
+      title?: string;
+      subtitle?: string;
+      caption?: string;
+      items: BarItem[];
+    }
+  | {
+      type: "steps";
+      title?: string;
+      caption?: string;
+      items: StepItem[];
     };
+
+export type HanziCardItem = {
+  hanzi: string;
+  pinyin?: string;
+  label?: string;
+  note?: string;
+  highlight?: boolean;
+};
+export type BarItem = {
+  label: string;
+  value: number;
+  /** Visible value text; defaults to the number itself. */
+  display?: string;
+  hint?: string;
+  highlight?: boolean;
+};
+export type StepItem = { title: string; text?: string };
 
 const BLOG_DIRECTORY = path.join(process.cwd(), "content", "blog");
 
@@ -373,6 +414,56 @@ function parseDirective(name: string, payload: string): ArticleBlock | null {
       items,
       jsonLd: d.jsonLd === false ? false : true,
     };
+  }
+
+  const optionalText = (value: unknown) => (typeof value === "string" && value ? value : undefined);
+  const records = Array.isArray(d.items)
+    ? (d.items as unknown[]).filter((it): it is Record<string, unknown> => !!it && typeof it === "object")
+    : [];
+
+  if (name === "cards") {
+    const items: HanziCardItem[] = records
+      .filter((it) => typeof it.hanzi === "string" && it.hanzi)
+      .map((it) => ({
+        hanzi: it.hanzi as string,
+        pinyin: optionalText(it.pinyin),
+        label: optionalText(it.label),
+        note: optionalText(it.note),
+        highlight: it.highlight === true ? true : undefined,
+      }));
+    if (items.length === 0) return null;
+    const columns = typeof d.columns === "number" ? Math.min(6, Math.max(2, Math.round(d.columns))) : undefined;
+    return {
+      type: "cards",
+      title: optionalText(d.title),
+      subtitle: optionalText(d.subtitle),
+      caption: optionalText(d.caption),
+      columns,
+      quiz: d.quiz === true ? true : undefined,
+      items,
+    };
+  }
+
+  if (name === "bars") {
+    const items: BarItem[] = records
+      .filter((it) => typeof it.label === "string" && typeof it.value === "number" && Number.isFinite(it.value) && it.value >= 0)
+      .map((it) => ({
+        label: it.label as string,
+        value: it.value as number,
+        display: optionalText(it.display),
+        hint: optionalText(it.hint),
+        highlight: it.highlight === true ? true : undefined,
+      }));
+    if (items.length === 0) return null;
+    return { type: "bars", title: optionalText(d.title), subtitle: optionalText(d.subtitle), caption: optionalText(d.caption), items };
+  }
+
+  if (name === "steps") {
+    const items: StepItem[] = records
+      .filter((it) => typeof it.title === "string" && it.title)
+      .map((it) => ({ title: it.title as string, text: optionalText(it.text) }));
+    if (items.length === 0) return null;
+    return { type: "steps", title: optionalText(d.title), caption: optionalText(d.caption), items };
   }
 
   return null;
