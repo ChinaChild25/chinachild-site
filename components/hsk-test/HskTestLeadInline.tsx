@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { getLeadPageContext } from "@/lib/attribution/browser";
+
+import { useRef, useState } from "react";
 import { trackLeadSubmitted } from "@/lib/analytics";
 import {
   getCachedYandexClientId,
-  startYandexClientIdCapture,
 } from "@/lib/analytics/yandex-client-id";
 import {
   MarketingConsentLabelText,
@@ -23,6 +24,7 @@ import {
 } from "@/lib/leads/contact-validation";
 import {
   beginLeadSubmission,
+  leadSubmissionIdentity,
   releaseLeadSubmission,
 } from "@/lib/leads/submission-gate";
 import { CONTACT_PHONE, CONTACT_PHONE_TEL } from "@/lib/site-config";
@@ -48,12 +50,12 @@ export default function HskTestLeadInline({
   score,
 }: Props) {
   const submissionGate = useRef(false);
+  const submissionId = useRef<{ id: string; signature: string } | null>(null);
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
   const [messengerLinks, setMessengerLinks] = useState<ApplicationMessengerLinks | null>(null);
   const [formStartedAt] = useState(() => Date.now());
 
-  useEffect(() => startYandexClientIdCapture(), []);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -77,6 +79,8 @@ export default function HskTestLeadInline({
     }
 
     const payload = {
+      submission_id: "",
+      ...getLeadPageContext(`hsk-test-result-level-${recommendedLevel}`, typeof window === "undefined" ? "" : window.location.pathname),
       name: String(fd.get("name") ?? ""),
       phone: normalizedPhone,
       email: "",
@@ -89,13 +93,10 @@ export default function HskTestLeadInline({
       company: "",
       website: "",
       form_started_at: String(formStartedAt),
-      source_page: `hsk-test-result-level-${recommendedLevel}`,
-      page_path: typeof window === "undefined" ? "" : window.location.pathname + window.location.search,
-      referrer: typeof document === "undefined" ? "" : document.referrer,
-      utm: {},
       yandex_client_id: getCachedYandexClientId(),
     };
 
+    payload.submission_id = leadSubmissionIdentity(submissionId, payload);
     setStatus("submitting");
     setError(null);
 

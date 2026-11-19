@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
+import { applyAttributionConsent } from "../../lib/attribution/browser.ts";
 import { trackLeadSubmitted } from "../../lib/analytics.ts";
 import {
   getCachedYandexClientId,
@@ -72,6 +73,7 @@ test("submission gate blocks same-tick duplicates and allows a retry after rejec
 });
 
 test("persisted lead client analytics emit GA4 once without Yandex or dataLayer lead events", () => {
+  applyAttributionConsent(true);
   const ymCalls: unknown[][] = [];
   const gtagCalls: unknown[][] = [];
   const dataLayer: unknown[] = [];
@@ -108,6 +110,7 @@ test("persisted lead client analytics emit GA4 once without Yandex or dataLayer 
 });
 
 test("shared browser helper captures and validates the official Yandex ClientID", () => {
+  applyAttributionConsent(true);
   const calls: unknown[][] = [];
   const originalWindow = Object.getOwnPropertyDescriptor(globalThis, "window");
   const originalCounterId = process.env.NEXT_PUBLIC_YM_ID;
@@ -319,7 +322,7 @@ test("both lead forms use the shared ClientID helper and one persisted-only serv
   );
 
   for (const form of [sharedForm, hskForm]) {
-    assert.match(form, /startYandexClientIdCapture/);
+    assert.match(form, /getLeadPageContext/);
     assert.match(form, /yandex_client_id: getCachedYandexClientId\(\)/);
     assert.match(form, /isPersistedLeadResponse\(data\)/);
     assert.equal(form.match(/fetch\("\/api\/contact"/g)?.length, 1);

@@ -2,9 +2,13 @@
 
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
+import { useConsent } from "@/lib/consent/context";
+import { captureAttribution } from "@/lib/attribution/browser";
 import { trackEvent } from "@/lib/analytics";
 
 export default function AnalyticsEvents() {
+  const { consent } = useConsent();
+  useEffect(() => { if (consent?.analytics) captureAttribution(); }, [consent]);
   const pathname = usePathname();
   const searchParams = useSearchParams();
 

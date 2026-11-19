@@ -147,6 +147,7 @@ const nextConfig: NextConfig = {
     // (вставляем новый в поле review.image вручную, см. lib/site-data.ts).
     remotePatterns: [
       { protocol: "https", hostname: "avatars.mds.yandex.net" },
+      { protocol: "https", hostname: "my.chinachild.ru", pathname: "/staff/**" },
     ],
     // Разрешаем next/image отдавать локальные SVG-иллюстрации (декоративные
     // иконки разделов в /public/related). CSP + sandbox обезвреживают скрипты.

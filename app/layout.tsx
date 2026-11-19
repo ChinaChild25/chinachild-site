@@ -106,11 +106,6 @@ export default function RootLayout({
     >
       <head>
         <ThemeInitScript />
-        {/* Preconnect / DNS-prefetch — kills first-byte latency for analytics. */}
-        <link rel="preconnect" href="https://mc.yandex.ru" crossOrigin="" />
-        <link rel="preconnect" href="https://mc.yandex.com" crossOrigin="" />
-        <link rel="dns-prefetch" href="https://mc.yandex.ru" />
-        <link rel="dns-prefetch" href="https://mc.yandex.com" />
         {/* Atom feed for blog discovery */}
         <link
           rel="alternate"
@@ -122,7 +117,7 @@ export default function RootLayout({
       <body>
         <ConsentProvider>
           {/* Analytics mounted close to <body> top so Yandex registers the visit even
-              if the user leaves immediately. Both counters are gated on
+              after explicit analytics consent. Both counters are gated on
               consent.analytics inside their components — no script tags are emitted
               until the user accepts. useSearchParams() needs Suspense to avoid
               de-opting the whole tree to client rendering. */}
