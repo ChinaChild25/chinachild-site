@@ -322,7 +322,7 @@ export default function CareerApplicationForm({ careerSlug }: { careerSlug: stri
                 {portfolioUrl ? (
                   <>
                     <button type="button" className={styles.iconButton} onClick={() => setPortfolioUrl("")} aria-label="Удалить ссылку"><X size={20} /></button>
-                    <a className={styles.openLink} href={portfolioUrl} target="_blank" rel="noreferrer">Открыть<ExternalLink size={18} /></a>
+                    <a className={styles.openLink} href={isValidHttpUrl(portfolioUrl) ? portfolioUrl : undefined} target="_blank" rel="noreferrer">Открыть<ExternalLink size={18} /></a>
                   </>
                 ) : null}
               </div>

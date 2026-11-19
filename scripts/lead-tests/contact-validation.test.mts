@@ -48,6 +48,9 @@ test("мусор и фродовые номера отсекаются", () => {
   assert.equal(normalizePhone("1111111111"), null);
   assert.equal(normalizePhone("1234567890"), null);
   assert.equal(normalizePhone("+7 call-me-now"), null);
+  assert.equal(normalizePhone("+7abc9991234567"), null);
+  assert.equal(normalizePhone("+7;9991234567"), null);
+  assert.equal(normalizePhone("+7 999—123–45‐67"), "+79991234567");
   assert.equal(normalizePhone("12345678901234567890"), null);
   assert.equal(normalizePhone("123"), null);
   assert.equal(normalizePhone(""), null);
