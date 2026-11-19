@@ -31,10 +31,15 @@ jobs:
         with:
           node-version: '24.14.1'
           cache: npm
+      - name: Install XML validator used by SEO tests
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends libxml2-utils
       - run: npm ci
       - run: npm run lint
       - run: npm run test:leads
       - run: npm run test:blog
+      - run: npm run test:seo
       - name: Check production dependencies
         run: npm audit --omit=dev --audit-level=high
       - name: Build static site and audit JSON-LD
@@ -45,4 +50,4 @@ jobs:
         run: npm run build
       - run: npm run typecheck
       - name: Check SEO including generated HTML and sitemaps
-        run: npm run test:seo
+        run: node --test scripts/seo/tests/pass3-technical-integrity.test.mts
