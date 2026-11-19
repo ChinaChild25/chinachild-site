@@ -21,36 +21,46 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: scheduled-blog-publisher
+  cancel-in-progress: false
+
 jobs:
   publish:
+    # Release hold: enable explicitly only after the owner's deployment command.
+    if: vars.BLOG_PUBLISHING_ENABLED == 'true' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
 
       - name: Publish scheduled post
+        id: publish
+        env:
+          SCHEDULE: ${{ github.event.schedule }}
+          PUBLISH_COUNT: ${{ inputs.count || '1' }}
         run: |
-          if [ "${{ github.event.schedule }}" = "0 6 20 11 *" ] && [ "$(date -u +%Y)" != "2026" ]; then
+          if [ "$SCHEDULE" = "0 6 20 11 *" ] && [ "$(date -u +%Y)" != "2026" ]; then
             echo "One-off kickoff schedule is only active in 2026."
             exit 0
           fi
 
-          COUNT="${{ github.event.inputs.count }}"
-          if [ -z "$COUNT" ]; then
-            COUNT="1"
+          node scripts/publish-scheduled-blog.mjs
+          if ! git diff --quiet -- content/blog content/scheduled-blog; then
+            echo "has_posts=true" >> "$GITHUB_OUTPUT"
           fi
 
-          PUBLISH_COUNT="$COUNT" node scripts/publish-scheduled-blog.mjs
-
       - name: Generate and store article audio
+        if: steps.publish.outputs.has_posts == 'true'
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}

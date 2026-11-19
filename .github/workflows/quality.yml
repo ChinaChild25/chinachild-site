@@ -1,0 +1,48 @@
+name: Repository checks
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['**/*.md', 'AGENTS.md']
+  pull_request:
+    paths-ignore: ['**/*.md', 'AGENTS.md']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Lint, tests and production build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_SITE_URL: https://chinachild.ru
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24.14.1'
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run test:leads
+      - run: npm run test:blog
+      - name: Check production dependencies
+        run: npm audit --omit=dev --audit-level=high
+      - name: Build static site and audit JSON-LD
+        # Public read-only content access; no service-role or OpenAI credentials.
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+        run: npm run build
+      - run: npm run typecheck
+      - name: Check SEO including generated HTML and sitemaps
+        run: npm run test:seo

@@ -60,9 +60,14 @@ if (order.length === 0) {
 const toPublish = order.slice(0, count);
 const remaining = order.slice(count);
 
-const published = [];
+if (new Set(order).size !== order.length || order.some((slug) => !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug))) {
+  console.error("Queue must contain unique, safe article slugs.");
+  process.exit(1);
+}
 
-for (const slug of toPublish) {
+// Validate and read the entire batch before moving any article. A missing file
+// or slug conflict must leave the queue and previously checked articles intact.
+const plan = toPublish.map((slug) => {
   const from = path.join(scheduledDir, `${slug}.mdx`);
   const to = path.join(blogDir, `${slug}.mdx`);
 
@@ -78,9 +83,11 @@ for (const slug of toPublish) {
     process.exit(1);
   }
 
-  const source = fs.readFileSync(from, "utf8");
-  const updated = updateFrontmatterDates(source);
+  return { slug, from, to, updated: updateFrontmatterDates(fs.readFileSync(from, "utf8")) };
+});
 
+const published = [];
+for (const { slug, from, to, updated } of plan) {
   fs.writeFileSync(to, updated);
   fs.rmSync(from);
 
