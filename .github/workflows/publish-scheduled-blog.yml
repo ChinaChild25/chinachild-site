@@ -6,6 +6,10 @@ on:
     - cron: "0 6 * * 1"
     # Thursday 09:00 Moscow = 06:00 UTC
     - cron: "0 6 * * 4"
+    # One-off kickoff of the November 2026 queue on Friday 2026-11-20.
+    # The same expression fires every 20 November, so the publish step
+    # ignores it in any other year. Safe to delete after 2026-11-20.
+    - cron: "0 6 20 11 *"
 
   workflow_dispatch:
     inputs:
@@ -34,6 +38,11 @@ jobs:
 
       - name: Publish scheduled post
         run: |
+          if [ "${{ github.event.schedule }}" = "0 6 20 11 *" ] && [ "$(date -u +%Y)" != "2026" ]; then
+            echo "One-off kickoff schedule is only active in 2026."
+            exit 0
+          fi
+
           COUNT="${{ github.event.inputs.count }}"
           if [ -z "$COUNT" ]; then
             COUNT="1"
