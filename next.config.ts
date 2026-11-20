@@ -35,7 +35,7 @@ const securityHeaders = [
       "img-src 'self' data: blob: https://mc.yandex.ru https://mc.yandex.com https://yandex.ru https://*.yandex.ru https://*.yandex.com https://mc.webvisor.org https://mc.webvisor.com https://smartcaptcha.yandexcloud.net https://smartcaptcha.cloud.yandex.ru https://www.google-analytics.com https://*.google-analytics.com https://stats.g.doubleclick.net https://*.vercel.app",
       // blob: — three.js GLTFLoader fetch()-ит встроенные текстуры моделей
       // (.glb) через blob-URL; без него падает загрузка карты лэньярда.
-      "connect-src 'self' blob: https://mc.yandex.ru https://mc.yandex.com https://*.yandex.ru https://*.mc.yandex.ru https://yandex.ru https://mc.webvisor.org https://mc.webvisor.com https://smartcaptcha.yandexcloud.net https://smartcaptcha.cloud.yandex.ru wss://mc.yandex.ru wss://mc.yandex.com wss://*.yandex.ru wss://mc.webvisor.org wss://mc.webvisor.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://stats.g.doubleclick.net https://*.vercel-insights.com https://vitals.vercel-insights.com https://*.supabase.co https://cdn.jsdelivr.net",
+      "connect-src 'self' blob: https://mc.yandex.ru https://mc.yandex.com https://*.yandex.ru https://*.mc.yandex.ru https://yandex.ru https://mc.webvisor.org https://mc.webvisor.com https://smartcaptcha.yandexcloud.net https://smartcaptcha.cloud.yandex.ru wss://mc.yandex.ru wss://mc.yandex.com wss://*.yandex.ru wss://mc.webvisor.org wss://mc.webvisor.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://stats.g.doubleclick.net https://*.vercel-insights.com https://vitals.vercel-insights.com https://*.supabase.co https://cdn.jsdelivr.net https://*.ingest.de.sentry.io",
       "media-src 'self' blob: data: https://*.supabase.co",
       "frame-src https://mc.yandex.ru https://mc.yandex.com https://mc.webvisor.org https://mc.webvisor.com https://yandex.ru https://*.yandex.ru https://smartcaptcha.yandexcloud.net https://smartcaptcha.cloud.yandex.ru",
       "frame-ancestors 'self'",
@@ -130,6 +130,7 @@ function loadLegacyRedirects(): RedirectRule[] {
 }
 
 const nextConfig: NextConfig = {
+  outputFileTracingRoot: __dirname,
   poweredByHeader: false,
   trailingSlash: false,
   skipTrailingSlashRedirect: true,

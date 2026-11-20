@@ -529,7 +529,6 @@ function AudioPlayer({ text }: { text: string }) {
         </span>
       </button>
       {src ? (
-        // eslint-disable-next-line jsx-a11y/media-has-caption
         <audio
           ref={audioRef}
           src={src}

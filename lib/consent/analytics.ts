@@ -3,10 +3,12 @@
 import { applyAttributionConsent, hasAnalyticsConsent } from "../attribution/browser.ts";
 import { withdrawLeadMeasurements, flushMeasurementWithdrawals } from "../analytics/measurement-withdrawal-browser.ts";
 import { clearYandexClientId } from "../analytics/yandex-client-id.ts";
+import { syncErrorMonitoring } from "../monitoring/browser.ts";
 
 export function syncAnalyticsConsent(allowed: boolean, version?: string, timestamp?: string): void {
   const wasAllowed = hasAnalyticsConsent();
   applyAttributionConsent(allowed, version, timestamp);
+  void syncErrorMonitoring(allowed);
   if (typeof window === "undefined") return;
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
   if (gaId) (window as unknown as Record<string, unknown>)[`ga-disable-${gaId}`] = !allowed;

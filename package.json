@@ -20,7 +20,9 @@
     "postbuild": "node scripts/audit-built-jsonld.mjs",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint",
+    "lint": "eslint --max-warnings 0",
+    "audit:unused": "knip --include files,dependencies,unlisted,unresolved --no-progress",
+    "audit:lighthouse": "lighthouse",
     "audit:jsonld": "node scripts/audit-built-jsonld.mjs",
     "gen:images": "node --env-file=.env.local scripts/generate-blog-images.mjs",
     "gen:audio": "node --env-file=.env.local scripts/generate-blog-audio.mjs",
@@ -42,10 +44,11 @@
     "seo:yandex-education:artifacts": "node scripts/seo/yandex-education-artifacts.mts",
     "test:seo": "node --test scripts/seo/tests/*.test.mts",
     "test:blog": "node --test scripts/blog-tests/*.test.mjs scripts/blog-tests/*.test.mts",
-    "test:leads": "node --test scripts/lead-tests/*.test.mts"
+    "test:leads": "node --test scripts/lead-tests/*.test.mts",
+    "test:monitoring": "node --experimental-test-module-mocks --test scripts/monitoring-tests/*.test.mts"
   },
   "dependencies": {
-    "@next/third-parties": "^16.2.6",
+    "@sentry/nextjs": "11.15.0",
     "@supabase/supabase-js": "^2.105.4",
     "@yandex/smart-captcha": "2.9.1",
     "clsx": "^2.1.1",
@@ -61,16 +64,18 @@
     "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "3.3.5",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/nodemailer": "^8.0.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "autoprefixer": "^10.5.0",
     "eslint": "^9",
     "eslint-config-next": "15.5.29",
+    "knip": "6.46.1",
     "lighthouse": "13.4.1",
     "postcss": "8.5.33",
+    "sharp": "0.35.5",
     "tailwindcss": "^4.2.4",
     "typescript": "^5"
   },

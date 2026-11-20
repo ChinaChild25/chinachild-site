@@ -8,7 +8,6 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 // dictionary terms only. No personal/user/private data is exposed.
 
 declare global {
-  // eslint-disable-next-line no-var
   var __chinachild_public_supabase: SupabaseClient | undefined;
 }
 

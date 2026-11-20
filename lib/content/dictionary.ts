@@ -5,7 +5,6 @@ import { getPublicContentSnapshot } from "@/lib/content/public-snapshot";
 import {
   escapeForPostgrestOr,
   normalizeQuery,
-  type NormalizedQuery,
 } from "@/lib/content/pinyin";
 import type {
   DictionarySearchHit,
@@ -548,7 +547,7 @@ export async function searchPublicDictionary(
       .select("term_id, locale, definition, order_index")
       .in("term_id", termIds)
       .eq("locale", "ru"),
-    fetchHskBadgesForTerms(termIds, normalized),
+    fetchHskBadgesForTerms(termIds),
     fetchAudioUrls("term", termIds),
   ]);
 
@@ -626,7 +625,6 @@ export async function searchPublicDictionary(
 
 async function fetchHskBadgesForTerms(
   termIds: string[],
-  _normalized: NormalizedQuery,
 ): Promise<Map<string, Array<{ version: HskVersionId; level: string }>>> {
   const supabase = getPublicSupabaseClient();
   const result = new Map<string, Array<{ version: HskVersionId; level: string }>>();

@@ -1,0 +1,10 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "entry": [
+    "scripts/generate-favicon.mjs",
+    "scripts/optimize-hsk-test-images.mjs",
+    "scripts/recover-lead-measurements.mts",
+    "scripts/repair-vocabulary-examples.mjs"
+  ],
+  "ignoreDependencies": ["eslint-config-next"]
+}

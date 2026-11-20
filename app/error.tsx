@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import { captureBrowserError } from "@/lib/monitoring/browser";
 
 export default function RouteError({
   error,
@@ -12,6 +13,7 @@ export default function RouteError({
 }) {
   useEffect(() => {
     console.error("Application error:", error);
+    void captureBrowserError(error);
   }, [error]);
 
   return (

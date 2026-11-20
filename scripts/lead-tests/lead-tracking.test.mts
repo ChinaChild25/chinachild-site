@@ -356,7 +356,7 @@ test("repository-controlled lead code contains no obsolete or duplicate Yandex m
     [
       "lib/analytics.ts",
       "lib/analytics/yandex-metrika-measurement-request.ts",
-      "lib/analytics/yandex-metrika-server.ts",
+      "lib/analytics/lead-measurement.server.ts",
       "app/api/contact/route.ts",
       "components/forms/LeadForm.tsx",
       "components/hsk-test/HskTestLeadInline.tsx",

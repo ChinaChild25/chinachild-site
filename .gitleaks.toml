@@ -1,0 +1,11 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Public browser storage names and the fixed synthetic token used by handoff tests; none grants access"
+regexTarget = "secret"
+regexes = [
+  '^chinachild\.hsk-test\.v1$',
+  '^chinachild\.diagnostic\.v2$',
+  '^0123456789abcdef0123456789abcdef$',
+]

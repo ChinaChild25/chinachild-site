@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { formatHskBadge, formatWordCountRu, hskVersionSlug } from "@/lib/content/labels";
+import { formatHskBadge, formatWordCountRu } from "@/lib/content/labels";
 import type { DictionarySearchResult } from "@/lib/content/types";
 
 const MATCH_LABEL: Record<string, string> = {
